@@ -1,0 +1,333 @@
+vte (1:0.11.11-4) unstable; urgency=low
+
+  * GNOME team upload.
+  * debian/rules: add epoch to shlib declaration (closes: #253120).
+
+ -- Jordi Mallach <jordi@debian.org>  Sun, 20 Jun 2004 17:24:12 +0200
+
+vte (1:0.11.11-3) unstable; urgency=low
+
+  * Gnome Team Upload.
+  * debian/rules:
+    + shlibs version =  0.11.11.
+
+ -- Sebastien Bacher <seb128@debian.org>  Tue,  8 Jun 2004 00:55:25 +0200
+
+vte (1:0.11.11-2) unstable; urgency=low
+
+  * GNOME Team Upload.
+  * Upload in unstable.
+
+ -- Sebastien Bacher <seb128@debian.org>  Thu, 27 May 2004 00:15:35 +0200
+
+vte (1:0.11.11-1) experimental; urgency=low
+
+  * New upstream version
+    - Removes all former patches, as they're no more needed
+    - Add a patch for correcting init_vte typos.
+    - This version add more documentation in python-vte module (Closes: #225296)
+    - New build dependency on gtk-doc-tools
+  * Added a patch for using AC_PATH_XTRA with Debian's enhancements.
+  * Added a patch for supporting some save/restore cursor position console
+    sequences (Closes: 248896)
+
+ -- Arnaud Patard <arnaud.patard@rtp-net.org>  Sun,  2 May 2004 22:37:25 +0200
+
+vte (1:0.11.10-8) unstable; urgency=low
+
+  * debian/patches:
+    - Added a patch to support the vte_terminal_fork_pty call coming from
+    upstream cvs (Closes: #241485)
+
+ -- Arnaud Patard <arnaud.patard@rtp-net.org>  Sun, 18 Apr 2004 14:18:56 +0200
+
+vte (1:0.11.10-7) unstable; urgency=low
+
+  * The gnome-pty-helper didn't have the right permissions, so it couldn't
+  update the utmp files. (Closes: #240279)
+
+ -- Arnaud Patard <arnaud.patard@rtp-net.org>  Tue, 30 Mar 2004 01:15:47 +0200
+
+vte (1:0.11.10-6) unstable; urgency=low
+
+  * Fixed build-dependencies (Closes: #238470)
+
+ -- Arnaud Patard <arnaud.patard@rtp-net.org>  Wed, 17 Mar 2004 19:25:26 +0100
+
+vte (1:0.11.10-5) unstable; urgency=low
+
+  * New maintainer (Closes: #234970)
+  * Switched from debhelper to cdbs for the packaging
+
+ -- Arnaud Patard <arnaud.patard@rtp-net.org>  Sun, 29 Feb 2004 19:41:29 +0100
+
+vte (1:0.11.10-4) unstable; urgency=low
+
+  * This package suck more and more, slow, broken and upstream don't care,
+    thus orpahned.
+
+ -- Christian Marillat <marillat@debian.org>  Thu, 26 Feb 2004 21:48:39 +0100
+
+vte (1:0.11.10-3) unstable; urgency=low
+
+  * New patch 02_link.dpatch to fix broken linkage (Closes: #220108)
+
+ -- Christian Marillat <marillat@debian.org>  Sun, 30 Nov 2003 17:21:07 +0100
+
+vte (1:0.11.10-2) unstable; urgency=low
+
+  * Add patch for less artifacts (Closes: #218399)
+  * NMU aren't walcome when I've tagged this bug pending two days ago. Don't
+    touch my packages.
+
+ -- Christian Marillat <marillat@debian.org>  Mon,  3 Nov 2003 19:13:10 +0100
+
+vte (1:0.11.10-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Sun, 19 Oct 2003 11:32:07 +0200
+
+vte (1:0.10.29-6) unstable; urgency=low
+
+  * Re-apply cursor blinking patch (Closes: #186764, #211818)
+
+ -- Christian Marillat <marillat@debian.org>  Tue, 30 Sep 2003 22:50:18 +0200
+
+vte (1:0.10.29-5) unstable; urgency=low
+
+  * Add libxrender-dev in Builde-Depends and Depends for the -dev package (Closes: #208533)
+
+ -- Christian Marillat <marillat@debian.org>  Wed,  3 Sep 2003 18:19:51 +0200
+
+vte (1:0.10.29-4) unstable; urgency=low
+
+  * Fix python dependencies in python-vte (Closes: #206285)
+  * New patch to fix a bug with the blinking (Closes: #186764)
+
+ -- Christian Marillat <marillat@debian.org>  Wed, 20 Aug 2003 16:29:34 +0200
+
+vte (1:0.10.29-3) unstable; urgency=low
+
+  * debian/control Add python-gtk2-dev in build-depends
+  * python package need to depends on a versioned python-gtk2 (>= 1.99.17-2)
+  * Revert bug introduced in 0.10.28 about scrolling page (Closes: #190651, #203049)
+
+ -- Christian Marillat <marillat@debian.org>  Tue, 19 Aug 2003 20:43:43 +0200
+
+vte (1:0.10.29-2) unstable; urgency=low
+
+  * debian/rules remove an old  CC=gcc-3.2 (Closes: #196911)
+
+ -- Christian Marillat <marillat@debian.org>  Tue, 10 Jun 2003 20:33:06 +0200
+
+vte (1:0.10.29-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Mon,  9 Jun 2003 22:26:53 +0200
+
+vte (1:0.10.28-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Tue, 13 May 2003 09:07:26 +0200
+
+vte (1:0.10.27-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fix fonts size (Closes: #186705)
+
+ -- Christian Marillat <marillat@debian.org>  Mon,  5 May 2003 13:13:52 +0200
+
+vte (0.11.0-2) unstable; urgency=low
+
+  * Update section
+  * Fix crash on exit (Closes: #186593)
+
+ -- Christian Marillat <marillat@debian.org>  Fri,  4 Apr 2003 12:49:57 +0200
+
+vte (0.11.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Wed, 26 Mar 2003 21:26:39 +0100
+
+vte (0.10.26-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fix text wrapping (Closes: #183337)
+
+ -- Christian Marillat <marillat@debian.org>  Tue,  4 Mar 2003 21:09:31 +0100
+
+vte (0.10.25-1) unstable; urgency=low
+
+  * new upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Tue, 25 Feb 2003 01:39:37 +0100
+
+vte (0.10.23-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Fri, 21 Feb 2003 20:56:58 +0100
+
+vte (0.10.22-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fix tab focus (Closes: #180370)
+
+ -- Christian Marillat <marillat@debian.org>  Thu, 20 Feb 2003 10:17:29 +0100
+
+vte (0.10.20-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Sat, 15 Feb 2003 02:00:29 +0100
+
+vte (0.10.19-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Thu, 13 Feb 2003 10:42:34 +0100
+
+vte (0.10.17-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Mon,  3 Feb 2003 15:56:24 +0100
+
+vte (0.10.16-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Fri, 31 Jan 2003 18:06:35 +0100
+
+vte (0.10.15-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fix vim and scroll mouse (Closes: #176952)
+
+ -- Christian Marillat <marillat@debian.org>  Tue, 28 Jan 2003 10:47:06 +0100
+
+vte (0.10.14-1) unstable; urgency=low
+
+  * New upstream release.
+  * Workaround to fix undocumented xttitle escape sequence (Closes: #178066)
+  * Fix shift+arrows keys (Closes: #177745)
+  * Fix DEC graphics characters (Closes: #177977)
+
+ -- Christian Marillat <marillat@debian.org>  Fri, 24 Jan 2003 12:24:18 +0100
+
+vte (0.10.12-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Mon, 20 Jan 2003 22:54:23 +0100
+
+vte (0.10.11-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Sat, 18 Jan 2003 15:57:33 +0100
+
+vte (0.10.10-2) unstable; urgency=low
+
+  * -dev package should depends on libncurses5-dev (Closes: #176684)
+
+ -- Christian Marillat <marillat@debian.org>  Tue, 14 Jan 2003 16:52:06 +0100
+
+vte (0.10.10-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Tue, 14 Jan 2003 12:13:00 +0100
+
+vte (0.10.8-1) unstable; urgency=low
+
+  * New upstream release.
+  * Build against libxft2-dev
+  * Remove gcc-3.2 build-dependency
+  * Bump Standards-Version to 3.5.8
+
+ -- Christian Marillat <marillat@debian.org>  Wed,  8 Jan 2003 16:18:25 +0100
+
+vte (0.10.7-1) unstable; urgency=low
+
+  * new upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Thu, 12 Dec 2002 15:43:33 +0100
+
+vte (0.10.5-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Wed,  4 Dec 2002 13:19:25 +0100
+
+vte (0.10.4-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Tue, 12 Nov 2002 17:11:26 +0100
+
+vte (0.10.3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Mon, 11 Nov 2002 18:48:53 +0100
+
+vte (0.10.2-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Thu,  7 Nov 2002 16:09:09 +0100
+
+vte (0.10.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Marillat <marillat@debian.org>  Tue,  5 Nov 2002 16:39:09 +0100
+
+vte (0.10-1) unstable; urgency=low
+
+  * New upstream release.
+  * Bump the libray package to 4
+
+ -- Christian Marillat <marillat@debian.org>  Thu, 31 Oct 2002 19:58:18 +0100
+
+vte (0.9.2-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fix build with the python module (Closes: #164440)
+
+ -- Christian Marillat <marillat@debian.org>  Tue, 22 Oct 2002 16:15:17 +0200
+
+vte (0.9.0-2) unstable; urgency=low
+
+  * Should build-depends on gettext (Closes: #163611)
+
+ -- Christian Marillat <marillat@debian.org>  Mon,  7 Oct 2002 09:13:35 +0200
+
+vte (0.9.0-1) unstable; urgency=low
+
+  * New upstream releae.
+  * Add build-dependency to python-gtk2 and python-dev
+  * Add a python-vte package (Closes: #158588)
+  * Bump the libray package to 3
+  * Move I18N file in the -common package
+
+ -- Christian Marillat <marillat@debian.org>  Sat,  5 Oct 2002 10:38:12 +0200
+
+vte (0.5.1-2) unstable; urgency=low
+
+  * Build with gcc-3.2
+  * Update to standards version 3.5.7
+
+ -- Christian Marillat <marillat@debian.org>  Fri, 13 Sep 2002 21:38:02 +0200
+
+vte (0.5.1-1) unstable; urgency=low
+
+  * Initial Release (Closes: #153740)
+
+ -- Christian Marillat <marillat@debian.org>  Sun, 21 Jul 2002 16:30:57 +0200
+

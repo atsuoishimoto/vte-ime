@@ -1,0 +1,4 @@
+version=2
+http://people.redhat.com/nalin/vte/ \
+	vte-(.*)\.tar\.gz \
+	debian uupdate
