@@ -16,8 +16,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: dumpkeys.c,v 1.7 2004/04/30 01:16:53 nalin Exp $"
+#ident "$Id: dumpkeys.c,v 1.8 2005/02/15 08:49:23 kmaraas Exp $"
 #include "../config.h"
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
@@ -25,7 +28,6 @@
 #include <sys/termios.h>
 #endif
 #include <sys/time.h>
-#include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <signal.h>

@@ -1,0 +1,27 @@
+diff -r -u src.orig/trie.c src/trie.c
+--- src.orig/trie.c	2003-09-11 13:45:03 -0700
++++ src/trie.c	2004-12-19 18:52:35 -0800
+@@ -648,9 +648,12 @@
+ 	/* We're done searching.  Copy out any parameters we picked up. */
+ 	if (bestarray != NULL) {
+ 		for (i = 0; i < bestarray->n_values; i++) {
+-			g_value_array_append(array,
+-					     g_value_array_get_nth(bestarray,
+-								   i));
++			GValue *value = g_value_array_get_nth(bestarray, i);
++			g_value_array_append(array, value);
++			
++			if (G_VALUE_HOLDS_POINTER(value)) {
++				g_value_set_pointer(value, NULL);
++			}
+ 		}
+ 		_vte_matcher_free_params_array(bestarray);
+ 	}
+@@ -704,6 +707,7 @@
+ 					if (ptr != NULL) {
+ 						g_free(ptr);
+ 					}
++					g_value_set_pointer(value, NULL);
+ 				}
+ 			}
+ 			_vte_matcher_free_params_array(valuearray);

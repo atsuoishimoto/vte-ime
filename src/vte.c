@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vte.c,v 1.404 2004/05/02 06:43:01 nalin Exp $"
+#ident "$Id: vte.c,v 1.416 2005/03/02 22:52:18 kmaraas Exp $"
 
 #include "../config.h"
 
@@ -113,6 +113,7 @@ typedef gunichar wint_t;
 #define VTE_INPUT_CHUNK_SIZE		0x1000
 #define VTE_INVALID_BYTE		'?'
 #define VTE_COALESCE_TIMEOUT		2
+#define VTE_DISPLAY_TIMEOUT		2
 
 /* The structure we use to hold characters we're supposed to display -- this
  * includes any supported visible attributes. */
@@ -204,8 +205,8 @@ struct _VteTerminalPrivate {
 	struct _vte_iso2022_state *iso2022;
 	struct _vte_buffer *incoming;	/* pending bytestream */
 	GArray *pending;		/* pending characters */
-	gboolean processing;
-	gint processing_tag;
+	gint coalesce_timeout;
+	gint display_timeout;
 
 	/* Output data queue. */
 	struct _vte_buffer *outgoing;	/* pending input characters */
@@ -424,6 +425,8 @@ static gboolean vte_sequence_handler_nd(VteTerminal *terminal,
 					const char *match,
 					GQuark match_quark,
 					GValueArray *params);
+static gboolean vte_sequence_handler_scroll_up_or_down(VteTerminal *terminal,
+						       int scroll_amount);
 static gboolean vte_sequence_handler_sf(VteTerminal *terminal,
 					const char *match,
 					GQuark match_quark,
@@ -453,16 +456,16 @@ static gboolean vte_sequence_handler_vb(VteTerminal *terminal,
 					GQuark match_quark,
 					GValueArray *params);
 static gboolean vte_terminal_io_read(GIOChannel *channel,
-				     GdkInputCondition condition,
+				     GIOCondition condition,
 				     gpointer data);
 static gboolean vte_terminal_io_write(GIOChannel *channel,
-				      GdkInputCondition condition,
+				      GIOCondition condition,
 				      gpointer data);
 static void vte_terminal_match_hilite_clear(VteTerminal *terminal);
 static gboolean vte_terminal_background_update(gpointer data);
 static void vte_terminal_queue_background_update(VteTerminal *terminal);
 static void vte_terminal_queue_adjustment_changed(VteTerminal *terminal);
-static gboolean vte_terminal_process_incoming(gpointer data);
+static gboolean vte_terminal_process_incoming(VteTerminal *terminal);
 static gboolean vte_cell_is_selected(VteTerminal *terminal,
 				     glong col, glong row, gpointer data);
 static char *vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
@@ -489,6 +492,9 @@ static char *vte_terminal_get_text_maybe_wrapped(VteTerminal *terminal,
 						 gboolean include_trailing_spaces);
 static void _vte_terminal_disconnect_pty_read(VteTerminal *terminal);
 static void _vte_terminal_disconnect_pty_write(VteTerminal *terminal);
+static void vte_terminal_stop_processing (VteTerminal *terminal);
+static void vte_terminal_start_processing (VteTerminal *terminal);
+static gboolean vte_terminal_is_processing (VteTerminal *terminal);
 
 /* Free a no-longer-used row data array. */
 static void
@@ -678,7 +684,8 @@ vte_invalidate_all(VteTerminal *terminal)
 	gdk_window_invalidate_rect(widget->window, &rect, FALSE);
 }
 
-/* Scroll a rectangular region up or down by a fixed number of lines. */
+/* Scroll a rectangular region up or down by a fixed number of lines,
+ * negative = up, positive = down. */
 static void
 vte_terminal_scroll_region(VteTerminal *terminal,
 			   long row, glong count, glong delta)
@@ -700,16 +707,24 @@ vte_terminal_scroll_region(VteTerminal *terminal,
 	    (count == terminal->row_count) &&
 	    (terminal->pvt->scroll_lock_count == 0)) {
 		height = terminal->char_height;
+		
+		/* If we scroll with invalid areas, we will copy
+		 * invalid contents around the screen. So, we must
+		 * handle pending redraws first.
+		 */
+		gdk_window_process_updates (GTK_WIDGET(terminal)->window,
+					    FALSE);
+
 		gdk_window_scroll((GTK_WIDGET(terminal))->window,
 				  0, delta * height);
 		if (delta > 0) {
 			vte_invalidate_cells(terminal,
 					     0, terminal->column_count,
-					     0, delta);
+					     row, delta);
 		} else {
 			vte_invalidate_cells(terminal,
 					     0, terminal->column_count,
-					     terminal->row_count + delta,
+					     row + terminal->row_count + delta,
 					     -delta);
 		}
 		repaint = FALSE;
@@ -1855,6 +1870,15 @@ vte_terminal_adjust_adjustments(VteTerminal *terminal, gboolean immediate)
 	}
 #endif
 	if (terminal->adjustment->lower != delta) {
+#ifdef VTE_DEBUG
+		if (_vte_debug_on(VTE_DEBUG_IO)) {
+			fprintf(stderr, "Changing lower bound from %lf to %ld\n",
+				terminal->adjustment->lower,
+				delta);
+
+		}
+#endif 
+
 		terminal->adjustment->lower = delta;
 		changed = TRUE;
 	}
@@ -1871,12 +1895,30 @@ vte_terminal_adjust_adjustments(VteTerminal *terminal, gboolean immediate)
 	rows = MAX(_vte_ring_next(terminal->pvt->screen->row_data),
 		   terminal->pvt->screen->cursor_current.row + 1);
 	if (terminal->adjustment->upper != rows) {
+#ifdef VTE_DEBUG
+		if (_vte_debug_on(VTE_DEBUG_IO)) {
+			fprintf(stderr, "Changing upper bound from %f to %ld\n",
+				terminal->adjustment->upper,
+				rows);
+
+		}
+#endif 
+
 		terminal->adjustment->upper = rows;
 		changed = TRUE;
 	}
 
 	/* The step increment should always be one. */
 	if (terminal->adjustment->step_increment != 1) {
+#ifdef VTE_DEBUG
+		if (_vte_debug_on(VTE_DEBUG_IO)) {
+			fprintf(stderr, "Changing step increment from %ld to %ld\n",
+				terminal->adjustment->step_increment,
+				terminal->row_count);
+
+		}
+#endif 
+
 		terminal->adjustment->step_increment = 1;
 		changed = TRUE;
 	}
@@ -1884,6 +1926,15 @@ vte_terminal_adjust_adjustments(VteTerminal *terminal, gboolean immediate)
 	/* Set the number of rows the user sees to the number of rows the
 	 * user sees. */
 	if (terminal->adjustment->page_size != terminal->row_count) {
+#ifdef VTE_DEBUG
+	      if (_vte_debug_on(VTE_DEBUG_IO)) {
+		    fprintf(stderr, "Changing page size from %f to %ld\n",
+			    terminal->adjustment->page_size,
+			    terminal->row_count);
+
+	      }
+#endif 
+
 		terminal->adjustment->page_size = terminal->row_count;
 		changed = TRUE;
 	}
@@ -1891,17 +1942,41 @@ vte_terminal_adjust_adjustments(VteTerminal *terminal, gboolean immediate)
 	/* Clicking in the empty area should scroll one screen, so set the
 	 * page size to the number of visible rows. */
 	if (terminal->adjustment->page_increment != terminal->row_count) {
+#ifdef VTE_DEBUG
+	      if (_vte_debug_on(VTE_DEBUG_IO)) {
+		    fprintf(stderr, "Changing page increment from "
+			    "%f to %ld\n", 
+			    terminal->adjustment->page_increment,
+			    terminal->row_count);
+
+	      }
+#endif 
+
 		terminal->adjustment->page_increment = terminal->row_count;
 		changed = TRUE;
 	}
 
 	/* Set the scrollbar adjustment to where the screen wants it to be. */
 	if (floor(terminal->adjustment->value) !=
-	    terminal->pvt->screen->scroll_delta) {
+	    screen->scroll_delta) {
+#ifdef VTE_DEBUG
+	      if (_vte_debug_on(VTE_DEBUG_IO)) {
+		    fprintf(stderr, "Changing adjustment scroll position: "
+			    "%ld\n", screen->scroll_delta);
+	      }
+#endif 
 		/* This emits a "value-changed" signal, so no need to screw
 		 * with anything else for just this. */
 		gtk_adjustment_set_value(terminal->adjustment,
-					 terminal->pvt->screen->scroll_delta);
+				       screen->scroll_delta);
+
+#ifdef VTE_DEBUG
+	      if (_vte_debug_on(VTE_DEBUG_IO)) {
+		    fprintf(stderr, "Changed adjustment scroll position: "
+			    "%ld\n", screen->scroll_delta);
+	      }
+#endif 
+
 	}
 
 	/* If anything changed, signal that there was a change. */
@@ -1960,16 +2035,21 @@ vte_terminal_maybe_scroll_to_top(VteTerminal *terminal)
 	}
 }
 
-/* Scroll so that the scroll delta is the insertion delta. */
 static void
 vte_terminal_maybe_scroll_to_bottom(VteTerminal *terminal)
 {
 	glong delta;
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
-	if (floor(gtk_adjustment_get_value(terminal->adjustment)) !=
-	    terminal->pvt->screen->insert_delta) {
+	if ((terminal->pvt->screen->scroll_delta !=
+	    terminal->pvt->screen->insert_delta)) {
 		delta = terminal->pvt->screen->insert_delta;
 		gtk_adjustment_set_value(terminal->adjustment, delta);
+
+#ifdef VTE_DEBUG
+		if (_vte_debug_on(VTE_DEBUG_IO)) {
+		      fprintf (stderr, "Snapping to bottom of screen\n");
+		}
+#endif
 	}
 }
 
@@ -2201,6 +2281,9 @@ vte_sequence_handler_al(VteTerminal *terminal,
 		param = g_value_get_long(value);
 	}
 
+	/* Update the display. */
+	vte_terminal_scroll_region(terminal, start, end - start + 1, param);
+
 	/* Insert the right number of lines. */
 	for (i = 0; i < param; i++) {
 		/* Clear a line off the end of the region and add one to the
@@ -2217,9 +2300,6 @@ vte_sequence_handler_al(VteTerminal *terminal,
 		/* Adjust the scrollbars if necessary. */
 		vte_terminal_adjust_adjustments(terminal, FALSE);
 	}
-
-	/* Update the display. */
-	vte_terminal_scroll_region(terminal, start, end - start + 1, param);
 
 	/* We've modified the display.  Make a note of it. */
 	terminal->pvt->text_deleted_count++;
@@ -2837,6 +2917,9 @@ vte_sequence_handler_dl(VteTerminal *terminal,
 		param = g_value_get_long(value);
 	}
 
+	/* Update the display. */
+	vte_terminal_scroll_region(terminal, start, end - start + 1, -param);
+
 	/* Delete the right number of lines. */
 	for (i = 0; i < param; i++) {
 		/* Clear a line off the end of the region and add one to the
@@ -2846,9 +2929,6 @@ vte_sequence_handler_dl(VteTerminal *terminal,
 		/* Adjust the scrollbars if necessary. */
 		vte_terminal_adjust_adjustments(terminal, FALSE);
 	}
-
-	/* Update the display. */
-	vte_terminal_scroll_region(terminal, start, end - start + 1, -param);
 
 	/* We've modified the display.  Make a note of it. */
 	terminal->pvt->text_deleted_count++;
@@ -2921,23 +3001,30 @@ vte_terminal_ensure_cursor(VteTerminal *terminal, gboolean current)
 static void
 vte_terminal_update_insert_delta(VteTerminal *terminal)
 {
-	long delta;
+	long delta, rows;
 	VteScreen *screen;
 
 	screen = terminal->pvt->screen;
 
+	/* The total number of lines.  Add one to the cursor offset
+	 * because it's zero-based. */
+	rows = MAX(_vte_ring_next(terminal->pvt->screen->row_data),
+		   terminal->pvt->screen->cursor_current.row + 1);
+
 	/* Make sure that the bottom row is visible, and that it's in
 	 * the buffer (even if it's empty).  This usually causes the
 	 * top row to become a history-only row. */
-	delta = MAX(screen->insert_delta,
+	delta = screen->insert_delta;
+	delta = MIN(delta, rows - terminal->row_count);
+	delta = MAX(delta,
 		    screen->cursor_current.row - (terminal->row_count - 1));
 	delta = MAX(delta, _vte_ring_delta(screen->row_data));
 
 	/* Adjust the insert delta and scroll if needed. */
 	if (delta != screen->insert_delta) {
 		vte_terminal_ensure_cursor(terminal, FALSE);
-		vte_terminal_adjust_adjustments(terminal, TRUE);
 		screen->insert_delta = delta;
+		vte_terminal_adjust_adjustments(terminal, TRUE);
 	}
 }
 
@@ -3436,6 +3523,99 @@ vte_sequence_handler_sc(VteTerminal *terminal,
 	return FALSE;
 }
 
+/* Scroll the text down one line, but don't move the cursor. */
+static gboolean
+vte_sequence_handler_scroll_down_one(VteTerminal *terminal,
+				     const char *match,
+				     GQuark match_quark,
+				     GValueArray *params)
+{
+	return vte_sequence_handler_scroll_up_or_down(terminal, 1);
+}
+
+/* Scroll the text down, but don't move the cursor. */
+static gboolean
+vte_sequence_handler_scroll_down(VteTerminal *terminal,
+				 const char *match,
+				 GQuark match_quark,
+				 GValueArray *params)
+{
+	return vte_sequence_handler_multiple(terminal, match, match_quark,
+					     params, vte_sequence_handler_scroll_down_one);
+}
+
+/* Scroll the text, but don't move the cursor.  Negative = up,
+ * positive = down. */
+static gboolean
+vte_sequence_handler_scroll_up_or_down(VteTerminal *terminal, int scroll_amount)
+{
+	GtkWidget *widget;
+	VteRowData *row;
+	long start, end, i;
+	VteScreen *screen;
+
+	widget = GTK_WIDGET(terminal);
+	screen = terminal->pvt->screen;
+
+	if (screen->scrolling_restricted) {
+		start = screen->insert_delta + screen->scrolling_region.start;
+		end = screen->insert_delta + screen->scrolling_region.end;
+	} else {
+		start = screen->insert_delta;
+		end = start + terminal->row_count - 1;
+	}
+
+	while (_vte_ring_next(screen->row_data) <= end) {
+		row = vte_new_row_data_sized(terminal, FALSE);
+		_vte_ring_append(terminal->pvt->screen->row_data, row);
+	}
+	if (scroll_amount > 0) {
+		for (i = 0; i < scroll_amount; i++) {
+			vte_remove_line_internal(terminal, end);
+			vte_insert_line_internal(terminal, start);
+		}
+	} else {
+		for (i = 0; i < -scroll_amount; i++) {
+			vte_remove_line_internal(terminal, start);
+			vte_insert_line_internal(terminal, end);
+		}
+	}
+
+	/* Update the display. */
+	vte_terminal_scroll_region(terminal, start, end - start + 1,
+				   scroll_amount);
+
+	/* Adjust the scrollbars if necessary. */
+	vte_terminal_adjust_adjustments(terminal, FALSE);
+
+	/* We've modified the display.  Make a note of it. */
+	terminal->pvt->text_inserted_count++;
+	terminal->pvt->text_deleted_count++;
+
+	return FALSE;
+}
+
+/* Scroll the text up one line, but don't move the cursor. */
+static gboolean
+vte_sequence_handler_scroll_up_one(VteTerminal *terminal,
+				   const char *match,
+				   GQuark match_quark,
+				   GValueArray *params)
+{
+	return vte_sequence_handler_scroll_up_or_down(terminal, -1);
+}
+
+/* Scroll the text up, but don't move the cursor. */
+static gboolean
+vte_sequence_handler_scroll_up(VteTerminal *terminal,
+			       const char *match,
+			       GQuark match_quark,
+			       GValueArray *params)
+{
+	return vte_sequence_handler_multiple(terminal, match, match_quark,
+					     params, vte_sequence_handler_scroll_up_one);
+}
+
 /* Standout end. */
 static gboolean
 vte_sequence_handler_se(VteTerminal *terminal,
@@ -3700,12 +3880,12 @@ vte_sequence_handler_sr(VteTerminal *terminal,
 	}
 
 	if (screen->cursor_current.row == start) {
+		/* Update the display. */
+		vte_terminal_scroll_region(terminal, start, end - start + 1, 1);
 		/* If we're at the top of the scrolling region, add a
 		 * line at the top to scroll the bottom off. */
 		vte_remove_line_internal(terminal, end);
 		vte_insert_line_internal(terminal, start);
-		/* Update the display. */
-		vte_terminal_scroll_region(terminal, start, end - start + 1, 1);
 		vte_invalidate_cells(terminal,
 				     0, terminal->column_count,
 				     start, 2);
@@ -4254,7 +4434,7 @@ vte_sequence_handler_send_primary_device_attributes(VteTerminal *terminal,
 						    GValueArray *params)
 {
 	/* Claim to be a VT220 with only national character set support. */
-	vte_terminal_feed_child(terminal, "[?60;9;c", -1);
+	vte_terminal_feed_child(terminal, "[?62;9;c", -1);
 	return FALSE;
 }
 
@@ -5252,6 +5432,8 @@ vte_sequence_handler_insert_lines(VteTerminal *terminal,
 	} else {
 		end = screen->insert_delta + terminal->row_count - 1;
 	}
+	/* Update the display. */
+	vte_terminal_scroll_region(terminal, row, end - row + 1, param);
 	/* Insert the new lines at the cursor. */
 	for (i = 0; i < param; i++) {
 		/* Clear a line off the end of the region and add one to the
@@ -5266,8 +5448,6 @@ vte_sequence_handler_insert_lines(VteTerminal *terminal,
 				 &screen->fill_defaults,
 				 terminal->column_count);
 	}
-	/* Update the display. */
-	vte_terminal_scroll_region(terminal, row, end - row + 1, param);
 	/* Adjust the scrollbars if necessary. */
 	vte_terminal_adjust_adjustments(terminal, FALSE);
 	/* We've modified the display.  Make a note of it. */
@@ -5303,6 +5483,8 @@ vte_sequence_handler_delete_lines(VteTerminal *terminal,
 	} else {
 		end = screen->insert_delta + terminal->row_count - 1;
 	}
+	/* Update the display. */
+	vte_terminal_scroll_region(terminal, row, end - row + 1, -param);
 	/* Clear them from below the current cursor. */
 	for (i = 0; i < param; i++) {
 		/* Insert a line at the end of the region and remove one from
@@ -5317,8 +5499,6 @@ vte_sequence_handler_delete_lines(VteTerminal *terminal,
 				 &screen->fill_defaults,
 				 terminal->column_count);
 	}
-	/* Update the display. */
-	vte_terminal_scroll_region(terminal, row, end - row + 1, -param);
 	/* Adjust the scrollbars if necessary. */
 	vte_terminal_adjust_adjustments(terminal, FALSE);
 	/* We've modified the display.  Make a note of it. */
@@ -6243,8 +6423,8 @@ static struct {
 	{"save-cursor", vte_sequence_handler_sc},
 	{"save-mode", vte_sequence_handler_save_mode},
 	{"screen-alignment-test", vte_sequence_handler_screen_alignment_test},
-	{"scroll-down", NULL},
-	{"scroll-up", NULL},
+	{"scroll-down", vte_sequence_handler_scroll_down},
+	{"scroll-up", vte_sequence_handler_scroll_up},
 	{"select-character-protection", NULL},
 	{"selective-erase-in-display", NULL},
 	{"selective-erase-in-line", NULL},
@@ -6989,11 +7169,7 @@ vte_terminal_catch_child_exited(VteReaper *reaper, int pid, int status,
 		/* Take one last shot at processing whatever data is pending,
 		 * then flush the buffers in case we're about to run a new
 		 * command, disconnecting the timeout. */
-		if (terminal->pvt->processing) {
-			g_source_remove(terminal->pvt->processing_tag);
-			terminal->pvt->processing = FALSE;
-			terminal->pvt->processing_tag = VTE_INVALID_SOURCE;
-		}
+		vte_terminal_stop_processing (terminal);
 		if (_vte_buffer_length(terminal->pvt->incoming) > 0) {
 			vte_terminal_process_incoming(terminal);
 		}
@@ -7277,11 +7453,7 @@ vte_terminal_eof(GIOChannel *channel, gpointer data)
 	/* Take one last shot at processing whatever data is pending, then
 	 * flush the buffers in case we're about to run a new command,
 	 * disconnecting the timeout. */
-	if (terminal->pvt->processing) {
-		g_source_remove(terminal->pvt->processing_tag);
-		terminal->pvt->processing = FALSE;
-		terminal->pvt->processing_tag = VTE_INVALID_SOURCE;
-	}
+	vte_terminal_stop_processing (terminal);
 	if (_vte_buffer_length(terminal->pvt->incoming) > 0) {
 		vte_terminal_process_incoming(terminal);
 	}
@@ -7379,10 +7551,9 @@ vte_terminal_emit_pending_text_signals(VteTerminal *terminal, GQuark quark)
 /* Process incoming data, first converting it to unicode characters, and then
  * processing control sequences. */
 static gboolean
-vte_terminal_process_incoming(gpointer data)
+vte_terminal_process_incoming(VteTerminal *terminal)
 {
 	GValueArray *params = NULL;
-	VteTerminal *terminal;
 	VteScreen *screen;
 	struct vte_cursor_position cursor;
 	GtkWidget *widget;
@@ -7396,10 +7567,9 @@ vte_terminal_process_incoming(gpointer data)
 	gboolean leftovers, modified, bottom, inserted, again;
 	GArray *unichars;
 
-	g_return_val_if_fail(GTK_IS_WIDGET(data), FALSE);
-	g_return_val_if_fail(VTE_IS_TERMINAL(data), FALSE);
-	widget = GTK_WIDGET(data);
-	terminal = VTE_TERMINAL(data);
+	g_return_val_if_fail(GTK_IS_WIDGET(terminal), FALSE);
+	g_return_val_if_fail(VTE_IS_TERMINAL(terminal), FALSE);
+	widget = GTK_WIDGET(terminal);
 
 	bottom = (terminal->pvt->screen->insert_delta ==
 		  terminal->pvt->screen->scroll_delta);
@@ -7410,7 +7580,6 @@ vte_terminal_process_incoming(gpointer data)
 			_vte_buffer_length(terminal->pvt->incoming));
 	}
 #endif
-
 	/* Save the current cursor position. */
 	screen = terminal->pvt->screen;
 	cursor = screen->cursor_current;
@@ -7705,32 +7874,13 @@ vte_terminal_process_incoming(gpointer data)
 			(long) _vte_buffer_length(terminal->pvt->incoming));
 	}
 #endif
-	/* Disconnect this function from the main loop. */
-	if (!again) {
-		terminal->pvt->processing = FALSE;
-		if (terminal->pvt->processing_tag != VTE_INVALID_SOURCE) {
-			g_source_remove(terminal->pvt->processing_tag);
-		}
-		terminal->pvt->processing_tag = VTE_INVALID_SOURCE;
-	}
-
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_IO)) {
-		if (terminal->pvt->processing) {
-			fprintf(stderr, "Leaving processing handler on.\n");
-		} else {
-			fprintf(stderr, "Turning processing handler off.\n");
-		}
-	}
-#endif
-
-	return terminal->pvt->processing;
+	return again;
 }
 
 /* Read and handle data from the child. */
 static gboolean
 vte_terminal_io_read(GIOChannel *channel,
-		     GdkInputCondition condition,
+		     GIOCondition condition,
 		     gpointer data)
 {
 	VteTerminal *terminal;
@@ -7832,47 +7982,13 @@ vte_terminal_feed(VteTerminal *terminal, const char *data, glong length)
 		_vte_buffer_append(terminal->pvt->incoming, data, length);
 	}
 
-	/* If we have sufficient data, just process it now. */
-	if (_vte_buffer_length(terminal->pvt->incoming) >
-	    VTE_INPUT_CHUNK_SIZE) {
-		/* Disconnect the timeout if one is pending. */
-		if (terminal->pvt->processing) {
-			g_source_remove(terminal->pvt->processing_tag);
-			terminal->pvt->processing = FALSE;
-			terminal->pvt->processing_tag = VTE_INVALID_SOURCE;
-		}
-		vte_terminal_process_incoming(terminal);
-	}
-
-	/* Wait no more than N milliseconds for more data.  We don't
-	 * touch the timeout if we're already slated to call it again
-	 * because if the output were carefully timed, we could
-	 * conceivably put it off forever. */
-	if (!terminal->pvt->processing &&
-	    (_vte_buffer_length(terminal->pvt->incoming) > 0)) {
-#ifdef VTE_DEBUG
-		if (_vte_debug_on(VTE_DEBUG_IO)) {
-			fprintf(stderr, "Adding timed handler.\n");
-		}
-#endif
-		terminal->pvt->processing = TRUE;
-		terminal->pvt->processing_tag = g_timeout_add(VTE_COALESCE_TIMEOUT,
-							      vte_terminal_process_incoming,
-							      terminal);
-	} else {
-#ifdef VTE_DEBUG
-		if (_vte_debug_on(VTE_DEBUG_IO)) {
-			fprintf(stderr, "Not touching timed handler, "
-				"or no data.\n");
-		}
-#endif
-	}
+	vte_terminal_start_processing (terminal);
 }
 
 /* Send locally-encoded characters to the child. */
 static gboolean
 vte_terminal_io_write(GIOChannel *channel,
-		      GdkInputCondition condition,
+		      GIOCondition condition,
 		      gpointer data)
 {
 	VteTerminal *terminal;
@@ -8816,6 +8932,11 @@ vte_terminal_paste_cb(GtkClipboard *clipboard, const gchar *text, gpointer data)
 				strlen(text));
 		}
 #endif
+		if (!g_utf8_validate(text, -1, NULL)) {
+			g_warning(_("Error (%s) converting data for child, dropping."), strerror(EINVAL));
+			return;
+		}
+
 		/* Convert newlines to carriage returns, which more software
 		 * is able to cope with (cough, pico, cough). */
 		paste = g_strdup(text);
@@ -10534,9 +10655,13 @@ vte_terminal_focus_out(GtkWidget *widget, GdkEventFocus *event)
 static gint
 vte_terminal_visibility_notify(GtkWidget *widget, GdkEventVisibility *event)
 {
+	VteTerminal *terminal;
 	g_return_val_if_fail(GTK_WIDGET(widget), FALSE);
 	g_return_val_if_fail(VTE_IS_TERMINAL(widget), FALSE);
-	(VTE_TERMINAL(widget))->pvt->visibility_state = event->state;
+	terminal = VTE_TERMINAL(widget);
+	terminal->pvt->visibility_state = event->state;
+	if (terminal->pvt->visibility_state == GDK_VISIBILITY_UNOBSCURED)
+		vte_invalidate_all(terminal);
 	return FALSE;
 }
 
@@ -10824,12 +10949,22 @@ vte_terminal_handle_scroll(VteTerminal *terminal)
 	dy = adj - screen->scroll_delta;
 	screen->scroll_delta = adj;
 	if (dy != 0) {
-		vte_terminal_match_contents_clear(terminal);
+#ifdef VTE_DEBUG
+	      if (_vte_debug_on(VTE_DEBUG_IO)) {
+		    fprintf(stderr, "Scrolling by %ld\n", dy);
+	      }
+#endif
 		vte_terminal_scroll_region(terminal, screen->scroll_delta,
 					   terminal->row_count, -dy);
+		vte_terminal_match_contents_clear(terminal);
 		vte_terminal_emit_text_scrolled(terminal, dy);
 		vte_terminal_emit_contents_changed(terminal);
 	}
+#ifdef VTE_DEBUG
+	else if (_vte_debug_on(VTE_DEBUG_IO)) {
+	      fprintf(stderr, "Not scrolling\n");
+	}
+#endif
 
 	/* Let the refreshing begin. */
 	gdk_window_thaw_updates(widget->window);
@@ -10854,6 +10989,7 @@ vte_terminal_set_scroll_adjustment(VteTerminal *terminal,
 		}
 		/* Set the new adjustment object. */
 		terminal->adjustment = adjustment;
+
 		/* We care about the offset, not the top or bottom. */
 		g_signal_connect_swapped(terminal->adjustment,
 					 "value_changed",
@@ -11313,8 +11449,8 @@ vte_terminal_init(VteTerminal *terminal, gpointer *klass)
 					      (gpointer)terminal);
 	pvt->incoming = _vte_buffer_new();
 	pvt->pending = g_array_new(TRUE, TRUE, sizeof(gunichar));
-	pvt->processing = FALSE;
-	pvt->processing_tag = VTE_INVALID_SOURCE;
+	pvt->coalesce_timeout = VTE_INVALID_SOURCE;
+	pvt->display_timeout = VTE_INVALID_SOURCE;
 	pvt->outgoing = _vte_buffer_new();
 	pvt->outgoing_conv = (VteConv) -1;
 	pvt->conv_buffer = _vte_buffer_new();
@@ -11539,6 +11675,7 @@ vte_terminal_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 	VteTerminal *terminal;
 	glong width, height;
 	gint x, y, w, h;
+	gboolean snapped_to_bottom;
 
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_LIFECYCLE)) {
@@ -11550,6 +11687,9 @@ vte_terminal_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 	g_return_if_fail(VTE_IS_TERMINAL(widget));
 
 	terminal = VTE_TERMINAL(widget);
+
+	snapped_to_bottom = (terminal->pvt->screen->insert_delta ==
+			     terminal->pvt->screen->scroll_delta);
 
 	width = (allocation->width - (2 * VTE_PAD_WIDTH)) /
 		terminal->char_width;
@@ -11588,7 +11728,7 @@ vte_terminal_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 	/* Adjust scrollback buffers to ensure that they're big enough. */
 	vte_terminal_set_scrollback_lines(terminal,
 					  MAX(terminal->pvt->scrollback_lines,
-					      height));
+					      terminal->row_count));
 
 	/* Resize the GDK window. */
 	if (widget->window != NULL) {
@@ -11610,6 +11750,12 @@ vte_terminal_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 
 	/* Adjust the adjustments. */
 	vte_terminal_adjust_adjustments(terminal, TRUE);
+
+	vte_terminal_update_insert_delta (terminal);
+
+	if (snapped_to_bottom) {
+		vte_terminal_maybe_scroll_to_bottom (terminal);
+	}
 }
 
 /* Show the window. */
@@ -11686,6 +11832,9 @@ vte_terminal_unrealize(GtkWidget *widget)
 
 	/* Shut down input methods. */
 	if (terminal->pvt->im_context != NULL) {
+	        g_signal_handlers_disconnect_by_func (G_OBJECT(terminal->pvt->im_context), 
+						      vte_terminal_im_preedit_changed,
+						      terminal);
 		vte_terminal_im_reset(terminal);
 		gtk_im_context_set_client_window(terminal->pvt->im_context,
 						 NULL);
@@ -11892,10 +12041,7 @@ vte_terminal_finalize(GObject *object)
 	terminal->pvt->pty_reaper = NULL;
 
 	/* Stop processing input. */
-	if (terminal->pvt->processing_tag != VTE_INVALID_SOURCE) {
-		g_source_remove(terminal->pvt->processing_tag);
-		terminal->pvt->processing_tag = VTE_INVALID_SOURCE;
-	}
+	vte_terminal_stop_processing (terminal);
 
 	/* Discard any pending data. */
 	if (terminal->pvt->incoming != NULL) {
@@ -13575,16 +13721,16 @@ vte_terminal_draw_row(VteTerminal *terminal,
 		      gint x, gint y,
 		      gint column_width, gint row_height)
 {
-	GArray *items;
 	int i, j, fore, nfore, back, nback;
 	gboolean underline, nunderline, bold, nbold, hilite, nhilite, reverse,
 		 selected, strikethrough, nstrikethrough, drawn;
-	struct _vte_draw_text_request item;
+	struct _vte_draw_text_request *items, item;
+	guint item_count = 0;
 	struct vte_charcell *cell;
 
 	/* Allocate an array to hold draw requests. */
-	items = g_array_new(FALSE, FALSE,
-			    sizeof(struct _vte_draw_text_request));
+	/* FIXME: can this get too big for alloca? */
+	items = g_newa (struct _vte_draw_text_request, column_count);
 
 	/* Back up in case this is a multicolumn character, making the drawing
 	 * area a little wider. */
@@ -13647,7 +13793,7 @@ vte_terminal_draw_row(VteTerminal *terminal,
 
 		/* If it's not a local graphic character, or if we couldn't
 		   draw it, add it to the draw list. */
-		g_array_append_val(items, item);
+		items[item_count++] = item;
 
 		/* Now find out how many cells have the same attributes. */
 		j = i + item.columns;
@@ -13719,27 +13865,22 @@ vte_terminal_draw_row(VteTerminal *terminal,
 			item.columns = cell ? cell->columns : 1;
 			item.x = x + ((j - column) * column_width);
 			item.y = y;
-			g_array_append_val(items, item);
+			items[item_count++] = item;
 			j += item.columns;
 		}
 		/* Draw the cells. */
 		vte_terminal_draw_cells(terminal,
-					&g_array_index(items,
-						       struct _vte_draw_text_request,
-						       0),
-					items->len,
+					items,
+					item_count,
 					fore, back, FALSE,
 					bold, underline,
 					strikethrough, hilite, FALSE,
 					column_width, row_height);
-		g_array_set_size(items, 0);
+		item_count = 0;
 		/* We'll need to continue at the first cell which didn't
 		 * match the first one in this set. */
 		i = j;
 	}
-
-	/* Clean up. */
-	g_array_free(items, TRUE);
 }
 
 /* Draw the widget. */
@@ -15421,11 +15562,8 @@ vte_terminal_reset(VteTerminal *terminal, gboolean full, gboolean clear_history)
 {
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
 	/* Stop processing any of the data we've got backed up. */
-	if (terminal->pvt->processing) {
-		g_source_remove(terminal->pvt->processing_tag);
-		terminal->pvt->processing_tag = VTE_INVALID_SOURCE;
-		terminal->pvt->processing = FALSE;
-	}
+	vte_terminal_stop_processing (terminal);
+
 	/* Clear the input and output buffers. */
 	if (terminal->pvt->incoming != NULL) {
 		_vte_buffer_clear(terminal->pvt->incoming);
@@ -15758,3 +15896,112 @@ _vte_terminal_accessible_ref(VteTerminal *terminal)
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
 	terminal->pvt->accessible_emit = TRUE;
 }
+
+static gboolean display_timeout (gpointer data);
+static gboolean coalesce_timeout (gpointer data);
+
+static void
+add_display_timeout (VteTerminal *terminal)
+{
+	terminal->pvt->display_timeout =
+		g_timeout_add (VTE_DISPLAY_TIMEOUT, display_timeout, terminal);
+}
+
+static void
+add_coalesce_timeout (VteTerminal *terminal)
+{
+	terminal->pvt->coalesce_timeout =
+		g_timeout_add (VTE_COALESCE_TIMEOUT, coalesce_timeout, terminal);
+}
+
+static void
+remove_display_timeout (VteTerminal *terminal)
+{
+	g_source_remove (terminal->pvt->display_timeout);
+	terminal->pvt->display_timeout = VTE_DISPLAY_TIMEOUT;
+}
+
+static void
+remove_coalesce_timeout (VteTerminal *terminal)
+{
+	g_source_remove (terminal->pvt->coalesce_timeout);
+	terminal->pvt->coalesce_timeout = VTE_INVALID_SOURCE;
+}
+
+static void
+vte_terminal_stop_processing (VteTerminal *terminal)
+{
+	remove_display_timeout (terminal);
+	remove_coalesce_timeout (terminal);
+}
+
+static void
+vte_terminal_start_processing (VteTerminal *terminal)
+{
+	if (vte_terminal_is_processing (terminal)) {
+		remove_coalesce_timeout (terminal);
+		add_coalesce_timeout (terminal);
+	}
+	else {
+		add_coalesce_timeout (terminal);
+		add_display_timeout (terminal);
+	}
+}
+
+static gboolean
+vte_terminal_is_processing (VteTerminal *terminal)
+{
+	return terminal->pvt->coalesce_timeout != VTE_INVALID_SOURCE;
+}
+
+
+/* This function is called every DISPLAY_TIMEOUT ms.
+ * It makes sure output is never delayed by more than DISPLAY_TIMEOUT
+ */
+static gboolean
+need_processing (VteTerminal *terminal)
+{
+	return _vte_buffer_length(terminal->pvt->incoming) > 0 ||
+		(terminal->pvt->pending->len > 0);
+}
+	
+static gboolean
+display_timeout (gpointer data)
+{
+	gboolean cont;
+	VteTerminal *terminal = data;
+
+	if (need_processing (terminal) && 
+	    vte_terminal_process_incoming(terminal)) {
+		remove_coalesce_timeout (terminal);
+		add_coalesce_timeout (terminal);
+		return TRUE;
+	}
+
+	remove_coalesce_timeout (terminal);
+	terminal->pvt->display_timeout = VTE_INVALID_SOURCE;
+	
+	return FALSE;
+}
+
+/* This function is called whenever data haven't arrived for
+ * COALESCE_TIMEOUT ms
+ */
+static gboolean
+coalesce_timeout (gpointer data)
+{
+	gboolean cont;
+	VteTerminal *terminal = data;
+
+	if (need_processing (terminal) &&
+	    vte_terminal_process_incoming(terminal)) {
+		remove_display_timeout (terminal);
+		add_display_timeout (terminal);
+		return TRUE;
+	}
+
+	remove_display_timeout (terminal);
+	terminal->pvt->coalesce_timeout = VTE_INVALID_SOURCE;
+
+	return FALSE;
+ }

@@ -1,3 +1,56 @@
+vte (1:0.11.12-1) unstable; urgency=low
+
+  * New upstream version. Lots of patches in Gnome's bugzilla have been
+    applied. 
+  * debian/patches : 
+    - Merged patches : 
+        05_performance_boost.patch
+        10_redraw_vte_screen.patch  
+        12_fix_display_corrption_in_utf8.patch
+    - Splitted 02_path_xtra.patch into to patches : 
+        02_path_xtra.patch contains the configure.in patch
+        03_path_xtra-2.patch contains the configure patch
+    - Updated 07_remove_doublefree.patch as it's partially applied
+
+ -- Arnaud Patard <arnaud.patard@rtp-net.org>  Thu,  3 Mar 2005 23:54:07 +0100
+
+vte (1:0.11.11-6) unstable; urgency=low
+
+  * Added patches from Emil Soleyman-Zomalan <emil@nishra.com>.
+  * debian/patches:
+    - Balanced performance improvement (Closes: #197797)
+        05_performance_boost.patch
+        http://bugs.gnome.org/show_bug.cgi?id=143914
+    - Resolve double free problem
+        07_remove_doublefree.patch
+        http://bugs.gnome.org/show_bug.cgi?id=161337
+    - Set backspace behavior to utf8 (depends on utf8 locale)
+        08_set_backspace_to_utf8.patch
+        http://bugs.gnome.org/show_bug.cgi?id=158200
+    - Make vte multi-screen safe
+        09_multiscreen_safe.patch
+        http://bugs.gnome.org/show_bug.cgi?id=160782
+    - Redraw vte screen with correct background color
+        10_redraw_vte_screen.patch
+        http://bugs.gnome.org/show_bug.cgi?id=125364
+    - Hide manifestation of PageUp behavior with less (Closes: #285143)
+        11_hide_pageup_behavior.patch
+        http://bugzilla.gnome.org/show_bug.cgi?id=115149
+    - Fix utf8 display cooruption (Closes: #276316)
+        12_fix_display_corrption_in_utf8.patch
+        http://bugzilla.gnome.org/show_bug.cgi?id=154896
+
+ -- Arnaud Patard <arnaud.patard@rtp-net.org>  Wed, 22 Dec 2004 01:32:58 +0100
+
+vte (1:0.11.11-5) unstable; urgency=low
+
+  * debian/patches:
+    - Relibtoolized 02_path_xtra.patch (Closes: #259671)
+    - Added an updated patch from http://bugs.gnome.org/show_bug.cgi?id=142640
+    to display correctly fonts (Closes: #251355)
+
+ -- Arnaud Patard <arnaud.patard@rtp-net.org>  Thu, 12 Aug 2004 14:00:51 +0200
+
 vte (1:0.11.11-4) unstable; urgency=low
 
   * GNOME team upload.

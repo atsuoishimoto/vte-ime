@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>VteReaper</title><meta name="generator" content="DocBook XSL Stylesheets V1.68.1"><link rel="start" href="index.html" title="VTE Reference Manual"><link rel="up" href="ch01.html" title="VTE"><link rel="prev" href="VteTerminalAccessible.html" title="VteTerminalAccessible"><meta name="generator" content="GTK-Doc V1.3 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="VTE"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="VteTerminalAccessible.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">VTE Reference Manual</th></tr></table><div class="refentry" lang="en"><a name="VteReaper"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">VteReaper</span></h2><p>VteReaper &#8212; A singleton object which catches <code class="literal">SIGCHLD</code> signals and converts them into
+GObject-style "child-exited" signals.</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+            <a href="VteReaper.html#VteReaper-struct">VteReaper</a>;
+<a href="VteReaper.html" title="VteReaper">VteReaper</a>*  <a href="VteReaper.html#vte-reaper-get">vte_reaper_get</a>                  (void);
+int         <a href="VteReaper.html#vte-reaper-add-child">vte_reaper_add_child</a>            (<a
+href="../glib/glib-The-Main-Event-Loop.html#GPid"
+>GPid</a> pid);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2583143"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----VteReaper
+</pre></div><div class="refsect1" lang="en"><a name="id2583163"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="VteReaper.html#VteReaper-child-exited">child-exited</a>"
+            void        user_function      (<a href="VteReaper.html" title="VteReaper">VteReaper</a> *vtereaper,
+                                            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> arg2,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2583886"></a><h2>Description</h2><p>
+Because an application may need to be notified when child processes
+exit, and because there is only one <code class="literal">SIGCHLD</code> handler, the <a href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>
+widget relies on a <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> to watch for <code class="literal">SIGCHLD</code> notifications and
+retrieve the exit status of child processes which have exited.  When
+glib provides child_watch functionality, the <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> merely acts as
+a proxy for glib's own functionality.
+</p></div><div class="refsect1" lang="en"><a name="id2583937"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2583943"></a><h3><a name="VteReaper-struct"></a>VteReaper</h3><a class="indexterm" name="id2583953"></a><pre class="programlisting">typedef struct _VteReaper VteReaper;</pre><p>
+This should not be accessed directly.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2583969"></a><h3><a name="vte-reaper-get"></a>vte_reaper_get ()</h3><a class="indexterm" name="id2583979"></a><pre class="programlisting"><a href="VteReaper.html" title="VteReaper">VteReaper</a>*  vte_reaper_get                  (void);</pre><p>
+Finds the address of the global <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> object, creating the object if
+necessary.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the global <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> object, which should not be unreffed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584036"></a><h3><a name="vte-reaper-add-child"></a>vte_reaper_add_child ()</h3><a class="indexterm" name="id2584047"></a><pre class="programlisting">int         vte_reaper_add_child            (<a
+href="../glib/glib-The-Main-Event-Loop.html#GPid"
+>GPid</a> pid);</pre><p>
+Ensures that child-exited signals will be emitted when <em class="parameter"><code>pid</code></em> exits.  This is
+necessary for correct operation when running with glib versions &gt;= 2.4.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><em class="parameter"><code>pid</code></em> :</span></td><td> the ID of a child process which will be monitored
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new source ID
+
+Since 0.11.11
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2584118"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2584124"></a><h3><a name="VteReaper-child-exited"></a>The "child-exited" signal</h3><pre class="programlisting">void        user_function                  (<a href="VteReaper.html" title="VteReaper">VteReaper</a> *vtereaper,
+                                            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> arg2,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+Emitted when the <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> object detects that a child of the current process has exited.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><em class="parameter"><code>vtereaper</code></em> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><em class="parameter"><code>arg1</code></em> :</span></td><td>the process ID of the exited child.
+</td></tr><tr><td><span class="term"><em class="parameter"><code>arg2</code></em> :</span></td><td>the status of the exited child, as returned by <code class="function">waitpid()</code>.
+
+</td></tr><tr><td><span class="term"><em class="parameter"><code>user_data</code></em> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="VteTerminalAccessible.html"><b>&lt;&lt; VteTerminalAccessible</b></a></td><td align="right"></td></tr></table></body></html>
