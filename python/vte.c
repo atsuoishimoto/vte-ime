@@ -1,4 +1,4 @@
-/* -- THIS FILE IS GENERATE - DO NOT EDIT *//* -*- Mode: C; c-basic-offset: 4 -*- */
+/* -- THIS FILE IS GENERATED - DO NOT EDIT *//* -*- Mode: C; c-basic-offset: 4 -*- */
 
 #include <Python.h>
 
@@ -31,19 +31,18 @@ PyTypeObject PyVteTerminal_Type;
 static int
 _wrap_vte_terminal_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { NULL };
+    GType obj_type = pyg_type_from_object((PyObject *) self);
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, ":VteTerminal.__init__", kwlist))
-        return -1;
-    self->obj = (GObject *)vte_terminal_new();
-
+    self->obj = g_object_newv(obj_type, 0, NULL);
     if (!self->obj) {
-        PyErr_SetString(PyExc_RuntimeError, "could not create VteTerminal object");
+        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");
         return -1;
     }
+
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
+
 
 #line 75 "vte.override"
 
@@ -122,7 +121,7 @@ _wrap_vte_terminal_fork_command(PyGObject * self, PyObject * args,
 
 	return PyInt_FromLong(pid);
 }
-#line 126 "vte.c"
+#line 125 "vte.c"
 
 
 #line 17 "vte.override"
@@ -153,7 +152,7 @@ _wrap_vte_terminal_feed(PyGObject *self, PyObject *args, PyObject *kwargs)
 	Py_INCREF(Py_None);
 	return Py_None;
 }
-#line 157 "vte.c"
+#line 156 "vte.c"
 
 
 #line 46 "vte.override"
@@ -184,7 +183,7 @@ _wrap_vte_terminal_feed_child(PyGObject *self, PyObject *args, PyObject *kwargs)
 	Py_INCREF(Py_None);
 	return Py_None;
 }
-#line 188 "vte.c"
+#line 187 "vte.c"
 
 
 static PyObject *
@@ -249,12 +248,10 @@ static PyObject *
 _wrap_vte_terminal_get_audible_bell(PyGObject *self)
 {
     int ret;
-    PyObject *py_ret;
 
     ret = vte_terminal_get_audible_bell(VTE_TERMINAL(self->obj));
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
+
 }
 
 static PyObject *
@@ -274,12 +271,10 @@ static PyObject *
 _wrap_vte_terminal_get_visible_bell(PyGObject *self)
 {
     int ret;
-    PyObject *py_ret;
 
     ret = vte_terminal_get_visible_bell(VTE_TERMINAL(self->obj));
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
+
 }
 
 static PyObject *
@@ -486,7 +481,7 @@ _wrap_vte_terminal_set_colors(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
-#line 490 "vte.c"
+#line 485 "vte.c"
 
 
 static PyObject *
@@ -695,12 +690,10 @@ static PyObject *
 _wrap_vte_terminal_get_using_xft(PyGObject *self)
 {
     int ret;
-    PyObject *py_ret;
 
     ret = vte_terminal_get_using_xft(VTE_TERMINAL(self->obj));
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
+
 }
 
 static PyObject *
@@ -720,24 +713,20 @@ static PyObject *
 _wrap_vte_terminal_get_allow_bold(PyGObject *self)
 {
     int ret;
-    PyObject *py_ret;
 
     ret = vte_terminal_get_allow_bold(VTE_TERMINAL(self->obj));
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
+
 }
 
 static PyObject *
 _wrap_vte_terminal_get_has_selection(PyGObject *self)
 {
     int ret;
-    PyObject *py_ret;
 
     ret = vte_terminal_get_has_selection(VTE_TERMINAL(self->obj));
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
+
 }
 
 static PyObject *
@@ -758,21 +747,13 @@ _wrap_vte_terminal_is_word_char(PyGObject *self, PyObject *args, PyObject *kwarg
 {
     static char *kwlist[] = { "c", NULL };
     int ret;
-    PyObject *py_ret;
     gunichar c;
-    Py_UNICODE *py_c = NULL;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "u:VteTerminal.is_word_char", kwlist, &py_c))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&:VteTerminal.is_word_char", kwlist, pyg_pyobj_to_unichar_conv, &c))
         return NULL;
-    if (py_c[1] != 0) {
-        PyErr_SetString(PyExc_TypeError, "c should be a 1 character unicode string");
-        return NULL;
-    }
-    c = (gunichar)py_c[0];
     ret = vte_terminal_is_word_char(VTE_TERMINAL(self->obj), c);
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
+
 }
 
 static PyObject *
@@ -824,12 +805,10 @@ static PyObject *
 _wrap_vte_terminal_get_mouse_autohide(PyGObject *self)
 {
     int ret;
-    PyObject *py_ret;
 
     ret = vte_terminal_get_mouse_autohide(VTE_TERMINAL(self->obj));
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
+
 }
 
 static PyObject *
@@ -973,7 +952,7 @@ _wrap_vte_terminal_get_text(PyGObject *self, PyObject *args, PyObject *kwargs)
     	return Py_BuildValue("s", text);
     }
 }
-#line 977 "vte.c"
+#line 956 "vte.c"
 
 
 #line 364 "vte.override"
@@ -1072,7 +1051,7 @@ _wrap_vte_terminal_get_text_range(PyGObject *self, PyObject *args, PyObject *kwa
     	return Py_BuildValue("s", text);
     }
 }
-#line 1076 "vte.c"
+#line 1055 "vte.c"
 
 
 #line 204 "vte.override"
@@ -1090,7 +1069,7 @@ _wrap_vte_terminal_get_cursor_position(PyGObject *self)
 	PyTuple_SetItem(ret, 1, PyInt_FromLong(row));
 	return ret;
 }
-#line 1094 "vte.c"
+#line 1073 "vte.c"
 
 
 static PyObject *
@@ -1253,7 +1232,7 @@ _wrap_vte_terminal_get_padding(PyGObject *self)
 	PyTuple_SetItem(ret, 1, PyInt_FromLong(ypad));
 	return ret;
 }
-#line 1257 "vte.c"
+#line 1236 "vte.c"
 
 
 static PyObject *
@@ -1426,7 +1405,7 @@ PyTypeObject PyVteTerminal_Type = {
     sizeof(PyGObject),	        /* tp_basicsize */
     0,					/* tp_itemsize */
     /* methods */
-    (destructor)0,			/* tp_dealloc */
+    (destructor)0,	/* tp_dealloc */
     (printfunc)0,			/* tp_print */
     (getattrfunc)0,	/* tp_getattr */
     (setattrfunc)0,	/* tp_setattr */
@@ -1438,13 +1417,13 @@ PyTypeObject PyVteTerminal_Type = {
     (hashfunc)0,		/* tp_hash */
     (ternaryfunc)0,		/* tp_call */
     (reprfunc)0,		/* tp_str */
-    (getattrofunc)0,			/* tp_getattro */
-    (setattrofunc)0,			/* tp_setattro */
-    0,					/* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
+    (getattrofunc)0,	/* tp_getattro */
+    (setattrofunc)0,	/* tp_setattro */
+    (PyBufferProcs*)0,	/* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,                      /* tp_flags */
     NULL, 				/* Documentation string */
-    (traverseproc)0,			/* tp_traverse */
-    (inquiry)0,			/* tp_clear */
+    (traverseproc)0,	/* tp_traverse */
+    (inquiry)0,		/* tp_clear */
     (richcmpfunc)0,	/* tp_richcompare */
     offsetof(PyGObject, weakreflist),             /* tp_weaklistoffset */
     (getiterfunc)0,		/* tp_iter */
@@ -1458,6 +1437,10 @@ PyTypeObject PyVteTerminal_Type = {
     (descrsetfunc)0,	/* tp_descr_set */
     offsetof(PyGObject, inst_dict),                 /* tp_dictoffset */
     (initproc)_wrap_vte_terminal_new,		/* tp_init */
+    (allocfunc)0,           /* tp_alloc */
+    (newfunc)0,               /* tp_new */
+    (freefunc)0,             /* tp_free */
+    (inquiry)0              /* tp_is_gc */
 };
 
 
@@ -1504,11 +1487,14 @@ PyMethodDef pyvte_functions[] = {
 void
 pyvte_add_constants(PyObject *module, const gchar *strip_prefix)
 {
-    pyg_enum_add_constants(module, VTE_TYPE_TERMINAL_ERASE_BINDING, strip_prefix);
-    pyg_enum_add_constants(module, VTE_TYPE_TERMINAL_ANTI_ALIAS, strip_prefix);
+  pyg_enum_add(module, "TerminalEraseBinding", strip_prefix, VTE_TYPE_TERMINAL_ERASE_BINDING);
+  pyg_enum_add(module, "TerminalAntiAlias", strip_prefix, VTE_TYPE_TERMINAL_ANTI_ALIAS);
+
+  if (PyErr_Occurred())
+    PyErr_Print();
 }
 
-/* intialise stuff extension classes */
+/* initialise stuff extension classes */
 void
 pyvte_register_classes(PyObject *d)
 {
@@ -1550,6 +1536,6 @@ pyvte_register_classes(PyObject *d)
     }
 
 
-#line 1554 "vte.c"
+#line 1540 "vte.c"
     pygobject_register_class(d, "VteTerminal", VTE_TYPE_TERMINAL, &PyVteTerminal_Type, Py_BuildValue("(O)", &PyGtkWidget_Type));
 }

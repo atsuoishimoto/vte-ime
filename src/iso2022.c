@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: iso2022.c,v 1.50 2003/09/15 18:57:33 nalin Exp $"
+#ident "$Id: iso2022.c,v 1.52 2005/02/28 21:32:01 kmaraas Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <errno.h>
@@ -298,24 +298,29 @@ _vte_iso2022_is_ambiguous(gunichar c)
 {
 	int i;
 	gpointer p;
-	static GTree *ambiguous = NULL;
+	static GHashTable *ambiguous = NULL;
 	for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_ambiguous_ranges); i++) {
 		if ((c >= _vte_iso2022_ambiguous_ranges[i].start) &&
 		    (c <= _vte_iso2022_ambiguous_ranges[i].end)) {
 			return TRUE;
 		}
 	}
-	if (ambiguous == NULL) {
-		ambiguous = g_tree_new(_vte_direct_compare);
-		for (i = 0;
-		     i < G_N_ELEMENTS(_vte_iso2022_ambiguous_chars);
-		     i++) {
-			p = GINT_TO_POINTER(_vte_iso2022_ambiguous_chars[i]);
-			g_tree_insert(ambiguous, p, p);
+	for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_unambiguous_ranges); i++) {
+		if ((c >= _vte_iso2022_unambiguous_ranges[i].start) &&
+		    (c <= _vte_iso2022_unambiguous_ranges[i].end)) {
+			return FALSE;
 		}
 	}
-	p = GINT_TO_POINTER(c);
-	return g_tree_lookup(ambiguous, p) == p;
+	if (!ambiguous) {
+		ambiguous = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+		for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_ambiguous_chars); i++) {
+			p = GINT_TO_POINTER(_vte_iso2022_ambiguous_chars[i]);
+			g_hash_table_insert(ambiguous, p, p);
+		}
+	}
+
+	return g_hash_table_lookup(ambiguous, GINT_TO_POINTER(c)) != NULL;
 }
 
 /* If we only have a codepoint, guess what the ambiguous width should be based
@@ -862,35 +867,34 @@ _vte_iso2022_state_get_codeset(struct _vte_iso2022_state *state)
 }
 
 static char *
-_vte_iso2022_better(char *p, char *q)
-{
-	if (p == NULL) {
-		return q;
-	}
-	if (q == NULL) {
-		return p;
-	}
-	return MIN(p, q);
-}
-
-static char *
 _vte_iso2022_find_nextctl(const char *p, size_t length)
 {
 	char *ret;
+	int i;
+
 	if (length == 0) {
 		return NULL;
 	}
-	ret = memchr(p, '\033', length);
-	ret = _vte_iso2022_better(ret, memchr(p, '\n', length));
-	ret = _vte_iso2022_better(ret, memchr(p, '\r', length));
-	ret = _vte_iso2022_better(ret, memchr(p, '\016', length));
-	ret = _vte_iso2022_better(ret, memchr(p, '\017', length));
+
+	for (i = 0; i < length; ++i) {
+		if (p[i] == '\033' ||
+		    p[i] == '\n' ||
+		    p[i] == '\r' ||
+		    p[i] == '\016' ||
+		    p[i] == '\017'
 #ifdef VTE_ISO2022_8_BIT_CONTROLS
-	/* This breaks UTF-8 and other encodings which use the high bits. */
-	ret = _vte_iso2022_better(ret, memchr(p, 0x8e, length));
-	ret = _vte_iso2022_better(ret, memchr(p, 0x8f, length));
+		    /* This breaks UTF-8 and other encodings which
+		     * use the high bits.
+		     */
+  		                 ||
+		    p[i] == 0x8e ||
+		    p[i] == 0x8f
 #endif
-	return ret;
+			) {
+			return (char *)p + i;
+		}
+	}
+	return NULL;
 }
 
 static long
@@ -1722,7 +1726,7 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 		     GArray *gunichars)
 {
 	GArray *blocks;
-	struct _vte_iso2022_block block;
+	struct _vte_iso2022_block *block = NULL;
 	gboolean preserve_last = FALSE;
 	int i, initial;
 
@@ -1731,19 +1735,19 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 	_vte_iso2022_fragment_input(input, blocks);
 
 	for (i = 0; i < blocks->len; i++) {
-		block = g_array_index(blocks, struct _vte_iso2022_block, i);
-		switch (block.type) {
+		block = &g_array_index(blocks, struct _vte_iso2022_block, i);
+		switch (block->type) {
 		case _vte_iso2022_cdata:
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
 				int j;
 				fprintf(stderr, "%3ld %3ld CDATA \"%.*s\"",
-					block.start, block.end,
-					(int) (block.end - block.start),
-					input->bytes + block.start);
+					block->start, block->end,
+					(int) (block->end - block->start),
+					input->bytes + block->start);
 				fprintf(stderr, " (");
-				for (j = block.start; j < block.end; j++) {
-					if (j > block.start) {
+				for (j = block->start; j < block->end; j++) {
+					if (j > block->start) {
 						fprintf(stderr, ", ");
 					}
 					fprintf(stderr, "0x%02x",
@@ -1753,14 +1757,14 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 			}
 #endif
 			initial = 0;
-			while (initial < block.end - block.start) {
+			while (initial < block->end - block->start) {
 				int j;
 				j = process_cdata(state,
 						  input->bytes +
-						  block.start +
+						  block->start +
 						  initial,
-						  block.end -
-						  block.start -
+						  block->end -
+						  block->start -
 						  initial,
 						  gunichars);
 				if (j == 0) {
@@ -1768,10 +1772,10 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 				}
 				initial += j;
 			}
-			if ((initial < block.end - block.start) &&
+			if ((initial < block->end - block->start) &&
 			    (i == blocks->len - 1)) {
 				preserve_last = TRUE;
-				block.start += initial;
+				block->start += initial;
 			} else {
 				preserve_last = FALSE;
 			}
@@ -1780,12 +1784,12 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
 				fprintf(stderr, "%3ld %3ld CONTROL ",
-					block.start, block.end);
+					block->start, block->end);
 			}
 #endif
 			process_control(state,
-					input->bytes + block.start,
-					block.end - block.start,
+					input->bytes + block->start,
+					block->end - block->start,
 					gunichars);
 			preserve_last = FALSE;
 			break;
@@ -1793,7 +1797,7 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
 				fprintf(stderr, "%3ld %3ld PRESERVE\n",
-					block.start, block.end);
+					block->start, block->end);
 			}
 #endif
 			g_assert(i == blocks->len - 1);
@@ -1805,14 +1809,14 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 		}
 	}
 	if (preserve_last && (blocks->len > 0)) {
-		block = g_array_index(blocks, struct _vte_iso2022_block, blocks->len - 1);
+		block = &g_array_index(blocks, struct _vte_iso2022_block, blocks->len - 1);
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-			fprintf(stderr, "Consuming %ld bytes.\n", block.start);
+			fprintf(stderr, "Consuming %ld bytes.\n", block->start);
 		}
 #endif
-		_vte_buffer_consume(input, block.start);
-		g_assert(_vte_buffer_length(input) == block.end - block.start);
+		_vte_buffer_consume(input, block->start);
+		g_assert(_vte_buffer_length(input) == block->end - block->start);
 	} else {
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {

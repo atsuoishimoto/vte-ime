@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtexft.c,v 1.19 2004/04/20 05:16:56 nalin Exp $"
+#ident "$Id: vtexft.c,v 1.21 2005/03/02 08:48:59 kmaraas Exp $"
 
 #include "../config.h"
 
@@ -35,6 +35,7 @@
 #include "vtedraw.h"
 #include "vtefc.h"
 #include "vtexft.h"
+#include "vtetree.h"
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
@@ -53,8 +54,8 @@ struct _vte_xft_font {
 #endif
 	GArray *patterns;
 	GArray *fonts;
-	GTree *fontmap;
-	GTree *widths;
+	VteTree *fontmap;
+	VteTree *widths;
 };
 
 struct _vte_xft_data
@@ -124,8 +125,8 @@ _vte_xft_font_open(GtkWidget *widget, const PangoFontDescription *fontdesc,
 #endif
 	font->patterns = patterns;
 	font->fonts = g_array_new(TRUE, TRUE, sizeof(XftFont*));
-	font->fontmap = g_tree_new(_vte_xft_direct_compare);
-	font->widths = g_tree_new(_vte_xft_direct_compare);
+	font->fontmap = _vte_tree_new(_vte_xft_direct_compare);
+	font->widths = _vte_tree_new(_vte_xft_direct_compare);
 
 	return font;
 }
@@ -166,9 +167,9 @@ _vte_xft_font_close(struct _vte_xft_font *font)
 	g_array_free(font->fonts, TRUE);
 	font->fonts = NULL;
 
-	g_tree_destroy(font->fontmap);
+	_vte_tree_destroy(font->fontmap);
 	font->fontmap = NULL;
-	g_tree_destroy(font->widths);
+	_vte_tree_destroy(font->widths);
 	font->widths = NULL;
 
 	g_free(font);
@@ -191,7 +192,7 @@ _vte_xft_font_for_char(struct _vte_xft_font *font, gunichar c)
 	g_return_val_if_fail(font->widths != NULL, NULL);
 
 	/* Check if we have a char-to-font entry for it. */
-	i = GPOINTER_TO_INT(g_tree_lookup(font->fontmap, p));
+	i = GPOINTER_TO_INT(_vte_tree_lookup(font->fontmap, p));
 	if (i != 0) {
 		switch (i) {
 		/* Checked before, no luck. */
@@ -225,7 +226,7 @@ _vte_xft_font_for_char(struct _vte_xft_font *font, gunichar c)
 
 	/* Match? */
 	if (i < font->fonts->len) {
-		g_tree_insert(font->fontmap,
+		_vte_tree_insert(font->fontmap,
 			      p,
 			      GINT_TO_POINTER(i + FONT_INDEX_FUDGE));
 		ftfont = g_array_index(font->fonts, XftFont *, i);
@@ -253,7 +254,7 @@ _vte_xft_font_for_char(struct _vte_xft_font *font, gunichar c)
 
 	/* No match? */
 	if (i >= font->patterns->len) {
-		g_tree_insert(font->fontmap,
+		_vte_tree_insert(font->fontmap,
 			      p,
 			      GINT_TO_POINTER(-FONT_INDEX_FUDGE));
 		if (font->fonts->len > 0) {
@@ -288,7 +289,7 @@ _vte_xft_char_width(struct _vte_xft_font *font, XftFont *ftfont, gunichar c)
 	g_return_val_if_fail(font->widths != NULL, 0);
 
 	/* Check if we have a char-to-width entry for it. */
-	i = GPOINTER_TO_INT(g_tree_lookup(font->widths, p));
+	i = GPOINTER_TO_INT(_vte_tree_lookup(font->widths, p));
 	if (i != 0) {
 		switch (i) {
 		case -CHAR_WIDTH_FUDGE:
@@ -306,7 +307,7 @@ _vte_xft_char_width(struct _vte_xft_font *font, XftFont *ftfont, gunichar c)
 		_vte_xft_text_extents(font, ftfont, c, &extents);
 	}
 	i = extents.xOff + CHAR_WIDTH_FUDGE;
-	g_tree_insert(font->widths, p, GINT_TO_POINTER(i));
+	_vte_tree_insert(font->widths, p, GINT_TO_POINTER(i));
 	return extents.xOff;
 }
 
@@ -661,6 +662,7 @@ _vte_xft_drawcharfontspec(XftDraw *draw, XftColor *color,
 			  XftCharFontSpec *specs, int n)
 {
 	int i, j;
+
 	i = j = 0;
 	while (i < n) {
 		for (j = i + 1; j < n; j++) {
@@ -695,7 +697,7 @@ _vte_xft_draw_text(struct _vte_draw *draw,
 	for (i = j = 0; i < n_requests; i++) {
 		specs[j].font = _vte_xft_font_for_char(data->font,
 						       requests[i].c);
-		if (specs[j].font != NULL) {
+		if (specs[j].font != NULL && requests[i].c != 32) {
 			specs[j].x = requests[i].x - data->x_offs;
 			width = _vte_xft_char_width(data->font,
 						    specs[j].font,
@@ -708,7 +710,7 @@ _vte_xft_draw_text(struct _vte_draw *draw,
 			specs[j].y = requests[i].y - data->y_offs + draw->ascent;
 			specs[j].ucs4 = requests[i].c;
 			j++;
-		} else {
+		} else if (requests[i].c != 32) {
 			g_warning(_("Can not draw character U+%04x.\n"),
 				  requests[i].c);
 		}

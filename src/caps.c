@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: caps.c,v 1.22 2003/08/13 05:50:15 nalin Exp $"
+#ident "$Id: caps.c,v 1.23 2004/11/17 00:23:44 nalin Exp $"
 #include "../config.h"
 #include <stdlib.h>
 #include <glib.h>
@@ -469,7 +469,6 @@ struct _vte_capability_string _vte_xterm_capability_strings[] = {
 	{CSI ">%dc", "send-secondary-device-attributes", 0},
 	{CSI "=c", "send-tertiary-device-attributes", 0},
 	{CSI "=%dc", "send-tertiary-device-attributes", 0},
-	{CSI "?c", "linux-console-cursor-attributes", 0},
 	{CSI "?%mc", "linux-console-cursor-attributes", 0},
 	{CSI "d", "line-position-absolute", 0},
 	{CSI "%dd", "line-position-absolute", 0},
@@ -480,22 +479,15 @@ struct _vte_capability_string _vte_xterm_capability_strings[] = {
 	{CSI "g", "tab-clear", 0},
 	{CSI "%dg", "tab-clear", 0},
 
-	{CSI "h", "set-mode", 0},
 	{CSI "%mh", "set-mode", 0},
-	{CSI "?h", "decset", 0},
 	{CSI "?%mh", "decset", 0},
 
-	{CSI "i", "media-copy", 0},
 	{CSI "%mi", "media-copy", 0},
-	{CSI "?i", "dec-media-copy", 0},
 	{CSI "?%mi", "dec-media-copy", 0},
 
-	{CSI "l", "reset-mode", 0},
 	{CSI "%ml", "reset-mode", 0},
-	{CSI "?l", "decreset", 0},
 	{CSI "?%ml", "decreset", 0},
 
-	{CSI "m", "character-attributes", 0},
 	{CSI "%mm", "character-attributes", 0},
 
 	{CSI "%dn", "device-status-report", 0},
@@ -505,9 +497,7 @@ struct _vte_capability_string _vte_xterm_capability_strings[] = {
 	{CSI "%d\"q", "select-character-protection", 0},
 	{CSI "r", "set-scrolling-region", 0},
 	{CSI "%d;%dr", "set-scrolling-region", 0},
-	{CSI "?r", "restore-mode", 0},
 	{CSI "?%mr", "restore-mode", 0},
-	{CSI "?s", "save-mode", 0},
 	{CSI "?%ms", "save-mode", 0},
 
 	{CSI "%mt", "window-manipulation", 0},

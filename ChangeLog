@@ -1,3 +1,165 @@
+2005-03-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vte.c: (vte_terminal_process_incoming): Fix the
+	crash in minicom when resizing the window. Closes
+	bug #163814. Also adjust the coalesce and display timeouts.
+	This makes g-t and xterm behave just about the same visually
+	but g-t is still a bit faster when using the same font and
+	utf8.
+
+2005-03-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/Makefile.am: Add vtetree.[ch]
+	* src/vte.c: (vte_terminal_draw_row): Don't use a GArray
+	but use calloc'ed memory to speed up things further.
+	From bug #137864. Patch from Benjamin Otte.
+	* src/vtetree.c: (_vte_tree_new), (_vte_tree_destroy),
+	(_vte_tree_insert), (_vte_tree_lookup): New file
+	* src/vtetree.h: New file
+	* src/vtexft.c: (_vte_xft_font_open), (_vte_xft_font_close),
+	(_vte_xft_font_for_char), (_vte_xft_char_width): Use the new
+	functions to speed up things. From bug #137864. Patch from
+	Benjamin Otte. There are still two patches in there that don't
+	apply cleanly any more. Will look at those later.
+	* vte.spec: Bump version.
+
+2005-02-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vte.c: (vte_sequence_handler_send_primary_device_attributes):
+	Patch from Mariano to make vte claim to be the right type terminal.
+	Closes bug #130671.
+
+2005-02-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/iso2022.c: (_vte_iso2022_is_ambiguous),
+	(_vte_iso2022_find_nextctl):
+	* src/uniwidths:
+	* src/vte.c: (vte_terminal_catch_child_exited), (vte_terminal_eof),
+	(vte_terminal_process_incoming), (vte_terminal_feed),
+	(vte_terminal_init), (vte_terminal_finalize), (vte_terminal_reset),
+	(add_display_timeout), (add_coalesce_timeout),
+	(remove_display_timeout), (remove_coalesce_timeout),
+	(vte_terminal_stop_processing), (vte_terminal_start_processing),
+	(vte_terminal_is_processing), (display_timeout),
+	(coalesce_timeout):
+	* src/vtexft.c: (_vte_xft_drawcharfontspec), (_vte_xft_draw_text):
+	Apply fix from Fedora package for performance problems. Closes
+	bug #143914. Patch was written by Søren Sandmann.
+
+2005-02-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vte.c: (vte_terminal_scroll_region): Fix for
+	problem with redrawing when scrolling back then forward
+	Closes bug #122150. Patch from Benjamin Otte.
+
+2005-02-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vte.c: (vte_terminal_unrealize): Fix a crash
+	when trying to use input methods. From Fedora.
+	Closes bug #168213.
+
+2005-02-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vte.c: (vte_terminal_scroll_region),
+	(vte_sequence_handler_al), (vte_sequence_handler_dl),
+	(vte_sequence_handler_sr), (vte_sequence_handler_insert_lines),
+	(vte_sequence_handler_delete_lines), (vte_terminal_handle_scroll):
+	Another patch from fedora. Make sure the screen is fully redrawn
+	before scrolling. Apparently this patch has some issues, but those
+	were found to be small enough to apply in Fedora, so I guess
+	the same holds true here. Closes bug #168212
+
+2005-02-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/iso2022.c: (_vte_iso2022_process): Apply another
+	patch from Fedora. This should fix some screen corruption
+	with multibyte charsets. Closes bug #168211 and possibly
+	others.
+
+2005-02-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vte.c: (vte_terminal_adjust_adjustments),
+	(vte_terminal_maybe_scroll_to_bottom),
+	(vte_terminal_update_insert_delta), (vte_terminal_handle_scroll),
+	(vte_terminal_set_scroll_adjustment), (vte_terminal_size_allocate):
+	Apply patch from Fedora to fix some scrolling issues. Closes
+	bug #168210 and possibly others.
+
+2005-02-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vte.c: (vte_terminal_visibility_notify): Fix black
+	backgrounds in new terminals. Fix from Jon Nettleton
+	<nettleton at gmail com>. Closes bug #125364. Has been
+	in Fedora Core for months already.
+
+2005-02-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/keymap.c: (_vte_keymap_map): Fix keypad behaviour
+	to be like xterm. Closes bug #128099. Fix is from
+	<jylefort at brutele be> and has been used in Fedora the last
+	three months at least.
+
+2005-02-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vteregex.h: Don't include <config.h> here. It breaks
+	building on AIX and can cause problems for l10n. Closes
+	bug #161352.
+
+2005-02-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/dumpkeys.c: Fix build on NetBSD and Darwin.
+	Patch from Adrian Bunk <bunk at stusta de>. Closes
+	bug #126377.
+
+2004-12-07 Rajesh Ranjan<rranjan@redhat.com>
+	* configure.in: included the hi locale in ALL_LINGUAS 
+2004-11-16 nalin
+	* src/vte.c(vte_terminal_io_read,vte_terminal_io_write): silence a
+	couple of warnings by expecting a GIOCondition instead of a
+	GtkInputCondition as a parameter.
+
+2004-11-16 nalin
+	* autogen.sh: accept more, newer versions of autoconf/automake.  Treat
+	autoconf >= 3 as acceptable instead of just > 3.
+
+2004-11-16 nalin
+	* src/vte.c(vte_terminal_sequence_handler_scroll_up_or_down): add.
+	* src/vte.c(vte_terminal_sequence_handler_scroll_up_once): add.
+	* src/vte.c(vte_terminal_sequence_handler_scroll_down_once): add.
+	* src/vte.c(vte_terminal_sequence_handler_scroll_up): add.
+	* src/vte.c(vte_terminal_sequence_handler_scroll_down): add.
+	* src/table.c(_vte_table_addi): expand "%m" locally so that we can
+	distinguish between control sequences which differ only in the number
+	of numeric arguments they expect.  This means we have a new upper
+	limit on the length of a numeric argument list we'll recognize.
+	* src/caps.c(_vte_xterm_capability_strings): remove alternates for
+	strings which include '%m' as a specifier -- that's handled at the
+	matching layer now.
+	* src/vte.c(vte_terminal_paste_cb): drop the supplied data if it isn't
+	valid UTF-8 (Red Hat #119099).
+	* src/keymap.c(_vte_keymap_map): try xterm variants if we're xterm, not
+	the other way around.
+
+2004-08-18  David Lodge <dave@cirt.net>
+
+	* configure.in: Added "ang" to ALL_LINGUAS.
+
+2004-08-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added «nb» to ALL_LINGUAS.
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-13  Gora Mohanty  <gmohanty@cvs.gnome.org>
+
+	* configure.in: Added "or" to ALL_LINGUAS.
+
+2004-07-17  Dinesh Nadarajah <dinesh_list@sbcglobal.net>
+
+	* ta.po: Added tamil Translation
+
 2004-05-02 nalin
 	* src/reaper.c(vte_reaper_add_child): pass the global reaper in as
 	data when adding the child source, not the terminal which called us.
