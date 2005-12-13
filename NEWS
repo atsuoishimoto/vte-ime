@@ -1,3 +1,37 @@
+0.11.16  - Optimize memory used for fonts (Mike Hearn)
+	 - Fix crasher with accessibility (Padraig O'Briain)
+	 - Fix some warning from GDK (Michele Baldessari)
+	 - Fix python build problems (Manish Sing)
+	 - Fix generation of the forkpty() method for python.
+	   (Michael Vogt)
+	 - Cleanups for the .pc file (Steve Langasek)
+	 - Don't emit signals for every character of output. Huge performance
+	   improvement with a11y enabled. Patch from Padraig O'Briain.
+
+0.11.15  - Fix check for recvmsg () (Robert Basch)
+	 - Make it possible to implement atkText selection methods
+	   for VteAccessible. Bug #113590. (Padraig O'Briain)
+	 - Don't crash if there's no termcap file (Michele Baldessari)
+	 - Make VTE work on some Net/OpenBSD on sparc and macppc
+	   (Dan Winship, Rich Edelman, Adrian Bunk)
+
+0.11.14  - Fix a crasher on reparent (Michele Baldessari)
+	 - Fix a crash in a11y related code (Padraig O'Briain)
+	 - Fix a crash in the pango backend (Michele Baldessari)
+	 - Fix a crash from not unsetting the user data on the
+	   gdk window (Matthias Clasen)
+	 - Fix a crash in the python bindings when changing color
+	   (Michele Baaldessari, Ethan Glasser-Kamp)
+
+0.11.13  - Back out one of the previous patches from Fedora since it had
+	   issues (Reported by Warren Togami)
+	 - Reduce memory consumption with more that one tab a whole lot
+	   (Aivars Kalvans)
+	 - Make the python bindings work again (Manish Singh)
+	 - Build fix (Ali Akcaagac)
+	 - Updated translations ug (Abduxukur Abdurixit), rw (Steve Murphy),
+	   xh (Adi Attar))
+
 0.11.12: - Performance improvements:
 	   - Two patches from bug #137864 (Benjamin Otte)
 	   - Patch from bug #143914 (Søren Sandmann)

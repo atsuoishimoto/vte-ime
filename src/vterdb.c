@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vterdb.c,v 1.8 2004/04/20 05:16:56 nalin Exp $"
+#ident "$Id: vterdb.c,v 1.9 2005/10/02 09:59:42 kmaraas Exp $"
 
 #include "../config.h"
 
@@ -40,7 +40,7 @@ _vte_property_get_string(GdkWindow *window, GdkAtom atom,
 			 char **retval)
 {
 	return gdk_property_get(window, atom, GDK_TARGET_STRING,
-				0, INT_MAX,
+				0, INT_MAX - 3,
 				FALSE,
 				type, NULL, size,
 				(guchar**) retval);

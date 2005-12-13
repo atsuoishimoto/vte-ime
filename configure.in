@@ -9,7 +9,7 @@ AM_PROG_CC_STDC
 AM_MAINTAINER_MODE
 
 AM_PROG_LIBTOOL
-ALL_LINGUAS="ang am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gu he hi hr hu id is it ja ka ko li lt lv mi mk ml mn ms nb ne nl nn no or pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="ang am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu id is it ja ka ko ky li lt lv mi mk ml mn ms nb ne nl nn no or pa pl pt pt_BR ro ru rw sk sl sq sr sr@Latn sv ta th tr ug uk vi wa xh zh_CN zh_TW"
 
 AM_GLIB_GNU_GETTEXT
 AC_CHECK_DECLS(bind_textdomain_codeset,,,[#include "libintl.h"])
@@ -239,17 +239,21 @@ AC_CHECK_HEADERS(sys/select.h sys/termios.h sys/un.h stropts.h termios.h wchar.h
 AC_HEADER_TIOCGWINSZ
 
 # Check for PTY handling functions.
-AC_CHECK_FUNCS(cfmakeraw getpgid getpt grantpt unlockpt ptsname ptsname_r recvmsg)
+AC_CHECK_FUNCS(cfmakeraw getpgid getpt grantpt unlockpt ptsname ptsname_r)
 
 # Pull in the right libraries for various functions which might not be
 # bundled into an exploded libc.
 AC_CHECK_FUNC(socket,[have_socket=1],AC_CHECK_LIB(socket,socket,[have_socket=1; LIBS="$LIBS -lsocket"]))
 AC_CHECK_FUNC(socketpair,[have_socketpair=1],AC_CHECK_LIB(socket,socketpair,[have_socketpair=1; LIBS="$LIBS -lsocket"]))
+AC_CHECK_FUNC(recvmsg,[have_recvmsg=1],AC_CHECK_LIB(socket,recvmsg,[have_recvmsg=1; LIBS="$LIBS -lsocket -lnsl"]))
 if test x$have_socket = x1 ; then
 	AC_DEFINE(HAVE_SOCKET,1,[Define if you have the socket function.])
 fi
 if test x$have_socketpair = x1 ; then
 	AC_DEFINE(HAVE_SOCKETPAIR,1,[Define if you have the socketpair function.])
+fi
+if test x$have_recvmsg = x1 ; then
+	AC_DEFINE(HAVE_RECVMSG,1,[Define if you have the recvmsg function.])
 fi
 AC_CHECK_FUNC(floor,,AC_CHECK_LIB(m,floor,LIBS=["$LIBS -lm"]))
 
@@ -359,8 +363,16 @@ if $BUILD_PYTHON ; then
 	if pkg-config --exists pygtk-2.0 ; then
 		AC_MSG_RESULT([found])
 		PKG_CHECK_MODULES(PYGTK,[pygtk-2.0])
-		PYGTK_DATADIR=`pkg-config --variable=datadir pygtk-2.0`
-		AC_SUBST(PYGTK_DATADIR)
+
+		AC_PATH_PROG(PYGTK_CODEGEN, pygtk-codegen-2.0, no)
+		if test "x$PYGTK_CODEGEN" = xno; then
+		  AC_MSG_ERROR(could not find pygtk-codegen-2.0 script)
+		fi
+
+		AC_MSG_CHECKING(for pygtk defs)
+		PYGTK_DEFSDIR=`$PKG_CONFIG --variable=defsdir pygtk-2.0`
+		AC_SUBST(PYGTK_DEFSDIR)
+		AC_MSG_RESULT($PYGTK_DEFSDIR)
 	else
 		AC_MSG_RESULT([not found])
 		BUILD_PYTHON=false
