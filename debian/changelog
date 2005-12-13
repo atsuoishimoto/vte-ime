@@ -1,3 +1,111 @@
+vte (1:0.11.16-0ubuntu1) dapper; urgency=low
+
+  * New upstream release:
+    - Optimize memory used for fonts (Mike Hearn)
+    - Fix crasher with accessibility (Padraig O'Briain)
+    - Fix some warning from GDK (Michele Baldessari)
+    - Fix python build problems (Manish Sing)
+    - Fix generation of the forkpty() method for python. (Michael Vogt)
+    - Cleanups for the .pc file (Steve Langasek)
+    - Don't emit signals for every character of output. Huge performance 
+      improvement with a11y enabled. Patch from	Padraig	O'Briain.
+  * debian/rules:
+    - removal of python/vte.c doesn't seem necessary.
+  * debian/patches/20_gdk-warning.patch,
+    debian/patches/91_python_forkpty.patch:
+    - dropped, done upstream.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue, 13 Dec 2005 18:08:41 +0100
+
+vte (1:0.11.15-3ubuntu1) dapper; urgency=low
+
+  * Sync with Debian.
+  * debian/patches/90_keep_fds_open.patch:
+    - make it possible to keep specific file descriptors open
+  * debian/patches/91_python_forkpty.patch:
+    - make vte_fork_pyt() available in python
+  * debian/patches/92_python_reaper.patch:
+    - make the reaper object availabe in python
+  * debian/watch:
+    - updated
+
+ -- Sebastien Bacher <seb128@canonical.com>  Thu, 10 Nov 2005 22:23:42 +0100
+
+vte (1:0.11.15-3) unstable; urgency=high
+
+  * Force regeneration of the python bindings by removing python/vte.c.
+    (Closes: #334001, #334668, #338090)
+    [debian/rules]
+
+ -- Loic Minier <lool@dooz.org>  Tue,  8 Nov 2005 22:38:50 +0100
+
+vte (1:0.11.15-2) unstable; urgency=high
+
+  * Urgency high for RC bug fix.
+  * Add libsm-dev, libice-dev, zlib1g-dev, libncurses5-dev | libncurses-dev,
+    libx11-dev, and libfontconfig1-dev deps to vte-dev, according to its .pc
+    file. (Closes: #259671) [debian/control, debian/control.in]
+
+ -- Loic Minier <lool@dooz.org>  Sun, 16 Oct 2005 22:21:33 +0200
+
+vte (1:0.11.15-1) unstable; urgency=low
+
+  [ Sebastien Bacher ]
+  * debian/control.in:
+    - use ${python:Depends}.
+  * debian/python-vte.install:
+    - don't use a specific python version.
+  * debian/rules:
+    - use dh_python.
+
+  [ Loic Minier ]
+  * New upstream releases.
+    - Fix confusion between py_palette and item in
+      _wrap_vte_terminal_set_colors(), doesn't segfault anymore in
+      vte.Terminal.set_colors(). (Closes: #319987)
+  * Add CDBS' utils.
+  * Drop obsolete patches. [debian/patches/02_path_xtra.patch,
+    debian/patches/03_path_xtra-2.patch,
+    debian/patches/11_hide_pageup_behavior.patch]
+  * Temporarily add libxt-dev build-dependency to let
+    AC_PATH_X/AC_PATH_XTRA autodetect X development files, see
+    <http://bugzilla.gnome.org/show_bug.cgi?id=314669>.
+  * Update FSF address. [debian/copyright]
+
+ -- Loic Minier <lool@dooz.org>  Sun, 11 Sep 2005 16:03:32 +0200
+
+vte (1:0.11.13-4) unstable; urgency=high
+
+  * Urgency high for testing targetted RC bugfix.
+  * Add dependencies to libvte-dev on libxft-dev, libfreetype6-dev,
+    libatk1.0-dev, libpango1.0-dev, libglib2.0-dev to conform with libvte.la's
+    dependency_libs. [debian/control, debian/control.in] (Closes: #259671)
+
+ -- Loic Minier <lool@dooz.org>  Sun, 31 Jul 2005 16:01:15 +0200
+
+vte (1:0.11.13-3) unstable; urgency=low
+
+  * Fix Gdk warnings with a patch from upstream. (Closes: #316940, #318549)
+    [debian/patches/20_gdk-warning.patch]
+  * Bump up Standards Version to 3.6.2.
+
+ -- Loic Minier <lool@dooz.org>  Thu, 21 Jul 2005 20:01:23 +0200
+
+vte (1:0.11.13-2) unstable; urgency=low
+
+  * Rebuild on an unstable box to avoid dependencies in experimental.
+
+ -- Josselin Mouette <joss@debian.org>  Sat, 30 Apr 2005 19:07:20 +0200
+
+vte (1:0.11.13-1) unstable; urgency=low
+
+  * New upstream version
+  * Added a new package that contains the documentation (Closes: #300742)
+  * debian/patches:
+    - 01_vtemodule.patch: applied
+
+ -- Arnaud Patard <arnaud.patard@rtp-net.org>  Tue, 19 Apr 2005 23:05:02 +0200
+
 vte (1:0.11.12-1) unstable; urgency=low
 
   * New upstream version. Lots of patches in Gnome's bugzilla have been

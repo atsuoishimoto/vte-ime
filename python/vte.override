@@ -149,6 +149,8 @@ _wrap_vte_terminal_fork_command(PyGObject * self, PyObject * args,
 	return PyInt_FromLong(pid);
 }
 %%
+override vte_terminal_forkpty kwargs
+
 static PyObject *
 _wrap_vte_terminal_forkpty(PyGObject * self, PyObject * args, PyObject * kwargs)
 {
@@ -490,7 +492,7 @@ _wrap_vte_terminal_set_colors(PyGObject *self, PyObject *args, PyObject *kwargs)
         	PyErr_SetString(PyExc_TypeError, "palette should be a list of GdkColors");
 		return NULL;
 	    }
-	    palette[i] = *((GdkColor*)pyg_boxed_get(py_palette, GdkColor));
+	    palette[i] = *((GdkColor*)pyg_boxed_get(item, GdkColor));
             Py_DECREF(item);
 	}
     } else {

@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vte.c,v 1.416 2005/03/02 22:52:18 kmaraas Exp $"
+#ident "$Id: vte.c,v 1.426 2005/11/30 00:32:25 kmaraas Exp $"
 
 #include "../config.h"
 
@@ -353,8 +353,6 @@ struct _VteTerminalPrivate {
 	PangoAttrList *im_preedit_attrs;
 	int im_preedit_cursor;
 
-	/* Our accessible peer. */
-	gpointer accessible;
 	gboolean accessible_emit;
 
 	/* Adjustment updates pending. */
@@ -495,6 +493,8 @@ static void _vte_terminal_disconnect_pty_write(VteTerminal *terminal);
 static void vte_terminal_stop_processing (VteTerminal *terminal);
 static void vte_terminal_start_processing (VteTerminal *terminal);
 static gboolean vte_terminal_is_processing (VteTerminal *terminal);
+
+static gpointer parent_class;
 
 /* Free a no-longer-used row data array. */
 static void
@@ -690,7 +690,6 @@ static void
 vte_terminal_scroll_region(VteTerminal *terminal,
 			   long row, glong count, glong delta)
 {
-	gboolean repaint = TRUE;
 	glong height;
 
 	if ((delta == 0) || (count == 0)) {
@@ -698,49 +697,15 @@ vte_terminal_scroll_region(VteTerminal *terminal,
 		return;
 	}
 
-	/* We only do this if we're scrolling the entire window. */
-	if (!terminal->pvt->screen->scrolling_restricted &&
-	    !terminal->pvt->bg_transparent &&
-	    (terminal->pvt->bg_pixbuf == NULL) &&
-	    (terminal->pvt->bg_file == NULL) &&
-	    (row == terminal->pvt->screen->scroll_delta) &&
-	    (count == terminal->row_count) &&
-	    (terminal->pvt->scroll_lock_count == 0)) {
-		height = terminal->char_height;
-		
-		/* If we scroll with invalid areas, we will copy
-		 * invalid contents around the screen. So, we must
-		 * handle pending redraws first.
-		 */
-		gdk_window_process_updates (GTK_WIDGET(terminal)->window,
-					    FALSE);
-
-		gdk_window_scroll((GTK_WIDGET(terminal))->window,
-				  0, delta * height);
-		if (delta > 0) {
-			vte_invalidate_cells(terminal,
-					     0, terminal->column_count,
-					     row, delta);
-		} else {
-			vte_invalidate_cells(terminal,
-					     0, terminal->column_count,
-					     row + terminal->row_count + delta,
-					     -delta);
-		}
-		repaint = FALSE;
-	}
-
-	if (repaint) {
-		if (terminal->pvt->scroll_background) {
-			/* We have to repaint the entire window. */
-			vte_invalidate_all(terminal);
-		} else {
-			/* We have to repaint the area which is to be
-			 * scrolled. */
-			vte_invalidate_cells(terminal,
-					     0, terminal->column_count,
-					     row, count);
-		}
+	if (terminal->pvt->scroll_background) {
+		/* We have to repaint the entire window. */
+		vte_invalidate_all(terminal);
+	} else {
+		/* We have to repaint the area which is to be
+		 * scrolled. */
+		vte_invalidate_cells(terminal,
+				     0, terminal->column_count,
+				     row, count);
 	}
 }
 
@@ -797,7 +762,6 @@ vte_terminal_preedit_width(VteTerminal *terminal, gboolean left_only)
 static gssize
 vte_terminal_preedit_length(VteTerminal *terminal, gboolean left_only)
 {
-	gunichar c;
 	int i = 0;
 	const char *preedit = NULL;
 
@@ -810,7 +774,6 @@ vte_terminal_preedit_length(VteTerminal *terminal, gboolean left_only)
 		     (preedit[0] != '\0') &&
 		     (!left_only || (i < terminal->pvt->im_preedit_cursor));
 		     i++) {
-			c = g_utf8_get_char(preedit);
 			preedit = g_utf8_next_char(preedit);
 		}
 	}
@@ -2281,9 +2244,6 @@ vte_sequence_handler_al(VteTerminal *terminal,
 		param = g_value_get_long(value);
 	}
 
-	/* Update the display. */
-	vte_terminal_scroll_region(terminal, start, end - start + 1, param);
-
 	/* Insert the right number of lines. */
 	for (i = 0; i < param; i++) {
 		/* Clear a line off the end of the region and add one to the
@@ -2300,6 +2260,9 @@ vte_sequence_handler_al(VteTerminal *terminal,
 		/* Adjust the scrollbars if necessary. */
 		vte_terminal_adjust_adjustments(terminal, FALSE);
 	}
+
+	/* Update the display. */
+	vte_terminal_scroll_region(terminal, start, end - start + 1, param);
 
 	/* We've modified the display.  Make a note of it. */
 	terminal->pvt->text_deleted_count++;
@@ -2917,9 +2880,6 @@ vte_sequence_handler_dl(VteTerminal *terminal,
 		param = g_value_get_long(value);
 	}
 
-	/* Update the display. */
-	vte_terminal_scroll_region(terminal, start, end - start + 1, -param);
-
 	/* Delete the right number of lines. */
 	for (i = 0; i < param; i++) {
 		/* Clear a line off the end of the region and add one to the
@@ -2929,6 +2889,9 @@ vte_sequence_handler_dl(VteTerminal *terminal,
 		/* Adjust the scrollbars if necessary. */
 		vte_terminal_adjust_adjustments(terminal, FALSE);
 	}
+
+	/* Update the display. */
+	vte_terminal_scroll_region(terminal, start, end - start + 1, -param);
 
 	/* We've modified the display.  Make a note of it. */
 	terminal->pvt->text_deleted_count++;
@@ -3880,12 +3843,12 @@ vte_sequence_handler_sr(VteTerminal *terminal,
 	}
 
 	if (screen->cursor_current.row == start) {
-		/* Update the display. */
-		vte_terminal_scroll_region(terminal, start, end - start + 1, 1);
 		/* If we're at the top of the scrolling region, add a
 		 * line at the top to scroll the bottom off. */
 		vte_remove_line_internal(terminal, end);
 		vte_insert_line_internal(terminal, start);
+		/* Update the display. */
+		vte_terminal_scroll_region(terminal, start, end - start + 1, 1);
 		vte_invalidate_cells(terminal,
 				     0, terminal->column_count,
 				     start, 2);
@@ -5432,8 +5395,6 @@ vte_sequence_handler_insert_lines(VteTerminal *terminal,
 	} else {
 		end = screen->insert_delta + terminal->row_count - 1;
 	}
-	/* Update the display. */
-	vte_terminal_scroll_region(terminal, row, end - row + 1, param);
 	/* Insert the new lines at the cursor. */
 	for (i = 0; i < param; i++) {
 		/* Clear a line off the end of the region and add one to the
@@ -5448,6 +5409,8 @@ vte_sequence_handler_insert_lines(VteTerminal *terminal,
 				 &screen->fill_defaults,
 				 terminal->column_count);
 	}
+	/* Update the display. */
+	vte_terminal_scroll_region(terminal, row, end - row + 1, param);
 	/* Adjust the scrollbars if necessary. */
 	vte_terminal_adjust_adjustments(terminal, FALSE);
 	/* We've modified the display.  Make a note of it. */
@@ -5483,8 +5446,6 @@ vte_sequence_handler_delete_lines(VteTerminal *terminal,
 	} else {
 		end = screen->insert_delta + terminal->row_count - 1;
 	}
-	/* Update the display. */
-	vte_terminal_scroll_region(terminal, row, end - row + 1, -param);
 	/* Clear them from below the current cursor. */
 	for (i = 0; i < param; i++) {
 		/* Insert a line at the end of the region and remove one from
@@ -5499,6 +5460,8 @@ vte_sequence_handler_delete_lines(VteTerminal *terminal,
 				 &screen->fill_defaults,
 				 terminal->column_count);
 	}
+	/* Update the display. */
+	vte_terminal_scroll_region(terminal, row, end - row + 1, -param);
 	/* Adjust the scrollbars if necessary. */
 	vte_terminal_adjust_adjustments(terminal, FALSE);
 	/* We've modified the display.  Make a note of it. */
@@ -7634,8 +7597,6 @@ vte_terminal_process_incoming(VteTerminal *terminal)
 				vte_terminal_ensure_cursor(terminal, FALSE);
 				inserted = FALSE;
 			}
-			/* Flush any pending "inserted" signals. */
-			vte_terminal_emit_pending_text_signals(terminal, quark);
 			/* Call the right sequence handler for the requested
 			 * behavior. */
 			again = vte_terminal_handle_sequence(GTK_WIDGET(terminal),
@@ -7644,8 +7605,6 @@ vte_terminal_process_incoming(VteTerminal *terminal)
 							     params);
 			/* Skip over the proper number of unicode chars. */
 			start = (next - wbuf);
-			/* Flush any pending signals. */
-			vte_terminal_emit_pending_text_signals(terminal, quark);
 			modified = TRUE;
 		} else
 		/* Second, we have a NULL match, and next points to the very
@@ -7936,6 +7895,7 @@ vte_terminal_io_read(GIOChannel *channel,
 			case EBUSY: /* do nothing */
 				break;
 			default:
+				/* Translators: %s is replaced with error message returned by strerror(). */
 				g_warning(_("Error reading from child: "
 					    "%s."), strerror(errno));
 				leave_open = TRUE;
@@ -8350,7 +8310,17 @@ vte_terminal_style_changed(GtkWidget *widget, GtkStyle *style, gpointer data)
 {
 	VteTerminal *terminal;
 	g_return_if_fail(VTE_IS_TERMINAL(widget));
+	if (!GTK_WIDGET_REALIZED(widget)) {
+#ifdef VTE_DEBUG
+		if (_vte_debug_on(VTE_DEBUG_MISC)) {
+			fprintf(stderr, "Don't change style if we aren't realized.\n");
+		}
+#endif
+		return;
+	}
+
 	terminal = VTE_TERMINAL(widget);
+
 	/* If the font we're using is the same as the old default, then we
 	 * need to pick up the new default. */
 	if (pango_font_description_equal(style->font_desc,
@@ -10954,9 +10924,9 @@ vte_terminal_handle_scroll(VteTerminal *terminal)
 		    fprintf(stderr, "Scrolling by %ld\n", dy);
 	      }
 #endif
+		vte_terminal_match_contents_clear(terminal);
 		vte_terminal_scroll_region(terminal, screen->scroll_delta,
 					   terminal->row_count, -dy);
-		vte_terminal_match_contents_clear(terminal);
 		vte_terminal_emit_text_scrolled(terminal, dy);
 		vte_terminal_emit_contents_changed(terminal);
 	}
@@ -11011,13 +10981,9 @@ vte_terminal_set_scroll_adjustment(VteTerminal *terminal,
 void
 vte_terminal_set_emulation(VteTerminal *terminal, const char *emulation)
 {
-	const char *code, *value;
-	gboolean found_cr = FALSE, found_lf = FALSE;
-	char *stripped;
-	gssize stripped_length;
+	const char *code;
 	int columns, rows;
 	GQuark quark;
-	char *tmp;
 	int i;
 
 	/* Set the emulation type, for reference. */
@@ -11038,7 +11004,7 @@ vte_terminal_set_emulation(VteTerminal *terminal, const char *emulation)
 	if (terminal->pvt->matcher != NULL) {
 		_vte_matcher_free(terminal->pvt->matcher);
 	}
-	terminal->pvt->matcher = _vte_matcher_new(emulation);
+	terminal->pvt->matcher = _vte_matcher_new(emulation, terminal->pvt->termcap);
 
 	/* Create a tree to hold the handlers. */
 	if (terminal->pvt->sequences) {
@@ -11053,69 +11019,6 @@ vte_terminal_set_emulation(VteTerminal *terminal, const char *emulation)
 				      (gpointer)vte_sequence_handlers[i].handler);
 		}
 	}
-
-	/* Load the known capability strings from the termcap structure into
-	 * the table for recognition. */
-	for (i = 0;
-	     _vte_terminal_capability_strings[i].capability != NULL;
-	     i++) {
-		if (_vte_terminal_capability_strings[i].key) {
-			continue;
-		}
-		code = _vte_terminal_capability_strings[i].capability;
-		tmp = _vte_termcap_find_string(terminal->pvt->termcap,
-					       terminal->pvt->emulation,
-					       code);
-		if ((tmp != NULL) && (tmp[0] != '\0')) {
-			_vte_termcap_strip(tmp, &stripped, &stripped_length);
-			_vte_matcher_add(terminal->pvt->matcher,
-					 stripped, stripped_length,
-					 code, 0);
-			if (stripped[0] == '\r') {
-				found_cr = TRUE;
-			} else
-			if (stripped[0] == '\n') {
-				if ((strcmp(code, "sf") == 0) ||
-				    (strcmp(code, "do") == 0)) {
-					found_lf = TRUE;
-				}
-			}
-			g_free(stripped);
-		}
-		g_free(tmp);
-	}
-
-	/* Add emulator-specific sequences. */
-	if (strstr(emulation, "xterm") || strstr(emulation, "dtterm")) {
-		/* Add all of the xterm-specific stuff. */
-		for (i = 0;
-		     _vte_xterm_capability_strings[i].value != NULL;
-		     i++) {
-			code = _vte_xterm_capability_strings[i].code;
-			value = _vte_xterm_capability_strings[i].value;
-			_vte_termcap_strip(code, &stripped, &stripped_length);
-			_vte_matcher_add(terminal->pvt->matcher,
-					 stripped, stripped_length,
-					 value, 0);
-			g_free(stripped);
-		}
-	}
-
-	/* Always define cr and lf. */
-	if (!found_cr) {
-		_vte_matcher_add(terminal->pvt->matcher, "\r", 1, "cr", 0);
-	}
-	if (!found_lf) {
-		_vte_matcher_add(terminal->pvt->matcher, "\n", 1, "sf", 0);
-	}
-
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_MISC)) {
-		fprintf(stderr, "Trie contents:\n");
-		_vte_matcher_print(terminal->pvt->matcher);
-		fprintf(stderr, "\n");
-	}
-#endif
 
 	/* Read emulation flags. */
 	terminal->pvt->flags.am = _vte_termcap_find_boolean(terminal->pvt->termcap,
@@ -11405,7 +11308,6 @@ vte_terminal_init(VteTerminal *terminal, gpointer *klass)
 	/* Setting the terminal type and size requires the PTY master to
 	 * be set up properly first. */
 	pvt->pty_master = -1;
-	vte_terminal_set_termcap(terminal, NULL, FALSE);
 	vte_terminal_set_emulation(terminal, NULL);
 	vte_terminal_set_size(terminal,
 			      pvt->default_column_count,
@@ -11618,8 +11520,6 @@ vte_terminal_init(VteTerminal *terminal, gpointer *klass)
 			 G_CALLBACK(vte_terminal_style_changed),
 			 NULL);
 
-	/* Our accessible peer. */
-	pvt->accessible = NULL;
 	pvt->accessible_emit = FALSE;
 
 #ifdef VTE_DEBUG
@@ -11854,11 +11754,13 @@ vte_terminal_unrealize(GtkWidget *widget)
 
 	/* Unmap the widget if it hasn't been already. */
 	if (GTK_WIDGET_MAPPED(widget)) {
+	  
 		gtk_widget_unmap(widget);
 	}
 
 	/* Remove the GDK window. */
 	if (widget->window != NULL) {
+	        gdk_window_set_user_data(widget->window, NULL);
 		gdk_window_destroy(widget->window);
 		widget->window = NULL;
 	}
@@ -12102,21 +12004,6 @@ vte_terminal_finalize(GObject *object)
 	}
 	_vte_termcap_free(terminal->pvt->termcap);
 	terminal->pvt->termcap = NULL;
-
-	/* Shut down accessibility. */
-	if (terminal->pvt->accessible != NULL) {
-		g_object_remove_weak_pointer(G_OBJECT(terminal->pvt->accessible),
-					     &terminal->pvt->accessible);
-#ifdef VTE_DEBUG
-		if (_vte_debug_on(VTE_DEBUG_LIFECYCLE)) {
-			fprintf(stderr, "Accessible peer has refcount %d "
-				"before we unref it.\n",
-				(G_OBJECT(terminal->pvt->accessible))->ref_count);
-		}
-#endif
-		g_object_unref(G_OBJECT(terminal->pvt->accessible));
-		terminal->pvt->accessible = NULL;
-	}
 
 	/* Done with our private data. */
 	g_free(terminal->pvt);
@@ -14286,21 +14173,39 @@ vte_terminal_scroll(GtkWidget *widget, GdkEventScroll *event)
 static AtkObject *
 vte_terminal_get_accessible(GtkWidget *widget)
 {
-	AtkObject *access;
 	VteTerminal *terminal;
+	static gboolean first_time = TRUE;
+
 	g_return_val_if_fail(VTE_IS_TERMINAL(widget), NULL);
 	terminal = VTE_TERMINAL(widget);
-	if (terminal->pvt->accessible != NULL) {
-		access = terminal->pvt->accessible;
-	} else {
-		access = vte_terminal_accessible_new(terminal);
-		if (ATK_IS_OBJECT(access)) {
-			terminal->pvt->accessible = access;
-			g_object_add_weak_pointer(G_OBJECT(access),
-						  &terminal->pvt->accessible);
+
+	if (first_time) {
+		AtkObjectFactory *factory;
+		AtkRegistry *registry;
+		GType derived_type;
+		GType derived_atk_type;
+
+		/*
+		 * Figure out whether accessibility is enabled by looking at the
+		 * type of the accessible object which would be created for
+		 * the parent type of VteTerminal.
+		 */
+		derived_type = g_type_parent (VTE_TYPE_TERMINAL);
+
+		registry = atk_get_default_registry ();
+		factory = atk_registry_get_factory (registry,
+						    derived_type);
+
+		derived_atk_type = atk_object_factory_get_accessible_type (factory);
+		if (g_type_is_a (derived_atk_type, GTK_TYPE_ACCESSIBLE)) {
+			atk_registry_set_factory_type (registry,
+						       VTE_TYPE_TERMINAL,
+						       vte_terminal_accessible_factory_get_type ());
 		}
+		first_time = FALSE;
 	}
-	return access;
+
+	return GTK_WIDGET_CLASS (parent_class)->get_accessible (widget);
 }
 
 /* Initialize methods. */
@@ -14324,6 +14229,7 @@ vte_terminal_class_init(VteTerminalClass *klass, gconstpointer data)
 	gobject_class = G_OBJECT_CLASS(klass);
 	widget_class = GTK_WIDGET_CLASS(klass);
 
+	parent_class = g_type_class_peek_parent (klass);
 	/* Override some of the default handlers. */
 	gobject_class->finalize = vte_terminal_finalize;
 	widget_class->realize = vte_terminal_realize;
@@ -15895,6 +15801,78 @@ _vte_terminal_accessible_ref(VteTerminal *terminal)
 {
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
 	terminal->pvt->accessible_emit = TRUE;
+}
+
+char *
+_vte_terminal_get_selection(VteTerminal *terminal)
+{
+	g_return_val_if_fail(VTE_IS_TERMINAL(terminal), NULL);
+
+	return g_strdup (terminal->pvt->selection);
+}
+
+void
+_vte_terminal_get_start_selection(VteTerminal *terminal, long *x, long *y)
+{
+	struct selection_cell_coords ss;
+
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+
+	ss = terminal->pvt->selection_start;
+
+	if (x) {
+		*x = ss.x;
+	}
+
+	if (y) {
+		*y = ss.y;
+	}
+}
+
+void
+_vte_terminal_get_end_selection(VteTerminal *terminal, long *x, long *y)
+{
+	struct selection_cell_coords se;
+
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+
+	se = terminal->pvt->selection_end;
+
+	if (x) {
+		*x = se.x;
+	}
+
+	if (y) {
+		*y = se.y;
+	}
+}
+
+void
+_vte_terminal_select_text(VteTerminal *terminal, long start_x, long start_y, long end_x, long end_y, int start_offset, int end_offset)
+{
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+
+	terminal->pvt->selection_type = selection_type_char;
+	terminal->pvt->has_selection = TRUE;
+	terminal->pvt->selecting_had_delta = TRUE;
+	terminal->pvt->selection_start.x = start_x;
+	terminal->pvt->selection_start.y = start_y;
+	terminal->pvt->selection_end.x = end_x;
+	terminal->pvt->selection_end.y = end_y;
+	vte_terminal_copy(terminal,
+			  GDK_SELECTION_PRIMARY);
+	vte_invalidate_cells (terminal, 0,
+			      terminal->column_count,
+			      MIN (start_y, end_y),
+			      ABS (start_y - end_y) + 1);
+
+	vte_terminal_emit_selection_changed(terminal);
+}
+
+void
+_vte_terminal_remove_selection(VteTerminal *terminal)
+{
+	vte_terminal_deselect_all (terminal);
 }
 
 static gboolean display_timeout (gpointer data);

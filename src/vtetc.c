@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtetc.c,v 1.3 2003/05/19 22:48:58 nalin Exp $"
+#ident "$Id: vtetc.c,v 1.5 2005/08/12 19:51:50 kmaraas Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <ctype.h>
@@ -49,6 +49,9 @@ struct _vte_termcap {
 	} *names;
 	GTree *nametree;
 };
+
+static GStaticMutex _vte_termcap_mutex = G_STATIC_MUTEX_INIT;
+static GCache *_vte_termcap_cache = NULL;
 
 static char *
 nextline(FILE *fp, gssize *outlen)
@@ -334,12 +337,20 @@ _vte_direct_compare(gconstpointer a, gconstpointer b)
 	return GPOINTER_TO_INT(a) - GPOINTER_TO_INT(b);
 }
 
-TERMCAP_MAYBE_STATIC struct _vte_termcap *
-_vte_termcap_new(const char *filename)
+/* Allocates and initializes new termcap instance. */
+static gpointer
+_vte_termcap_create(gpointer key)
 {
+	const char *filename = key;
+	struct _vte_termcap *ret = NULL;
 	FILE *fp;
 	char *s, *stripped, *comment = NULL;
-	struct _vte_termcap *ret = NULL;
+
+#ifdef VTE_DEBUG
+	if (_vte_debug_on(VTE_DEBUG_LIFECYCLE)) {
+		fprintf(stderr, "_vte_termcap_create()\n");
+	}
+#endif
 	fp = fopen(filename, "r");
 	if (fp != NULL) {
 		while ((s = nextline_with_continuation(fp)) != NULL) {
@@ -392,18 +403,22 @@ _vte_termcap_new(const char *filename)
 	return ret;
 }
 
-/**
- * _vte_termcap_free:
- * @termcap: the structure to be freed
- *
- * Frees the indicated structure.
- *
- */
-TERMCAP_MAYBE_STATIC void
-_vte_termcap_free(struct _vte_termcap *termcap)
+/* Noone uses termcap, destroy it. */
+static void
+_vte_termcap_destroy(gpointer key)
 {
+	struct _vte_termcap *termcap = key;
 	struct _vte_termcap_entry *entry, *nextentry;
 	struct _vte_termcap_alias *alias, *nextalias;
+
+	if (termcap == NULL)
+		return;
+
+#ifdef VTE_DEBUG
+	if (_vte_debug_on(VTE_DEBUG_LIFECYCLE)) {
+		fprintf(stderr, "_vte_termcap_destroy()\n");
+	}
+#endif
 	for (entry = termcap->entries; entry != NULL; entry = nextentry) {
 		nextentry = entry->next;
 		g_free(entry->comment);
@@ -423,6 +438,39 @@ _vte_termcap_free(struct _vte_termcap *termcap)
 	g_free(termcap->comment);
 	termcap->comment = NULL;
 	g_free(termcap);
+}
+
+TERMCAP_MAYBE_STATIC struct _vte_termcap *
+_vte_termcap_new(char *filename)
+{
+	struct _vte_termcap *ret = NULL;
+	g_static_mutex_lock(&_vte_termcap_mutex);
+
+	if (_vte_termcap_cache == NULL) {
+		_vte_termcap_cache = g_cache_new(_vte_termcap_create,
+				_vte_termcap_destroy, g_strdup, g_free,
+				g_str_hash, g_direct_hash, g_str_equal);
+	}
+	ret = g_cache_insert(_vte_termcap_cache, filename);
+
+	g_static_mutex_unlock(&_vte_termcap_mutex);
+	return ret;
+}
+
+/**
+ * _vte_termcap_free:
+ * @termcap: the structure to be freed
+ *
+ * Frees the indicated structure.
+ *
+ */
+TERMCAP_MAYBE_STATIC void
+_vte_termcap_free(struct _vte_termcap *termcap)
+{
+	g_assert(_vte_termcap_cache != NULL);
+	g_static_mutex_lock(&_vte_termcap_mutex);
+	g_cache_remove(_vte_termcap_cache, termcap);
+	g_static_mutex_unlock(&_vte_termcap_mutex);
 }
 
 static const char *
