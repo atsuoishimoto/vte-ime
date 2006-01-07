@@ -1,3 +1,17 @@
+vte (1:0.11.16-0ubuntu3) dapper; urgency=low
+
+  * debian/patches/93_revert_libs.private.patch:
+    + Don't move needed libs to the private fields of the .pc file
+      Fixes Gnome BTS #322240 and Gtk#, patch from CVS
+
+ -- Sebastian Dröge <slomo@ubuntu.com>  Sat,  7 Jan 2006 02:48:49 +0100
+
+vte (1:0.11.16-0ubuntu2) dapper; urgency=low
+
+  * Rebuild to propagate libxft's change to not ship libXft.la anymore. 
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Fri,  6 Jan 2006 19:56:28 +0100
+
 vte (1:0.11.16-0ubuntu1) dapper; urgency=low
 
   * New upstream release:
