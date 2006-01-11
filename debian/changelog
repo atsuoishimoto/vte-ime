@@ -1,3 +1,17 @@
+vte (1:0.11.16-0ubuntu4) dapper; urgency=low
+
+  * Resynchronized with Debian (Ubuntu: #20716).
+  * Only changes towards Debian:
+    - debian/patches/20_gdk-warning.patch,
+      debian/patches/30_pkg-config-private-fields.patch:
+      - removed.
+    - debian/patches/93_revert_libs.private.patch
+      - added.
+    - debian/rules:
+      - removed python/vte.c removal.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Wed, 11 Jan 2006 20:35:38 +0100
+
 vte (1:0.11.16-0ubuntu3) dapper; urgency=low
 
   * debian/patches/93_revert_libs.private.patch:
@@ -8,7 +22,7 @@ vte (1:0.11.16-0ubuntu3) dapper; urgency=low
 
 vte (1:0.11.16-0ubuntu2) dapper; urgency=low
 
-  * Rebuild to propagate libxft's change to not ship libXft.la anymore. 
+  * Rebuild to propagate libxft's change to not ship libXft.la anymore.
 
  -- Daniel Holbach <daniel.holbach@ubuntu.com>  Fri,  6 Jan 2006 19:56:28 +0100
 
@@ -21,8 +35,8 @@ vte (1:0.11.16-0ubuntu1) dapper; urgency=low
     - Fix python build problems (Manish Sing)
     - Fix generation of the forkpty() method for python. (Michael Vogt)
     - Cleanups for the .pc file (Steve Langasek)
-    - Don't emit signals for every character of output. Huge performance 
-      improvement with a11y enabled. Patch from	Padraig	O'Briain.
+    - Don't emit signals for every character of output. Huge performance
+      improvement with a11y enabled. Patch from Padraig O'Briain.
   * debian/rules:
     - removal of python/vte.c doesn't seem necessary.
   * debian/patches/20_gdk-warning.patch,
@@ -31,19 +45,18 @@ vte (1:0.11.16-0ubuntu1) dapper; urgency=low
 
  -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue, 13 Dec 2005 18:08:41 +0100
 
-vte (1:0.11.15-3ubuntu1) dapper; urgency=low
+vte (1:0.11.15-4) unstable; urgency=low
 
-  * Sync with Debian.
-  * debian/patches/90_keep_fds_open.patch:
-    - make it possible to keep specific file descriptors open
-  * debian/patches/91_python_forkpty.patch:
-    - make vte_fork_pyt() available in python
-  * debian/patches/92_python_reaper.patch:
-    - make the reaper object availabe in python
-  * debian/watch:
-    - updated
+  * Build-depend on libfreetype6-dev (>= 2.0.2) to match the checks in
+    configure.in. (Closes: #340412)
+    [debian/control, debian/control.in]
+  * Use pkg-config's Libs.private and Requires.private field for libraries and
+    packages needed only for static linking instead of the Libs / Requires
+    fields; you need to build-depend on pkg-config (>= 0.18) to use these
+    fields.  Based on a patch by Steve Langasek.  (Closes: #340406)
+    [debian/patches/30_pkg-config-private-fields.patch]
 
- -- Sebastien Bacher <seb128@canonical.com>  Thu, 10 Nov 2005 22:23:42 +0100
+ -- Loic Minier <lool@dooz.org>  Wed, 23 Nov 2005 15:23:11 +0100
 
 vte (1:0.11.15-3) unstable; urgency=high
 

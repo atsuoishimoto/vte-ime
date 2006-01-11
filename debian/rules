@@ -14,9 +14,6 @@ DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/${version}
 DEB_FIXPERMS_EXCLUDE := gnome-pty-helper
 DEB_DH_MAKESHLIBS_ARGS_ALL = -V 'libvte4 (>= 1:0.11.11)'
 
-#makebuilddir/python-vte::
-#	rm python/vte.c
-
 binary-install/python-vte::
 	dh_python
 
