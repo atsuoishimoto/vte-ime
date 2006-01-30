@@ -1,3 +1,23 @@
+vte (1:0.11.17-0ubuntu1) dapper; urgency=low
+
+  * New upstream release:
+     - Revert .pc changes from previous release (Olav Vitters)
+     - Fix bug #170032 - gnome-terminal has problems with ANSI
+       (save and restore cursor position) (Olav Vitters)
+     - Fix bug #321909 – vte does not install devhelp file
+       (Guilherme de S. Pastore)
+     - Apply patch from Kjartan Maraas to replace g_return* with
+       g_assert in static functions (Guilherme de S. Pastore)
+     - Avoid guessing the user's shell until we make sure it is
+       really necessary (Guilherme de S. Pastore)
+     - Disable asserts by default (Guilherme de S. Pastore)
+  * debian/patches/05_cursor_position.patch:
+    debian/patches/93_revert_libs.private.patch:
+   - removed, by upstream
+  
+  
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Mon, 30 Jan 2006 17:16:22 +0000
+
 vte (1:0.11.16-0ubuntu5) dapper; urgency=low
 
   * debian/patches/91_keep_fds.patch,

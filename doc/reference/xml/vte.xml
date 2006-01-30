@@ -201,9 +201,10 @@ const <link linkend="char">char</link>* <link linkend="vte-terminal-get-window-t
 <synopsis>
 
   <link linkend="GObject">GObject</link>
-   +----<link linkend="GtkObject">GtkObject</link>
-         +----<link linkend="GtkWidget">GtkWidget</link>
-               +----VteTerminal
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkWidget">GtkWidget</link>
+                     +----VteTerminal
 </synopsis>
 
 </refsect1>

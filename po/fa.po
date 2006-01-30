@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-12 19:52+0100\n"
+"POT-Creation-Date: 2006-01-28 18:25-0200\n"
 "PO-Revision-Date: 2004-01-03 20:07+0330\n"
 "Last-Translator: Roozbeh Pournader <roozbeh@sharif.edu>\n"
 "Language-Team: Persian <farsi@lists.sharif.edu>\n"
@@ -72,28 +72,28 @@ msgid "No handler for control sequence `%s' defined."
 msgstr ""
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7899
+#: src/vte.c:7929
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "خطا در خواندن از فرزند: %s."
 
-#: src/vte.c:8021 src/vte.c:8906
+#: src/vte.c:8051 src/vte.c:8936
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr ""
 
-#: src/vte.c:10849
+#: src/vte.c:10879
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "خطا در خواندن اندازه‌ی PTY، از پیشفرض‌ها استفاده می‌کنیم: %s."
 
-#: src/vte.c:10885
+#: src/vte.c:10915
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "خطا در تنظیم اندازه‌ی  PTY: %s."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15321
+#: src/vte.c:15327
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "‎_vte_conv_open()‎ نتوانست نویسه‌های کلمه را تنظیم کند"
 

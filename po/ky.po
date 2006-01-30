@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ky\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-12 19:52+0100\n"
+"POT-Creation-Date: 2006-01-28 18:25-0200\n"
 "PO-Revision-Date: 2005-11-16 18:43+0500\n"
 "Last-Translator: Timur Jamakeev <ztimur@gmail.com>\n"
 "Language-Team: Kirghiz\n"
@@ -74,28 +74,28 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "\"%s\" башкаруу удаалаштыгы үчүн аткаруучу аныкталган эмес."
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7899
+#: src/vte.c:7929
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "Тукумдан (child) окуу катасы: %s."
 
-#: src/vte.c:8021 src/vte.c:8906
+#: src/vte.c:8051 src/vte.c:8936
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr "Тукум (child) берилиштерин конвертация катасы (%s), калтырылды."
 
-#: src/vte.c:10849
+#: src/vte.c:10879
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "PTY өлчөмүн окуу катасы, алдыналынган маанилер колдонулат: %s."
 
-#: src/vte.c:10885
+#: src/vte.c:10915
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "PTY өлчөмүн орнотуу катасы: %s."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15321
+#: src/vte.c:15327
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "Сөздө символду орнотууда _vte_conv_open() функциясынын катасы"
 
