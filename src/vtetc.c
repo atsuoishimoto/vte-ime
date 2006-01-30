@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtetc.c,v 1.5 2005/08/12 19:51:50 kmaraas Exp $"
+#ident "$Id: vtetc.c,v 1.6 2006/01/15 21:09:41 gpastore Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <ctype.h>
@@ -482,11 +482,11 @@ _vte_termcap_find_l(struct _vte_termcap *termcap, const char *tname, gssize len,
 	char *ttname;
 	gssize clen;
 
-	g_return_val_if_fail(termcap != NULL, "");
-	g_return_val_if_fail(tname != NULL, "");
-	g_return_val_if_fail(len > 0, "");
-	g_return_val_if_fail(cap != NULL, "");
-	g_return_val_if_fail(strlen(cap) > 0, "");
+	g_assert(termcap != NULL);
+	g_assert(tname != NULL);
+	g_assert(len > 0);
+	g_assert(cap != NULL);
+	g_assert(strlen(cap) > 0);
 
 	/* Find the entry by this name. */
 	ttname = g_strndup(tname, len);
@@ -575,7 +575,7 @@ static const char *
 _vte_termcap_find(struct _vte_termcap *termcap,
 		  const char *tname, const char *cap)
 {
-	g_return_val_if_fail(termcap != NULL, "");
+	g_assert(termcap != NULL);
 	return _vte_termcap_find_l(termcap, tname, strlen(tname), cap);
 }
 

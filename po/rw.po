@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-12 19:52+0100\n"
+"POT-Creation-Date: 2006-01-28 18:25-0200\n"
 "PO-Revision-Date: 2005-03-28 19:36-0700\n"
 "Last-Translator: Steve Murphy <murf@e-tools.com>\n"
 "Language-Team: Kinyarwanda <translation-team-rw@lists.sourceforge.net>\n"
@@ -82,28 +82,28 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "kugirango Igenzura"
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7899
+#: src/vte.c:7929
 #, fuzzy, c-format
 msgid "Error reading from child: %s."
 msgstr "Bivuye"
 
-#: src/vte.c:8021 src/vte.c:8906
+#: src/vte.c:8051 src/vte.c:8936
 #, fuzzy, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr "Guhindura.... Ibyatanzwe kugirango"
 
-#: src/vte.c:10849
+#: src/vte.c:10879
 #, fuzzy, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "Ingano ikoresha"
 
-#: src/vte.c:10885
+#: src/vte.c:10915
 #, fuzzy, c-format
 msgid "Error setting PTY size: %s."
 msgstr "Igenamiterere Ingano"
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15321
+#: src/vte.c:15327
 #, fuzzy
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "Byanze Igenamiterere ijambo Inyuguti"

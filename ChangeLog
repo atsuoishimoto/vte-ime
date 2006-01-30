@@ -1,3 +1,37 @@
+2006-01-28  Guilherme de S. Pastore  <gpastore@gnome.org>
+
+	* src/Makefile.am: add -DG_DISABLE_ASSERT to CFLAGS.
+
+	* NEWS: updated.
+
+	* vte.spec: bumped version to 0.11.17.
+
+2006-01-28  Guilherme de S. Pastore  <gpastore@gnome.org>
+
+	* src/vte.c: only try to guess the user's shell when actually
+	  forking, so we avoid unnecessary work if the application
+	  already has to do that itself.
+	
+2006-01-15  Guilherme de S. Pastore  <gpastore@gnome.org>
+
+	* src/: applied patch from Kjartan Maraas that replaces g_return
+	  functions with g_assert. Should give an 8% speed boost.
+
+2006-01-14  Guilherme de S. Pastore  <gpastore@gnome.org>
+
+	* doc/reference/Makefile.am: install more than *.html, based on the
+	  patch from Ed Catmur. Closes bug #321909.
+
+2006-01-14  Olav Vitters  <olav@bkor.dhs.org>
+
+	* src/caps.c: Support save and restore cursor position using \033[s
+	and \033[u. Reported by Dag Wieers. Fixes bug 170032.
+
+2005-12-31  Olav Vitters  <olav@bkor.dhs.org>
+
+	* vte.pc.in: Backup patch from Steve Langasek. It needs pkg-config
+	changes.
+
 2005-12-12  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* vte.pc.in: Cleanups for the pkg-config file.

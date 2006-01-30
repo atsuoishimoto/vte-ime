@@ -2,7 +2,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>VteTerminalAccessible</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.69.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
 <link rel="start" href="index.html" title="VTE Reference Manual">
 <link rel="up" href="ch01.html" title="VTE">
 <link rel="prev" href="VteTerminal.html" title="VteTerminal">
@@ -35,54 +35,62 @@
 
 
             <a href="VteTerminalAccessible.html#VteTerminalAccessible-struct">VteTerminalAccessible</a>;
-AtkObject*  <a href="VteTerminalAccessible.html#vte-terminal-accessible-new">vte_terminal_accessible_new</a>     (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+<a
+href="/usr/share/gtk-doc/html/atk/AtkObject.html"
+>AtkObject</a>*  <a href="VteTerminalAccessible.html#vte-terminal-accessible-new">vte_terminal_accessible_new</a>     (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2749554"></a><h2>Object Hierarchy</h2>
+<a name="id2542953"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
 
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----AtkObject
-         +----<a
-href="../gtk/GtkAccessible.html"
->GtkAccessible</a>
+  GObject
+   +----<a
+href="/usr/share/gtk-doc/html/atk/AtkObject.html"
+>AtkObject</a>
+         +----GtkAccessible
                +----VteTerminalAccessible
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2749588"></a><h2>Implemented Interfaces</h2>
+<a name="id2542988"></a><h2>Implemented Interfaces</h2>
 <p>
 VteTerminalAccessible implements
- AtkComponent and  AtkText.</p>
+ <a
+href="/usr/share/gtk-doc/html/atk/AtkComponent.html"
+>AtkComponent</a> and  <a
+href="/usr/share/gtk-doc/html/atk/AtkText.html"
+>AtkText</a>.</p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2749614"></a><h2>Description</h2>
+<a name="id2543014"></a><h2>Description</h2>
 <p>
 
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2749624"></a><h2>Details</h2>
+<a name="id2543024"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2749630"></a><h3>
+<a name="id2543029"></a><h3>
 <a name="VteTerminalAccessible-struct"></a>VteTerminalAccessible</h3>
-<a class="indexterm" name="id2749641"></a><pre class="programlisting">typedef struct {
+<a class="indexterm" name="id2543041"></a><pre class="programlisting">typedef struct {
 	GtkAccessible parent;
 } VteTerminalAccessible;
 </pre>
 <p>
-This should not be accessed directly.  Use the <span class="type">AtkText</span> interface instead.
+This should not be accessed directly.  Use the <a
+href="/usr/share/gtk-doc/html/atk/AtkText.html"
+><span class="type">AtkText</span></a> interface instead.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2749666"></a><h3>
+<a name="id2543066"></a><h3>
 <a name="vte-terminal-accessible-new"></a>vte_terminal_accessible_new ()</h3>
-<a class="indexterm" name="id2749677"></a><pre class="programlisting">AtkObject*  vte_terminal_accessible_new     (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<a class="indexterm" name="id2543076"></a><pre class="programlisting"><a
+href="/usr/share/gtk-doc/html/atk/AtkObject.html"
+>AtkObject</a>*  vte_terminal_accessible_new     (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Creates a new accessibility peer for the terminal widget.</p>
 <p>
@@ -100,7 +108,9 @@ Creates a new accessibility peer for the terminal widget.</p>
 <tr>
 <td>
 <span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> the new <span class="type">AtkObject</span>
+<td> the new <a
+href="/usr/share/gtk-doc/html/atk/AtkObject.html"
+><span class="type">AtkObject</span></a>
 </td>
 </tr>
 </tbody>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-12 19:52+0100\n"
+"POT-Creation-Date: 2006-01-28 18:25-0200\n"
 "PO-Revision-Date: 2003-05-31 11:29+0200\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -73,28 +73,28 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "Kein Handler für Kontrollsequenz »%s« festgelegt."
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7899
+#: src/vte.c:7929
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "Fehler beim Lesen von Kind: %s."
 
-#: src/vte.c:8021 src/vte.c:8906
+#: src/vte.c:8051 src/vte.c:8936
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr "Fehler (%s) beim Konvertieren der Daten für Kind, abgebrochen."
 
-#: src/vte.c:10849
+#: src/vte.c:10879
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "Fehler beim Ermitteln der PTY-Größe, Vorgaben werden verwendet: %s."
 
-#: src/vte.c:10885
+#: src/vte.c:10915
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "Fehler beim Festlegen der PTY-Größe: %s."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15321
+#: src/vte.c:15327
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "_vte_conv_open() konnte die Zeichen des Wortes nicht festlegen"
 

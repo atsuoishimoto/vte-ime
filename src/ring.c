@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: ring.c,v 1.19 2003/04/24 02:50:54 nalin Exp $"
+#ident "$Id: ring.c,v 1.20 2006/01/15 21:09:40 gpastore Exp $"
 #include "../config.h"
 #include <stdio.h>
 #include <string.h>
@@ -29,7 +29,7 @@ static void
 _vte_ring_validate(VteRing * ring)
 {
 	long i, max;
-	g_return_if_fail(ring != NULL);
+	g_assert(ring != NULL);
 	g_assert(ring->length <= ring->max);
 	max = ring->delta + ring->length;
 	for (i = ring->delta; i < max; i++) {

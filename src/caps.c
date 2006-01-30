@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: caps.c,v 1.23 2004/11/17 00:23:44 nalin Exp $"
+#ident "$Id: caps.c,v 1.24 2006/01/14 13:10:33 ovitters Exp $"
 #include "../config.h"
 #include <stdlib.h>
 #include <glib.h>
@@ -498,7 +498,9 @@ struct _vte_capability_string _vte_xterm_capability_strings[] = {
 	{CSI "r", "set-scrolling-region", 0},
 	{CSI "%d;%dr", "set-scrolling-region", 0},
 	{CSI "?%mr", "restore-mode", 0},
+	{CSI "s", "save-cursor", 0},
 	{CSI "?%ms", "save-mode", 0},
+	{CSI "u", "restore-cursor", 0},
 
 	{CSI "%mt", "window-manipulation", 0},
 

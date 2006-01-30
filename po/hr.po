@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte 0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-12 19:52+0100\n"
+"POT-Creation-Date: 2006-01-28 18:25-0200\n"
 "PO-Revision-Date: 2004-02-05 23:53+CET\n"
 "Last-Translator: auto\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
@@ -72,29 +72,29 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "Nema rukovatelja za kontrolnu sekvencu `%s' ."
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7899
+#: src/vte.c:7929
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "Greška prilikom čitanja od dijeteta: %s."
 
-#: src/vte.c:8021 src/vte.c:8906
+#: src/vte.c:8051 src/vte.c:8936
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr "Greška (%s) pri konverziji podataka za dijete, odbacujem."
 
-#: src/vte.c:10849
+#: src/vte.c:10879
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr ""
 "Greška prilikom čitanja PTY veličine, koristim uobičajene postavke: %s."
 
-#: src/vte.c:10885
+#: src/vte.c:10915
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "Greška u postavljanju veličine PTY-a: %s."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15321
+#: src/vte.c:15327
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "_vte_conv_open() nije uspio postaviti znakove riječi"
 

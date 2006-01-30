@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-12 19:52+0100\n"
+"POT-Creation-Date: 2006-01-28 18:25-0200\n"
 "PO-Revision-Date: 2003-06-21 19:05+0200\n"
 "Last-Translator: Veljko M. Stanojevic <veljko@vms.homelinux.net>\n"
 "Language-Team: serbian <serbiangnome-lista@nongnu.org>\n"
@@ -78,28 +78,28 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "Nedefinisan način uptrebe kontrolnog niza `%s´."
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7899
+#: src/vte.c:7929
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "Greška pri čitanju podprocesa: %s."
 
-#: src/vte.c:8021 src/vte.c:8906
+#: src/vte.c:8051 src/vte.c:8936
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr "Greška (%s) pri promeni podataka za podproces - obustavljam."
 
-#: src/vte.c:10849
+#: src/vte.c:10879
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "Greška pri čitanju veličine PTY-a, koristim polazne vrednosti: %s."
 
-#: src/vte.c:10885
+#: src/vte.c:10915
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "Greška pri postavljnju veličine PTY-a: %s."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15321
+#: src/vte.c:15327
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "_vte_conv_open() neuspešno postavljanje znakova reči"
 

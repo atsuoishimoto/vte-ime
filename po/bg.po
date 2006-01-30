@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-12 19:52+0100\n"
+"POT-Creation-Date: 2006-01-28 18:25-0200\n"
 "PO-Revision-Date: 2005-07-28 10:53+0300\n"
 "Last-Translator: Vladimir \"Kaladan\" Petkov <vpetkov@i-space.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
@@ -76,30 +76,30 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "Няма дефиниция за обработка на контролната последователност „%s“"
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7899
+#: src/vte.c:7929
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "Грешка при четене от дъщерния процес: %s."
 
-#: src/vte.c:8021 src/vte.c:8906
+#: src/vte.c:8051 src/vte.c:8936
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr ""
 "Грешка (%s) при преобразуването на данните за дъщерния процес, пропускане."
 
-#: src/vte.c:10849
+#: src/vte.c:10879
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr ""
 "Грешка при прочитането на PTY размера, използване на %s по подразбиране."
 
-#: src/vte.c:10885
+#: src/vte.c:10915
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "Грешка при задаването на PTY размера: %s."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15321
+#: src/vte.c:15327
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "_vte_conv_open() не успя да зададе символите на думите"
 
