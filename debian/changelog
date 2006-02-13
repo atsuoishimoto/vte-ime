@@ -1,3 +1,13 @@
+vte (1:0.11.18-0ubuntu1) dapper; urgency=low
+
+  * New upstream release:
+  * debian/control.in:
+    - versioned Build-Dep on gtk-doc-tools.
+  * debian/patches/07_remove_doublefree.patch:
+    - dropped, included upstream.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Mon, 13 Feb 2006 09:11:57 +0100
+
 vte (1:0.11.17-0ubuntu1) dapper; urgency=low
 
   * New upstream release:

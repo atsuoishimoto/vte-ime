@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-28 18:25-0200\n"
+"POT-Creation-Date: 2005-12-12 19:52+0100\n"
 "PO-Revision-Date: 2004-02-23 10:30+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -75,30 +75,30 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "Asnjë trajtues i prezgjedhur për sekuencën e kontrollit `%s'."
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7929
+#: src/vte.c:7899
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "Gabim gjatë leximit nga proçesi bir: %s"
 
-#: src/vte.c:8051 src/vte.c:8936
+#: src/vte.c:8021 src/vte.c:8906
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr ""
 "Gabim (%s) duke konvertuar të dhënat për proçesin bir, do të lihen si ishin."
 
-#: src/vte.c:10879
+#: src/vte.c:10849
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr ""
 "Gabim gjatë leximit të madhësisë PTY, do të përdoret vlera e prezgjedhur: %s."
 
-#: src/vte.c:10915
+#: src/vte.c:10885
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "Gabim gjatë vendosjes së madhësisë PTY: %s."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15327
+#: src/vte.c:15321
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "_vte_conv_open() dështoi në vendosjen e gërmave të fjalës"
 

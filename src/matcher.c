@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: matcher.c,v 1.6 2005/03/14 14:43:47 kmaraas Exp $"
+#ident "$Id: matcher.c,v 1.7 2006/02/03 13:27:26 behdad Exp $"
 
 #include "../config.h"
 #include <sys/types.h>
@@ -128,7 +128,7 @@ _vte_matcher_init(struct _vte_matcher *matcher, char *emulation,
 	}
 
 #ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_MISC)) {
+	if (_vte_debug_on(VTE_DEBUG_TRIE)) {
 		fprintf(stderr, "Trie contents:\n");
 		_vte_matcher_print(matcher);
 		fprintf(stderr, "\n");

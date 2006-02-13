@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte 0.11.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-28 18:25-0200\n"
+"POT-Creation-Date: 2005-12-12 19:52+0100\n"
 "PO-Revision-Date: 2005-06-15 10:58+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <l10n@opentle.org>\n"
@@ -75,28 +75,28 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "ไม่มีตัวจัดการลำดับควบคุม '%s' กำหนดไว้"
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7929
+#: src/vte.c:7899
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "เกิดข้อผิดพลาดขณะอ่านข้อมูลจากโพรเซสลูก: %s"
 
-#: src/vte.c:8051 src/vte.c:8936
+#: src/vte.c:8021 src/vte.c:8906
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr "เกิดข้อผิดพลาด (%s) ขณะแปลงข้อมูลสำหรับโพรเซสลูก จะทิ้งข้อมูลเสีย"
 
-#: src/vte.c:10879
+#: src/vte.c:10849
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "เกิดข้อผิดพลาดขณะอ่านขนาดของ PTY จะใช้ค่าปริยายแทน: %s"
 
-#: src/vte.c:10915
+#: src/vte.c:10885
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "เกิดข้อผิดพลาดขณะตั้งค่าขนาดของ PTY: %s"
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15327
+#: src/vte.c:15321
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "_vte_conv_open() ล้มเหลวขณะเตรียมใช้อักขระแบ่งคำ"
 

@@ -21,7 +21,7 @@
 #ifndef vte_debug_h_included
 #define vte_debug_h_included
 
-#ident "$Id: debug.h,v 1.15 2003/05/05 23:23:46 nalin Exp $"
+#ident "$Id: debug.h,v 1.16 2006/02/03 13:27:26 behdad Exp $"
 
 #include <glib.h>
 
@@ -40,7 +40,8 @@ typedef enum {
 	VTE_DEBUG_PTY		= 1 << 9,
 	VTE_DEBUG_CURSOR	= 1 << 10,
 	VTE_DEBUG_KEYBOARD	= 1 << 11,
-	VTE_DEBUG_LIFECYCLE	= 1 << 12
+	VTE_DEBUG_LIFECYCLE	= 1 << 12,
+	VTE_DEBUG_TRIE		= 1 << 13
 } VteDebugFlags;
 
 void _vte_debug_parse_string(const char *string);

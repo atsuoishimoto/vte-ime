@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: iso2022.c,v 1.52 2005/02/28 21:32:01 kmaraas Exp $"
+#ident "$Id: iso2022.c,v 1.53 2006/02/11 18:29:06 behdad Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <errno.h>
@@ -55,7 +55,7 @@
 /* Fudge factor we add to wide map identifiers to keep them distinct. */
 #define WIDE_FUDGE	0x100000
 /* An invalid codepoint. */
-#define INVALID_CODEPOINT 0xFFFF
+#define INVALID_CODEPOINT 0xFFFD
 
 struct _vte_iso2022_map {
 	gulong from;

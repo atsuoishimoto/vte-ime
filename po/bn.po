@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-28 18:25-0200\n"
+"POT-Creation-Date: 2005-12-12 19:52+0100\n"
 "PO-Revision-Date: 2005-09-30 02:18+0600\n"
 "Last-Translator: Samia Niamatullah <mailsamia2001@yahoo.com>\n"
 "Language-Team: Bangla <gnome-translation@bengalinux.org>\n"
@@ -76,28 +76,28 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "নিয়ন্ত্রন অনুক্রম '%s' র কোন পরিচালক স্থির করা নেই।"
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7929
+#: src/vte.c:7899
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "এই চাইল্ড থেকে পড়তে ত্রুটি হয়েছে: %s।"
 
-#: src/vte.c:8051 src/vte.c:8936
+#: src/vte.c:8021 src/vte.c:8906
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr "চাইল্ড এর জন্য উপাত্ত (%s) রুপান্তর করতে ত্রুটি হয়েছে, বাতিল করছি। "
 
-#: src/vte.c:10879
+#: src/vte.c:10849
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "ডিফল্ট মান: %s ব্যবহার করে, PTY এর আকারের মান পড়তে ত্রুটি হয়েছে।"
 
-#: src/vte.c:10915
+#: src/vte.c:10885
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "PTY এর আকার: %s স্থাপন করতে ত্রুটি হয়েছে।"
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15327
+#: src/vte.c:15321
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "_vte_conv_open() শব্দের অক্ষরগুলো বসাতে ব্যর্থ হয়েছে"
 

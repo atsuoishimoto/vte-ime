@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-28 18:25-0200\n"
+"POT-Creation-Date: 2005-12-12 19:52+0100\n"
 "PO-Revision-Date: 2005-06-05 20:23+0200\n"
 "Last-Translator: Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
 "Language-Team: Galego\n"
@@ -74,28 +74,28 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "Non existe un manexador para a secuencia de control '%s' definida."
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7929
+#: src/vte.c:7899
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "Ocorreu un erro ao ler desde o fillo: %s."
 
-#: src/vte.c:8051 src/vte.c:8936
+#: src/vte.c:8021 src/vte.c:8906
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr "Ocorreu un erro (%s) ao convertir datos desde o fillo, omitindo."
 
-#: src/vte.c:10879
+#: src/vte.c:10849
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "Ocorreu un erro ao ler o tamaño PTY, utilizando o predeterminado: %s."
 
-#: src/vte.c:10915
+#: src/vte.c:10885
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "Ocorreu un erro ao establecer o tamaño do PTY: %s."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15327
+#: src/vte.c:15321
 msgid "_vte_conv_open() failed setting word characters"
 msgstr ""
 "Ocorreu un erro en _vte_conv_open() ao establecer os caracteres da palabra"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-28 18:25-0200\n"
+"POT-Creation-Date: 2005-12-12 19:52+0100\n"
 "PO-Revision-Date: 2003-06-20 23:16+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -74,29 +74,29 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "コントロール・シーケンス '%s' のハンドラは定義されていません。"
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7929
+#: src/vte.c:7899
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "子プロセスの読み込み中にエラー: %s。"
 
-#: src/vte.c:8051 src/vte.c:8936
+#: src/vte.c:8021 src/vte.c:8906
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr "子プロセスのデータ変換中にエラー (%s) が発生しました。取り消します。"
 
-#: src/vte.c:10879
+#: src/vte.c:10849
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr ""
 "PTY サイズの読み込みに失敗しました。デフォルトのサイズ: %s を利用します。"
 
-#: src/vte.c:10915
+#: src/vte.c:10885
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "PTY サイズ: %s の設定に失敗しました。"
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15327
+#: src/vte.c:15321
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "_vte_conv_open() は文字の設定に失敗しました"
 

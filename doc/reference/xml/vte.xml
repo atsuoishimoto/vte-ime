@@ -613,7 +613,8 @@ selection.</para>
 <para>
 Sends the contents of the <link linkend="GDK-SELECTION-CLIPBOARD:CAPS"><type>GDK_SELECTION_CLIPBOARD</type></link> selection to the
 terminal's child.  If necessary, the data is converted from UTF-8 to the
-terminal's current encoding.</para>
+terminal's current encoding. It's called on paste menu item, or when
+user presses Shift+Insert.</para>
 <para>
 
 </para><variablelist role="params">
@@ -642,7 +643,7 @@ Sends the contents of the <link linkend="GDK-SELECTION-PRIMARY:CAPS"><type>GDK_S
 child.  If necessary, the data is converted from UTF-8 to the terminal's
 current encoding.  The terminal will call also paste the
 <link linkend="GDK-SELECTION-PRIMARY:CAPS"><type>GDK_SELECTION_PRIMARY</type></link> selection when the user clicks with the the second
-mouse button or presses Shift+Insert.</para>
+mouse button.</para>
 <para>
 
 </para><variablelist role="params">
