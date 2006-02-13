@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-28 18:25-0200\n"
+"POT-Creation-Date: 2005-12-12 19:52+0100\n"
 "PO-Revision-Date: 2005-02-23 10:46+0530\n"
 "Last-Translator: Amanpreet Singh Alam <amanpreetalam@yahoo.com>\n"
 "Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
@@ -76,28 +76,28 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "ਕੰਟਰੋਲ ਤਰਤੀਬ `%s' ਲਈ ਕੋਈ ਹੈਡਲਰ ਨਿਰਧਾਰਿਤ ਨਹੀ ਹੈ।"
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7929
+#: src/vte.c:7899
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "ਅਗਲੀ ਕਾਰਵਾਈ : %s ਤੋਂ ਪਡ਼ਨ ਵਿਚ ਅਸਫਲਤਾ ਹੈ।"
 
-#: src/vte.c:8051 src/vte.c:8936
+#: src/vte.c:8021 src/vte.c:8906
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr "ਗਲਤੀ ਅਗਾਂਹ ਲਈ ਡਾਟਾ ਤਬਦੀਲੀ ਸਮੇਂ (%s), ਖਤਮ ਕੀਤਾ ਗਿਆ ਹੈ।"
 
-#: src/vte.c:10879
+#: src/vte.c:10849
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "PTY ਅਕਾਰ ਪਡ਼ਨ ਵਿਚ ਗਲਤੀ ਹੈ, ਇਸ ਕਰਕੇ ਮੂਲ %s ਹੀ ਵਰਤੋਯੋਗ ਹੈ।"
 
-#: src/vte.c:10915
+#: src/vte.c:10885
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "ਗਲਤੀ PTY ਅਕਾਰ ਨਿਰਧਾਰਿਤ ਕਰਨ ਵਿਚ: %s"
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15327
+#: src/vte.c:15321
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "_vte_conv_open() ਸ਼ਬਦ ਨਿਰਧਾਰਿਤ ਕਰਨ ਵਿਚ ਅਸਫਲਤਾ"
 

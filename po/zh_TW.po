@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vte 0.11.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-28 18:25-0200\n"
+"POT-Creation-Date: 2005-12-12 19:52+0100\n"
 "PO-Revision-Date: 2003-08-19 00:45+0800\n"
 "Last-Translator: Abel Cheung <abel@oaka.org>\n"
 "Language-Team: Chinese (traditional) <community@linuxhall.org>\n"
@@ -72,28 +72,28 @@ msgid "No handler for control sequence `%s' defined."
 msgstr "未指定控制字元序列‘%s’的處理程序。"
 
 #. Translators: %s is replaced with error message returned by strerror().
-#: src/vte.c:7929
+#: src/vte.c:7899
 #, c-format
 msgid "Error reading from child: %s."
 msgstr "從副程序讀取資料時出現錯誤：%s"
 
-#: src/vte.c:8051 src/vte.c:8936
+#: src/vte.c:8021 src/vte.c:8906
 #, c-format
 msgid "Error (%s) converting data for child, dropping."
 msgstr "從副程序轉換資料時出現錯誤 (%s)，放棄。"
 
-#: src/vte.c:10879
+#: src/vte.c:10849
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr "無法讀取 PTY 的大小，使用預設定值：%s。"
 
-#: src/vte.c:10915
+#: src/vte.c:10885
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "無法設定 PTY 的大小：%s。"
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15327
+#: src/vte.c:15321
 msgid "_vte_conv_open() failed setting word characters"
 msgstr "_vte_conv_open() 無法轉換字元"
 

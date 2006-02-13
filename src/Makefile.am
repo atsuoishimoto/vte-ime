@@ -6,6 +6,7 @@ pkglib_SCRIPTS = decset osc window
 noinst_PROGRAMS = buffer dumpkeys iso2022 pty reaper reflect-text-view reflect-vte $(REFLECT_ZVT) ring mev ssfe table trie xticker vteconv vtetc
 EXTRA_DIST = \
 	$(pkglib_SCRIPTS) \
+	vteseq-gen.c \
 	genkeysyms.py \
 	iso2022.txt \
 	marshal.list \
@@ -52,6 +53,7 @@ libvte_la_SOURCES = \
 	trie.h \
 	vte.c \
 	vte.h \
+	vte-private.h \
 	vteaccess.c \
 	vteaccess.h \
 	vtebg.c \
@@ -79,6 +81,10 @@ libvte_la_SOURCES = \
 	vteregex.h \
 	vtergb.c \
 	vtergb.h \
+	vteseq.c \
+	vteseq.h \
+	vteseq-list.h \
+	vteseq-table.h \
 	vteskel.c \
 	vteskel.h \
 	vtetc.c \
@@ -307,3 +313,7 @@ ssfe_LDADD = @LDFLAGS@ @OTHERLIBS@
 xticker_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@
 xticker_SOURCES = xticker.c
 xticker_LDADD = @LIBS@ @GLIB_LIBS@
+
+vteseq-table.h: vteseq-gen.c vteseq-list.h
+	$(MAKE) vteseq-gen
+	./vteseq-gen > $@

@@ -1,126 +1,28 @@
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>VteTerminalAccessible</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.68.1">
-<link rel="start" href="index.html" title="VTE Reference Manual">
-<link rel="up" href="ch01.html" title="VTE">
-<link rel="prev" href="VteTerminal.html" title="VteTerminal">
-<link rel="next" href="VteReaper.html" title="VteReaper">
-<meta name="generator" content="GTK-Doc V1.4 (XML mode)">
-<link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="VTE">
-</head>
-<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
-<td><a accesskey="p" href="VteTerminal.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">VTE Reference Manual</th>
-<td><a accesskey="n" href="VteReaper.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr></table>
-<div class="refentry" lang="en">
-<a name="VteTerminalAccessible"></a><div class="titlepage"></div>
-<div class="refnamediv"><table width="100%"><tr>
-<td valign="top">
-<h2><span class="refentrytitle">VteTerminalAccessible</span></h2>
-<p>VteTerminalAccessible &#8212; Accessibility peer of <a href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>.</p>
-</td>
-<td valign="top" align="right"></td>
-</tr></table></div>
-<div class="refsynopsisdiv">
-<h2>Synopsis</h2>
-<pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>VteTerminalAccessible</title><meta name="generator" content="DocBook XSL Stylesheets V1.68.1"><link rel="start" href="index.html" title="VTE Reference Manual"><link rel="up" href="ch01.html" title="VTE"><link rel="prev" href="VteTerminal.html" title="VteTerminal"><link rel="next" href="VteReaper.html" title="VteReaper"><meta name="generator" content="GTK-Doc V1.3 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="VTE"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="VteTerminal.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">VTE Reference Manual</th><td><a accesskey="n" href="VteReaper.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="VteTerminalAccessible"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">VteTerminalAccessible</span></h2><p>VteTerminalAccessible &#8212; Accessibility peer of <a href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>.</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
 
             <a href="VteTerminalAccessible.html#VteTerminalAccessible-struct">VteTerminalAccessible</a>;
-<a
-href="/usr/share/gtk-doc/html/atk/AtkObject.html"
->AtkObject</a>*  <a href="VteTerminalAccessible.html#vte-terminal-accessible-new">vte_terminal_accessible_new</a>     (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+AtkObject*  <a href="VteTerminalAccessible.html#vte-terminal-accessible-new">vte_terminal_accessible_new</a>     (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 
-</pre>
-</div>
-<div class="refsect1" lang="en">
-<a name="id2542953"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id3074657"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
   GObject
-   +----<a
-href="/usr/share/gtk-doc/html/atk/AtkObject.html"
->AtkObject</a>
+   +----AtkObject
          +----GtkAccessible
                +----VteTerminalAccessible
-</pre>
-</div>
-<div class="refsect1" lang="en">
-<a name="id2542988"></a><h2>Implemented Interfaces</h2>
-<p>
+</pre></div><div class="refsect1" lang="en"><a name="id3074692"></a><h2>Implemented Interfaces</h2><p>
 VteTerminalAccessible implements
- <a
-href="/usr/share/gtk-doc/html/atk/AtkComponent.html"
->AtkComponent</a> and  <a
-href="/usr/share/gtk-doc/html/atk/AtkText.html"
->AtkText</a>.</p>
-</div>
-<div class="refsect1" lang="en">
-<a name="id2543014"></a><h2>Description</h2>
-<p>
+ AtkComponent and  AtkText.</p></div><div class="refsect1" lang="en"><a name="id3074718"></a><h2>Description</h2><p>
 
-</p>
-</div>
-<div class="refsect1" lang="en">
-<a name="id2543024"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="id2543029"></a><h3>
-<a name="VteTerminalAccessible-struct"></a>VteTerminalAccessible</h3>
-<a class="indexterm" name="id2543041"></a><pre class="programlisting">typedef struct {
+</p></div><div class="refsect1" lang="en"><a name="id3074728"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3074733"></a><h3><a name="VteTerminalAccessible-struct"></a>VteTerminalAccessible</h3><a class="indexterm" name="id3074745"></a><pre class="programlisting">typedef struct {
 	GtkAccessible parent;
 } VteTerminalAccessible;
-</pre>
-<p>
-This should not be accessed directly.  Use the <a
-href="/usr/share/gtk-doc/html/atk/AtkText.html"
-><span class="type">AtkText</span></a> interface instead.
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="id2543066"></a><h3>
-<a name="vte-terminal-accessible-new"></a>vte_terminal_accessible_new ()</h3>
-<a class="indexterm" name="id2543076"></a><pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/atk/AtkObject.html"
->AtkObject</a>*  vte_terminal_accessible_new     (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
-<p>
-Creates a new accessibility peer for the terminal widget.</p>
-<p>
+</pre><p>
+This should not be accessed directly.  Use the <span class="type">AtkText</span> interface instead.
+</p></div><hr><div class="refsect2" lang="en"><a name="id3074770"></a><h3><a name="vte-terminal-accessible-new"></a>vte_terminal_accessible_new ()</h3><a class="indexterm" name="id3074780"></a><pre class="programlisting">AtkObject*  vte_terminal_accessible_new     (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre><p>
+Creates a new accessibility peer for the terminal widget.</p><p>
 
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td>
-<span class="term"><em class="parameter"><code>terminal</code></em>&#160;:</span></td>
-<td> a <a href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>
-</td>
-</tr>
-<tr>
-<td>
-<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> the new <a
-href="/usr/share/gtk-doc/html/atk/AtkObject.html"
-><span class="type">AtkObject</span></a>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-</div>
-</div>
-<table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="VteTerminal.html"><b>&lt;&lt;&#160;VteTerminal</b></a></td>
-<td align="right"><a accesskey="n" href="VteReaper.html"><b>VteReaper&#160;&gt;&gt;</b></a></td>
-</tr></table>
-</body>
-</html>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><em class="parameter"><code>terminal</code></em> :</span></td><td> a <a href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new <span class="type">AtkObject</span>
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="VteTerminal.html"><b>&lt;&lt; VteTerminal</b></a></td><td align="right"><a accesskey="n" href="VteReaper.html"><b>VteReaper &gt;&gt;</b></a></td></tr></table></body></html>

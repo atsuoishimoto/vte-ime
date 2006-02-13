@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vteapp.c,v 1.71 2006/01/15 21:09:41 gpastore Exp $"
+#ident "$Id: vteapp.c,v 1.75 2006/02/10 09:25:56 behdad Exp $"
 
 #include "../config.h"
 
@@ -117,12 +117,20 @@ destroy_and_quit(GtkWidget *widget, gpointer data)
 static void
 destroy_and_quit_eof(GtkWidget *widget, gpointer data)
 {
-	g_print("Detected EOF.\n");
+#ifdef VTE_DEBUG
+	if (_vte_debug_on(VTE_DEBUG_MISC)) {
+		g_print("Detected EOF.\n");
+	}
+#endif
 }
 static void
 destroy_and_quit_exited(GtkWidget *widget, gpointer data)
 {
-	g_print("Detected child exit.\n");
+#ifdef VTE_DEBUG
+	if (_vte_debug_on(VTE_DEBUG_MISC)) {
+		g_print("Detected child exit.\n");
+	}
+#endif
 	destroy_and_quit(widget, data);
 }
 
@@ -670,7 +678,7 @@ main(int argc, char **argv)
 
 	/* Set the default font. */
 	if (font == NULL) {
-		font = "Sans 12";
+		font = "Monospace 12";
 	}
 	vte_terminal_set_font_from_string_full(VTE_TERMINAL(widget),
 					       font, antialias);
