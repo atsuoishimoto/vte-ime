@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vte.c,v 1.436 2006/02/11 18:24:52 behdad Exp $"
+#ident "$Id: vte.c,v 1.440 2006/02/17 12:38:42 behdad Exp $"
 
 #include "../config.h"
 
@@ -191,15 +191,47 @@ _vte_terminal_set_default_attributes(VteTerminal *terminal)
 }
 
 static gboolean
+vte_invalidate_region(VteTerminal *terminal)
+{
+	if (!terminal->pvt->update_region)
+		return FALSE;
+
+	gdk_window_invalidate_region(GTK_WIDGET(terminal)->window,
+				     terminal->pvt->update_region, FALSE);
+	gdk_region_destroy (terminal->pvt->update_region);
+	terminal->pvt->update_region = NULL;
+
+	return TRUE;
+}
+
+static gboolean
+vte_update_delay_timeout(VteTerminal *terminal)
+{
+	gboolean updated = vte_invalidate_region (terminal);
+
+	/* We only stop the timer if no update request was received in this
+	 * past cycle.
+	 */
+	if (!updated) {
+		terminal->pvt->update_timer = 0;
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
 vte_update_timeout(VteTerminal *terminal)
 {
-	terminal->pvt->update_timer = 0;
-	if (terminal->pvt->update_region) {
-		gdk_window_invalidate_region(GTK_WIDGET(terminal)->window,
-					     terminal->pvt->update_region, FALSE);
-		gdk_region_destroy (terminal->pvt->update_region);
-		terminal->pvt->update_region = NULL;
-	}
+	vte_invalidate_region(terminal);
+
+	/* Set a timer such that we do not invalidate for a while. */
+	/* This limits the number of times we draw to ~40fps. */
+	terminal->pvt->update_timer = g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
+							  terminal->row_count,
+							  vte_update_delay_timeout,
+							  terminal,
+							  NULL);
 
 	return FALSE;
 }
@@ -243,13 +275,13 @@ _vte_invalidate_cells(VteTerminal *terminal,
 	row_start -= terminal->pvt->screen->scroll_delta;
 
 	/* Clamp the start values to reasonable numbers. */
-	i = MIN (row_start + row_count, terminal->row_count);
+	i = row_start + row_count;
 	row_start = MAX (0, row_start);
-	row_count = MAX (0, i - row_start);
+	row_count = CLAMP (i - row_start, 0, terminal->row_count);
 
-	i = MIN (column_start + column_count, terminal->column_count);
+	i = column_start + column_count;
 	column_start = MAX (0, column_start);
-	column_count = MAX (0, i - column_start);
+	column_count = CLAMP (i - column_start, 0 , terminal->column_count);
 
 	/* Convert the column and row start and end to pixel values
 	 * by multiplying by the size of a character cell. */
@@ -283,12 +315,14 @@ _vte_invalidate_cells(VteTerminal *terminal,
 		else
 			gdk_region_union_with_rect (terminal->pvt->update_region, &rect);
 	} else {
-		/* Invalidate the rectangle. */
-		gdk_window_invalidate_rect(widget->window, &rect, FALSE);
-
-		/* Set a timer such that we do not invalidate for a while. */
-		/* This limits the number of times we draw to 40fps. */
-		terminal->pvt->update_timer = g_timeout_add (25, vte_update_timeout, terminal);
+		terminal->pvt->update_region = gdk_region_rectangle (&rect);
+		/* Wait a bit before doing any invalidation, just in
+		 * case updates are coming in really soon. */
+		terminal->pvt->update_timer = g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
+								  terminal->row_count/5,
+								  vte_update_timeout,
+								  terminal,
+								  NULL);
 	}
 
 }
@@ -477,9 +511,6 @@ _vte_invalidate_cursor_once(gpointer data, gboolean periodic)
 		if (preedit_width > 0) {
 			columns += preedit_width;
 			columns++; /* one more for the preedit cursor */
-		}
-		if (column + columns > terminal->column_count) {
-			column = MAX(0, terminal->column_count - columns);
 		}
 
 		_vte_invalidate_cells(terminal,
@@ -2338,7 +2369,7 @@ _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 		col = screen->cursor_current.col - columns;
 		if (insert) {
 			_vte_invalidate_cells(terminal,
-					     col, terminal->column_count - col,
+					     col, terminal->column_count,
 					     screen->cursor_current.row, 1);
 		} else {
 			_vte_invalidate_cells(terminal,
@@ -3919,9 +3950,15 @@ vte_terminal_key_press(GtkWidget *widget, GdkEventKey *event)
 		case GDK_KP_Insert:
 		case GDK_Insert:
 			if (terminal->pvt->modifiers & GDK_SHIFT_MASK) {
-				vte_terminal_paste_clipboard(terminal);
-				handled = TRUE;
-				suppress_meta_esc = TRUE;
+				if (terminal->pvt->modifiers & GDK_CONTROL_MASK) {
+					vte_terminal_paste_clipboard(terminal);
+					handled = TRUE;
+					suppress_meta_esc = TRUE;
+				} else {
+					vte_terminal_paste_primary(terminal);
+					handled = TRUE;
+					suppress_meta_esc = TRUE;
+				}
 			} else if (terminal->pvt->modifiers & GDK_CONTROL_MASK) {
 				vte_terminal_copy_clipboard(terminal);
 				handled = TRUE;
