@@ -1,3 +1,15 @@
+vte (1:0.11.19-0ubuntu1) dapper; urgency=low
+
+  * New upstream release:
+    - Revert Shift+Insert to paste PRIMARY.  Use Ctrl+Shirt+Insert to
+      paste CLIPBOARD (Malone: #31354)
+    - Improvements to the update throttling handler.
+    - gnome-pty-helper minor race condition fix.
+    - Use getpwnam to correctly log multiple users with the same UID
+    - A couple minor build fixes.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Sat, 25 Feb 2006 17:25:58 +0100
+
 vte (1:0.11.18-0ubuntu1) dapper; urgency=low
 
   * New upstream release:
