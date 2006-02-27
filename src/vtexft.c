@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtexft.c,v 1.23 2006/01/15 21:09:41 gpastore Exp $"
+#ident "$Id: vtexft.c,v 1.24 2006/02/25 23:20:42 behdad Exp $"
 
 #include "../config.h"
 
@@ -241,25 +241,15 @@ _vte_xft_font_for_char(struct _vte_xft_font *font, gunichar c)
 	for (i = font->fonts->len; i < font->patterns->len; i++) {
 		patternp = &g_array_index(font->patterns, FcPattern *, i);
 		ftfont = XftFontOpenPattern(display, *patternp);
-                
 		/* If the font was opened, it owns the pattern. */
 		if (ftfont != NULL) {
 			*patternp = NULL;
-                
-                        if (_vte_xft_char_exists(font, ftfont, c)) {
-                                g_array_append_val(font->fonts, ftfont);
-                                break;
-                        }
-
-                        /* To save memory, close fonts that don't match the pattern */
-                        XftFontClose(display, ftfont);
-                        ftfont = NULL;
-                }
-
-                /* The patterns array must match up with the fonts array, even if
-                 * that means appending a NULL to it.
-                 */
-                g_array_append_val(font->fonts, ftfont);
+		}
+		g_array_append_val(font->fonts, ftfont);
+		if ((ftfont != NULL) &&
+		    (_vte_xft_char_exists(font, ftfont, c))) {
+			break;
+		}
 	}
 
 	/* No match? */

@@ -1,3 +1,11 @@
+vte (1:0.11.20-0ubuntu1) dapper; urgency=low
+
+  * New upstream release:
+    - Revert patch introduced in 0.11.16 that was corrupting the Xft font 
+      cache.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Mon, 27 Feb 2006 08:20:20 +0100
+
 vte (1:0.11.19-0ubuntu1) dapper; urgency=low
 
   * New upstream release:
