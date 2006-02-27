@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-25 04:07-0500\n"
+"POT-Creation-Date: 2006-02-25 18:36-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,7 +104,7 @@ msgstr ""
 msgid "Unknown pixel mode %d.\n"
 msgstr ""
 
-#: src/vtexft.c:724
+#: src/vtexft.c:714
 #, c-format
 msgid "Can not draw character U+%04x.\n"
 msgstr ""
