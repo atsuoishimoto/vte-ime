@@ -51,7 +51,7 @@
 
 G_BEGIN_DECLS
 
-#ident "$Id: vte-private.h,v 1.2 2006/02/10 09:30:23 behdad Exp $"
+#ident "$Id: vte-private.h,v 1.4 2006/03/08 20:31:13 behdad Exp $"
 
 #define VTE_PAD_WIDTH			1
 #define VTE_TAB_WIDTH			8
@@ -81,8 +81,10 @@ G_BEGIN_DECLS
 #define VTE_REGEXEC_FLAGS		0
 #define VTE_INPUT_CHUNK_SIZE		0x1000
 #define VTE_INVALID_BYTE		'?'
-#define VTE_COALESCE_TIMEOUT		2
-#define VTE_DISPLAY_TIMEOUT		2
+#define VTE_COALESCE_TIMEOUT		10
+#define VTE_DISPLAY_TIMEOUT		10
+#define VTE_UPDATE_TIMEOUT		10
+#define VTE_UPDATE_REPEAT_TIMEOUT	25
 
 /* The structure we use to hold characters we're supposed to display -- this
  * includes any supported visible attributes. */
@@ -174,6 +176,9 @@ struct _VteTerminalPrivate {
 	GArray *pending;		/* pending characters */
 	gint coalesce_timeout;
 	gint display_timeout;
+	gint update_timer;
+	GdkRegion *update_region;
+
 
 	/* Output data queue. */
 	struct _vte_buffer *outgoing;	/* pending input characters */
@@ -219,9 +224,6 @@ struct _VteTerminalPrivate {
 		gboolean status_line;
 		GString *status_line_contents;
 	} normal_screen, alternate_screen, *screen;
-
-	GdkRegion *update_region;
-	gint update_timer;
 
 	/* Selection information. */
 	GArray *word_chars;
