@@ -1,3 +1,33 @@
+2006-03-08  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.11.21.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.11.21.
+
+	* configure.in: Removed kn from ALL_LINGUAS, as it was breaking
+	the build.
+
+2006-03-08  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c, src/vte-private.h: Fix vte_update_timeout repeat to
+	25ms. (bug #333776, Egmont Koblinger)
+
+2006-03-07  Abel Cheung  <maddog@linuxhall.org>
+
+	* configure.in: Added "kn" "zh_HK" to ALL_LINGUAS.
+
+2006-02-28  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h: Step up COALESCE_TIMEOUT and DISPLAY_TIMEOUT
+	from 2ms to 10ms.  This is more compatible with the updated timeout
+	that we are doing at around 25ms.
+
+2006-02-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	* MAINTAINERS: Added.
+
 2006-02-25  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.11.20.

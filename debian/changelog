@@ -1,3 +1,14 @@
+vte (1:0.11.21-0ubuntu1) dapper; urgency=low
+
+  * New upstream release
+     - Revert change introduced in 0.11.19 that made vte very unresponsive
+       with tall terminal windows. (bug #333776)
+     - Step up COALESCE_TIMEOUT and DISPLAY_TIMEOUT from 2ms to 10ms.
+       This is more compatible with the update timeout that we are doing
+       at 25ms, but needs testing.
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Thu,  9 Mar 2006 10:38:01 +0000
+
 vte (1:0.11.20-0ubuntu1) dapper; urgency=low
 
   * New upstream release:

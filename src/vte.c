@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vte.c,v 1.440 2006/02/17 12:38:42 behdad Exp $"
+#ident "$Id: vte.c,v 1.442 2006/03/08 20:31:13 behdad Exp $"
 
 #include "../config.h"
 
@@ -228,7 +228,7 @@ vte_update_timeout(VteTerminal *terminal)
 	/* Set a timer such that we do not invalidate for a while. */
 	/* This limits the number of times we draw to ~40fps. */
 	terminal->pvt->update_timer = g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
-							  terminal->row_count,
+							  VTE_UPDATE_REPEAT_TIMEOUT,
 							  vte_update_delay_timeout,
 							  terminal,
 							  NULL);
@@ -319,7 +319,7 @@ _vte_invalidate_cells(VteTerminal *terminal,
 		/* Wait a bit before doing any invalidation, just in
 		 * case updates are coming in really soon. */
 		terminal->pvt->update_timer = g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
-								  terminal->row_count/5,
+								  VTE_UPDATE_TIMEOUT,
 								  vte_update_timeout,
 								  terminal,
 								  NULL);
