@@ -1,3 +1,12 @@
+vte (1:0.12.0-0ubuntu1) dapper; urgency=low
+
+  * New upstream release:
+    - Released with no code changes.
+  * debian/patches/20_fix_irssi_and_screen_breakage_CVS.patch:
+    - patch by Behdad Esfahbod (GNOME bug 104841) (Malone: #33739)
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Mon, 13 Mar 2006 09:59:00 +0100
+
 vte (1:0.11.21-0ubuntu1) dapper; urgency=low
 
   * New upstream release
