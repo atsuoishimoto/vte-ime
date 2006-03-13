@@ -1,22 +1,54 @@
 diff -Nur vte-0.12.0/src/vte.c vte-0.12.0.new/src/vte.c
---- vte-0.12.0/src/vte.c	2006-03-13 10:06:19.000000000 +0100
-+++ vte-0.12.0.new/src/vte.c	2006-03-13 10:06:20.000000000 +0100
+--- vte-0.12.0/src/vte.c	2006-03-13 12:48:44.000000000 +0100
++++ vte-0.12.0.new/src/vte.c	2006-03-13 12:50:49.000000000 +0100
 @@ -16,7 +16,7 @@
   * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
   */
  
 -#ident "$Id: vte.c,v 1.442 2006/03/08 20:31:13 behdad Exp $"
-+#ident "$Id: vte.c,v 1.443 2006/03/13 05:46:01 behdad Exp $"
++#ident "$Id: vte.c,v 1.444 2006/03/13 11:47:22 behdad Exp $"
  
  #include "../config.h"
  
-@@ -6911,28 +6911,35 @@
+@@ -6880,6 +6880,7 @@
+ 	glong width, height;
+ 	gint x, y, w, h;
+ 	gboolean snapped_to_bottom;
++	gboolean grid_changed;
+ 
+ #ifdef VTE_DEBUG
+ 	if (_vte_debug_on(VTE_DEBUG_LIFECYCLE)) {
+@@ -6900,6 +6901,9 @@
+ 	height = (allocation->height - (2 * VTE_PAD_WIDTH)) /
+ 		 terminal->char_height;
+ 
++	grid_changed = terminal->column_count != width ||
++		       terminal->row_count != height;
++
+ #ifdef VTE_DEBUG
+ 	if (_vte_debug_on(VTE_DEBUG_MISC)) {
+ 		fprintf(stderr, "Sizing window to %dx%d (%ldx%ld).\n",
+@@ -6911,29 +6915,27 @@
  	/* Set our allocation to match the structure. */
  	widget->allocation = *allocation;
  
 -	/* Set the size of the pseudo-terminal. */
 -	vte_terminal_set_size(terminal, width, height);
-+	if (terminal->column_count != width || terminal->row_count != height) {
+-
+-	/* Adjust scrolling area in case our boundaries have just been
+-	 * redefined to be invalid. */
+-	if (terminal->pvt->screen->scrolling_restricted) {
+-		terminal->pvt->screen->scrolling_region.start =
+-			CLAMP(terminal->pvt->screen->scrolling_region.start,
+-			      terminal->pvt->screen->insert_delta,
+-			      terminal->pvt->screen->insert_delta +
+-			      terminal->row_count - 1);
+-		terminal->pvt->screen->scrolling_region.end =
+-			CLAMP(terminal->pvt->screen->scrolling_region.end,
+-			      terminal->pvt->screen->insert_delta,
+-			      terminal->pvt->screen->insert_delta +
+-			      terminal->row_count - 1);
++	if (grid_changed) {
 +		/* Set the size of the pseudo-terminal. */
 +		vte_terminal_set_size(terminal, width, height);
 +
@@ -35,50 +67,34 @@ diff -Nur vte-0.12.0/src/vte.c vte-0.12.0.new/src/vte.c
 +		vte_terminal_set_scrollback_lines(terminal,
 +						  MAX(terminal->pvt->scrollback_lines,
 +						      terminal->row_count));
- 
--	/* Adjust scrolling area in case our boundaries have just been
--	 * redefined to be invalid. */
--	if (terminal->pvt->screen->scrolling_restricted) {
--		terminal->pvt->screen->scrolling_region.start =
--			CLAMP(terminal->pvt->screen->scrolling_region.start,
--			      terminal->pvt->screen->insert_delta,
--			      terminal->pvt->screen->insert_delta +
--			      terminal->row_count - 1);
--		terminal->pvt->screen->scrolling_region.end =
--			CLAMP(terminal->pvt->screen->scrolling_region.end,
--			      terminal->pvt->screen->insert_delta,
--			      terminal->pvt->screen->insert_delta +
--			      terminal->row_count - 1);
--	}
-+		/* Adjust the adjustments. */
-+		_vte_terminal_adjust_adjustments(terminal, TRUE);
+ 	}
  
 -	/* Adjust scrollback buffers to ensure that they're big enough. */
 -	vte_terminal_set_scrollback_lines(terminal,
 -					  MAX(terminal->pvt->scrollback_lines,
 -					      terminal->row_count));
+-
+ 	/* Resize the GDK window. */
+ 	if (widget->window != NULL) {
+ 		gdk_window_get_geometry(widget->window,
+@@ -6952,13 +6954,15 @@
+ 		}
+ 	}
+ 
+-	/* Adjust the adjustments. */
+-	_vte_terminal_adjust_adjustments(terminal, TRUE);
++	if (grid_changed) {
++		/* Adjust the adjustments. */
++		_vte_terminal_adjust_adjustments(terminal, TRUE);
+ 
+-	_vte_terminal_update_insert_delta (terminal);
 +		_vte_terminal_update_insert_delta (terminal);
-+
+ 
+-	if (snapped_to_bottom) {
+-		vte_terminal_maybe_scroll_to_bottom (terminal);
 +		if (snapped_to_bottom) {
 +			vte_terminal_maybe_scroll_to_bottom (terminal);
 +		}
-+	}
- 
- 	/* Resize the GDK window. */
- 	if (widget->window != NULL) {
-@@ -6951,15 +6958,6 @@
- 			_vte_invalidate_all(terminal);
- 		}
  	}
--
--	/* Adjust the adjustments. */
--	_vte_terminal_adjust_adjustments(terminal, TRUE);
--
--	_vte_terminal_update_insert_delta (terminal);
--
--	if (snapped_to_bottom) {
--		vte_terminal_maybe_scroll_to_bottom (terminal);
--	}
  }
  
- /* Show the window. */
