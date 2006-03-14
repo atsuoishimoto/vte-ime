@@ -22,8 +22,8 @@ diff -Nur vte-0.12.0/src/vte.c vte-0.12.0.new/src/vte.c
  	height = (allocation->height - (2 * VTE_PAD_WIDTH)) /
  		 terminal->char_height;
  
-+	grid_changed = terminal->column_count != width ||
-+		       terminal->row_count != height;
++	grid_changed = 1;
++
 +
  #ifdef VTE_DEBUG
  	if (_vte_debug_on(VTE_DEBUG_MISC)) {

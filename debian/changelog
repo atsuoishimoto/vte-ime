@@ -1,3 +1,10 @@
+vte (1:0.12.0-0ubuntu3) dapper; urgency=low
+
+  * debian/patches/20_fix_irssi_and_screen_breakage_CVS.patch:
+    - a fix for the fix.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue, 14 Mar 2006 09:27:31 +0100
+
 vte (1:0.12.0-0ubuntu2) dapper; urgency=low
 
   * debian/patches/20_fix_irssi_and_screen_breakage_CVS.patch:
