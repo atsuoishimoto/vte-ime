@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vteapp.c,v 1.75 2006/02/10 09:25:56 behdad Exp $"
+#ident "$Id: vteapp.c,v 1.77 2006/03/15 11:02:59 behdad Exp $"
 
 #include "../config.h"
 
@@ -34,13 +34,7 @@
 #include "debug.h"
 #include "vte.h"
 
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#define _(String) dgettext(PACKAGE, String)
-#else
-#define _(String) String
-#define bindtextdomain(package,dir)
-#endif
+#include <glib/gi18n-lib.h>
 
 #define DINGUS1 "(((news|telnet|nttp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?"
 #define DINGUS2 "(((news|telnet|nttp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?/[-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]*[^]'\\.}>\\) ,\\\"]"
@@ -400,7 +394,11 @@ int
 main(int argc, char **argv)
 {
 	GtkWidget *window, *hbox, *scrollbar, *widget;
-	char *env_add[] = {"FOO=BAR", "BOO=BIZ", NULL};
+	char *env_add[] = {
+#ifdef VTE_DEBUG
+		"FOO=BAR", "BOO=BIZ",
+#endif
+		NULL};
 	const char *background = NULL;
 	gboolean transparent = FALSE, audible = TRUE, blink = TRUE,
 		 debug = FALSE, dingus = FALSE, geometry = TRUE, dbuffer = TRUE,
@@ -752,10 +750,12 @@ main(int argc, char **argv)
 						  command, NULL, env_add,
 						  working_directory,
 						  TRUE, TRUE, TRUE);
+	#ifdef VTE_DEBUG
 			if (command == NULL) {
 				vte_terminal_feed_child(VTE_TERMINAL(widget),
 							"pwd\n", -1);
 			}
+	#endif
 		} else {
 			long i;
 			i = vte_terminal_forkpty(VTE_TERMINAL(widget),

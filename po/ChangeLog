@@ -1,3 +1,11 @@
+2006-04-05  Priit Laes  <amd@store20.com>
+
+	* et.po: Translation updated by Ivar Smolin.
+
+2006-03-30  Guntupalli Karunakar  <karunakar@indlinux.org>
+
+        * dz.po: Added Dzongkha translation.
+
 2006-03-09  Abel Cheung  <maddog@linuxhall.org>
 
 	* kn.po: Fix msgfmt errors

@@ -84,6 +84,15 @@
   )
 )
 
+(define-method set_pty
+  (of-object "VteTerminal")
+  (c-name "vte_terminal_set_pty")
+  (return-type "none")
+  (parameters
+    '("int" "pty_master")
+  )
+)
+
 (define-method feed
   (of-object "VteTerminal")
   (c-name "vte_terminal_feed")
@@ -97,6 +106,16 @@
 (define-method feed_child
   (of-object "VteTerminal")
   (c-name "vte_terminal_feed_child")
+  (return-type "none")
+  (parameters
+    '("const-char*" "text")
+    '("glong" "length" (default "-1"))
+  )
+)
+
+(define-method feed_child_binary
+  (of-object "VteTerminal")
+  (c-name "vte_terminal_feed_child_binary")
   (return-type "none")
   (parameters
     '("const-char*" "data")

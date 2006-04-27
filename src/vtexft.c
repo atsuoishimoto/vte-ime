@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtexft.c,v 1.24 2006/02/25 23:20:42 behdad Exp $"
+#ident "$Id: vtexft.c,v 1.25 2006/03/15 11:02:59 behdad Exp $"
 
 #include "../config.h"
 
@@ -37,13 +37,7 @@
 #include "vtexft.h"
 #include "vtetree.h"
 
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#define _(String) dgettext(PACKAGE, String)
-#else
-#define _(String) String
-#define bindtextdomain(package,dir)
-#endif
+#include <glib/gi18n-lib.h>
 
 #define FONT_INDEX_FUDGE 10
 #define CHAR_WIDTH_FUDGE 10

@@ -19,7 +19,7 @@
 #ifndef vte_vte_h_included
 #define vte_vte_h_included
 
-#ident "$Id: vte.h,v 1.78 2004/05/01 07:12:51 nalin Exp $"
+#ident "$Id: vte.h,v 1.78.4.2 2006/04/20 11:18:55 behdad Exp $"
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -220,8 +220,8 @@ pid_t vte_terminal_forkpty(VteTerminal *terminal,
 /* Send data to the terminal to display, or to the terminal's forked command
  * to handle in some way.  If it's 'cat', they should be the same. */
 void vte_terminal_feed(VteTerminal *terminal, const char *data, glong length);
-void vte_terminal_feed_child(VteTerminal *terminal,
-			     const char *data, glong length);
+void vte_terminal_feed_child(VteTerminal *terminal, const char *text, glong length);
+void vte_terminal_feed_child_binary(VteTerminal *terminal, const char *data, glong length);
 
 /* Copy currently-selected text to the clipboard, or from the clipboard to
  * the terminal. */
@@ -390,6 +390,10 @@ const char *vte_terminal_get_status_line(VteTerminal *terminal);
 
 /* Get the padding the widget is using. */
 void vte_terminal_get_padding(VteTerminal *terminal, int *xpad, int *ypad);
+
+/* Attach an existing PTY master side to the terminal widget.  Use
+ * instead of vte_terminal_fork_command(). */
+void vte_terminal_set_pty(VteTerminal *terminal, int pty_master);
 
 /* Accessors for bindings. */
 GtkAdjustment *vte_terminal_get_adjustment(VteTerminal *terminal);

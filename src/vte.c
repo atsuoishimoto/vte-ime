@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vte.c,v 1.442 2006/03/08 20:31:13 behdad Exp $"
+#ident "$Id: vte.c,v 1.446.2.4 2006/04/21 06:32:04 behdad Exp $"
 
 #include "../config.h"
 
@@ -47,6 +47,7 @@
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
 #endif
+#include <glib/gi18n-lib.h>
 
 #ifndef HAVE_WINT_T
 typedef gunichar wint_t;
@@ -3209,7 +3210,7 @@ vte_terminal_process_incoming(VteTerminal *terminal)
 						    vte_cell_is_selected,
 						    NULL,
 						    NULL);
-			if ((selection == NULL) ||
+			if ((selection == NULL) || (terminal->pvt->selection == NULL) ||
 			    (strcmp(selection, terminal->pvt->selection) != 0)) {
 				vte_terminal_deselect_all(terminal);
 			}
@@ -3529,23 +3530,54 @@ vte_terminal_send(VteTerminal *terminal, const char *encoding,
 /**
  * vte_terminal_feed_child:
  * @terminal: a #VteTerminal
- * @data: data to send to the child
- * @length: length of @text
+ * @text: data to send to the child
+ * @length: length of @text in bytes, or -1 if @text is NUL-terminated
  *
  * Sends a block of UTF-8 text to the child as if it were entered by the user
  * at the keyboard.
- *
  */
 void
-vte_terminal_feed_child(VteTerminal *terminal, const char *data, glong length)
+vte_terminal_feed_child(VteTerminal *terminal, const char *text, glong length)
 {
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
 	if (length == ((gssize)-1)) {
-		length = strlen(data);
+		length = strlen(text);
 	}
 	if (length > 0) {
-		vte_terminal_send(terminal, "UTF-8", data, length,
+		vte_terminal_send(terminal, "UTF-8", text, length,
 				  FALSE, FALSE);
+	}
+}
+
+/**
+ * vte_terminal_feed_child_binary:
+ * @terminal: a #VteTerminal
+ * @data: data to send to the child
+ * @length: length of @data
+ *
+ * Sends a block of binary data to the child.
+ *
+ * Since: 0.12.1
+ */
+void
+vte_terminal_feed_child_binary(VteTerminal *terminal, const char *data, glong length)
+{
+	g_assert(VTE_IS_TERMINAL(terminal));
+
+	/* Tell observers that we're sending this to the child. */
+	if (length > 0) {
+		vte_terminal_emit_commit(terminal,
+					 data, length);
+	}
+
+	/* If there's a place for it to go, add the data to the
+	 * outgoing buffer. */
+	if ((length > 0) && (terminal->pvt->pty_master != -1)) {
+		_vte_buffer_append(terminal->pvt->outgoing,
+				   data, length);
+		/* If we need to start waiting for the child pty to
+		 * become available for writing, set that up here. */
+		_vte_terminal_connect_pty_write(terminal);
 	}
 }
 
@@ -4400,9 +4432,9 @@ vte_terminal_send_mouse_button_internal(VteTerminal *terminal,
 	cy = 32 + CLAMP(1 + (y / terminal->char_height),
 			1, terminal->row_count);;
 
-	/* Send the event to the child. */
+	/* Send event direct to the child, this is binary not text data */
 	snprintf(buf, sizeof(buf), _VTE_CAP_CSI "M%c%c%c", cb, cx, cy);
-	vte_terminal_feed_child(terminal, buf, strlen(buf));
+	vte_terminal_feed_child_binary(terminal, buf, strlen(buf));
 }
 
 /* Send a mouse button click/release notification. */
@@ -4526,9 +4558,9 @@ vte_terminal_maybe_send_mouse_drag(VteTerminal *terminal, GdkEventMotion *event)
 	cy = 32 + CLAMP(1 + ((event->y - VTE_PAD_WIDTH) / terminal->char_height),
 			1, terminal->row_count);;
 
-	/* Send the event to the child. */
+	/* Send event direct to the child, this is binary not text data */
 	snprintf(buf, sizeof(buf), "%sM%c%c%c", _VTE_CAP_CSI, cb, cx, cy);
-	vte_terminal_feed_child(terminal, buf, strlen(buf));
+	vte_terminal_feed_child_binary(terminal, buf, strlen(buf));
 }
 
 /* Clear all match hilites. */
@@ -5054,6 +5086,7 @@ vte_terminal_copy(VteTerminal *terminal, GdkAtom board)
 					    vte_cell_is_selected,
 					    NULL,
 					    NULL);
+	terminal->pvt->has_selection = TRUE;
 
 	/* Place the text on the clipboard. */
 	if (terminal->pvt->selection != NULL) {
@@ -6914,15 +6947,11 @@ vte_terminal_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 	 * redefined to be invalid. */
 	if (terminal->pvt->screen->scrolling_restricted) {
 		terminal->pvt->screen->scrolling_region.start =
-			CLAMP(terminal->pvt->screen->scrolling_region.start,
-			      terminal->pvt->screen->insert_delta,
-			      terminal->pvt->screen->insert_delta +
-			      terminal->row_count - 1);
+			MIN(terminal->pvt->screen->scrolling_region.start,
+			    terminal->row_count - 1);
 		terminal->pvt->screen->scrolling_region.end =
-			CLAMP(terminal->pvt->screen->scrolling_region.end,
-			      terminal->pvt->screen->insert_delta,
-			      terminal->pvt->screen->insert_delta +
-			      terminal->row_count - 1);
+			MIN(terminal->pvt->screen->scrolling_region.end,
+			    terminal->row_count - 1);
 	}
 
 	/* Adjust scrollback buffers to ensure that they're big enough. */
@@ -7684,8 +7713,8 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 	GdkColor color;
 
 	request.c = c;
-	request.x = x;
-	request.y = y;
+	request.x = x + VTE_PAD_WIDTH;
+	request.y = y + VTE_PAD_WIDTH;
 	request.columns = columns;
 
 	color.red = terminal->pvt->palette[fore].red;
@@ -9522,7 +9551,7 @@ vte_terminal_class_init(VteTerminalClass *klass, gconstpointer data)
 	}
 #endif
 
-	bindtextdomain(PACKAGE, LOCALEDIR);
+	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
 #ifdef HAVE_DECL_BIND_TEXTDOMAIN_CODESET
 	bind_textdomain_codeset(PACKAGE, "UTF-8");
 #endif
@@ -11102,6 +11131,47 @@ vte_terminal_get_icon_title(VteTerminal *terminal)
 	return terminal->icon_title;
 }
 
+/**
+ * vte_terminal_set_pty:
+ * @terminal: a #VteTerminal
+ * @pty_master: a file descriptor of the master end of a PTY
+ *
+ * Attach an existing PTY master side to the terminal widget.  Use
+ * instead of vte_terminal_fork_command() or vte_terminal_forkpty().
+ *
+ * Since: 0.12.1
+ */
+void
+vte_terminal_set_pty(VteTerminal *terminal, int pty_master)
+{
+       GtkWidget *widget;
+       int i;
+
+       g_return_if_fail(VTE_IS_TERMINAL(terminal));
+       widget = GTK_WIDGET(terminal);
+
+       if (terminal->pvt->pty_master != -1) {
+               _vte_pty_close(terminal->pvt->pty_master);
+               close(terminal->pvt->pty_master);
+       }
+       terminal->pvt->pty_master = pty_master;
+
+
+       /* Set the pty to be non-blocking. */
+       i = fcntl(terminal->pvt->pty_master, F_GETFL);
+       fcntl(terminal->pvt->pty_master, F_SETFL, i | O_NONBLOCK);
+
+       vte_terminal_set_size(terminal,
+                             terminal->column_count,
+                             terminal->row_count);
+
+       /* Open channels to listen for input on. */
+       _vte_terminal_connect_pty_read(terminal);
+
+       /* Open channels to write output to. */
+       _vte_terminal_connect_pty_write(terminal);
+}
+
 /* We need this bit of glue to ensure that accessible objects will always
  * get signals. */
 void
@@ -11161,7 +11231,6 @@ _vte_terminal_select_text(VteTerminal *terminal, long start_x, long start_y, lon
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
 
 	terminal->pvt->selection_type = selection_type_char;
-	terminal->pvt->has_selection = TRUE;
 	terminal->pvt->selecting_had_delta = TRUE;
 	terminal->pvt->selection_start.x = start_x;
 	terminal->pvt->selection_start.y = start_y;

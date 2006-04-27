@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtebg.c,v 1.10 2005/10/02 09:59:42 kmaraas Exp $"
+#ident "$Id: vtebg.c,v 1.11 2006/03/15 11:02:59 behdad Exp $"
 #include "../config.h"
 #include <stdio.h>
 #include <string.h>
@@ -25,13 +25,7 @@
 #include "marshal.h"
 #include "vtebg.h"
 
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#define _(String) dgettext(PACKAGE, String)
-#else
-#define _(String) String
-#define bindtextdomain(package,dir)
-#endif
+#include <glib/gi18n-lib.h>
 
 struct VteBgPrivate {
 	GList *cache;

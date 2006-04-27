@@ -1,15 +1,18 @@
 <refentry id="VteTerminalAccessible">
 <refmeta>
-<refentrytitle>VteTerminalAccessible</refentrytitle>
+<refentrytitle id="top_of_page">VteTerminalAccessible</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>VTE Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>VteTerminalAccessible</refname><refpurpose>Accessibility peer of <link linkend="VteTerminal"><type>VteTerminal</type></link>.</refpurpose>
+<refname>VteTerminalAccessible</refname>
+<refpurpose>Accessibility peer of <link linkend="VteTerminal"><type>VteTerminal</type></link>.</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv><title>Synopsis</title>
+<refsynopsisdiv id="synopsis">
+<title id="synopsis.title">Synopsis</title>
 
 <synopsis>
 
@@ -21,8 +24,8 @@
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1>
-<title>Object Hierarchy</title>
+<refsect1 id="object_hierarchy">
+<title id="object_hierarchy.title">Object Hierarchy</title>
 <synopsis>
 
   <link linkend="GObject">GObject</link>
@@ -35,8 +38,8 @@
 
 
 
-<refsect1>
-<title>Implemented Interfaces</title>
+<refsect1 id="impl_interfaces">
+<title id="impl_interfaces.title">Implemented Interfaces</title>
 <para>
 VteTerminalAccessible implements
  <link linkend="AtkComponent">AtkComponent</link> and  <link linkend="AtkText">AtkText</link>.</para>
@@ -47,26 +50,35 @@ VteTerminalAccessible implements
 
 
 
-<refsect1>
-<title>Description</title>
+<refsect1 id="desc">
+<title id="desc.title">Description</title>
 <para>
+The accessibility peer of a <link linkend="VteTerminal"><type>VteTerminal</type></link>, implementing GNOME's accessibility
+framework.
 
 </para>
 </refsect1>
 
-<refsect1>
-<title>Details</title>
+<refsect1 id="details">
+<title id="details.title">Details</title>
 <refsect2>
-<title><anchor id="VteTerminalAccessible-struct"/>VteTerminalAccessible</title>
+<title><anchor id="VteTerminalAccessible-struct" role="struct"/>VteTerminalAccessible</title>
 <indexterm><primary>VteTerminalAccessible</primary></indexterm><programlisting>typedef struct {
 	GtkAccessible parent;
 } VteTerminalAccessible;
 </programlisting>
 <para>
 This should not be accessed directly.  Use the <link linkend="AtkText"><type>AtkText</type></link> interface instead.
-</para></refsect2>
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="GtkAccessible">GtkAccessible</link>&nbsp;<structfield>parent</structfield>;</term>
+<listitem><simpara>The parent <link linkend="GtkAccessible"><type>GtkAccessible</type></link> object.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
-<title><anchor id="vte-terminal-accessible-new"/>vte_terminal_accessible_new ()</title>
+<title><anchor id="vte-terminal-accessible-new" role="function"/>vte_terminal_accessible_new ()</title>
 <indexterm><primary>vte_terminal_accessible_new</primary></indexterm><programlisting><link linkend="AtkObject">AtkObject</link>*  vte_terminal_accessible_new     (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Creates a new accessibility peer for the terminal widget.</para>

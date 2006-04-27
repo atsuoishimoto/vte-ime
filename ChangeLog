@@ -1,3 +1,117 @@
+2006-04-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.12.1.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.12.1.
+	* src/Makefile.am: Bumped libtool version to 9:0:5.
+
+2006-04-21  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 328850 – Crash when pasting selection
+
+	* src/vte.c: Protect against passing NULL selection to strcmp.
+
+2006-04-20  Behdad Esfahbod  <behdad@gnome.org>
+
+	* doc/reference/tmpl/internals.sgml:
+	* doc/reference/tmpl/reaper.sgml:
+	* doc/reference/tmpl/vte-unused.sgml:
+	* doc/reference/tmpl/vte.sgml:
+	* doc/reference/tmpl/vteaccess.sgml:
+	* doc/reference/vte-sections.txt: Misc fixes and updates.
+
+	* python/vte.defs:
+	* python/vte.override: Updates.
+
+	Bug 160134 – mouse events occurring past column 95 are not passed
+	through to terminal application
+	Based on patch from Sean Estabrooks.
+
+	* src/vte.h:
+	* src/vte.c (vte_terminal_feed_child_binary): New public function.
+
+	* src/vte.c (vte_terminal_send_mouse_button_internal),
+	(vte_terminal_maybe_send_mouse_drag): Use feed_child_binary.
+
+2006-04-19  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 135230 – Feature request to attach VTE to existing pty
+	Based on patch from eric@brouhaha.com, John Swensen, and
+	Chris Moller  <cmoller@redhat.com>
+
+	* src/vte.c:
+	* src/vte.h:
+	* python/vte.defs:
+	* doc/reference/vte-sections.txt: Added vte_terminal_set_pty().
+
+2006-04-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 144456 – UK pound currency symbol rendered incorrectly
+
+	* src/vte.c: Offset characters drawn in draw_graphic for padding.
+
+2006-04-06  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 337552 – Insufficient version requirement for gtk+
+
+	* configure.in: Depend on Gtk+ 2.6 and GLib 2.6.
+
+2006-03-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	Branchpoint for vte-0-12.
+
+2006-03-30  Guntupalli Karunakar  <karunakar@indlinux.org>
+
+	* configure.in: Added "dz" (Dzongkha) to ALL_LINGUAS.
+
+2006-03-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 336128 – vim scrolling issues - emulation errors
+
+	* src/vteseq.c (vte_sequence_handler_sf): Update start and end
+	when updating insert_delta.
+
+2006-03-15  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 334385 – Use intltool
+
+	* Makefile.am, configure.in: Add intltool support.
+
+	* src/iso2022.c, src/reaper.c, src/vteaccess.c, src/vteapp.c,
+	src/vtebg.c, src/vtexft.c, src/vte.c: Include glib/gi18n-lib.h
+	instead of #ifdefing gettext stuff.
+
+	* src/vte.c (vte_terminal_class_init): Use GETTEXT_PACKAGE instead
+	of PACKAGE in bindgettextdomain.
+
+2006-03-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_size_allocate): More tweaks to the
+	previous changes.  Reported by dholbach again.
+
+2006-03-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_size_allocate): Put the stuff changed in
+	previous commit in their original order.  Problem reported by
+	dholbach.
+
+2006-03-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 104841 – scrolling doesn't work inside "screen" windows
+
+	* src/vte.c (vte_terminal_size_allocate): Fix restricted scrolling
+	region readjustment.  Moreover, do not do unnecessary updates when
+	number of rows & columns has not changed.
+
+2006-03-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 333768 – vteapp debug stuff should be conditional
+	Patch from Egmont Koblinger.
+
+	* src/vteapp.c: Make pwd and setting env vars conditional on debug.
+
 2006-03-08  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.12.0.

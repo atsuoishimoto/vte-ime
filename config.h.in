@@ -15,6 +15,9 @@
 /* Disable deprecated gdk-pixbuf features. */
 #undef GDK_PIXBUF_DISABLE_DEPRECATED
 
+/* Package translatable messages domain name. */
+#undef GETTEXT_PACKAGE
+
 /* Disable deprecated GTK+ features. */
 #undef GTK_DISABLE_DEPRECATED
 

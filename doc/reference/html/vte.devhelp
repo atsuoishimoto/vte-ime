@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
 <book xmlns="http://www.devhelp.net/book" title="VTE Reference Manual" link="index.html" author="" name="vte">
   <chapters>
     <sub name="VTE" link="ch01.html">
@@ -14,8 +15,10 @@
     <function name="vte_terminal_im_append_menuitems ()" link="VteTerminal.html#vte-terminal-im-append-menuitems"/>
     <function name="vte_terminal_fork_command ()" link="VteTerminal.html#vte-terminal-fork-command"/>
     <function name="vte_terminal_forkpty ()" link="VteTerminal.html#vte-terminal-forkpty"/>
+    <function name="vte_terminal_set_pty ()" link="VteTerminal.html#vte-terminal-set-pty"/>
     <function name="vte_terminal_feed ()" link="VteTerminal.html#vte-terminal-feed"/>
     <function name="vte_terminal_feed_child ()" link="VteTerminal.html#vte-terminal-feed-child"/>
+    <function name="vte_terminal_feed_child_binary ()" link="VteTerminal.html#vte-terminal-feed-child-binary"/>
     <function name="vte_terminal_copy_clipboard ()" link="VteTerminal.html#vte-terminal-copy-clipboard"/>
     <function name="vte_terminal_paste_clipboard ()" link="VteTerminal.html#vte-terminal-paste-clipboard"/>
     <function name="vte_terminal_copy_primary ()" link="VteTerminal.html#vte-terminal-copy-primary"/>
