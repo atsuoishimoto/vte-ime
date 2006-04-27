@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: reaper.c,v 1.13 2004/05/02 06:43:01 nalin Exp $"
+#ident "$Id: reaper.c,v 1.14 2006/03/15 11:02:59 behdad Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -33,16 +33,8 @@
 
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
-#else
-#define bindtextdomain(package,dir)
 #endif
-
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#define _(String) dgettext(PACKAGE, String)
-#else
-#define _(String) String
-#endif
+#include <glib/gi18n-lib.h>
 
 static VteReaper *singleton_reaper = NULL;
 struct reaper_info {

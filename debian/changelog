@@ -1,3 +1,28 @@
+vte (1:0.12.1-0ubuntu1) dapper; urgency=low
+
+  * New upstream mrelease:
+    - Bug "Crash when pasting selection"
+    - Bug "mouse events occurring past column 95 are not passed through to 
+      terminal application"
+      New public function vte_terminal_feed_child_binary
+    - Bug "Feature request to attach VTE to existing pty"
+      New public function vte_terminal_set_pty
+    - Bug "UK pound currency symbol rendered incorrectly"
+    - Bug "Insufficient version requirement for gtk+"
+    - Bug "vim scrolling issues - emulation errors"
+    - Bug "334385 – Use intltool
+    - Bug "scrolling doesn't work inside "screen" windows"
+    - Bug "vteapp debug stuff should be conditional"
+  * debian/control.in:
+    - bumped libgtk2.0-dev requirements to >= 2.6.
+    - require intltool.
+  * debian/rules:
+    - bumped shlibs.
+  * debian/patches/20_fix_irssi_and_screen_breakage_CVS.patch:
+    - dropped, fixed upstream.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Thu, 27 Apr 2006 11:51:41 +0200
+
 vte (1:0.12.0-0ubuntu3) dapper; urgency=low
 
   * debian/patches/20_fix_irssi_and_screen_breakage_CVS.patch:

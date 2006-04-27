@@ -12,7 +12,7 @@ version := $(shell sed -n 's/Package: \(.*\)/\1/p' debian/control | head -n 1)
 
 DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/${version}
 DEB_FIXPERMS_EXCLUDE := gnome-pty-helper
-DEB_DH_MAKESHLIBS_ARGS_ALL = -V 'libvte4 (>= 1:0.11.11)'
+DEB_DH_MAKESHLIBS_ARGS_ALL = -V 'libvte4 (>= 1:0.12.1)'
 
 binary-install/python-vte::
 	dh_python

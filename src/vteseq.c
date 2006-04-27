@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vteseq.c,v 1.2 2006/02/10 09:25:56 behdad Exp $"
+#ident "$Id: vteseq.c,v 1.3 2006/03/27 01:55:17 behdad Exp $"
 
 #include "../config.h"
 
@@ -2257,7 +2257,7 @@ vte_sequence_handler_sf(VteTerminal *terminal,
 {
 	GtkWidget *widget;
 	VteRowData *row;
-	long start, end, top, bottom;
+	long start, end;
 	VteScreen *screen;
 
 	widget = GTK_WIDGET(terminal);
@@ -2281,6 +2281,10 @@ vte_sequence_handler_sf(VteTerminal *terminal,
 				screen->insert_delta++;
 				screen->scroll_delta++;
 				screen->cursor_current.row++;
+				/* update start and end, as they are relative
+				 * to insert_delta. */
+				start++;
+				end++;
 				_vte_ring_insert_preserve(terminal->pvt->screen->row_data,
 							  screen->cursor_current.row,
 							  row);
@@ -2290,11 +2294,8 @@ vte_sequence_handler_sf(VteTerminal *terminal,
 				gdk_window_freeze_updates(widget->window);
 				/* Force the areas below the region to be
 				 * redrawn -- they've moved. */
-				top = screen->cursor_current.row;
-				bottom = screen->insert_delta +
-					 terminal->row_count - 1;
 				_vte_terminal_scroll_region(terminal, start,
-							   end - start + 1, 1);
+							    end - start + 1, 1);
 				/* Force scroll. */
 				_vte_terminal_ensure_cursor(terminal, FALSE);
 				_vte_terminal_adjust_adjustments(terminal, TRUE);

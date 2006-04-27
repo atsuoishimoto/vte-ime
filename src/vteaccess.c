@@ -19,7 +19,7 @@
 /* VTE accessibility object.  Based heavily on inspection of libzvt's
  * accessibility code. */
 
-#ident "$Id: vteaccess.c,v 1.47 2006/01/15 21:09:40 gpastore Exp $"
+#ident "$Id: vteaccess.c,v 1.48 2006/03/15 11:02:59 behdad Exp $"
 
 #include "../config.h"
 
@@ -34,12 +34,7 @@
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
 #endif
-
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#else
-#define bindtextdomain(package,dir)
-#endif
+#include <glib/gi18n-lib.h>
 
 #define VTE_TERMINAL_ACCESSIBLE_PRIVATE_DATA "VteTerminalAccessiblePrivateData"
 
