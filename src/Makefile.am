@@ -97,7 +97,7 @@ libvte_la_SOURCES = \
 # Libtool shared library versioning stuffs.
 # REVISION gets incremented whenever the source code changes without adding
 # an API or ABI change.
-VERSION_REVISION=0
+VERSION_REVISION=1
 # CURRENT must be incremented when an API or ABI change (addition or removal)
 # is made, and REVISION must be reset to 0 when this happens.
 VERSION_CURRENT=9
@@ -203,7 +203,7 @@ utf8echo_LDADD = @LDFLAGS@ @LIBS@ @GOBJECT_LIBS@
 nativeecho_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@ -DNATIVEECHO_MAIN
 nativeecho_SOURCES = \
 	nativeecho.c
-nativeecho_LDADD = @LDFLAGS@ @LIBS@
+nativeecho_LDADD = @LDFLAGS@ @LIBS@ @GLIB_LIBS@
 
 ring_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@ -DRING_MAIN
 ring_SOURCES = \
@@ -312,7 +312,7 @@ ssfe_LDADD = @LDFLAGS@ @OTHERLIBS@
 
 xticker_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@
 xticker_SOURCES = xticker.c
-xticker_LDADD = @LIBS@ @GLIB_LIBS@
+xticker_LDADD = @LDFLAGS@ @LIBS@ @GLIB_LIBS@
 
 vteseq-table.h: vteseq-gen.c vteseq-list.h
 	$(MAKE) vteseq-gen
