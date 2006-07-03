@@ -1,3 +1,40 @@
+vte (1:0.12.1-1ubuntu1) edgy; urgency=low
+
+  * Merge from debian unstable.
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Mon,  3 Jul 2006 22:37:24 +0200
+
+vte (1:0.12.1-1) unstable; urgency=low
+
+  [ Josselin Mouette ]
+  * Set fatalerror as the primary maintainer.
+  * Make the package binNMU-safe.
+    + Build-depend on dpkg-dev 1.13.19.
+    + Use ${source:Version} and ${binary:Version}.
+
+  [ Loic Minier ]
+  * Stop shipping /usr/lib/*.la files in libvte-dev.
+    [debian/libvte-dev.install]
+  * New upstream release, with API additions.
+    - Bump up libgtk2.0-dev build-dep to >=  2.6.0.
+      [debian/control, debian/control.in]
+    - Add a libglib2.0-dev build-dep (>  2.6.0).
+      [debian/control, debian/control.in]
+    - Bump shlibs to >= 1:0.12.1.
+      [debian/rules]
+    - Drop restricted region adjustment patch as upstream merged it and also
+      fixed a couple of issues it had.
+      [debian/patches/20_restricted_region_readjustment.patch]
+    - Relibtoolize.
+      [debian/patches/70_relibtoolize.patch]
+  * Fix clenaup of /debian/tmp-2.3 instead of debian/tmp-2.3 introduced with
+    Python 2.4 support.
+    [debian/rules]
+  * Bump up Standards-Version to 3.7.2.
+    [debian/control, debian/control.in]
+
+ -- Loic Minier <lool@dooz.org>  Fri, 12 May 2006 16:11:16 +0200
+
 vte (1:0.12.1-0ubuntu1) dapper; urgency=low
 
   * New upstream mrelease:
@@ -22,6 +59,26 @@ vte (1:0.12.1-0ubuntu1) dapper; urgency=low
     - dropped, fixed upstream.
 
  -- Daniel Holbach <daniel.holbach@ubuntu.com>  Thu, 27 Apr 2006 11:51:41 +0200
+
+vte (1:0.12.0-2) unstable; urgency=low
+
+  * Drop references to libXcursor.la
+
+ -- Guilherme de S. Pastore <gpastore@debian.org>  Fri, 21 Apr 2006 12:49:11 -0300
+
+vte (1:0.12.0-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/patches/20_restricted_region_readjustment.patch:
+    - patch from upstream CVS to fix the famous Blue Screen of
+      Death with irssi running inside screen.
+  * debian/copyright:
+    - updated list of upstream authors
+    - updated to use http://download.gnome.org/
+  * debian/watch:
+    - updated to use http://download.gnome.org/
+
+ -- Guilherme de S. Pastore <guilherme.pastore@terra.com.br>  Sun,  2 Apr 2006 12:15:57 -0300
 
 vte (1:0.12.0-0ubuntu3) dapper; urgency=low
 
@@ -57,6 +114,32 @@ vte (1:0.11.21-0ubuntu1) dapper; urgency=low
 
  -- Michael Vogt <michael.vogt@ubuntu.com>  Thu,  9 Mar 2006 10:38:01 +0000
 
+vte (1:0.11.20-3) unstable; urgency=low
+
+  * Fix Python build-deps, thanks Jan Lübbe.
+    [debian/control, debian/control.in]
+
+ -- Loic Minier <lool@dooz.org>  Mon, 27 Feb 2006 09:55:30 +0100
+
+vte (1:0.11.20-2) unstable; urgency=low
+
+  * Merge nice patch from Jan Lübbe to build vte's python bindings for python
+    2.3 and 2.4. (Closes: #353434)
+    [debian/control, debian/control.in, debian/python-vte.install,
+    debian/python2.3-vte.install, debian/python2.4-vte.install, debian/rules]
+  * Tune up the descriptions slightly.
+    [debian/control, debian/control.in]
+  * Let python2.3-vte replace previous versions of python-vte.
+    [debian/control, debian/control.in]
+
+ -- Loic Minier <lool@dooz.org>  Sun, 26 Feb 2006 21:34:54 +0100
+
+vte (1:0.11.20-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Loic Minier <lool@dooz.org>  Sun, 26 Feb 2006 11:28:15 +0100
+
 vte (1:0.11.20-0ubuntu1) dapper; urgency=low
 
   * New upstream release:
@@ -64,6 +147,13 @@ vte (1:0.11.20-0ubuntu1) dapper; urgency=low
       cache.
 
  -- Daniel Holbach <daniel.holbach@ubuntu.com>  Mon, 27 Feb 2006 08:20:20 +0100
+
+vte (1:0.11.19-1) unstable; urgency=low
+
+  * New upstream release.
+    - Shift+Insert pasting works as in the past. (Closes: #354275)
+
+ -- Loic Minier <lool@dooz.org>  Sat, 25 Feb 2006 17:45:13 +0100
 
 vte (1:0.11.19-0ubuntu1) dapper; urgency=low
 
@@ -77,6 +167,14 @@ vte (1:0.11.19-0ubuntu1) dapper; urgency=low
 
  -- Daniel Holbach <daniel.holbach@ubuntu.com>  Sat, 25 Feb 2006 17:25:58 +0100
 
+vte (1:0.11.18-1) unstable; urgency=low
+
+  * New upstream release.
+    - Drop double free() fix (merged upstream).
+      [debian/patches/07_remove_doublefree.patch]
+
+ -- Loic Minier <lool@dooz.org>  Sun, 12 Feb 2006 20:55:57 +0100
+
 vte (1:0.11.18-0ubuntu1) dapper; urgency=low
 
   * New upstream release:
@@ -86,6 +184,24 @@ vte (1:0.11.18-0ubuntu1) dapper; urgency=low
     - dropped, included upstream.
 
  -- Daniel Holbach <daniel.holbach@ubuntu.com>  Mon, 13 Feb 2006 09:11:57 +0100
+
+vte (1:0.11.17-1) unstable; urgency=low
+
+  * New upstream release.
+    - This release backs out all changes made to the .pc file in
+      debian/patches/30_pkg-config-private-fields.patch, and hence reopens
+      #340406, but should include proper -I flags. (Closes: #346039)
+    - New patch to move only the libfreetype link flags to Libs.private.
+      [debian/patches/30_pkg-config-private-field-for-freetype.patch]
+      (Closes: #340406)
+    - Drop patch adding console sequesnces to save/restore cursor position
+      (merged upstream).
+      [debian/patches/05_cursor_position.patch]
+    - Drop relibtoolizing patch as the person bootstrapping vte for GNOME was
+      visibly running Debian. :)
+      [debian/patches/70_relibtoolize.patch]
+
+ -- Loic Minier <lool@dooz.org>  Sun, 29 Jan 2006 18:35:39 +0100
 
 vte (1:0.11.17-0ubuntu1) dapper; urgency=low
 
@@ -106,6 +222,21 @@ vte (1:0.11.17-0ubuntu1) dapper; urgency=low
   
   
  -- Michael Vogt <michael.vogt@ubuntu.com>  Mon, 30 Jan 2006 17:16:22 +0000
+
+vte (1:0.11.16-1) unstable; urgency=low
+
+  * New upstream release.
+    - Drop patch to use .private pkg-config pseudo-headers (included
+      upstream).
+      [debian/patches/30_pkg-config-private-fields.patch]
+    - No need to "rm python/vte.c", this is not distributed upstream anymore.
+      [debian/rules]
+    - Drop patch to fix gdk warnings (included upstream).
+      [debian/patches/20_gdk-warning.patch]
+    - Relibtoolize.
+      [debian/patches/70_relibtoolize.patch]
+
+ -- Loic Minier <lool@dooz.org>  Mon, 23 Jan 2006 22:15:53 +0100
 
 vte (1:0.11.16-0ubuntu5) dapper; urgency=low
 

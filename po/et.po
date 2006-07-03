@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the vte package.
 # Allan Sims <allsi@eau.ee>, 2003.
 # Ivar Smolin <okul@linux.ee>, 2005.
-
 msgid ""
 msgstr ""
 "Project-Id-Version: vte 0.12\n"

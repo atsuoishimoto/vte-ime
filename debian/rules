@@ -17,3 +17,9 @@ DEB_DH_MAKESHLIBS_ARGS_ALL = -V 'libvte4 (>= 1:0.12.1)'
 binary-install/python-vte::
 	dh_python
 
+binary-install/python2.4-vte::
+	dh_python
+
+clean::
+	-rm -rf debian/tmp-2.3 debian/tmp-2.4 build build-2.3 build-2.4
+
