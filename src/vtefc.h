@@ -21,7 +21,6 @@
 #ifndef vte_vtefc_h_included
 #define vte_vtefc_h_included
 
-#ident "$Id: vtefc.h,v 1.4 2004/04/20 05:16:56 nalin Exp $"
 
 #include <fontconfig/fontconfig.h>
 #include <pango/pango.h>

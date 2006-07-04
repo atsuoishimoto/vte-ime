@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: interpret.c,v 1.22 2005/03/14 14:43:47 kmaraas Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <assert.h>

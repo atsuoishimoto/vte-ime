@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: reflect.c,v 1.13 2004/04/20 05:08:42 nalin Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <stdio.h>
@@ -27,11 +26,6 @@
 #include <atk/atk.h>
 #ifdef USE_VTE
 #include "vte.h"
-#endif
-#ifdef USE_ZVT
-#ifdef HAVE_ZVT
-#include <libzvt/libzvt.h>
-#endif
 #endif
 
 static GArray *contents = NULL;
@@ -88,90 +82,6 @@ terminal_adjustment_vte(GtkWidget *terminal)
 	return (VTE_TERMINAL(terminal))->adjustment;
 }
 #endif
-#ifdef USE_ZVT
-#ifdef HAVE_ZVT
-/*
- * Implementation for a ZvtTerm widget.
- */
-static void
-terminal_hint_zvt(GtkWidget *widget, gpointer data)
-{
-	ZvtTerm *terminal;
-	GtkStyle *style;
-	GdkGeometry hints;
-	GtkWidget *toplevel;
-
-	terminal = ZVT_TERM(widget);
-
-	toplevel = gtk_widget_get_toplevel(widget);
-	g_assert(toplevel != NULL);
-
-	gtk_widget_ensure_style(widget);
-	style = widget->style;
-	hints.base_width = style->xthickness * 2 + 2;
-	hints.base_height = style->ythickness * 2;
-
-	hints.width_inc = terminal->charwidth;
-	hints.height_inc = terminal->charheight;
-	hints.min_width = hints.base_width + hints.width_inc;
-	hints.min_height = hints.base_height + hints.height_inc;
-
-	gtk_window_set_geometry_hints(GTK_WINDOW(toplevel),
-				      widget,
-				      &hints,
-				      GDK_HINT_RESIZE_INC |
-				      GDK_HINT_MIN_SIZE |
-				      GDK_HINT_BASE_SIZE);
-	gtk_widget_queue_resize(widget);
-}
-static void
-terminal_init_zvt(GtkWidget **terminal)
-{
-	*terminal = zvt_term_new();
-	g_signal_connect_after(G_OBJECT(*terminal), "realize",
-			       G_CALLBACK(terminal_hint_zvt), NULL);
-}
-static void
-terminal_shell_zvt(GtkWidget *terminal)
-{
-	const char *shell;
-	shell = getenv("SHELL") ? getenv("SHELL") : "/bin/sh";
-	g_signal_connect(G_OBJECT(terminal), "child-died",
-			 G_CALLBACK(gtk_main_quit), NULL);
-	if (zvt_term_forkpty(ZVT_TERM(terminal), 0) == 0) {
-		execlp(shell, shell, NULL);
-		g_assert_not_reached();
-	}
-}
-static GtkAdjustment *
-terminal_adjustment_zvt(GtkWidget *terminal)
-{
-	return (ZVT_TERM(terminal))->adjustment;
-}
-#else
-/*
- * Implementation for broken setups.
- */
-static void
-terminal_init_broken(GtkWidget **terminal)
-{
-	g_error("libzvt not found at compile-time");
-	_exit(1);
-}
-static void
-terminal_shell_broken(GtkWidget *terminal)
-{
-	g_error("libzvt not found at compile-time");
-	_exit(1);
-}
-static GtkAdjustment *
-terminal_adjustment_broken(GtkWidget *terminal)
-{
-	g_error("libzvt not found at compile-time");
-	_exit(1);
-}
-#endif
-#endif
 
 /*
  * Update the contents of the widget with the data from our contents array.
@@ -183,7 +93,7 @@ update_contents(AtkObject *obj, GtkWidget *widget)
 	GString *s;
 
 	caret = atk_text_get_caret_offset(ATK_TEXT(obj));
-	s = g_string_new("");
+	s = g_string_new(NULL);
 	for (i = 0; i < contents->len; i++) {
 		if (i == caret) {
 			s = g_string_append(s, "[CARET]");
@@ -293,15 +203,6 @@ static void
 terminal_init(GtkWidget **terminal)
 {
 	*terminal = NULL;
-#ifdef USE_ZVT
-#ifdef HAVE_ZVT
-	terminal_init_zvt(terminal);
-	return;
-#else
-	terminal_init_broken(terminal);
-	return;
-#endif
-#endif
 #ifdef USE_TEXT_VIEW
 	terminal_init_text_view(terminal);
 	return;
@@ -315,15 +216,6 @@ terminal_init(GtkWidget **terminal)
 static void
 terminal_shell(GtkWidget *terminal)
 {
-#ifdef USE_ZVT
-#ifdef HAVE_ZVT
-	terminal_shell_zvt(terminal);
-	return;
-#else
-	terminal_shell_broken(terminal);
-	return;
-#endif
-#endif
 #ifdef USE_TEXT_VIEW
 	terminal_shell_text_view(terminal);
 	return;
@@ -337,13 +229,6 @@ terminal_shell(GtkWidget *terminal)
 static GtkAdjustment *
 terminal_adjustment(GtkWidget *terminal)
 {
-#ifdef USE_ZVT
-#ifdef HAVE_ZVT
-	return terminal_adjustment_zvt(terminal);
-#else
-	return terminal_adjustment_broken(terminal);
-#endif
-#endif
 #ifdef USE_TEXT_VIEW
 	return terminal_adjustment_text_view(terminal);
 #endif

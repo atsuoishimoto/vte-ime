@@ -21,7 +21,6 @@
 #ifndef vte_trie_h_included
 #define vte_trie_h_included
 
-#ident "$Id: trie.h,v 1.10 2002/12/10 00:08:32 nalin Exp $"
 
 #include <glib.h>
 #include <glib-object.h>

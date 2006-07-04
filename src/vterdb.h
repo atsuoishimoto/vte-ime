@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vterdb.h,v 1.3 2003/05/28 23:45:09 nalin Exp $"
 
 #ifndef vte_rdbh_included
 #define vte_rdbh_included

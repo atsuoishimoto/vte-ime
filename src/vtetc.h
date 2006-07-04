@@ -21,7 +21,6 @@
 #ifndef vte_termcap_h_included
 #define vte_termcap_h_included
 
-#ident "$Id: vtetc.h,v 1.2 2005/03/14 14:43:47 kmaraas Exp $"
 
 #include <glib.h>
 

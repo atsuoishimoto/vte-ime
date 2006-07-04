@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vteft2.c,v 1.11 2004/04/20 05:16:56 nalin Exp $"
 
 #include "../config.h"
 
@@ -56,7 +55,7 @@ static void
 _vte_ft2_create(struct _vte_draw *draw, GtkWidget *widget)
 {
 	struct _vte_ft2_data *data;
-	data = (struct _vte_ft2_data*) g_malloc0(sizeof(struct _vte_ft2_data));
+	data = g_slice_new0(struct _vte_ft2_data);
 	draw->impl_data = data;
 	data->rgb = NULL;
 	memset(&data->color, 0, sizeof(data->color));
@@ -82,7 +81,7 @@ _vte_ft2_destroy(struct _vte_draw *draw)
 		data->pixbuf = NULL;
 	}
 	data->scrollx = data->scrolly = 0;
-	g_free(data);
+	g_slice_free(struct _vte_ft2_data, data);
 }
 
 static GdkVisual *
@@ -166,10 +165,14 @@ _vte_ft2_set_background_image(struct _vte_draw *draw,
 {
 	struct _vte_ft2_data *data;
 	GdkPixbuf *bgpixbuf;
+	GdkScreen *screen;
+
+	screen = gtk_widget_get_screen(draw->widget);
 
 	data = (struct _vte_ft2_data*) draw->impl_data;
 
-	bgpixbuf = vte_bg_get_pixbuf(vte_bg_get(), type, pixbuf, file,
+	bgpixbuf = vte_bg_get_pixbuf(vte_bg_get_for_screen(screen),
+				     type, pixbuf, file,
 				     color, saturation);
 	if (GDK_IS_PIXBUF(data->pixbuf)) {
 		g_object_unref(G_OBJECT(data->pixbuf));

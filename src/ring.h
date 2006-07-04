@@ -21,7 +21,6 @@
 #ifndef vte_ring_h_included
 #define vte_ring_h_included
 
-#ident "$Id: ring.h,v 1.13 2003/01/14 06:33:14 nalin Exp $"
 
 #include <glib.h>
 

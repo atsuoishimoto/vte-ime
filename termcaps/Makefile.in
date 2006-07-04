@@ -59,6 +59,7 @@ termcapDATA_INSTALL = $(INSTALL_DATA)
 DATA = $(termcap_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
+ALL_LINGUAS = @ALL_LINGUAS@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
@@ -184,8 +185,6 @@ PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
-REFLECT_USE_ZVT_FALSE = @REFLECT_USE_ZVT_FALSE@
-REFLECT_USE_ZVT_TRUE = @REFLECT_USE_ZVT_TRUE@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -199,9 +198,6 @@ X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
-ZVT_CFLAGS = @ZVT_CFLAGS@
-ZVT_DEFS = @ZVT_DEFS@
-ZVT_LIBS = @ZVT_LIBS@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
@@ -254,7 +250,7 @@ target_alias = @target_alias@
 vte_std_c99 = @vte_std_c99@
 EXTRA_DIST = xterm xterm.baseline
 termcapdir = $(pkgdatadir)/termcap
-termcap_DATA = xterm @VTE_DEFAULT_EMULATION@
+termcap_DATA = xterm $(VTE_DEFAULT_EMULATION)
 all: all-am
 
 .SUFFIXES:
@@ -435,9 +431,9 @@ uninstall-am: uninstall-info-am uninstall-termcapDATA
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	uninstall uninstall-am uninstall-info-am uninstall-termcapDATA
 
-@VTE_DEFAULT_EMULATION@: xterm
-	sed -e s,^xterm:,@VTE_DEFAULT_EMULATION@:,g \
-	    -e s,^xterm\|,@VTE_DEFAULT_EMULATION@\|,g $< > $@
+$(VTE_DEFAULT_EMULATION): xterm
+	sed -e s,^xterm:,$(VTE_DEFAULT_EMULATION):,g \
+	    -e s,^xterm\|,$(VTE_DEFAULT_EMULATION)\|,g $< > $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

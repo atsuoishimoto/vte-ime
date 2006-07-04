@@ -21,7 +21,6 @@
 #ifndef vte_matcher_h_included
 #define vte_matcher_h_included
 
-#ident "$Id: matcher.h,v 1.6 2005/03/14 14:43:47 kmaraas Exp $"
 
 #include <glib-object.h>
 #include "vtetc.h"

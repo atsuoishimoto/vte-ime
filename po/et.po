@@ -1,14 +1,18 @@
-# vte eesti tõlge.
-# Copyright (C) 2003 Free Software Foundation, Inc
+# vte eesti keele tõlge.
+# Estonian translation of vte.
+#
+# Copyright (C) 2003, 2005, 2006 Free Software Foundation, Inc
 # This file is distributed under the same license as the vte package.
+#
 # Allan Sims <allsi@eau.ee>, 2003.
-# Ivar Smolin <okul@linux.ee>, 2005.
+# Ivar Smolin <okul@linux.ee>, 2005, 2006.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: vte 0.12\n"
+"Project-Id-Version: vte HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-08-06 12:26+0200\n"
-"PO-Revision-Date: 2005-02-02 13:56+0200\n"
+"PO-Revision-Date: 2006-04-05 10:08+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"

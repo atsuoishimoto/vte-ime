@@ -21,7 +21,6 @@
 #ifndef vte_vteconv_h_included
 #define vte_vteconv_h_included
 
-#ident "$Id: vteconv.h,v 1.2 2003/09/11 20:45:03 nalin Exp $"
 
 #include <glib.h>
 

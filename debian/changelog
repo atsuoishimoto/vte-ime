@@ -1,3 +1,37 @@
+vte (1:0.13.2-0ubuntu1) edgy; urgency=low
+
+  * New usptream release:
+    - 0.13.2:
+      - Fixed bug: "Problems with *_CFLAGS and *_LDFLAGS in makefiles"
+      - Fixed bug: "gnome-terminal (vte) crashes when detatched window is 
+        closed"
+      - Fixed bug "uninitialized var (coverity)"
+      - Fixed bug "vte_invalidate_region() may check whether terminal is 
+        realiazed or not"
+      - Fixed bug "vte Cygwin build fixes"
+      - Fixed bug "vte.h doesn't need to include X11/Xlib.h"
+      - Require intltool 0.35.0 to have translations in the dist tarballs.
+      - Fix typo which may have been causing things like crashes.
+    - 0.13.1:
+      - Use intltool 0.34.90 to make sure tarball includes po files.
+      - Fixed bug "nativeecho needs glib in LDADD to build on Solaris"
+      - Fixed bug "style needs to be attached/detached to the window on
+        realize/unrealize
+      - Pass -no-undefined linker flag.
+  * debian/control.in:
+    - bumped glib Build Dependency.
+    - libvte4 -> libvte9.
+  * debian/rules:
+    - bump shlibs, rename to libvte9.
+  * debian/libvte4.install -> debian/libvte9.install:
+    - make necessary changes.
+  * debian/patches/09_multiscreen_safe.patch:
+    - dropped, fixed differently upstream.
+  * debian/patches/70_relibtoolize.patch:
+    - dropped, does not apply, we don't need it.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue,  4 Jul 2006 11:31:40 +0200
+
 vte (1:0.12.1-1ubuntu1) edgy; urgency=low
 
   * Merge from debian unstable.

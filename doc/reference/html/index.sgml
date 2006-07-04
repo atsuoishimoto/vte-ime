@@ -57,6 +57,7 @@
 <ANCHOR id="vte-terminal-get-mouse-autohide" href="vte/VteTerminal.html#vte-terminal-get-mouse-autohide">
 <ANCHOR id="vte-terminal-reset" href="vte/VteTerminal.html#vte-terminal-reset">
 <ANCHOR id="vte-terminal-get-text" href="vte/VteTerminal.html#vte-terminal-get-text">
+<ANCHOR id="vte-terminal-get-text-include-trailing-spaces" href="vte/VteTerminal.html#vte-terminal-get-text-include-trailing-spaces">
 <ANCHOR id="vte-terminal-get-text-range" href="vte/VteTerminal.html#vte-terminal-get-text-range">
 <ANCHOR id="vte-terminal-get-cursor-position" href="vte/VteTerminal.html#vte-terminal-get-cursor-position">
 <ANCHOR id="vte-terminal-match-clear-all" href="vte/VteTerminal.html#vte-terminal-match-clear-all">

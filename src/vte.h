@@ -19,12 +19,10 @@
 #ifndef vte_vte_h_included
 #define vte_vte_h_included
 
-#ident "$Id: vte.h,v 1.78.4.2 2006/04/20 11:18:55 behdad Exp $"
 
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <X11/Xlib.h>
 #include <glib.h>
 #include <pango/pango.h>
 #include <gtk/gtk.h>

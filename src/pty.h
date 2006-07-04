@@ -19,7 +19,6 @@
 #ifndef vte_pty_h_included
 #define vte_pty_h_included
 
-#ident "$Id: pty.h,v 1.10 2004/04/20 05:37:50 nalin Exp $"
 
 #include <sys/types.h>
 

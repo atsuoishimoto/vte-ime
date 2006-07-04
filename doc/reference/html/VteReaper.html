@@ -46,7 +46,9 @@ GObject-style "child-exited" signals.</p>
 
             <a href="VteReaper.html#VteReaper-struct">VteReaper</a>;
 <a href="VteReaper.html" title="VteReaper">VteReaper</a>*  <a href="VteReaper.html#vte-reaper-get">vte_reaper_get</a>                  (void);
-int         <a href="VteReaper.html#vte-reaper-add-child">vte_reaper_add_child</a>            (GPid pid);
+int         <a href="VteReaper.html#vte-reaper-add-child">vte_reaper_add_child</a>            (<a
+href="/usr/share/gtk-doc/html/glib/glib-The-Main-Event-Loop.html#GPid"
+>GPid</a> pid);
 
 </pre>
 </div>
@@ -54,7 +56,9 @@ int         <a href="VteReaper.html#vte-reaper-add-child">vte_reaper_add_child</
 <a name="object_hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
 
-  GObject
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----VteReaper
 </pre>
 </div>
@@ -64,9 +68,15 @@ int         <a href="VteReaper.html#vte-reaper-add-child">vte_reaper_add_child</
 
 "<a href="VteReaper.html#VteReaper-child-exited">child-exited</a>"
             void        user_function      (<a href="VteReaper.html" title="VteReaper">VteReaper</a> *vtereaper,
-                                            gint       arg1,
-                                            gint       arg2,
-                                            gpointer   user_data)      : Run last
+                                            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>       arg1,
+                                            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>       arg2,
+                                            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>   user_data)      : Run last
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -83,18 +93,18 @@ a proxy for glib's own functionality.
 <div class="refsect1" lang="en">
 <a name="details"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2653692"></a><h3>
+<a name="id3019708"></a><h3>
 <a name="VteReaper-struct"></a>VteReaper</h3>
-<a class="indexterm" name="id2653703"></a><pre class="programlisting">typedef struct _VteReaper VteReaper;</pre>
+<a class="indexterm" name="id3019719"></a><pre class="programlisting">typedef struct _VteReaper VteReaper;</pre>
 <p>
 This should not be accessed directly.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2653718"></a><h3>
+<a name="id3019734"></a><h3>
 <a name="vte-reaper-get"></a>vte_reaper_get ()</h3>
-<a class="indexterm" name="id2653731"></a><pre class="programlisting"><a href="VteReaper.html" title="VteReaper">VteReaper</a>*  vte_reaper_get                  (void);</pre>
+<a class="indexterm" name="id3019747"></a><pre class="programlisting"><a href="VteReaper.html" title="VteReaper">VteReaper</a>*  vte_reaper_get                  (void);</pre>
 <p>
 Finds the address of the global <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> object, creating the object if
 necessary.</p>
@@ -113,9 +123,11 @@ necessary.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2653788"></a><h3>
+<a name="id3019804"></a><h3>
 <a name="vte-reaper-add-child"></a>vte_reaper_add_child ()</h3>
-<a class="indexterm" name="id2653801"></a><pre class="programlisting">int         vte_reaper_add_child            (GPid pid);</pre>
+<a class="indexterm" name="id3019817"></a><pre class="programlisting">int         vte_reaper_add_child            (<a
+href="/usr/share/gtk-doc/html/glib/glib-The-Main-Event-Loop.html#GPid"
+>GPid</a> pid);</pre>
 <p>
 Ensures that child-exited signals will be emitted when <em class="parameter"><code>pid</code></em> exits.  This is
 necessary for correct operation when running with glib versions &gt;= 2.4.</p>
@@ -146,12 +158,18 @@ Since 0.11.11
 <div class="refsect1" lang="en">
 <a name="signals"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2653884"></a><h3>
+<a name="id3019900"></a><h3>
 <a name="VteReaper-child-exited"></a>The "child-exited" signal</h3>
-<a class="indexterm" name="id2653894"></a><pre class="programlisting">void        user_function                  (<a href="VteReaper.html" title="VteReaper">VteReaper</a> *vtereaper,
-                                            gint       arg1,
-                                            gint       arg2,
-                                            gpointer   user_data)      : Run last</pre>
+<a class="indexterm" name="id3019910"></a><pre class="programlisting">void        user_function                  (<a href="VteReaper.html" title="VteReaper">VteReaper</a> *vtereaper,
+                                            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>       arg1,
+                                            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>       arg2,
+                                            <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>   user_data)      : Run last</pre>
 <p>
 Emitted when the <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> object detects that a child of the current process has exited.
 </p>

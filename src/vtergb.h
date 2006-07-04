@@ -19,7 +19,6 @@
 #ifndef vte_vte_rgbh_included
 #define vte_vte_rgbh_included
 
-#ident "$Id: vtergb.h,v 1.2 2003/05/05 23:23:46 nalin Exp $"
 
 #include <gdk/gdk.h>
 #include <glib.h>

@@ -16,9 +16,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vteseq.c,v 1.3 2006/03/27 01:55:17 behdad Exp $"
 
 #include "../config.h"
+
+#ifdef HAVE_SYS_SYSLIMITS_H
+#include <sys/syslimits.h>
+#endif
 
 #include <glib.h>
 
@@ -1025,15 +1028,11 @@ vte_sequence_handler_as(VteTerminal *terminal,
 static void
 vte_terminal_beep(VteTerminal *terminal)
 {
-#if GTK_CHECK_VERSION(2,2,0)
 	GdkDisplay *display;
 
 	g_assert(VTE_IS_TERMINAL(terminal));
 	display = gtk_widget_get_display(GTK_WIDGET(terminal));
 	gdk_display_beep(display);
-#else
-	gdk_beep();
-#endif
 }
 
 /* Beep. */
@@ -1189,6 +1188,7 @@ vte_sequence_handler_cd(VteTerminal *terminal,
 		vte_g_array_fill(rowdata->cells,
 				 &screen->fill_defaults,
 				 terminal->column_count);
+		rowdata->soft_wrapped = 0;
 		/* Repaint this row. */
 		_vte_invalidate_cells(terminal,
 				      0, terminal->column_count,
@@ -1225,6 +1225,7 @@ vte_sequence_handler_ce(VteTerminal *terminal,
 	vte_g_array_fill(rowdata->cells,
 			 &screen->fill_defaults,
 			 terminal->column_count);
+	rowdata->soft_wrapped = 0;
 	/* Repaint this row. */
 	_vte_invalidate_cells(terminal,
 			      0, terminal->column_count,
@@ -1341,6 +1342,7 @@ vte_sequence_handler_clear_current_line(VteTerminal *terminal,
 		vte_g_array_fill(rowdata->cells,
 				 &screen->fill_defaults,
 				 terminal->column_count);
+		rowdata->soft_wrapped = 0;
 		/* Repaint this row. */
 		_vte_invalidate_cells(terminal,
 				      0, terminal->column_count,
@@ -2809,10 +2811,23 @@ vte_sequence_handler_character_attributes(VteTerminal *terminal,
 			terminal->pvt->screen->defaults.fore = param - 30;
 			break;
 		case 38:
-			/* default foreground, underscore */
-			terminal->pvt->screen->defaults.fore = VTE_DEF_FG;
-			terminal->pvt->screen->defaults.underline = 1;
-			break;
+ 		{
+ 			GValue *value1;
+ 			long param1;
+ 			/* The format looks like: ^[[38;5;COLORNUMBERm,
+ 			   so look for COLORNUMBER here. */
+ 			if ((i + 2) < params->n_values){
+ 				value1 = g_value_array_get_nth(params, i + 2);
+ 				if (!G_VALUE_HOLDS_LONG(value1)) {
+ 					break;
+ 				}
+ 				param1 = g_value_get_long(value1);
+ 				terminal->pvt->screen->defaults.fore = param1;
+ 				i += 2;
+ 			}
+ 			
+ 			break;
+ 		}
 		case 39:
 			/* default foreground, no underscore */
 			terminal->pvt->screen->defaults.fore = VTE_DEF_FG;
@@ -2830,6 +2845,24 @@ vte_sequence_handler_character_attributes(VteTerminal *terminal,
 		case 47:
 			terminal->pvt->screen->defaults.back = param - 40;
 			break;
+  		case 48:
+  		{
+  			GValue *value1;
+  			long param1;
+  			/* The format looks like: ^[[48;5;COLORNUMBERm,
+  			   so look for COLORNUMBER here. */
+  			if ((i + 2) < params->n_values){
+  				value1 = g_value_array_get_nth(params, i + 2);
+  				if (!G_VALUE_HOLDS_LONG(value1)) {
+  					break;
+  				}
+  				param1 = g_value_get_long(value1);
+  				terminal->pvt->screen->defaults.back = param1;
+  				i += 2;
+  			}
+  			break;
+  			
+  		}
 		case 49:
 			/* default background */
 			terminal->pvt->screen->defaults.back = VTE_DEF_BG;
@@ -2899,6 +2932,7 @@ vte_sequence_handler_clear_above_current(VteTerminal *terminal,
 			vte_g_array_fill(rowdata->cells,
 					 &screen->fill_defaults,
 					 terminal->column_count);
+			rowdata->soft_wrapped = 0;
 			/* Repaint the row. */
 			_vte_invalidate_cells(terminal,
 					      0, terminal->column_count,
@@ -3723,9 +3757,7 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 					 GQuark match_quark,
 					 GValueArray *params)
 {
-#if GTK_CHECK_VERSION(2,2,0)
 	GdkScreen *gscreen;
-#endif
 	VteScreen *screen;
 	GValue *value;
 	GtkWidget *widget;
@@ -3934,7 +3966,6 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 				fprintf(stderr, "Reporting screen size.\n");
 			}
 #endif
-#if GTK_CHECK_VERSION(2,2,0)
 			if (gtk_widget_has_screen(widget)) {
 				gscreen = gtk_widget_get_screen(widget);
 			} else {
@@ -3942,10 +3973,6 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 			}
 			height = gdk_screen_get_height(gscreen);
 			width = gdk_screen_get_width(gscreen);
-#else
-			height = gdk_screen_height();
-			width = gdk_screen_width();
-#endif
 			snprintf(buf, sizeof(buf),
 				 "%s%ld;%ldt", _VTE_CAP_CSI,
 				 height / terminal->char_height,

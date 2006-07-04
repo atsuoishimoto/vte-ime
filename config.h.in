@@ -124,6 +124,9 @@
 /* Define if you have ncurses.h and libncurses */
 #undef HAVE_NCURSES
 
+/* Define if you have ncurses/curses.h and libncurses */
+#undef HAVE_NCURSES_CURSES
+
 /* Whether we have PangoX */
 #undef HAVE_PANGOX
 
@@ -162,6 +165,9 @@
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/syslimits.h> header file. */
+#undef HAVE_SYS_SYSLIMITS_H
 
 /* Define to 1 if you have the <sys/termios.h> header file. */
 #undef HAVE_SYS_TERMIOS_H

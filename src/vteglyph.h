@@ -19,7 +19,6 @@
 #ifndef vte_vteglyph_h_included
 #define vte_vteglyph_h_included
 
-#ident "$Id: vteglyph.h,v 1.7 2004/04/20 05:16:56 nalin Exp $"
 
 #include <gtk/gtk.h>
 #include "vtefc.h"

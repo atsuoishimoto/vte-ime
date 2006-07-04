@@ -21,7 +21,6 @@
 #ifndef vte_vtedraw_h_included
 #define vte_vtedraw_h_included
 
-#ident "$Id: vtedraw.h,v 1.9 2004/04/20 05:16:56 nalin Exp $"
 
 #include <glib.h>
 #include <gtk/gtk.h>
