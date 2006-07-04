@@ -63,6 +63,7 @@
     <function name="vte_terminal_get_mouse_autohide ()" link="VteTerminal.html#vte-terminal-get-mouse-autohide"/>
     <function name="vte_terminal_reset ()" link="VteTerminal.html#vte-terminal-reset"/>
     <function name="vte_terminal_get_text ()" link="VteTerminal.html#vte-terminal-get-text"/>
+    <function name="vte_terminal_get_text_include_trailing_spaces ()" link="VteTerminal.html#vte-terminal-get-text-include-trailing-spaces"/>
     <function name="vte_terminal_get_text_range ()" link="VteTerminal.html#vte-terminal-get-text-range"/>
     <function name="vte_terminal_get_cursor_position ()" link="VteTerminal.html#vte-terminal-get-cursor-position"/>
     <function name="vte_terminal_match_clear_all ()" link="VteTerminal.html#vte-terminal-match-clear-all"/>

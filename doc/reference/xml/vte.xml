@@ -150,6 +150,11 @@ const <link linkend="PangoFontDescription">PangoFontDescription</link>* <link li
                                              <link linkend="gboolean">gboolean</link> (*is_selected) (VteTerminal *terminal,glong column,glong row,gpointer data),
                                              <link linkend="gpointer">gpointer</link> data,
                                              <link linkend="GArray">GArray</link> *attributes);
+<link linkend="char">char</link>*       <link linkend="vte-terminal-get-text-include-trailing-spaces">vte_terminal_get_text_include_trailing_spaces</link>
+                                            (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                             <link linkend="gboolean">gboolean</link> (*is_selected) (VteTerminal *terminal,glong column,glong row,gpointer data),
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GArray">GArray</link> *attributes);
 <link linkend="char">char</link>*       <link linkend="vte-terminal-get-text-range">vte_terminal_get_text_range</link>     (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                              <link linkend="glong">glong</link> start_row,
                                              <link linkend="glong">glong</link> start_col,
@@ -1489,6 +1494,41 @@ the character's position, colors, and other characteristics.</para>
 <listitem><simpara> location for storing text attributes
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a text string which must be freed by the caller, or NULL.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="vte-terminal-get-text-include-trailing-spaces" role="function"/>vte_terminal_get_text_include_trailing_spaces ()</title>
+<indexterm><primary>vte_terminal_get_text_include_trailing_spaces</primary></indexterm><programlisting><link linkend="char">char</link>*       vte_terminal_get_text_include_trailing_spaces
+                                            (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                             <link linkend="gboolean">gboolean</link> (*is_selected) (VteTerminal *terminal,glong column,glong row,gpointer data),
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GArray">GArray</link> *attributes);</programlisting>
+<para>
+Extracts a view of the visible part of the terminal.  If <parameter>is_selected</parameter> is not
+NULL, characters will only be read if <parameter>is_selected</parameter> returns TRUE after being
+passed the column and row, respectively.  A <link linkend="VteCharAttributes"><type>VteCharAttributes</type></link> structure
+is added to <parameter>attributes</parameter> for each byte added to the returned string detailing
+the character's position, colors, and other characteristics. This function
+differs from vte_terminal_get_text in that trailing spaces at the end of
+lines are included.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>is_selected</parameter>&nbsp;:</term>
+<listitem><simpara> a callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> user data to be passed to the callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>attributes</parameter>&nbsp;:</term>
+<listitem><simpara> location for storing text attributes
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a text string which must be freed by the caller, or NULL.
+
+Since 0.11.11
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

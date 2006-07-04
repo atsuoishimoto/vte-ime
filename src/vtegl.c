@@ -16,13 +16,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtegl.c,v 1.15 2004/04/20 05:16:56 nalin Exp $"
 
 #include "../config.h"
 
 #include <gtk/gtk.h>
 
-#if GTK_CHECK_VERSION(2,2,0)
 #ifndef X_DISPLAY_MISSING
 #ifdef HAVE_GL
 
@@ -123,7 +121,7 @@ _vte_gl_create(struct _vte_draw *draw, GtkWidget *widget)
 	int screen;
 	gboolean direct;
 
-	draw->impl_data = g_malloc(sizeof(struct _vte_gl_data));
+	draw->impl_data = g_slice_new(struct _vte_gl_data);
 	data = (struct _vte_gl_data*) draw->impl_data;
 
 	gdisplay = gdk_display_get_default();
@@ -194,7 +192,7 @@ _vte_gl_destroy(struct _vte_draw *draw)
 
 	memset(&data->color, 0, sizeof(data->color));
 
-	g_free(draw->impl_data);
+	g_slice_free(struct _vte_gl_data, draw->impl_data);
 }
 
 static GdkVisual *
@@ -279,9 +277,13 @@ _vte_gl_set_background_image(struct _vte_draw *draw,
 {
 	struct _vte_gl_data *data;
 	GdkPixbuf *bgpixbuf;
+	GdkScreen *screen;
+
+	screen = gtk_widget_get_screen(draw->widget);
 
 	data = (struct _vte_gl_data*) draw->impl_data;
-	bgpixbuf = vte_bg_get_pixbuf(vte_bg_get(), type, pixbuf, file,
+	bgpixbuf = vte_bg_get_pixbuf(vte_bg_get_for_screen(screen),
+			 	     type, pixbuf, file,
 				     tint, saturation);
 	if (GDK_IS_PIXBUF(data->bgpixbuf)) {
 		g_object_unref(G_OBJECT(data->bgpixbuf));
@@ -630,6 +632,5 @@ struct _vte_draw_impl _vte_draw_gl = {
 	_vte_gl_set_scroll,
 };
 
-#endif
 #endif
 #endif

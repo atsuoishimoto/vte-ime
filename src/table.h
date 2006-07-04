@@ -21,7 +21,6 @@
 #ifndef vte_table_h_included
 #define vte_table_h_included
 
-#ident "$Id: table.h,v 1.7 2003/05/05 23:23:46 nalin Exp $"
 
 #include <glib-object.h>
 

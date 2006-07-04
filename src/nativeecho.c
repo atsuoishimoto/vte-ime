@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: nativeecho.c,v 1.4 2003/06/27 16:27:19 nalin Exp $"
 #include "../config.h"
 #include <limits.h>
 #include <stdio.h>

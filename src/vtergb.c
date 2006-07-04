@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtergb.c,v 1.2 2003/04/21 02:50:46 nalin Exp $"
 
 #include "../config.h"
 

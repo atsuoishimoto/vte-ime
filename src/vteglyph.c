@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vteglyph.c,v 1.14 2004/04/20 05:16:56 nalin Exp $"
 
 #include "../config.h"
 
@@ -56,7 +55,7 @@ _vte_glyph_cache_new(void)
 	struct _vte_glyph_cache *ret;
 	int error;
 
-	ret = g_malloc(sizeof(struct _vte_glyph_cache));
+	ret = g_slice_new(struct _vte_glyph_cache);
 
 	ret->patterns = g_array_new(TRUE, TRUE, sizeof(FcPattern*));
 	ret->faces = NULL;
@@ -130,7 +129,7 @@ _vte_glyph_cache_free(struct _vte_glyph_cache *cache)
 	cache->width = 0;
 	cache->height = 0;
 	cache->ascent = 0;
-	g_free(cache);
+	g_slice_free(struct _vte_glyph_cache, cache);
 }
 
 void

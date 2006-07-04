@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtepango.c,v 1.17 2005/07/25 08:49:42 kmaraas Exp $"
 
 #include "../config.h"
 
@@ -55,7 +54,7 @@ _vte_pango_create(struct _vte_draw *draw, GtkWidget *widget)
 {
 	struct _vte_pango_data *data;
 
-	draw->impl_data = g_malloc(sizeof(struct _vte_pango_data));
+	draw->impl_data = g_slice_new(struct _vte_pango_data);
 	data = (struct _vte_pango_data*) draw->impl_data;
 
 	data->color.red = 0;
@@ -102,7 +101,7 @@ _vte_pango_destroy(struct _vte_draw *draw)
 
 	memset(&data->color, 0, sizeof(data->color));
 
-	g_free(draw->impl_data);
+	g_slice_free(struct _vte_pango_data, draw->impl_data);
 }
 
 static GdkVisual *
@@ -120,19 +119,13 @@ _vte_pango_get_colormap(struct _vte_draw *draw)
 static void
 _vte_pango_start(struct _vte_draw *draw)
 {
-#if GTK_CHECK_VERSION(2,2,0)
 	GdkScreen *screen;
-#endif
 	PangoContext *ctx;
 	struct _vte_pango_data *data;
 	data = (struct _vte_pango_data*) draw->impl_data;
 
-#if GTK_CHECK_VERSION(2,2,0)
 	screen = gdk_drawable_get_screen(draw->widget->window);
 	ctx = gdk_pango_context_get_for_screen(screen);
-#else
-	ctx = gdk_pango_context_get();
-#endif
 	if (PANGO_IS_CONTEXT(data->ctx)) {
 		g_object_unref(G_OBJECT(data->ctx));
 	}
@@ -195,9 +188,13 @@ _vte_pango_set_background_image(struct _vte_draw *draw,
 {
 	GdkPixmap *pixmap;
 	struct _vte_pango_data *data;
+	GdkScreen *screen;
+
+	screen = gtk_widget_get_screen(draw->widget);
 
 	data = (struct _vte_pango_data*) draw->impl_data;
-	pixmap = vte_bg_get_pixmap(vte_bg_get(), type, pixbuf, file,
+	pixmap = vte_bg_get_pixmap(vte_bg_get_for_screen(screen),
+				   type, pixbuf, file,
 				   color, saturation,
 				   _vte_draw_get_colormap(draw, TRUE));
 	if (GDK_IS_PIXMAP(data->pixmap)) {
@@ -262,9 +259,7 @@ _vte_pango_set_text_font(struct _vte_draw *draw,
 			 const PangoFontDescription *fontdesc,
 			 VteTerminalAntiAlias antialias)
 {
-#if GTK_CHECK_VERSION(2,2,0)
 	GdkScreen *screen;
-#endif
 	PangoContext *ctx;
 	PangoLayout *layout;
 	PangoLayoutIter *iter;
@@ -277,16 +272,12 @@ _vte_pango_set_text_font(struct _vte_draw *draw,
 
 	data = (struct _vte_pango_data*) draw->impl_data;
 
-#if GTK_CHECK_VERSION(2,2,0)
 	if (gtk_widget_has_screen(draw->widget)) {
 		screen = gtk_widget_get_screen(draw->widget);
 	} else {
 		screen = gdk_display_get_default_screen(gtk_widget_get_display(draw->widget));
 	}
 	ctx = gdk_pango_context_get_for_screen(screen);
-#else
-	ctx = gdk_pango_context_get();
-#endif
 	layout = pango_layout_new(ctx);
 	if (data->font != NULL) {
 		pango_font_description_free(data->font);
@@ -309,7 +300,7 @@ _vte_pango_set_text_font(struct _vte_draw *draw,
 
 	/* Estimate for CJK characters. */
 	full_width = draw->width * 2;
-	full_string = g_string_new("");
+	full_string = g_string_new(NULL);
 	for (i = 0; i < G_N_ELEMENTS(full_codepoints); i++) {
 		g_string_append_unichar(full_string, full_codepoints[i]);
 	}

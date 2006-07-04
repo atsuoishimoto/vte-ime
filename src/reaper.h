@@ -19,7 +19,6 @@
 #ifndef vte_reaper_h_included
 #define vte_reaper_h_included
 
-#ident "$Id: reaper.h,v 1.5 2004/05/02 06:43:01 nalin Exp $"
 
 #include <sys/wait.h>
 #include <signal.h>

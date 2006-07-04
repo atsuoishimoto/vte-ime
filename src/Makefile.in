@@ -45,9 +45,9 @@ pkglib_PROGRAMS = interpret$(EXEEXT) utf8echo$(EXEEXT) \
 	slowcat$(EXEEXT) vterdb$(EXEEXT)
 noinst_PROGRAMS = buffer$(EXEEXT) dumpkeys$(EXEEXT) iso2022$(EXEEXT) \
 	pty$(EXEEXT) reaper$(EXEEXT) reflect-text-view$(EXEEXT) \
-	reflect-vte$(EXEEXT) $(am__EXEEXT_1) ring$(EXEEXT) \
-	mev$(EXEEXT) ssfe$(EXEEXT) table$(EXEEXT) trie$(EXEEXT) \
-	xticker$(EXEEXT) vteconv$(EXEEXT) vtetc$(EXEEXT)
+	reflect-vte$(EXEEXT) ring$(EXEEXT) mev$(EXEEXT) ssfe$(EXEEXT) \
+	table$(EXEEXT) trie$(EXEEXT) xticker$(EXEEXT) vteconv$(EXEEXT) \
+	vtetc$(EXEEXT)
 subdir = src
 DIST_COMMON = $(pkginclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -70,7 +70,9 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(pkgincludedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libvte_la_DEPENDENCIES =
+am__DEPENDENCIES_1 =
+libvte_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_libvte_la_OBJECTS = buffer.lo caps.lo debug.lo iso2022.lo keymap.lo \
 	marshal.lo matcher.lo pty.lo reaper.lo ring.lo table.lo \
 	trie.lo vte.lo vteaccess.lo vtebg.lo vteconv.lo vtedraw.lo \
@@ -79,15 +81,15 @@ am_libvte_la_OBJECTS = buffer.lo caps.lo debug.lo iso2022.lo keymap.lo \
 	vteskel.lo vtetc.lo vtetree.lo vtexft.lo
 libvte_la_OBJECTS = $(am_libvte_la_OBJECTS)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
-@REFLECT_USE_ZVT_TRUE@am__EXEEXT_1 = reflect-zvt$(EXEEXT)
 pkglibPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS) $(pkglib_PROGRAMS)
 am_buffer_OBJECTS = buffer-buffer.$(OBJEXT)
 buffer_OBJECTS = $(am_buffer_OBJECTS)
-buffer_DEPENDENCIES =
+buffer_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_dumpkeys_OBJECTS = dumpkeys.$(OBJEXT)
 dumpkeys_OBJECTS = $(am_dumpkeys_OBJECTS)
-dumpkeys_DEPENDENCIES =
+dumpkeys_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_interpret_OBJECTS = interpret-buffer.$(OBJEXT) \
 	interpret-caps.$(OBJEXT) interpret-debug.$(OBJEXT) \
 	interpret-iso2022.$(OBJEXT) interpret-matcher.$(OBJEXT) \
@@ -95,88 +97,102 @@ am_interpret_OBJECTS = interpret-buffer.$(OBJEXT) \
 	interpret-vteconv.$(OBJEXT) interpret-vtetc.$(OBJEXT) \
 	interpret-interpret.$(OBJEXT)
 interpret_OBJECTS = $(am_interpret_OBJECTS)
-interpret_DEPENDENCIES =
+interpret_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_iso2022_OBJECTS = iso2022-buffer.$(OBJEXT) iso2022-caps.$(OBJEXT) \
 	iso2022-debug.$(OBJEXT) iso2022-iso2022.$(OBJEXT) \
 	iso2022-matcher.$(OBJEXT) iso2022-table.$(OBJEXT) \
 	iso2022-trie.$(OBJEXT) iso2022-vteconv.$(OBJEXT) \
 	iso2022-vtetc.$(OBJEXT)
 iso2022_OBJECTS = $(am_iso2022_OBJECTS)
-iso2022_DEPENDENCIES =
+iso2022_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 iso8859mode_SOURCES = iso8859mode.c
 iso8859mode_OBJECTS = iso8859mode.$(OBJEXT)
 iso8859mode_LDADD = $(LDADD)
 am_mev_OBJECTS = mev.$(OBJEXT)
 mev_OBJECTS = $(am_mev_OBJECTS)
-mev_DEPENDENCIES =
+mev_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_nativeecho_OBJECTS = nativeecho-nativeecho.$(OBJEXT)
 nativeecho_OBJECTS = $(am_nativeecho_OBJECTS)
-nativeecho_DEPENDENCIES =
+nativeecho_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_pty_OBJECTS = pty-debug.$(OBJEXT) pty-pty.$(OBJEXT)
 pty_OBJECTS = $(am_pty_OBJECTS)
-pty_DEPENDENCIES =
+pty_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_reaper_OBJECTS = reaper-debug.$(OBJEXT) reaper-marshal.$(OBJEXT) \
 	reaper-reaper.$(OBJEXT)
 reaper_OBJECTS = $(am_reaper_OBJECTS)
-reaper_DEPENDENCIES =
+reaper_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_reflect_text_view_OBJECTS = reflect_text_view-reflect.$(OBJEXT)
 reflect_text_view_OBJECTS = $(am_reflect_text_view_OBJECTS)
-reflect_text_view_DEPENDENCIES =
+reflect_text_view_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_reflect_vte_OBJECTS = reflect_vte-reflect.$(OBJEXT)
 reflect_vte_OBJECTS = $(am_reflect_vte_OBJECTS)
-reflect_vte_DEPENDENCIES = libvte.la
-am__reflect_zvt_SOURCES_DIST = reflect.c
-@REFLECT_USE_ZVT_TRUE@am_reflect_zvt_OBJECTS =  \
-@REFLECT_USE_ZVT_TRUE@	reflect_zvt-reflect.$(OBJEXT)
-reflect_zvt_OBJECTS = $(am_reflect_zvt_OBJECTS)
-reflect_zvt_DEPENDENCIES =
+reflect_vte_DEPENDENCIES = libvte.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_ring_OBJECTS = ring-debug.$(OBJEXT) ring-ring.$(OBJEXT)
 ring_OBJECTS = $(am_ring_OBJECTS)
-ring_DEPENDENCIES =
+ring_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_slowcat_OBJECTS = slowcat.$(OBJEXT)
 slowcat_OBJECTS = $(am_slowcat_OBJECTS)
-slowcat_DEPENDENCIES =
+slowcat_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_ssfe_OBJECTS = ssfe.$(OBJEXT)
 ssfe_OBJECTS = $(am_ssfe_OBJECTS)
-ssfe_DEPENDENCIES =
+ssfe_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_table_OBJECTS = table-buffer.$(OBJEXT) table-caps.$(OBJEXT) \
 	table-debug.$(OBJEXT) table-matcher.$(OBJEXT) \
 	table-table.$(OBJEXT) table-trie.$(OBJEXT) \
 	table-vteconv.$(OBJEXT) table-vtetc.$(OBJEXT)
 table_OBJECTS = $(am_table_OBJECTS)
-table_DEPENDENCIES =
+table_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_trie_OBJECTS = trie-buffer.$(OBJEXT) trie-caps.$(OBJEXT) \
 	trie-debug.$(OBJEXT) trie-matcher.$(OBJEXT) \
 	trie-table.$(OBJEXT) trie-trie.$(OBJEXT) \
 	trie-vteconv.$(OBJEXT) trie-vtetc.$(OBJEXT)
 trie_OBJECTS = $(am_trie_OBJECTS)
-trie_DEPENDENCIES =
+trie_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_utf8echo_OBJECTS = utf8echo-buffer.$(OBJEXT) \
 	utf8echo-caps.$(OBJEXT) utf8echo-debug.$(OBJEXT) \
 	utf8echo-matcher.$(OBJEXT) utf8echo-table.$(OBJEXT) \
 	utf8echo-trie.$(OBJEXT) utf8echo-utf8echo.$(OBJEXT) \
 	utf8echo-vteconv.$(OBJEXT) utf8echo-vtetc.$(OBJEXT)
 utf8echo_OBJECTS = $(am_utf8echo_OBJECTS)
-utf8echo_DEPENDENCIES =
+utf8echo_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 utf8mode_SOURCES = utf8mode.c
 utf8mode_OBJECTS = utf8mode.$(OBJEXT)
 utf8mode_LDADD = $(LDADD)
 am_vte_OBJECTS = vteapp.$(OBJEXT)
 vte_OBJECTS = $(am_vte_OBJECTS)
-vte_DEPENDENCIES = libvte.la
+vte_DEPENDENCIES = libvte.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_vteconv_OBJECTS = vteconv-buffer.$(OBJEXT) vteconv-debug.$(OBJEXT) \
 	vteconv-vteconv.$(OBJEXT)
 vteconv_OBJECTS = $(am_vteconv_OBJECTS)
-vteconv_DEPENDENCIES =
+vteconv_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_vterdb_OBJECTS = vterdb-vterdb.$(OBJEXT)
 vterdb_OBJECTS = $(am_vterdb_OBJECTS)
-vterdb_DEPENDENCIES =
+vterdb_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_vtetc_OBJECTS = vtetc-debug.$(OBJEXT) vtetc-vtetc.$(OBJEXT)
 vtetc_OBJECTS = $(am_vtetc_OBJECTS)
-vtetc_DEPENDENCIES =
+vtetc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_xticker_OBJECTS = xticker-xticker.$(OBJEXT)
 xticker_OBJECTS = $(am_xticker_OBJECTS)
-xticker_DEPENDENCIES =
+xticker_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 pkglibSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(pkglib_SCRIPTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -195,27 +211,26 @@ SOURCES = $(libvte_la_SOURCES) $(EXTRA_libvte_la_SOURCES) \
 	$(iso2022_SOURCES) iso8859mode.c $(mev_SOURCES) \
 	$(nativeecho_SOURCES) $(pty_SOURCES) $(reaper_SOURCES) \
 	$(reflect_text_view_SOURCES) $(reflect_vte_SOURCES) \
-	$(reflect_zvt_SOURCES) $(ring_SOURCES) $(slowcat_SOURCES) \
-	$(ssfe_SOURCES) $(table_SOURCES) $(trie_SOURCES) \
-	$(utf8echo_SOURCES) utf8mode.c $(vte_SOURCES) \
-	$(vteconv_SOURCES) $(vterdb_SOURCES) $(vtetc_SOURCES) \
-	$(xticker_SOURCES)
+	$(ring_SOURCES) $(slowcat_SOURCES) $(ssfe_SOURCES) \
+	$(table_SOURCES) $(trie_SOURCES) $(utf8echo_SOURCES) \
+	utf8mode.c $(vte_SOURCES) $(vteconv_SOURCES) $(vterdb_SOURCES) \
+	$(vtetc_SOURCES) $(xticker_SOURCES)
 DIST_SOURCES = $(libvte_la_SOURCES) $(EXTRA_libvte_la_SOURCES) \
 	$(buffer_SOURCES) $(dumpkeys_SOURCES) $(interpret_SOURCES) \
 	$(iso2022_SOURCES) iso8859mode.c $(mev_SOURCES) \
 	$(nativeecho_SOURCES) $(pty_SOURCES) $(reaper_SOURCES) \
 	$(reflect_text_view_SOURCES) $(reflect_vte_SOURCES) \
-	$(am__reflect_zvt_SOURCES_DIST) $(ring_SOURCES) \
-	$(slowcat_SOURCES) $(ssfe_SOURCES) $(table_SOURCES) \
-	$(trie_SOURCES) $(utf8echo_SOURCES) utf8mode.c $(vte_SOURCES) \
-	$(vteconv_SOURCES) $(vterdb_SOURCES) $(vtetc_SOURCES) \
-	$(xticker_SOURCES)
+	$(ring_SOURCES) $(slowcat_SOURCES) $(ssfe_SOURCES) \
+	$(table_SOURCES) $(trie_SOURCES) $(utf8echo_SOURCES) \
+	utf8mode.c $(vte_SOURCES) $(vteconv_SOURCES) $(vterdb_SOURCES) \
+	$(vtetc_SOURCES) $(xticker_SOURCES)
 pkgincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(pkginclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
+ALL_LINGUAS = @ALL_LINGUAS@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
@@ -341,8 +356,6 @@ PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
-REFLECT_USE_ZVT_FALSE = @REFLECT_USE_ZVT_FALSE@
-REFLECT_USE_ZVT_TRUE = @REFLECT_USE_ZVT_TRUE@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -356,9 +369,6 @@ X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
-ZVT_CFLAGS = @ZVT_CFLAGS@
-ZVT_DEFS = @ZVT_DEFS@
-ZVT_LIBS = @ZVT_LIBS@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
@@ -429,8 +439,8 @@ EXTRA_DIST = \
 	unitable.JIS0212 \
 	unitable.KSX1001
 
-AM_CFLAGS = @VTE_CFLAGS@ @CFLAGS@ @X_CFLAGS@ -DG_DISABLE_ASSERT
-AM_LDFLAGS = @LDFLAGS@
+AM_CFLAGS = $(VTE_CFLAGS) $(FT2_CFLAGS) $(X_CFLAGS) -DG_DISABLE_ASSERT
+AM_LDFLAGS = $(LDFLAGS)
 EXTRA_libvte_la_SOURCES = keysyms.c
 libvte_la_SOURCES = \
 	buffer.c \
@@ -504,32 +514,31 @@ libvte_la_SOURCES = \
 # Libtool shared library versioning stuffs.
 # REVISION gets incremented whenever the source code changes without adding
 # an API or ABI change.
-VERSION_REVISION = 0
+VERSION_REVISION = 2
 # CURRENT must be incremented when an API or ABI change (addition or removal)
 # is made, and REVISION must be reset to 0 when this happens.
 VERSION_CURRENT = 9
 # AGE must be incremented when an API or ABI addition is made, and REVISION
 # must be reset to 0 when this happens.
-VERSION_AGE = 5
-libvte_la_LDFLAGS = @LDFLAGS@ -version-info $(VERSION_CURRENT):$(VERSION_REVISION):$(VERSION_AGE)
-libvte_la_LIBADD = @LIBS@ @VTE_LIBS@ @X_LIBS@
+VERSION_AGE = 0
+libvte_la_LDFLAGS = $(LDFLAGS) \
+	-version-info $(VERSION_CURRENT):$(VERSION_REVISION):$(VERSION_AGE) \
+	-export-symbols-regex "^vte_terminal_.*|^_vte_pty_.*|^vte_reaper_.*" \
+	-no-undefined
+
+libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS)
 CLEANFILES = marshal.c marshal.h
 vte_SOURCES = \
 	vteapp.c
 
-vte_LDADD = libvte.la @LDFLAGS@ @LIBS@ @VTE_LIBS@ @X_LIBS@
-reflect_text_view_CFLAGS = @CFLAGS@ -DUSE_TEXT_VIEW @VTE_CFLAGS@ @X_CFLAGS@
+vte_LDADD = libvte.la $(LDFLAGS) $(LIBS) $(VTE_LIBS) $(X_LIBS)
+reflect_text_view_CFLAGS = -DUSE_TEXT_VIEW $(VTE_CFLAGS) $(X_CFLAGS)
 reflect_text_view_SOURCES = reflect.c
-reflect_text_view_LDADD = @LDFLAGS@ @LIBS@ @VTE_LIBS@ @X_LIBS@
-reflect_vte_CFLAGS = @CFLAGS@ -DUSE_VTE @VTE_CFLAGS@ @X_CFLAGS@
+reflect_text_view_LDADD = $(LDFLAGS) $(LIBS) $(VTE_LIBS) $(X_LIBS)
+reflect_vte_CFLAGS = -DUSE_VTE $(VTE_CFLAGS) $(X_CFLAGS)
 reflect_vte_SOURCES = reflect.c
-reflect_vte_LDADD = libvte.la @LDFLAGS@ @LIBS@ @VTE_LIBS@ @X_LIBS@
-@REFLECT_USE_ZVT_FALSE@REFLECT_ZVT = 
-@REFLECT_USE_ZVT_TRUE@REFLECT_ZVT = reflect-zvt
-@REFLECT_USE_ZVT_TRUE@reflect_zvt_CFLAGS = @CFLAGS@ -DUSE_ZVT @ZVT_DEFS@ @ZVT_CFLAGS@ @X_CFLAGS@
-@REFLECT_USE_ZVT_TRUE@reflect_zvt_SOURCES = reflect.c
-@REFLECT_USE_ZVT_TRUE@reflect_zvt_LDADD = @LDFLAGS@ @LIBS@ @ZVT_LIBS@ @X_LIBS@
-interpret_CFLAGS = @CFLAGS@ @GTK_CFLAGS@ -DINTERPRET_MAIN
+reflect_vte_LDADD = libvte.la $(LDFLAGS) $(LIBS) $(VTE_LIBS) $(X_LIBS)
+interpret_CFLAGS = $(GTK_CFLAGS) -DINTERPRET_MAIN
 interpret_SOURCES = \
 	buffer.c \
 	buffer.h \
@@ -551,8 +560,8 @@ interpret_SOURCES = \
 	vtetc.h \
 	interpret.c
 
-interpret_LDADD = @LDFLAGS@ @GOBJECT_LIBS@
-iso2022_CFLAGS = @CFLAGS@ @GTK_CFLAGS@ -DISO2022_MAIN
+interpret_LDADD = $(LDFLAGS) $(GOBJECT_LIBS)
+iso2022_CFLAGS = $(GTK_CFLAGS) -DISO2022_MAIN
 iso2022_SOURCES = \
 	buffer.c \
 	buffer.h \
@@ -573,8 +582,8 @@ iso2022_SOURCES = \
 	vtetc.c \
 	vtetc.h
 
-iso2022_LDADD = @LDFLAGS@ @LIBS@ @GOBJECT_LIBS@
-utf8echo_CFLAGS = @CFLAGS@ @GOBJECT_CFLAGS@ -DUTF8ECHO_MAIN
+iso2022_LDADD = $(LDFLAGS) $(LIBS) $(GOBJECT_LIBS)
+utf8echo_CFLAGS = $(GOBJECT_CFLAGS) -DUTF8ECHO_MAIN
 utf8echo_SOURCES = \
 	buffer.c \
 	buffer.h \
@@ -594,25 +603,25 @@ utf8echo_SOURCES = \
 	vtetc.c \
 	vtetc.h
 
-utf8echo_LDADD = @LDFLAGS@ @LIBS@ @GOBJECT_LIBS@
-nativeecho_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@ -DNATIVEECHO_MAIN
+utf8echo_LDADD = $(LDFLAGS) $(LIBS) $(GOBJECT_LIBS)
+nativeecho_CFLAGS = $(GLIB_CFLAGS) -DNATIVEECHO_MAIN
 nativeecho_SOURCES = \
 	nativeecho.c
 
-nativeecho_LDADD = @LDFLAGS@ @LIBS@
-ring_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@ -DRING_MAIN
+nativeecho_LDADD = $(LDFLAGS) $(LIBS) $(GLIB_LIBS)
+ring_CFLAGS = $(GLIB_CFLAGS) -DRING_MAIN
 ring_SOURCES = \
 	debug.c \
 	debug.h \
 	ring.c \
 	ring.h
 
-ring_LDADD = @LDFLAGS@ @LIBS@ @GLIB_LIBS@
+ring_LDADD = $(LDFLAGS) $(LIBS) $(GLIB_LIBS)
 slowcat_SOURCES = \
 	slowcat.c
 
-slowcat_LDADD = @LDFLAGS@ @LIBS@ @GLIB_LIBS@
-table_CFLAGS = @CFLAGS@ @GOBJECT_CFLAGS@ -DTABLE_MAIN
+slowcat_LDADD = $(LDFLAGS) $(LIBS) $(GLIB_LIBS)
+table_CFLAGS = $(GOBJECT_CFLAGS) -DTABLE_MAIN
 table_SOURCES = \
 	buffer.c \
 	buffer.h \
@@ -631,8 +640,8 @@ table_SOURCES = \
 	vtetc.c \
 	vtetc.h
 
-table_LDADD = @LDFLAGS@ @LIBS@ @GOBJECT_LIBS@
-trie_CFLAGS = @CFLAGS@ @GOBJECT_CFLAGS@ -DTRIE_MAIN
+table_LDADD = $(LDFLAGS) $(LIBS) $(GOBJECT_LIBS)
+trie_CFLAGS = $(GOBJECT_CFLAGS) -DTRIE_MAIN
 trie_SOURCES = \
 	buffer.c \
 	buffer.h \
@@ -651,24 +660,24 @@ trie_SOURCES = \
 	vtetc.c \
 	vtetc.h 
 
-trie_LDADD = @LDFLAGS@ @LIBS@ @GOBJECT_LIBS@
-vtetc_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@ -DTERMCAP_MAIN
+trie_LDADD = $(LDFLAGS) $(LIBS) $(GOBJECT_LIBS)
+vtetc_CFLAGS = $(GLIB_CFLAGS) -DTERMCAP_MAIN
 vtetc_SOURCES = \
 	debug.c \
 	debug.h \
 	vtetc.c \
 	vtetc.h
 
-vtetc_LDADD = @LDFLAGS@ @LIBS@ @GLIB_LIBS@
-pty_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@ -DPTY_MAIN
+vtetc_LDADD = $(LDFLAGS) $(LIBS) $(GLIB_LIBS)
+pty_CFLAGS = $(GLIB_CFLAGS) -DPTY_MAIN
 pty_SOURCES = \
 	debug.c \
 	debug.h \
 	pty.c \
 	pty.h
 
-pty_LDADD = @LDFLAGS@ @LIBS@ @GLIB_LIBS@
-reaper_CFLAGS = @CFLAGS@ @GTK_CFLAGS@ -DREAPER_MAIN
+pty_LDADD = $(LDFLAGS) $(LIBS) $(GLIB_LIBS)
+reaper_CFLAGS = $(GTK_CFLAGS) -DREAPER_MAIN
 reaper_SOURCES = \
 	debug.c \
 	debug.h \
@@ -677,11 +686,11 @@ reaper_SOURCES = \
 	reaper.c \
 	reaper.h
 
-reaper_LDADD = @LDFLAGS@ @LIBS@ @GOBJECT_LIBS@
-vterdb_CFLAGS = @CFLAGS@ @GTK_CFLAGS@ -DVTERDB_MAIN
+reaper_LDADD = $(LDFLAGS) $(LIBS) $(GOBJECT_LIBS)
+vterdb_CFLAGS = $(GTK_CFLAGS) -DVTERDB_MAIN
 vterdb_SOURCES = vterdb.c
-vterdb_LDADD = @LDFLAGS@ @LIBS@ @GTK_LIBS@
-vteconv_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@ -DVTECONV_MAIN
+vterdb_LDADD = $(LDFLAGS) $(LIBS) $(GTK_LIBS)
+vteconv_CFLAGS = $(GLIB_CFLAGS) -DVTECONV_MAIN
 vteconv_SOURCES = \
 	buffer.c \
 	buffer.h \
@@ -690,19 +699,19 @@ vteconv_SOURCES = \
 	vteconv.c \
 	vteconv.h
 
-vteconv_LDADD = @LDFLAGS@ @GLIB_LIBS@
-buffer_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@ -DBUFFER_MAIN
+vteconv_LDADD = $(LDFLAGS) $(GLIB_LIBS)
+buffer_CFLAGS = $(GLIB_CFLAGS) -DBUFFER_MAIN
 buffer_SOURCES = buffer.c
-buffer_LDADD = @LDFLAGS@ @GLIB_LIBS@
+buffer_LDADD = $(LDFLAGS) $(GLIB_LIBS)
 dumpkeys_SOURCES = dumpkeys.c
-dumpkeys_LDADD = @LDFLAGS@ @LIBS@ @GLIB_LIBS@
+dumpkeys_LDADD = $(LDFLAGS) $(LIBS) $(GLIB_LIBS)
 mev_SOURCES = mev.c
-mev_LDADD = @LDFLAGS@ @LIBS@ @GLIB_LIBS@
+mev_LDADD = $(LDFLAGS) $(LIBS) $(GLIB_LIBS)
 ssfe_SOURCES = ssfe.c
-ssfe_LDADD = @LDFLAGS@ @OTHERLIBS@
-xticker_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@
+ssfe_LDADD = $(LDFLAGS) $(OTHERLIBS)
+xticker_CFLAGS = $(GLIB_CFLAGS)
 xticker_SOURCES = xticker.c
-xticker_LDADD = @LIBS@ @GLIB_LIBS@
+xticker_LDADD = $(LDFLAGS) $(LIBS) $(GLIB_LIBS)
 all: all-am
 
 .SUFFIXES:
@@ -861,9 +870,6 @@ reflect-text-view$(EXEEXT): $(reflect_text_view_OBJECTS) $(reflect_text_view_DEP
 reflect-vte$(EXEEXT): $(reflect_vte_OBJECTS) $(reflect_vte_DEPENDENCIES) 
 	@rm -f reflect-vte$(EXEEXT)
 	$(LINK) $(reflect_vte_LDFLAGS) $(reflect_vte_OBJECTS) $(reflect_vte_LDADD) $(LIBS)
-reflect-zvt$(EXEEXT): $(reflect_zvt_OBJECTS) $(reflect_zvt_DEPENDENCIES) 
-	@rm -f reflect-zvt$(EXEEXT)
-	$(LINK) $(reflect_zvt_LDFLAGS) $(reflect_zvt_OBJECTS) $(reflect_zvt_LDADD) $(LIBS)
 ring$(EXEEXT): $(ring_OBJECTS) $(ring_DEPENDENCIES) 
 	@rm -f ring$(EXEEXT)
 	$(LINK) $(ring_LDFLAGS) $(ring_OBJECTS) $(ring_LDADD) $(LIBS)
@@ -967,7 +973,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reaper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reflect_text_view-reflect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reflect_vte-reflect.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reflect_zvt-reflect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ring-debug.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ring-ring.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ring.Plo@am__quote@
@@ -1441,20 +1446,6 @@ reflect_vte-reflect.obj: reflect.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='reflect.c' object='reflect_vte-reflect.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(reflect_vte_CFLAGS) $(CFLAGS) -c -o reflect_vte-reflect.obj `if test -f 'reflect.c'; then $(CYGPATH_W) 'reflect.c'; else $(CYGPATH_W) '$(srcdir)/reflect.c'; fi`
-
-reflect_zvt-reflect.o: reflect.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(reflect_zvt_CFLAGS) $(CFLAGS) -MT reflect_zvt-reflect.o -MD -MP -MF "$(DEPDIR)/reflect_zvt-reflect.Tpo" -c -o reflect_zvt-reflect.o `test -f 'reflect.c' || echo '$(srcdir)/'`reflect.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/reflect_zvt-reflect.Tpo" "$(DEPDIR)/reflect_zvt-reflect.Po"; else rm -f "$(DEPDIR)/reflect_zvt-reflect.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='reflect.c' object='reflect_zvt-reflect.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(reflect_zvt_CFLAGS) $(CFLAGS) -c -o reflect_zvt-reflect.o `test -f 'reflect.c' || echo '$(srcdir)/'`reflect.c
-
-reflect_zvt-reflect.obj: reflect.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(reflect_zvt_CFLAGS) $(CFLAGS) -MT reflect_zvt-reflect.obj -MD -MP -MF "$(DEPDIR)/reflect_zvt-reflect.Tpo" -c -o reflect_zvt-reflect.obj `if test -f 'reflect.c'; then $(CYGPATH_W) 'reflect.c'; else $(CYGPATH_W) '$(srcdir)/reflect.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/reflect_zvt-reflect.Tpo" "$(DEPDIR)/reflect_zvt-reflect.Po"; else rm -f "$(DEPDIR)/reflect_zvt-reflect.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='reflect.c' object='reflect_zvt-reflect.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(reflect_zvt_CFLAGS) $(CFLAGS) -c -o reflect_zvt-reflect.obj `if test -f 'reflect.c'; then $(CYGPATH_W) 'reflect.c'; else $(CYGPATH_W) '$(srcdir)/reflect.c'; fi`
 
 ring-debug.o: debug.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ring_CFLAGS) $(CFLAGS) -MT ring-debug.o -MD -MP -MF "$(DEPDIR)/ring-debug.Tpo" -c -o ring-debug.o `test -f 'debug.c' || echo '$(srcdir)/'`debug.c; \

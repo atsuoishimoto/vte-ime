@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: pty.c,v 1.50 2004/05/01 07:12:51 nalin Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -29,6 +28,9 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
+#ifdef HAVE_SYS_SYSLIMITS_H
+#include <sys/syslimits.h>
+#endif
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -278,7 +280,7 @@ _vte_pty_run_on_pty(int fd, int ready_reader, int ready_writer,
 		    const char *directory)
 {
 	int i;
-	char c;
+	char c = 0;
 	char **args, *arg;
 
 	if (fd != STDIN_FILENO) {

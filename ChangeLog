@@ -1,11 +1,195 @@
-2006-04-26  Behdad Esfahbod  <behdad@gnome.org>
+2006-06-12  Behdad Esfahbod  <behdad@gnome.org>
 
-	Released vte-0.12.1.
+	Released vte-0.13.2.
 
 	* NEWS: Updated.
 
-	* configure.in: Bumped version to 0.12.1.
-	* src/Makefile.am: Bumped libtool version to 9:0:5.
+	* configure.in: Bumped version to 0.13.2.
+
+	* src/Makefile.am: Bumped libtool version to 9:2:0.
+
+2006-06-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 344666 – Problems with *_CFLAGS and *_LDFLAGS in makefiles
+	Patch from Stepan Kasal <kasal@ucw.cz>.
+
+	* src/Makefile.am (AM_CFLAGS, AM_LDFLAGS, *_CFLAGS, *_LDADD):
+	Replace @FOO@ references by $(FOO), remove redundant (or buggy)
+	occurences of `@CFLAGS@'.
+	* gnome-pty-helper/Makefile.am (AM_CFLAGS, AM_LDFLAGS): Likewise.
+	* python/Makefile.am (vtemodule_la_CFLAGS): Likewise.
+	* src/Makefile.am (AM_CFLAGS): Add $(FT2_CFLAGS).
+
+2006-06-08  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (remove_display_timeout): Fix typo which may have been
+	causing things like crashes.  Reported by muntyan.  Also reordered
+	some code around update_timeout for better matching the current
+	timeouts in style.
+
+2006-06-07  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 339529 – gnome-terminal (vte) crashes when detatched window is
+	closed
+
+	* src/vte.c (vte_invalidate_region): Bail out if terminal->window is
+	NULL.
+
+2006-05-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 342549 – uninitialized var (coverity)
+	Patch from Paolo Borelli.
+
+	* src/vte.c (vte_cell_is_selected): Remove uninitialized var ret.
+
+2006-05-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 342082 – vte_invalidate_region() may check whether terminal is
+	realiazed or not
+	Patch from Kouhei Sutou.
+
+	* src/vte.c (vte_invalidate_region): Return if not realized.
+
+2006-05-22  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 340363 – vte Cygwin build fixes
+	Patch from Cygwin Ports maintainer
+
+	* configure.in, src/keymap.c, src/pty.c, src/ssfe.c, src/trie.c,
+	src/utf8echo.c, src/vte.c, src/vteseq.c, src/vtetc.c: Check and
+	include syslimits.h and ncurses/curses.h
+
+2006-05-22  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 341793 – vte.h doesn't need to include X11/Xlib.h
+	Patch from Kouhei Sutou
+
+	* src/vte.h: Don't #include <X11/Xlib.h>
+
+2006-05-17  Wouter Bolsterlee  <uws+gnome@xs4all.nl>
+
+	* configure.in: Require intltool 0.35.0 to have
+	translations in the dist tarballs.
+
+2006-05-17  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.13.1.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.13.1.
+
+	* src/Makefile.am: Bumped libtool version to 9:1:0.
+
+2006-05-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* NEWS, ChangeLog: Add vim and emacs footers for UTF-8.
+
+2006-04-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 339980 – nativeecho needs glib in LDADD to build on Solaris
+	Patch from Brian Cameron.
+
+	* src/Makefile.am: Fix it.
+
+2006-04-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 331803 – style needs to be attached/detached to the window on
+	realize/unrealize
+	Patch from Benjamin Berg  <benjamin@sipsolutions.net>.
+
+	* src/vte.c: (vte_terminal_unrealize), (vte_terminal_realize):
+	attach and detach the style of the terminal widget.
+
+2006-04-25  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am: Pass -no-undefined linker flag.
+
+2006-04-23  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.13.0.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.13.0.
+
+	* src/Makefile.am: Bumped libtool version to 9:0:0.
+
+2006-04-23  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 339448 – selection doesn't respect hard newlines
+
+	* src/vte.c (vte_terminal_get_text_range_maybe_wrapped): Add newline
+	to the end of each line that is not soft-wrapped.
+
+2006-04-23  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 148720 – Word selection erroneously captures text from next line
+	Patch from Chris Heath.
+
+	* src/vteseq.c (vte_sequence_handler_cd), (vte_sequence_handler_ce),
+	(vte_sequence_handler_clear_current_line),
+	(vte_sequence_handler_clear_above_current): Reset soft_wrapped flag.
+
+2006-04-23  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 126376 – Uncoinditional definition of _XOPEN_SOURCE breaks build
+	on NetBSD
+	Patch from Dan Winship.
+
+	* configure.in:
+	* gnome-pty-helper/configure.in: Define XOPEN_SOURCE on solaris only.
+
+2006-04-23  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 97719 – Selection: double/triple click doesn't cross line boundaries
+	Patch from Chris Heath.
+
+	* src/vte.c (vte_same_class): Fix problem with selecting whitespace
+	from adjacent lines, on word selection.
+
+2006-04-22  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 160782 – Vte isn't multi-screen safe
+	Patch from Benedikt Meurer.
+
+	* src/vte.c (vte_terminal_unrealize), (vte_terminal_realize):
+	* src/vtebg.c (vte_bg_native_new), (_vte_bg_display_sync),
+	(vte_bg_root_pixmap), (vte_bg_get_for_screen), (vte_bg_init),
+	(vte_bg_get_pixmap), (vte_bg_get_pixbuf):
+	* src/vtebg.h:
+	* src/vteft2.c (_vte_ft2_set_background_image):
+	* src/vtegl.c (_vte_gl_set_background_image):
+	* src/vtepango.c (_vte_pango_set_background_image):
+	* src/vtepangox.c (_vte_pango_x_set_background_image):
+	* src/vtexft.c (_vte_xft_set_background_image): Handle per-screen
+	backgrounds.
+
+2006-04-22  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_cursor_new), (vte_terminal_clipboard_get):
+	* src/vteapp.c (take_xconsole_ownership):
+	* src/vtebg.c (vte_bg_native_new), (_vte_bg_display_sync),
+	(vte_bg_root_pixmap):
+	* src/vtedraw.c (_vte_draw_get_colormap):
+	* src/vtefc.c (_vte_fc_transcribe_from_pango_font_description),
+	(_vte_fc_defaults_from_gtk):
+	* src/vtepango.c (_vte_pango_start), (_vte_pango_set_text_font):
+	* src/vtepangox.c (_vte_pango_x_set_text_font):
+	* src/vterdb.c (_vte_rdb_get):
+	* src/vteseq.c (vte_terminal_beep),
+	(vte_sequence_handler_window_manipulation):
+	* src/vtexft.c (_vte_xft_char_exists), (_vte_xft_text_extents),
+	(_vte_xft_font_open):
+	* src/vtegl.c: Remove obsolete #ifde GTK_CHECK_VERSION(2,2,0) checks.
+
+2006-04-22  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 330441 – Remove libzvt support
+	Patch from Guilherme de S. Pastore  <gpastore@gnome.org>
+
+	* configure.in, src/Makefile.am, src/reflect.c: remove remnants
+	from the old, broken, and unmaintained libzvt.
 
 2006-04-21  Behdad Esfahbod  <behdad@gnome.org>
 
@@ -46,17 +230,88 @@
 	* python/vte.defs:
 	* doc/reference/vte-sections.txt: Added vte_terminal_set_pty().
 
+2006-04-18  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 337442 – [patch] Reduce .plt section
+
+	* src/Makefile.am: Pass export-symbols-regex to libtool.
+
+2006-04-18  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/caps.c (_vte_capability_init), src/caps.h:
+	* src/keymap.c (_vte_keymap_map), src/keymap.h: Make some data
+	structures const by changing char * to char [].
+
+	* src/vte.c (vte_update_delay_timeout), (vte_update_timeout),
+	(vte_terminal_extend_selection), (_vte_terminal_fudge_pango_colors):
+	Fix warnings and adapt to above changes.
+
+2006-04-18  Behdad Esfahbod  <behdad@gnome.org>
+
+	* configure.in, po/LINGUAS: Use intltool 0.34.90 format.
+
+2006-04-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 142247 – use of uninitialized value
+
+	* src/pty.c: Initialize the arbitrary byte that we send on the pipe
+	to zero.
+
+2006-04-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 149633 – gnome-terminal messes up boxdrawing chars aligment
+
+	* src/vte.c: Try to use the font first for all graphic characters.
+	This results in better looking graphics with modern fonts.
+
 2006-04-12  Behdad Esfahbod  <behdad@gnome.org>
 
 	Bug 144456 – UK pound currency symbol rendered incorrectly
 
 	* src/vte.c: Offset characters drawn in draw_graphic for padding.
 
+2006-04-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 307403 – xticker doublefree
+
+	* src/xticker.c: Avoid double free.
+
+2006-04-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 337877 – Patch to use po/LINGUAS
+	Patch from Michiel Sikkes.
+
+	* configure.in, po/LINGUAS: Move list of translations to po/LINGUAS.
+
 2006-04-06  Behdad Esfahbod  <behdad@gnome.org>
 
 	Bug 337552 – Insufficient version requirement for gtk+
 
-	* configure.in: Depend on Gtk+ 2.6 and GLib 2.6.
+	* configure.in: Depend on Gtk+ 2.6.
+
+2006-03-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 168251 – add support for 256 colors terminals
+	Patch from dann@godzilla.ics.uci.edu.
+
+	* src/vte-private.h, src/vte.c, src/vteseq.c: Implement support
+	for 256 colors.
+
+2006-03-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 120276 – Wishlist: Support Rectangular Selection
+	Patch from Pedro de Medeiros.
+
+	* src/vte.c, src/vte-private.h: Implement block (rectangular)
+	selection using ctrl+mouse.
+
+2006-03-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 336117 – [patch] Use g_slice API
+	Patch from Aivars Kalvans.
+
+	* src/*.c: Use g_slice instead of g_malloc for structs.
+	Also, replace g_string_new("") with g_string_new(NULL).
 
 2006-03-30  Behdad Esfahbod  <behdad@gnome.org>
 
@@ -4618,3 +4873,7 @@ Mon Oct  7 14:53:12 2002  Owen Taylor  <otaylor@redhat.com>
 	src/utf8echo.c, src/vte.c, src/vte.h, src/vteapp.c: imported from
 	private cvs
 
+Local Variables:
+coding: utf-8
+End:
+vim: encoding=utf-8:

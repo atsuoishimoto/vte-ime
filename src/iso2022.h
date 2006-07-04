@@ -21,7 +21,6 @@
 #ifndef vte_iso2022_h_included
 #define vte_iso2022_h_included
 
-#ident "$Id: iso2022.h,v 1.12 2003/04/18 00:14:54 nalin Exp $"
 
 #include <glib.h>
 #include <glib-object.h>

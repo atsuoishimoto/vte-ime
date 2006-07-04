@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: utf8mode.c,v 1.3 2003/06/27 16:27:19 nalin Exp $"
 #include "../config.h"
 #include <stdio.h>
 #define ESC "\033"

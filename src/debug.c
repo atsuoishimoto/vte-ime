@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: debug.c,v 1.14 2006/02/03 13:27:26 behdad Exp $"
 #include "../config.h"
 #include <glib.h>
 #include <stdio.h>

@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtepangox.c,v 1.14 2004/04/20 05:16:56 nalin Exp $"
 
 #include "../config.h"
 
@@ -61,7 +60,7 @@ _vte_pango_x_create(struct _vte_draw *draw, GtkWidget *widget)
 {
 	struct _vte_pango_x_data *data;
 
-	draw->impl_data = g_malloc(sizeof(struct _vte_pango_x_data));
+	draw->impl_data = g_slice_new(struct _vte_pango_x_data);
 	data = (struct _vte_pango_x_data*) draw->impl_data;
 
 	data->color.red = 0;
@@ -108,7 +107,7 @@ _vte_pango_x_destroy(struct _vte_draw *draw)
 
 	memset(&data->color, 0, sizeof(data->color));
 
-	g_free(draw->impl_data);
+	g_slice_free(struct _vte_pango_x_data, draw->impl_data);
 }
 
 static GdkVisual *
@@ -207,9 +206,13 @@ _vte_pango_x_set_background_image(struct _vte_draw *draw,
 {
 	GdkPixmap *pixmap;
 	struct _vte_pango_x_data *data;
+	GdkScreen *screen;
+
+	screen = gtk_widget_get_screen (draw->widget);
 
 	data = (struct _vte_pango_x_data*) draw->impl_data;
-	pixmap = vte_bg_get_pixmap(vte_bg_get(), type, pixbuf, file,
+	pixmap = vte_bg_get_pixmap(vte_bg_get_for_screen(screen),
+				   type, pixbuf, file,
 				   color, saturation,
 				   _vte_draw_get_colormap(draw, TRUE));
 	if (data->pixmap) {
@@ -287,11 +290,7 @@ _vte_pango_x_set_text_font(struct _vte_draw *draw,
 
 	data = (struct _vte_pango_x_data*) draw->impl_data;
 
-#if GTK_CHECK_VERSION(2,2,0)
 	display = gdk_x11_display_get_xdisplay(gtk_widget_get_display(draw->widget));
-#else
-	display = gdk_display;
-#endif
 	if (PANGO_IS_CONTEXT(data->ctx)) {
 		g_object_unref(G_OBJECT(data->ctx));
 	}
@@ -318,7 +317,7 @@ _vte_pango_x_set_text_font(struct _vte_draw *draw,
 	pango_layout_iter_free(iter);
 
 	/* Estimate for CJK characters. */
-	full_string = g_string_new("");
+	full_string = g_string_new(NULL);
 	for (i = 0; i < G_N_ELEMENTS(full_codepoints); i++) {
 		g_string_append_unichar(full_string, full_codepoints[i]);
 	}

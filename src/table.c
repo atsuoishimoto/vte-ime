@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: table.c,v 1.18 2005/04/29 20:17:41 kmaraas Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <assert.h>
@@ -69,13 +68,13 @@ struct _vte_table_arginfo {
 struct _vte_table *
 _vte_table_new(void)
 {
-	return g_malloc0(sizeof(struct _vte_table));
+	return g_slice_new0(struct _vte_table);
 }
 
 struct _vte_table **
 _vte_table_literal_new(void)
 {
-	return g_malloc0(sizeof(struct _vte_table *) * VTE_TABLE_MAX_LITERAL);
+	return g_new0(struct _vte_table *, VTE_TABLE_MAX_LITERAL);
 }
 
 /* Free a table. */
@@ -108,7 +107,7 @@ _vte_table_free(struct _vte_table *table)
 		g_free(table->original);
 		table->original = NULL;
 	}
-	g_free(table);
+	g_slice_free(struct _vte_table, table);
 }
 
 /* Add a string to the tree with the given increment value. */
@@ -377,7 +376,7 @@ _vte_table_matchi(struct _vte_table *table,
 			}
 		}
 		/* Save the parameter info. */
-		arginfo = g_malloc(sizeof(struct _vte_table_arginfo));
+		arginfo = g_slice_new(struct _vte_table_arginfo);
 		arginfo->type = _vte_table_arg_string;
 		arginfo->start = candidate;
 		arginfo->length = i;
@@ -399,7 +398,7 @@ _vte_table_matchi(struct _vte_table *table,
 			}
 		}
 		/* Save the parameter info. */
-		arginfo = g_malloc(sizeof(struct _vte_table_arginfo));
+		arginfo = g_slice_new(struct _vte_table_arginfo);
 		arginfo->type = _vte_table_arg_number;
 		arginfo->start = candidate;
 		arginfo->length = i;
@@ -415,7 +414,7 @@ _vte_table_matchi(struct _vte_table *table,
 	    (table->table[_vte_table_map_literal(candidate[0])] != NULL)) {
 		subtable = table->table[_vte_table_map_literal(candidate[0])];
 		/* Save the parameter info. */
-		arginfo = g_malloc(sizeof(struct _vte_table_arginfo));
+		arginfo = g_slice_new(struct _vte_table_arginfo);
 		arginfo->type = _vte_table_arg_char;
 		arginfo->start = candidate;
 		arginfo->length = 1;
@@ -442,7 +441,7 @@ _vte_table_extract_numbers(GValueArray **array,
 	int i, j;
 	long total;
 
-	tmp = g_string_new("");
+	tmp = g_string_new(NULL);
 	for (i = 0; i < arginfo->length; i++) {
 		tmp = g_string_append_unichar(tmp, arginfo->start[i]);
 	}
@@ -661,7 +660,7 @@ _vte_table_match(struct _vte_table *table,
 	/* Clean up extracted parameters. */
 	if (params != NULL) {
 		for (tmp = params; tmp != NULL; tmp = g_list_next(tmp)) {
-			g_free(tmp->data);
+			g_slice_free(struct _vte_table_arginfo, tmp->data);
 		}
 		g_list_free(params);
 	}
@@ -733,7 +732,7 @@ escape(const char *p)
 	GString *ret;
 	int i;
 	guint8 check;
-	ret = g_string_new("");
+	ret = g_string_new(NULL);
 	for (i = 0; p[i] != '\0'; i++) {
 		tmp = NULL;
 		check = p[i];

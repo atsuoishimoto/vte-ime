@@ -21,7 +21,6 @@
 #ifndef vte_debug_h_included
 #define vte_debug_h_included
 
-#ident "$Id: debug.h,v 1.16 2006/02/03 13:27:26 behdad Exp $"
 
 #include <glib.h>
 

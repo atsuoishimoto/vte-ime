@@ -39,6 +39,7 @@
 #include <termios.h>
 #endif
 #include <unistd.h>
+#include <glib/gi18n-lib.h>
 
 #include "vte.h"
 #include "buffer.h"
@@ -51,21 +52,20 @@
 
 G_BEGIN_DECLS
 
-#ident "$Id: vte-private.h,v 1.4 2006/03/08 20:31:13 behdad Exp $"
-
 #define VTE_PAD_WIDTH			1
 #define VTE_TAB_WIDTH			8
 #define VTE_LINE_WIDTH			1
-#define VTE_COLOR_SET_SIZE		8
+#define VTE_LEGACY_COLOR_SET_SIZE	8
 #define VTE_COLOR_PLAIN_OFFSET		0
 #define VTE_COLOR_BRIGHT_OFFSET		8
 #define VTE_COLOR_DIM_OFFSET		16
-#define VTE_DEF_FG			24
-#define VTE_DEF_BG			25
-#define VTE_BOLD_FG			26
-#define VTE_DIM_FG			27
-#define VTE_DEF_HL			28
-#define VTE_CUR_BG			29
+#define VTE_DEF_FG			256
+#define VTE_DEF_BG			257
+#define VTE_BOLD_FG			258
+#define VTE_DIM_FG			259
+#define VTE_DEF_HL                      260
+#define VTE_CUR_BG			261
+
 #define VTE_SATURATION_MAX		10000
 #define VTE_SCROLLBACK_MIN		100
 #define VTE_DEFAULT_CURSOR		GDK_XTERM
@@ -90,13 +90,11 @@ G_BEGIN_DECLS
  * includes any supported visible attributes. */
 struct vte_charcell {
 	gunichar c;		/* The Unicode character. */
-	guint32 columns: 11;	/* Number of visible columns (as determined
-				   by g_unicode_iswide(c)).  Use as many bits
-				   as possible without making this structure
-				   grow any larger. */
+	guint32 columns: 2;	/* Number of visible columns (as determined
+				   by g_unicode_iswide(c)). */
 	guint32 fragment: 1;	/* The nth fragment of a wide character. */
-	guint32 fore: 5;	/* Indices in the color palette for the */
-	guint32 back: 5;	/* foreground and background of the cell. */
+	guint32 fore: 9;	/* Indices in the color palette for the */
+	guint32 back: 9;	/* foreground and background of the cell. */
 	guint32 standout: 1;	/* Single-bit attributes. */
 	guint32 underline: 1;
 	guint32 strikethrough: 1;
@@ -107,6 +105,7 @@ struct vte_charcell {
 	guint32 invisible: 1;
 	guint32 protect: 1;
 	guint32 alternate: 1;
+	/* we've got one more bit here before expanding the structure. */
 };
 
 /* A match regex, with a tag. */
@@ -176,7 +175,7 @@ struct _VteTerminalPrivate {
 	GArray *pending;		/* pending characters */
 	gint coalesce_timeout;
 	gint display_timeout;
-	gint update_timer;
+	gint update_timeout;
 	GdkRegion *update_region;
 
 
@@ -231,6 +230,8 @@ struct _VteTerminalPrivate {
 	gboolean selecting;
 	gboolean selecting_restart;
 	gboolean selecting_had_delta;
+	gboolean block_mode;
+	gboolean had_block_mode;
 	char *selection;
 	enum vte_selection_type {
 		selection_type_char,
@@ -375,15 +376,6 @@ void _vte_terminal_clear_tabstop(VteTerminal *terminal, int column);
 gboolean _vte_terminal_get_tabstop(VteTerminal *terminal, int column);
 void _vte_terminal_set_tabstop(VteTerminal *terminal, int column);
 void _vte_terminal_update_insert_delta(VteTerminal *terminal);
-
-
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#define _(String) dgettext(PACKAGE, String)
-#else
-#define _(String) String
-#define bindtextdomain(package,dir)
-#endif
 
 G_END_DECLS
 

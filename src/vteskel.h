@@ -21,7 +21,6 @@
 
 /* The interfaces in this file are subject to change at any time. */
 
-#ident "$Id: vteskel.h,v 1.2 2003/05/05 23:27:13 nalin Exp $"
 
 #include "vtedraw.h"
 

@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: slowcat.c,v 1.4 2004/04/27 20:48:17 nalin Exp $"
 #include "../config.h"
 #include <sys/time.h>
 #include <sys/types.h>

@@ -16,10 +16,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: utf8echo.c,v 1.14 2003/06/27 16:27:19 nalin Exp $"
 #include "../config.h"
 #include <glib.h>
 #include <limits.h>
+#ifdef HAVE_SYS_SYSLIMITS_H
+#include <sys/syslimits.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

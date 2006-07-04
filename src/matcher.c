@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: matcher.c,v 1.7 2006/02/03 13:27:26 behdad Exp $"
 
 #include "../config.h"
 #include <sys/types.h>
@@ -79,7 +78,7 @@ _vte_matcher_init(struct _vte_matcher *matcher, char *emulation,
 	/* Load the known capability strings from the termcap structure into
 	 * the table for recognition. */
 	for (i = 0;
-	     _vte_terminal_capability_strings[i].capability != NULL;
+	     _vte_terminal_capability_strings[i].capability[0];
 	     i++) {
 		if (_vte_terminal_capability_strings[i].key) {
 			continue;
@@ -148,7 +147,7 @@ _vte_matcher_create(gpointer key)
 		fprintf(stderr, "_vte_matcher_create()\n");
 	}
 #endif
-	ret = g_malloc(sizeof(struct _vte_matcher));
+	ret = g_slice_new(struct _vte_matcher);
 	ret->initialized = FALSE;
 	ret->type = _vte_matcher_trie;
 	ret->table = NULL;
@@ -190,7 +189,7 @@ _vte_matcher_destroy(gpointer value)
 	if (matcher->trie != NULL) {
 		_vte_trie_free(matcher->trie);
 	}
-	g_free(matcher);
+	g_slice_free(struct _vte_matcher, matcher);
 }
 
 /* Create and init matcher. */

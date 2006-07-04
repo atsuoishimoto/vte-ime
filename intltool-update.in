@@ -30,7 +30,7 @@
 
 ## Release information
 my $PROGRAM = "intltool-update";
-my $VERSION = "0.34.2";
+my $VERSION = "0.35.0";
 my $PACKAGE = "intltool";
 
 ## Loaded modules
@@ -722,6 +722,8 @@ sub GeneratePOTemplate
 			   "--files-from\=\.\/POTFILES\.in\.temp");
     my $XGETTEXT_KEYWORDS = &FindPOTKeywords;
     push @xgettext_argument, $XGETTEXT_KEYWORDS;
+    my $MSGID_BUGS_ADDRESS = &FindMakevarsBugAddress;
+    push @xgettext_argument, "--msgid-bugs-address\=$MSGID_BUGS_ADDRESS" if $MSGID_BUGS_ADDRESS;
     push @xgettext_argument, "--from-code\=$encoding" if ($gettext_support_nonascii);
     push @xgettext_argument, $XGETTEXT_ARGS if $XGETTEXT_ARGS;
     my $xgettext_command = join ' ', @xgettext_argument;
@@ -1064,4 +1066,24 @@ sub FindMakevarsDomain
     $domain =~ s/\s+$//;
     
     return $domain;
+}
+
+sub FindMakevarsBugAddress
+{
+
+    my $address = "";
+    my $makevars_source; { 
+	local (*IN);
+	open (IN, "<Makevars") || return undef;
+	seek (IN, 0, 0);
+	local $/; # slurp mode
+	$makevars_source = <IN>;
+	close IN;
+    }
+
+    $address = $1 if $makevars_source =~ /^MSGID_BUGS_ADDRESS[ ]*=\[?([^\n\]\$]+)/m;
+    $address =~ s/^\s+//;
+    $address =~ s/\s+$//;
+    
+    return $address;
 }

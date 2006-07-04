@@ -16,8 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vte.c,v 1.446.2.4 2006/04/21 06:32:04 behdad Exp $"
-
 #include "../config.h"
 
 #include "vte.h"
@@ -25,6 +23,9 @@
 
 #ifdef HAVE_WCHAR_H
 #include <wchar.h>
+#endif
+#ifdef HAVE_SYS_SYSLIMITS_H
+#include <sys/syslimits.h>
 #endif
 #include <glib.h>
 #include <glib-object.h>
@@ -47,7 +48,6 @@
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
 #endif
-#include <glib/gi18n-lib.h>
 
 #ifndef HAVE_WINT_T
 typedef gunichar wint_t;
@@ -99,6 +99,10 @@ static gboolean vte_terminal_is_processing (VteTerminal *terminal);
 
 static gpointer parent_class;
 
+/* Indexes in the "palette" color array for the dim colors.
+ * Only the first VTE_LEGACY_COLOR_SET_SIZE colors have dim versions.  */
+static const guchar corresponding_dim_index[] = {16,88,28,100,18,90,30,102};
+
 /* Free a no-longer-used row data array. */
 static void
 vte_free_row_data(gpointer freeing, gpointer data)
@@ -106,7 +110,7 @@ vte_free_row_data(gpointer freeing, gpointer data)
 	if (freeing) {
 		VteRowData *row = (VteRowData*) freeing;
 		g_array_free(row->cells, TRUE);
-		g_free(row);
+		g_slice_free(VteRowData, row);
 	}
 }
 
@@ -131,7 +135,7 @@ VteRowData *
 _vte_new_row_data(VteTerminal *terminal)
 {
 	VteRowData *row = NULL;
-	row = g_malloc0(sizeof(VteRowData));
+	row = g_slice_new0(VteRowData);
 #ifdef VTE_DEBUG
 	row->cells = g_array_new(FALSE, TRUE, sizeof(struct vte_charcell));
 #else
@@ -146,7 +150,7 @@ VteRowData *
 _vte_new_row_data_sized(VteTerminal *terminal, gboolean fill)
 {
 	VteRowData *row = NULL;
-	row = g_malloc0(sizeof(VteRowData));
+	row = g_slice_new0(VteRowData);
 #ifdef VTE_DEBUG
 	row->cells = g_array_sized_new(FALSE, TRUE,
 				       sizeof(struct vte_charcell),
@@ -194,6 +198,12 @@ _vte_terminal_set_default_attributes(VteTerminal *terminal)
 static gboolean
 vte_invalidate_region(VteTerminal *terminal)
 {
+	if (G_UNLIKELY (!GTK_WIDGET_REALIZED(terminal)))
+		return FALSE;
+
+	if (G_UNLIKELY (GTK_WIDGET(terminal)->window == NULL))
+		return FALSE;
+
 	if (!terminal->pvt->update_region)
 		return FALSE;
 
@@ -205,51 +215,8 @@ vte_invalidate_region(VteTerminal *terminal)
 	return TRUE;
 }
 
-static gboolean
-vte_update_delay_timeout(VteTerminal *terminal)
-{
-	gboolean updated = vte_invalidate_region (terminal);
-
-	/* We only stop the timer if no update request was received in this
-	 * past cycle.
-	 */
-	if (!updated) {
-		terminal->pvt->update_timer = 0;
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-static gboolean
-vte_update_timeout(VteTerminal *terminal)
-{
-	vte_invalidate_region(terminal);
-
-	/* Set a timer such that we do not invalidate for a while. */
-	/* This limits the number of times we draw to ~40fps. */
-	terminal->pvt->update_timer = g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
-							  VTE_UPDATE_REPEAT_TIMEOUT,
-							  vte_update_delay_timeout,
-							  terminal,
-							  NULL);
-
-	return FALSE;
-}
-
-static void
-vte_free_update_timer (VteTerminal *terminal)
-{
-	if (terminal->pvt->update_timer) {
-		g_source_remove (terminal->pvt->update_timer);
-		terminal->pvt->update_timer = 0;
-	}
-
-	if (terminal->pvt->update_region) {
-		gdk_region_destroy (terminal->pvt->update_region);
-		terminal->pvt->update_region = NULL;
-	}
-}
+static void add_update_timeout (VteTerminal *terminal);
+static void remove_update_timeout (VteTerminal *terminal);
 
 /* Cause certain cells to be repainted. */
 void
@@ -310,7 +277,7 @@ _vte_invalidate_cells(VteTerminal *terminal,
 		rect.height += VTE_PAD_WIDTH;
 	}
 
-	if (terminal->pvt->update_timer) {
+	if (terminal->pvt->update_timeout != VTE_INVALID_SOURCE) {
 		if (!terminal->pvt->update_region)
 			terminal->pvt->update_region = gdk_region_rectangle (&rect);
 		else
@@ -319,11 +286,7 @@ _vte_invalidate_cells(VteTerminal *terminal,
 		terminal->pvt->update_region = gdk_region_rectangle (&rect);
 		/* Wait a bit before doing any invalidation, just in
 		 * case updates are coming in really soon. */
-		terminal->pvt->update_timer = g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
-								  VTE_UPDATE_TIMEOUT,
-								  vte_update_timeout,
-								  terminal,
-								  NULL);
+		add_update_timeout (terminal);
 	}
 
 }
@@ -348,9 +311,7 @@ _vte_invalidate_all(VteTerminal *terminal)
 		return;
 	}
 
-	if (terminal->pvt->update_timer) {
-		vte_free_update_timer (terminal);
-	}
+	remove_update_timeout (terminal);
 
 	/* Expose the entire widget area. */
 	width = height = 0;
@@ -974,7 +935,6 @@ vte_terminal_match_remove(VteTerminal *terminal, int tag)
 static GdkCursor *
 vte_terminal_cursor_new(VteTerminal *terminal, GdkCursorType cursor_type)
 {
-#if GTK_CHECK_VERSION(2,2,0)
 	GdkDisplay *display;
 	GdkCursor *cursor;
 
@@ -982,13 +942,6 @@ vte_terminal_cursor_new(VteTerminal *terminal, GdkCursorType cursor_type)
 
 	display = gtk_widget_get_display(GTK_WIDGET(terminal));
 	cursor = gdk_cursor_new_for_display(display, cursor_type);
-#else
-	GdkCursor *cursor;
-
-	g_assert(VTE_IS_TERMINAL(terminal));
-
-	cursor = gdk_cursor_new(cursor_type);
-#endif
 	return cursor;
 }
 
@@ -2037,7 +1990,8 @@ vte_terminal_set_colors(VteTerminal *terminal,
 {
 	int i;
 	GdkColor color;
-
+	int r, g, b;
+	
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
 
 	g_return_if_fail(palette_size >= 0);
@@ -2059,64 +2013,8 @@ vte_terminal_set_colors(VteTerminal *terminal,
 
 	/* Initialize each item in the palette if we got any entries to work
 	 * with. */
-	for (i = 0; (i < G_N_ELEMENTS(terminal->pvt->palette)); i++) {
-		switch (i) {
-		case VTE_DEF_FG:
-			if (foreground != NULL) {
-				color = *foreground;
-			} else {
-				color.red = 0xc000;
-				color.blue = 0xc000;
-				color.green = 0xc000;
-			}
-			break;
-		case VTE_DEF_BG:
-			if (background != NULL) {
-				color = *background;
-			} else {
-				color.red = 0;
-				color.blue = 0;
-				color.green = 0;
-			}
-			break;
-		case VTE_BOLD_FG:
-			vte_terminal_generate_bold(&terminal->pvt->palette[VTE_DEF_FG],
-						   &terminal->pvt->palette[VTE_DEF_BG],
-						   1.8,
-						   &color);
-			break;
-		case VTE_DIM_FG:
-			vte_terminal_generate_bold(&terminal->pvt->palette[VTE_DEF_FG],
-						   &terminal->pvt->palette[VTE_DEF_BG],
-						   0.5,
-						   &color);
-			break;
-		case VTE_DEF_HL:
-			color.red = 0xc000;
-			color.blue = 0xc000;
-			color.green = 0xc000;
-			break;
-		case VTE_CUR_BG:
-			color.red = 0x0000;
-			color.blue = 0x0000;
-			color.green = 0x0000;
-			break;
-		case 0 + 0:
-		case 0 + 1:
-		case 0 + 2:
-		case 0 + 3:
-		case 0 + 4:
-		case 0 + 5:
-		case 0 + 6:
-		case 0 + 7:
-		case 8 + 0:
-		case 8 + 1:
-		case 8 + 2:
-		case 8 + 3:
-		case 8 + 4:
-		case 8 + 5:
-		case 8 + 6:
-		case 8 + 7:
+	for (i=r=g=b=0; (i < G_N_ELEMENTS(terminal->pvt->palette)); i++) {
+		if (i < 16) {
 			color.blue = (i & 4) ? 0xc000 : 0;
 			color.green = (i & 2) ? 0xc000 : 0;
 			color.red = (i & 1) ? 0xc000 : 0;
@@ -2125,24 +2023,63 @@ vte_terminal_set_colors(VteTerminal *terminal,
 				color.green += 0x3fff;
 				color.red += 0x3fff;
 			}
-			break;
-		case 16 + 0:
-		case 16 + 1:
-		case 16 + 2:
-		case 16 + 3:
-		case 16 + 4:
-		case 16 + 5:
-		case 16 + 6:
-		case 16 + 7:
-			color.blue = (i & 4) ? 0x8000 : 0;
-			color.green = (i & 2) ? 0x8000 : 0;
-			color.red = (i & 1) ? 0x8000 : 0;
-			break;
-		default:
-			g_assert_not_reached();
-			break;
 		}
-
+		else if (i < 232) {
+			int j = i - 16;
+			int r = j / 36, g = (j / 6) % 6, b = j % 6;
+			int red =   (r == 0) ? 0 : r * 40 + 55;
+			int green = (g == 0) ? 0 : g * 40 + 55;
+			int blue =  (b == 0) ? 0 : b * 40 + 55;
+			color.red   = red | red << 8  ;
+			color.green = green | green << 8;
+			color.blue  = blue | blue << 8;
+		} else if (i < 256) {
+			int shade = 8 + (i - 232) * 10;
+			color.red = color.green = color.blue = shade | shade << 8;
+		}
+		else switch (i) {
+			case VTE_DEF_BG:
+				if (background != NULL) {
+					color = *background;
+				} else {
+					color.red = 0;
+					color.blue = 0;
+					color.green = 0;
+				}
+				break;
+			case VTE_DEF_FG:
+				if (foreground != NULL) {
+					color = *foreground;
+				} else {
+					color.red = 0xc000;
+					color.blue = 0xc000;
+					color.green = 0xc000;
+				}
+				break;
+			case VTE_BOLD_FG:
+				vte_terminal_generate_bold(&terminal->pvt->palette[VTE_DEF_FG],
+							   &terminal->pvt->palette[VTE_DEF_BG],
+							   1.8,
+							   &color);
+				break;
+			case VTE_DIM_FG:
+				vte_terminal_generate_bold(&terminal->pvt->palette[VTE_DEF_FG],
+							   &terminal->pvt->palette[VTE_DEF_BG],
+							   0.5,
+							   &color);
+				break;
+			case VTE_DEF_HL:
+				color.red = 0xc000;
+				color.blue = 0xc000;
+				color.green = 0xc000;
+				break;
+			case VTE_CUR_BG:
+				color.red = 0x0000;
+				color.blue = 0x0000;
+				color.green = 0x0000;
+				break;
+			}
+		
 		/* Override from the supplied palette if there is one. */
 		if (i < palette_size) {
 			color = palette[i];
@@ -3419,7 +3356,7 @@ vte_terminal_send(VteTerminal *terminal, const char *encoding,
 	long crcount, cooked_length, i;
 
 	g_assert(VTE_IS_TERMINAL(terminal));
-	g_assert(strcmp(encoding, "UTF-8") == 0);
+	g_assert(encoding && strcmp(encoding, "UTF-8") == 0);
 
 	conv = NULL;
 	if (strcmp(encoding, "UTF-8") == 0) {
@@ -4216,26 +4153,24 @@ vte_terminal_is_word_char(VteTerminal *terminal, gunichar c)
 	return FALSE;
 }
 
-/* Check if the characters in the given block are in the same class (word vs.
- * non-word characters). */
+/* Check if the characters in the two given locations are in the same class
+ * (word vs. non-word characters). */
 static gboolean
-vte_uniform_class(VteTerminal *terminal, glong row, glong scol, glong ecol)
+vte_same_class(VteTerminal *terminal, glong acol, glong arow,
+	       glong bcol, glong brow)
 {
 	struct vte_charcell *pcell = NULL;
-	long col;
 	gboolean word_char;
 	g_assert(VTE_IS_TERMINAL(terminal));
-	if ((pcell = vte_terminal_find_charcell(terminal, scol, row)) != NULL) {
+	if ((pcell = vte_terminal_find_charcell(terminal, acol, arow)) != NULL) {
 		word_char = vte_terminal_is_word_char(terminal, pcell->c);
-		for (col = scol + 1; col <= ecol; col++) {
-			pcell = vte_terminal_find_charcell(terminal, col, row);
-			if (pcell == NULL) {
-				return FALSE;
-			}
-			if (word_char != vte_terminal_is_word_char(terminal,
-								   pcell->c)) {
-				return FALSE;
-			}
+		pcell = vte_terminal_find_charcell(terminal, bcol, brow);
+		if (pcell == NULL) {
+			return FALSE;
+		}
+		if (word_char != vte_terminal_is_word_char(terminal,
+							   pcell->c)) {
+			return FALSE;
 		}
 		return TRUE;
 	}
@@ -4336,6 +4271,13 @@ vte_cell_is_selected(VteTerminal *terminal, glong col, glong row, gpointer data)
 	se = terminal->pvt->selection_end;
 	if ((ss.y < 0) || (se.y < 0)) {
 		return FALSE;
+	}
+
+	/* Limit selection in block mode. */
+	if (terminal->pvt->block_mode) {
+		if (col < ss.x || col > se.x) {
+			return FALSE;
+		}
 	}
 
 	/* Now it boils down to whether or not the point is between the
@@ -4776,7 +4718,7 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 	g_assert(is_selected != NULL);
 	screen = terminal->pvt->screen;
 
-	string = g_string_new("");
+	string = g_string_new(NULL);
 	memset(&attr, 0, sizeof(attr));
 
 	palette = terminal->pvt->palette;
@@ -4878,6 +4820,10 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 		if (last_nonspacecol == -1) {
 			g_string_truncate(string, line_start);
 		}
+		/* Add a newline in block mode. */
+		if (terminal->pvt->block_mode) {
+			string = g_string_append_unichar(string, '\n');
+		}
 		/* Make sure that the attributes array is as long as the
 		 * string. */
 		if (attributes) {
@@ -4885,26 +4831,23 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 		}
 		/* If the last visible column on this line was selected and
 		 * it contained whitespace, append a newline. */
-		if (is_selected(terminal, terminal->column_count - 1,
+		if (!terminal->pvt->block_mode &&
+				is_selected(terminal, terminal->column_count - 1,
 				row, data)) {
 			pcell = vte_terminal_find_charcell(terminal,
 							   terminal->column_count - 1,
 							   row);
+			/* If we didn't softwrap, add a newline. */
+			if (!vte_line_is_wrappable(terminal, row)) {
+				string = g_string_append_c(string, '\n');
+			}
 			/* If it's whitespace, we snipped it off, so add a
 			 * newline, unless we soft-wrapped. */
-			if ((pcell == NULL) ||
-			    (pcell->c == '\0') ||
-			    (pcell->c == ' ')) {
-				if (vte_line_is_wrappable(terminal, row) &&
-				    wrap) {
-					string = g_string_append_c(string,
-								   pcell ?
-								   pcell->c :
-								   ' ');
-				} else {
-					string = g_string_append_c(string,
-								   '\n');
-				}
+			else if ((pcell == NULL) || (pcell->c == '\0') || (pcell->c == ' ')) {
+				string = g_string_append_c(string,
+							   pcell ?
+							   pcell->c :
+							   ' ');
 			}
 			/* Move this last character to the end of the line. */
 			attr.column = MAX(terminal->column_count,
@@ -5052,13 +4995,9 @@ vte_terminal_get_cursor_position(VteTerminal *terminal,
 static GtkClipboard *
 vte_terminal_clipboard_get(VteTerminal *terminal, GdkAtom board)
 {
-#if GTK_CHECK_VERSION(2,2,0)
 	GdkDisplay *display;
 	display = gtk_widget_get_display(GTK_WIDGET(terminal));
 	return gtk_clipboard_get_for_display(display, board);
-#else
-	return gtk_clipboard_get(board);
-#endif
 }
 
 /* Place the selected text onto the clipboard.  Do this asynchronously so that
@@ -5316,13 +5255,13 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 	 * than recalculating for each cell as we render it. */
 
 	/* Handle end-of-line at the start-cell. */
-	if (_vte_ring_contains(screen->row_data, sc->y)) {
+	if (!terminal->pvt->block_mode && _vte_ring_contains(screen->row_data, sc->y)) {
 		rowdata = _vte_ring_index(screen->row_data,
 					  VteRowData *, sc->y);
 	} else {
 		rowdata = NULL;
 	}
-	if (rowdata != NULL) {
+	if (!terminal->pvt->block_mode && rowdata != NULL) {
 		/* Find the last non-space character on the first line. */
 		last_nonspace = -1;
 		for (i = 0; i < rowdata->cells->len; i++) {
@@ -5347,19 +5286,19 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 				sc->x = i;
 			}
 		}
-	} else {
+	} else if (!terminal->pvt->block_mode) {
 		/* Snap to the leftmost column. */
 		sc->x = 0;
 	}
 
 	/* Handle end-of-line at the end-cell. */
-	if (_vte_ring_contains(screen->row_data, ec->y)) {
+	if (!terminal->pvt->block_mode && _vte_ring_contains(screen->row_data, ec->y)) {
 		rowdata = _vte_ring_index(screen->row_data,
 					  VteRowData *, ec->y);
 	} else {
 		rowdata = NULL;
 	}
-	if (rowdata != NULL) {
+	if (!terminal->pvt->block_mode && rowdata != NULL) {
 		/* Find the last non-space character on the last line. */
 		last_nonspace = -1;
 		for (i = 0; i < rowdata->cells->len; i++) {
@@ -5378,7 +5317,7 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 				    MAX(terminal->column_count - 1,
 					rowdata->cells->len));
 		}
-	} else {
+	} else if (!terminal->pvt->block_mode) {
 		/* Snap to the rightmost column. */
 		ec->x = MAX(ec->x, terminal->column_count - 1);
 	}
@@ -5406,10 +5345,11 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 				 terminal->column_count - 1;
 			     i > 0;
 			     i--) {
-				if (vte_uniform_class(terminal,
-						      j,
-						      i - 1,
-						      i)) {
+				if (vte_same_class(terminal,
+						   i - 1,
+						   j,
+						   i,
+						   j)) {
 					sc->x = i - 1;
 					sc->y = j;
 				} else {
@@ -5420,7 +5360,12 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 				/* We hit a stopping point, so stop. */
 				break;
 			} else {
-				if (vte_line_is_wrappable(terminal, j - 1)) {
+				if (vte_line_is_wrappable(terminal, j - 1) &&
+				    vte_same_class(terminal,
+						   terminal->column_count - 1,
+						   j - 1,
+						   0,
+						   j)) {
 					/* Move on to the previous line. */
 					j--;
 					sc->x = terminal->column_count - 1;
@@ -5447,10 +5392,11 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 				 0;
 			     i < terminal->column_count - 1;
 			     i++) {
-				if (vte_uniform_class(terminal,
-						      j,
-						      i,
-						      i + 1)) {
+				if (vte_same_class(terminal,
+						   i,
+						   j,
+						   i + 1,
+						   j)) {
 					ec->x = i + 1;
 					ec->y = j;
 				} else {
@@ -5461,7 +5407,12 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 				/* We hit a stopping point, so stop. */
 				break;
 			} else {
-				if (vte_line_is_wrappable(terminal, j)) {
+				if (vte_line_is_wrappable(terminal, j) &&
+				    vte_same_class(terminal,
+						   terminal->column_count - 1,
+						   j,
+						   0,
+						   j + 1)) {
 					/* Move on to the next line. */
 					j++;
 					ec->x = 0;
@@ -5500,11 +5451,30 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 		}
 		break;
 	}
+	
+	/* Update the selection area in block mode. */
+  	if (terminal->pvt->block_mode || terminal->pvt->had_block_mode) {
+		/* Fix coordinates for block mode operation. */
+		if (sc->x > ec->x) {
+			tc.x = ec->x;
+			ec->x = sc->x;
+			sc->x = tc.x;
+		}
+		_vte_invalidate_cells(terminal,
+				      0, terminal->column_count,
+				      /* MIN(terminal->pvt->selection_start.x, old_start.x),
+				       * MAX(terminal->pvt->selection_end.x, old_end.x), */
+				      MIN(old_start.y, terminal->pvt->selection_start.y),
+				      MAX(old_end.y, terminal->pvt->selection_end.y) -
+				      MIN(old_start.y, terminal->pvt->selection_start.y) + 1);
+		terminal->pvt->had_block_mode = FALSE;
+	}
 
 	/* Redraw the rows which contain cells which have changed their
 	 * is-selected status. */
-	if ((old_start.x != terminal->pvt->selection_start.x) ||
-	    (old_start.y != terminal->pvt->selection_start.y)) {
+	if (!terminal->pvt->block_mode && 
+	    ((old_start.x != terminal->pvt->selection_start.x) ||
+	    (old_start.y != terminal->pvt->selection_start.y))) {
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_SELECTION)) {
 			fprintf(stderr, "Refreshing lines %ld to %ld.\n",
@@ -5524,8 +5494,9 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 				     MIN(old_start.y,
 					 terminal->pvt->selection_start.y) + 1);
 	}
-	if ((old_end.x != terminal->pvt->selection_end.x) ||
-	    (old_end.y != terminal->pvt->selection_end.y)) {
+	if (!terminal->pvt->block_mode &&
+	    ((old_end.x != terminal->pvt->selection_end.x) ||
+	    (old_end.y != terminal->pvt->selection_end.y))) {
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_SELECTION)) {
 			fprintf(stderr, "Refreshing lines %ld to %ld.\n",
@@ -5633,10 +5604,10 @@ vte_terminal_autoscroll(gpointer data)
 		y = CLAMP(terminal->pvt->mouse_last_y, 0, ymax);
 		/* If we clamped the Y, mess with the X to get the entire
 		 * lines. */
-		if (terminal->pvt->mouse_last_y < 0) {
+		if (terminal->pvt->mouse_last_y < 0 && !terminal->pvt->block_mode) {
 			x = 0;
 		}
-		if (terminal->pvt->mouse_last_y > ymax) {
+		if (terminal->pvt->mouse_last_y > ymax && !terminal->pvt->block_mode) {
 			x = terminal->column_count * terminal->char_width;
 		}
 		/* Extend selection to cover the newly-scrolled area. */
@@ -5713,6 +5684,16 @@ vte_terminal_motion_notify(GtkWidget *widget, GdkEventMotion *event)
 				fprintf(stderr, "Mousing drag 1.\n");
 			}
 #endif
+			/* If user hit ctrl, change selection mode. */
+			if ((terminal->pvt->modifiers & GDK_CONTROL_MASK) &&
+			    !terminal->pvt->block_mode) {
+				terminal->pvt->block_mode = TRUE;
+			} else if (!(terminal->pvt->modifiers & GDK_CONTROL_MASK) &&
+				   terminal->pvt->block_mode) {
+				terminal->pvt->block_mode = FALSE;
+				terminal->pvt->had_block_mode = TRUE;
+			}
+
 			if ((terminal->pvt->modifiers & GDK_SHIFT_MASK) ||
 			    !event_mode) {
 				vte_terminal_extend_selection(terminal,
@@ -5841,6 +5822,14 @@ vte_terminal_button_press(GtkWidget *widget, GdkEventButton *event)
 					extend_selecting = TRUE;
 				} else {
 					start_selecting = TRUE;
+				}
+
+				/* If user hit ctrl, change selection type. */
+				if ((terminal->pvt->modifiers & GDK_CONTROL_MASK) &&
+				    !terminal->pvt->block_mode) {
+					terminal->pvt->block_mode = TRUE;
+				} else if (terminal->pvt->block_mode) {
+					terminal->pvt->block_mode = FALSE;
 				}
 			}
 			if (start_selecting) {
@@ -6769,6 +6758,7 @@ vte_terminal_init(VteTerminal *terminal, gpointer *klass)
 	pvt->pending = g_array_new(TRUE, TRUE, sizeof(gunichar));
 	pvt->coalesce_timeout = VTE_INVALID_SOURCE;
 	pvt->display_timeout = VTE_INVALID_SOURCE;
+	pvt->update_timeout = VTE_INVALID_SOURCE;
 	pvt->outgoing = _vte_buffer_new();
 	pvt->outgoing_conv = (VteConv) -1;
 	pvt->conv_buffer = _vte_buffer_new();
@@ -6841,6 +6831,8 @@ vte_terminal_init(VteTerminal *terminal, gpointer *klass)
 	pvt->bg_tint_color.green = 0;
 	pvt->bg_tint_color.blue = 0;
 	pvt->bg_saturation = 0.4 * VTE_SATURATION_MAX;
+	pvt->block_mode = FALSE;
+	pvt->had_block_mode = FALSE;
 
 	/* Assume we're visible unless we're told otherwise. */
 	pvt->visibility_state = GDK_VISIBILITY_UNOBSCURED;
@@ -7028,6 +7020,7 @@ static void
 vte_terminal_unrealize(GtkWidget *widget)
 {
 	VteTerminal *terminal;
+  VteBg       *bg;
 
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_LIFECYCLE)) {
@@ -7046,7 +7039,8 @@ vte_terminal_unrealize(GtkWidget *widget)
 	terminal->pvt->draw = NULL;
 
 	/* Disconnect from background-change events. */
-	g_signal_handlers_disconnect_by_func(G_OBJECT(vte_bg_get()),
+	bg = vte_bg_get_for_screen(gtk_widget_get_screen(widget));
+	g_signal_handlers_disconnect_by_func(G_OBJECT(bg),
 					     root_pixmap_changed_cb,
 					     widget);
 
@@ -7089,6 +7083,9 @@ vte_terminal_unrealize(GtkWidget *widget)
 
 	/* Remove the GDK window. */
 	if (widget->window != NULL) {
+		/* detach style */
+		gtk_style_detach(widget->style);
+
 	        gdk_window_set_user_data(widget->window, NULL);
 		gdk_window_destroy(widget->window);
 		widget->window = NULL;
@@ -7332,9 +7329,7 @@ vte_terminal_finalize(GObject *object)
 	_vte_termcap_free(terminal->pvt->termcap);
 	terminal->pvt->termcap = NULL;
 
-	if (terminal->pvt->update_timer) {
-		vte_free_update_timer (terminal);
-	}
+	remove_update_timeout (terminal);
 
 	/* Done with our private data. */
 	terminal->pvt = NULL;
@@ -7370,6 +7365,7 @@ vte_terminal_realize(GtkWidget *widget)
 	GtkSettings *settings;
 	int attributes_mask = 0, i;
 	gint blink_cycle = 1000;
+	VteBg *bg;
 
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_LIFECYCLE)) {
@@ -7508,13 +7504,16 @@ vte_terminal_realize(GtkWidget *widget)
 									0, 0);
 
 	/* Connect to background-change events. */
-	g_signal_connect(G_OBJECT(vte_bg_get()),
+	bg = vte_bg_get_for_screen(gtk_widget_get_screen(widget));
+	g_signal_connect(G_OBJECT(bg),
 			 "root-pixmap-changed",
 			 G_CALLBACK(root_pixmap_changed_cb),
 			 terminal);
 
 	/* Set up the background, *now*. */
 	vte_terminal_background_update(terminal);
+	
+	gtk_style_attach(widget->style, widget->window);
 
 	g_object_unref(G_OBJECT(bitmap));
 }
@@ -7560,7 +7559,7 @@ vte_terminal_determine_colors(VteTerminal *terminal,
 		if (*fore == VTE_DEF_FG) {
 			*fore = VTE_BOLD_FG;
 		} else
-		if ((*fore != VTE_DEF_BG) && (*fore < VTE_COLOR_SET_SIZE)) {
+		if ((*fore != VTE_DEF_BG) && (*fore < VTE_LEGACY_COLOR_SET_SIZE)) {
 			*fore += VTE_COLOR_BRIGHT_OFFSET;
 		}
 	}
@@ -7568,12 +7567,12 @@ vte_terminal_determine_colors(VteTerminal *terminal,
 		if (*fore == VTE_DEF_FG) {
 			*fore = VTE_DIM_FG;
 		} else
-		if ((*fore < VTE_COLOR_SET_SIZE)) {
-			*fore += VTE_COLOR_DIM_OFFSET;
+		if ((*fore < VTE_LEGACY_COLOR_SET_SIZE)) {
+			*fore = corresponding_dim_index[*fore];;
 		}
 	}
 	if (cell && cell->standout) {
-		if (*back < VTE_COLOR_SET_SIZE) {
+		if (*back < VTE_LEGACY_COLOR_SET_SIZE) {
 			*back += VTE_COLOR_BRIGHT_OFFSET;
 		}
 	}
@@ -7732,15 +7731,16 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 					    column_width * columns, row_height);
 	}
 
+	if (_vte_draw_char(terminal->pvt->draw, &request,
+			   &color, VTE_DRAW_OPAQUE)) {
+		/* We were able to draw with actual fonts. */
+		return TRUE;
+	}
+
 	ret = TRUE;
 
 	switch (c) {
 	case 124:
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -7762,11 +7762,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 				       x + 1, ybottom - 1);
 		break;
 	case 127:
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -7794,11 +7789,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 				       x, ycenter);
 		break;
 	case 0x00a3:
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -7822,11 +7812,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 				       xcenter + 1, ycenter);
 		break;
 	case 0x00b0: /* f */
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		/* litle circle */
 		vte_terminal_draw_point(terminal,
 					&terminal->pvt->palette[fore],
@@ -7842,11 +7827,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 					xcenter, ycenter + 1);
 		break;
 	case 0x00b1: /* g */
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -7872,11 +7852,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 				       (ycenter + ybottom) / 2);
 		break;
 	case 0x00b7:
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -7888,11 +7863,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 				       xcenter + 1, ycenter);
 		break;
 	case 0x3c0: /* pi */
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -7922,11 +7892,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 	/* case 0x2193: FIXME */
 	/* case 0x2260: FIXME */
 	case 0x2264: /* y */
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -7946,11 +7911,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 				       xright - 1, (ycenter + ybottom) / 2);
 		break;
 	case 0x2265: /* z */
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -8000,11 +7960,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 					    VTE_LINE_WIDTH);
 		break;
 	case 0x2409:  /* b */
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -8033,11 +7988,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 				       (xcenter + xright) / 2, ybottom - 1);
 		break;
 	case 0x240a: /* e */
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -8066,11 +8016,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 				       xright - 1, (ycenter + ybottom) / 2);
 		break;
 	case 0x240b: /* i */
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -8095,11 +8040,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 				       (xcenter + xright) / 2, ybottom - 1);
 		break;
 	case 0x240c:  /* c */
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -8132,11 +8072,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 				       xright - 1, (ycenter + ybottom) / 2);
 		break;
 	case 0x240d: /* d */
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -8177,11 +8112,6 @@ vte_terminal_draw_graphic(VteTerminal *terminal, gunichar c,
 				       xright - 1, ybottom - 1);
 		break;
 	case 0x2424: /* h */
-		if (_vte_draw_char(terminal->pvt->draw, &request,
-				   &color, VTE_DRAW_OPAQUE)) {
-			/* We were able to draw with actual fonts. */
-			return TRUE;
-		}
 		xcenter--;
 		ycenter--;
 		xright--;
@@ -8700,7 +8630,8 @@ _vte_terminal_fudge_pango_colors(VteTerminal *terminal, GSList *attributes,
 	gboolean saw_fg, saw_bg;
 	PangoAttribute *attr;
 	PangoAttrColor *color;
-	PangoColor fg, bg;
+	PangoColor fg = {0, 0, 0};
+	PangoColor bg = {0, 0, 0};
 	int i;
 
 	saw_fg = saw_bg = FALSE;
@@ -9113,7 +9044,7 @@ vte_terminal_paint(GtkWidget *widget, GdkRectangle *area)
 	int preedit_cursor;
 	long width, height, ascent, descent, delta, cursor_width;
 	int i, len, fore, back, x, y;
-	GdkRectangle all_area;
+	GdkRectangle all_area, selected_area;
 	gboolean blink, selected;
 
 #ifdef VTE_DEBUG
@@ -9127,6 +9058,21 @@ vte_terminal_paint(GtkWidget *widget, GdkRectangle *area)
 	g_assert(VTE_IS_TERMINAL(widget));
 	g_assert(area != NULL);
 	terminal = VTE_TERMINAL(widget);
+	
+	/* Update whole selection if terminal is in block mode. */
+	if (terminal->pvt->has_selection && terminal->pvt->block_mode) {
+		selected_area.x = terminal->pvt->selection_start.x *
+				  terminal->char_width;
+		selected_area.y = terminal->pvt->selection_start.y *
+				  terminal->char_height;
+		selected_area.width = terminal->pvt->selection_end.x *
+				      terminal->char_width;
+		selected_area.height = terminal->pvt->selection_end.y *
+				       terminal->char_height;
+		selected_area.width -= selected_area.x;
+		selected_area.height -= selected_area.y;
+		gdk_rectangle_union(area, &selected_area, area);
+	}
 
 	/* Get going. */
 	screen = terminal->pvt->screen;
@@ -10887,13 +10833,13 @@ vte_terminal_reset(VteTerminal *terminal, gboolean full, gboolean clear_history)
 		g_string_free(terminal->pvt->normal_screen.status_line_contents,
 			      TRUE);
 	}
-	terminal->pvt->normal_screen.status_line_contents = g_string_new("");
+	terminal->pvt->normal_screen.status_line_contents = g_string_new(NULL);
 	terminal->pvt->alternate_screen.status_line = FALSE;
 	if (terminal->pvt->alternate_screen.status_line_contents != NULL) {
 		g_string_free(terminal->pvt->alternate_screen.status_line_contents,
 			      TRUE);
 	}
-	terminal->pvt->alternate_screen.status_line_contents = g_string_new("");
+	terminal->pvt->alternate_screen.status_line_contents = g_string_new(NULL);
 	/* Do more stuff we refer to as a "full" reset. */
 	if (full) {
 		vte_terminal_set_default_tabstops(terminal);
@@ -11254,6 +11200,7 @@ _vte_terminal_remove_selection(VteTerminal *terminal)
 
 static gboolean display_timeout (gpointer data);
 static gboolean coalesce_timeout (gpointer data);
+static gboolean update_timeout (gpointer data);
 
 static void
 add_display_timeout (VteTerminal *terminal)
@@ -11270,10 +11217,21 @@ add_coalesce_timeout (VteTerminal *terminal)
 }
 
 static void
+add_update_timeout (VteTerminal *terminal)
+{
+	if (terminal->pvt->update_timeout == VTE_INVALID_SOURCE) {
+		terminal->pvt->update_timeout =
+			g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
+					    VTE_UPDATE_TIMEOUT, update_timeout, terminal,
+					    NULL);
+	}
+}
+
+static void
 remove_display_timeout (VteTerminal *terminal)
 {
 	g_source_remove (terminal->pvt->display_timeout);
-	terminal->pvt->display_timeout = VTE_DISPLAY_TIMEOUT;
+	terminal->pvt->display_timeout = VTE_INVALID_SOURCE;
 }
 
 static void
@@ -11281,6 +11239,20 @@ remove_coalesce_timeout (VteTerminal *terminal)
 {
 	g_source_remove (terminal->pvt->coalesce_timeout);
 	terminal->pvt->coalesce_timeout = VTE_INVALID_SOURCE;
+}
+
+static void
+remove_update_timeout (VteTerminal *terminal)
+{
+	if (terminal->pvt->update_timeout != VTE_INVALID_SOURCE) {
+		g_source_remove (terminal->pvt->update_timeout);
+		terminal->pvt->update_timeout = VTE_INVALID_SOURCE;
+	}
+
+	if (terminal->pvt->update_region != NULL) {
+		gdk_region_destroy (terminal->pvt->update_region);
+		terminal->pvt->update_region = NULL;
+	}
 }
 
 static void
@@ -11358,3 +11330,37 @@ coalesce_timeout (gpointer data)
 
 	return FALSE;
  }
+
+static gboolean
+update_repeat_timeout (gpointer data)
+{
+	VteTerminal *terminal = data;
+	gboolean updated = vte_invalidate_region (terminal);
+
+	/* We only stop the timer if no update request was received in this
+	 * past cycle.
+	 */
+	if (!updated) {
+		terminal->pvt->update_timeout = VTE_INVALID_SOURCE;
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+update_timeout (gpointer data)
+{
+	VteTerminal *terminal = data;
+
+	vte_invalidate_region(terminal);
+
+	/* Set a timer such that we do not invalidate for a while. */
+	/* This limits the number of times we draw to ~40fps. */
+	terminal->pvt->update_timeout =
+		g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
+				    VTE_UPDATE_REPEAT_TIMEOUT, update_repeat_timeout, terminal,
+				    NULL);
+
+	return FALSE;
+}
