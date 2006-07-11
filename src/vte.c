@@ -177,6 +177,7 @@ _vte_terminal_set_default_attributes(VteTerminal *terminal)
 	terminal->pvt->screen->defaults.c = ' ';
 	terminal->pvt->screen->defaults.columns = 1;
 	terminal->pvt->screen->defaults.fragment = 0;
+	terminal->pvt->screen->defaults.empty = 1;
 	terminal->pvt->screen->defaults.fore = VTE_DEF_FG;
 	terminal->pvt->screen->defaults.back = VTE_DEF_BG;
 	terminal->pvt->screen->defaults.reverse = 0;
@@ -2098,6 +2099,21 @@ vte_terminal_set_colors(VteTerminal *terminal,
 }
 
 /**
+ * vte_terminal_set_opacity
+ * @terminal: a #VteTerminal
+ * @opacity: the new opacity
+ *
+ * Sets the opacity of the terminal background, were 0 means completely
+ * transparent and 65535 means completely opaque.
+ *
+ */
+void
+vte_terminal_set_opacity(VteTerminal *terminal, guint16 opacity)
+{
+	terminal->pvt->bg_opacity = opacity;
+}
+
+/**
  * vte_terminal_set_default_colors:
  * @terminal: a #VteTerminal
  *
@@ -2250,6 +2266,7 @@ _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 		pcell->c = cell.c;
 		pcell->columns = cell.columns;
 		pcell->fragment = cell.fragment;
+		pcell->empty = cell.empty;
 		pcell->alternate = 0;
 
 		/* Now set the character and column count. */
@@ -2266,12 +2283,14 @@ _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 				pcell->c = c;
 				pcell->columns = columns;
 				pcell->fragment = 0;
+				pcell->empty = 0;
 			}
 		} else {
 			/* This is a continuation cell. */
 			pcell->c = c;
 			pcell->columns = columns;
 			pcell->fragment = 1;
+			pcell->empty = 0;
 		}
 
 		/* And take a step to the to the right. */
@@ -2498,6 +2517,7 @@ _vte_terminal_connect_pty_write(VteTerminal *terminal)
 		terminal->pvt->pty_output =
 			g_io_channel_unix_new(terminal->pvt->pty_master);
 	}
+	g_static_mutex_lock (&(terminal->pvt->pty_output_source_mutex));
 	if (terminal->pvt->pty_output_source == VTE_INVALID_SOURCE) {
 		terminal->pvt->pty_output_source =
 			g_io_add_watch_full(terminal->pvt->pty_output,
@@ -2507,6 +2527,7 @@ _vte_terminal_connect_pty_write(VteTerminal *terminal)
 					    terminal,
 					    NULL);
 	}
+	g_static_mutex_unlock (&(terminal->pvt->pty_output_source_mutex));
 }
 
 static void
@@ -2535,10 +2556,12 @@ _vte_terminal_disconnect_pty_write(VteTerminal *terminal)
 		g_io_channel_unref(terminal->pvt->pty_output);
 		terminal->pvt->pty_output = NULL;
 	}
+	g_static_mutex_lock (&(terminal->pvt->pty_output_source_mutex));
 	if (terminal->pvt->pty_output_source != VTE_INVALID_SOURCE) {
 		g_source_remove(terminal->pvt->pty_output_source);
 		terminal->pvt->pty_output_source = VTE_INVALID_SOURCE;
 	}
+	g_static_mutex_unlock (&(terminal->pvt->pty_output_source_mutex));
 }
 
 /* Basic wrapper around _vte_pty_open, which handles the pipefitting. */
@@ -4132,25 +4155,27 @@ vte_terminal_is_word_char(VteTerminal *terminal, gunichar c)
 	int i;
 	VteWordCharRange *range;
 	g_return_val_if_fail(VTE_IS_TERMINAL(terminal), FALSE);
-	/* If we have no array, or it's empty, assume the defaults. */
-	if ((terminal->pvt->word_chars == NULL) ||
-	    (terminal->pvt->word_chars->len == 0)) {
-		return g_unichar_isgraph(c) &&
-		       !g_unichar_ispunct(c) &&
-		       !g_unichar_isspace(c) &&
-		       (c != '\0');
-	}
-	/* Go through each range and check if the character is included. */
-	for (i = 0; i < terminal->pvt->word_chars->len; i++) {
-		range = &g_array_index(terminal->pvt->word_chars,
-				       VteWordCharRange,
-				       i);
-		if ((c >= range->start) && (c <= range->end)) {
-			return TRUE;
+
+	if (terminal->pvt->word_chars != NULL) {
+		/* Go through each range and check if c is included. */
+		for (i = 0; i < terminal->pvt->word_chars->len; i++) {
+			range = &g_array_index(terminal->pvt->word_chars,
+					       VteWordCharRange,
+					       i);
+			if ((c >= range->start) && (c <= range->end))
+				return TRUE;
 		}
 	}
-	/* Default. */
-	return FALSE;
+
+	/* If not ASCII, or ASCII and no array set (or empty array),
+	 * fall back on Unicode properties. */
+	return (c >= 0x80 ||
+	        (terminal->pvt->word_chars == NULL) ||
+	        (terminal->pvt->word_chars->len == 0)) &&
+		g_unichar_isgraph(c) &&
+	       !g_unichar_ispunct(c) &&
+	       !g_unichar_isspace(c) &&
+	       (c != '\0');
 }
 
 /* Check if the characters in the two given locations are in the same class
@@ -4162,10 +4187,15 @@ vte_same_class(VteTerminal *terminal, glong acol, glong arow,
 	struct vte_charcell *pcell = NULL;
 	gboolean word_char;
 	g_assert(VTE_IS_TERMINAL(terminal));
-	if ((pcell = vte_terminal_find_charcell(terminal, acol, arow)) != NULL) {
+	if ((pcell = vte_terminal_find_charcell(terminal, acol, arow)) != NULL && !pcell->empty) {
 		word_char = vte_terminal_is_word_char(terminal, pcell->c);
+
+		/* Lets not group non-wordchars together (bug #25290) */
+		if (!word_char)
+			return FALSE;
+
 		pcell = vte_terminal_find_charcell(terminal, bcol, brow);
-		if (pcell == NULL) {
+		if (pcell == NULL || pcell->empty) {
 			return FALSE;
 		}
 		if (word_char != vte_terminal_is_word_char(terminal,
@@ -4706,8 +4736,7 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 					  GArray *attributes,
 					  gboolean include_trailing_spaces)
 {
-	long col, row, last_space, last_spacecol,
-	     last_nonspace, last_nonspacecol, line_start;
+	long col, row, last_empty, last_emptycol, last_nonempty, last_nonemptycol;
 	VteScreen *screen;
 	struct vte_charcell *pcell = NULL;
 	GString *string;
@@ -4722,23 +4751,20 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 	memset(&attr, 0, sizeof(attr));
 
 	palette = terminal->pvt->palette;
-	for (row = start_row; row <= end_row; row++) {
-		col = (row == start_row) ? start_col : 0;
-		last_space = last_nonspace = -1;
-		last_spacecol = last_nonspacecol = -1;
+	col = start_col;
+	for (row = start_row; row <= end_row; row++, col = 0) {
+		last_empty = last_nonempty = string->len - 1;
+		last_emptycol = last_nonemptycol = -1;
+
 		attr.row = row;
-		line_start = string->len;
 		pcell = NULL;
-		do {
+		while ((pcell = vte_terminal_find_charcell(terminal, col, row))) {
+
+			attr.column = col;
+
 			/* If it's not part of a multi-column character,
 			 * and passes the selection criterion, add it to
 			 * the selection. */
-			attr.column = col;
-			pcell = vte_terminal_find_charcell(terminal, col, row);
-			if (pcell == NULL) {
-				/* No more characters on this line. */
-				break;
-			}
 			if (!pcell->fragment &&
 			    is_selected(terminal, col, row, data)) {
 				/* Store the attributes of this character. */
@@ -4752,20 +4778,20 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 				attr.back.blue = back.blue;
 				attr.underline = pcell->underline;
 				attr.strikethrough = pcell->strikethrough;
+
+				if (pcell->empty) {
+					last_empty = string->len;
+					last_emptycol = col;
+				} else {
+					last_nonempty = string->len;
+					last_nonemptycol = col;
+				}
+
 				/* Store the character. */
 				string = g_string_append_unichar(string,
 								 pcell->c ?
 								 pcell->c :
 								 ' ');
-				/* Record whether or not this was a
-				 * whitespace cell. */
-				if ((pcell->c == ' ') || (pcell->c == '\0')) {
-					last_space = string->len - 1;
-					last_spacecol = col;
-				} else {
-					last_nonspace = string->len - 1;
-					last_nonspacecol = col;
-				}
 			}
 			/* If we added a character to the string, record its
 			 * attributes, one per byte. */
@@ -4778,86 +4804,52 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 			if ((row == end_row) && (col == end_col)) {
 				break;
 			}
+
 			col++;
-		} while (pcell != NULL);
-		/* If the last thing we saw was a space, and we stopped at the
-		 * right edge of the selected area, trim the trailing spaces
-		 * off of the line. */
-		if ((last_space != -1) &&
-		    (last_nonspace != -1) &&
-		    (last_space > last_nonspace)) {
-			/* Check for non-space after this point on the line. */
-			col = MAX(0, last_spacecol);
-			do {
-				/* Check that we have data here. */
-				pcell = vte_terminal_find_charcell(terminal,
-								   col, row);
-				/* Stop if we ran out of data. */
-				if (pcell == NULL) {
-					break;
-				}
-				/* Skip over fragments. */
-				if (pcell->fragment) {
-					col++;
-					continue;
-				}
-				/* Check whether or not it holds whitespace. */
-				if ((pcell->c != ' ') && (pcell->c != '\0')) {
-					/* It holds non-whitespace, stop. */
-					break;
-				}
+		}
+
+	       /* If the last thing we saw was a empty, and we stopped at the
+		* right edge of the selected area, trim the trailing spaces
+		* off of the line. */
+		if (!include_trailing_spaces && last_empty > last_nonempty) {
+
+			col = last_emptycol + 1;
+
+			while ((pcell = vte_terminal_find_charcell(terminal, col, row))) {
 				col++;
-			} while (pcell != NULL);
-			/* If pcell is NULL, then there was no printing
-			 * character to the right of the endpoint, so truncate
-			 * the string at the end of the printing chars. */
-			if ((pcell == NULL) && !include_trailing_spaces) {
-				g_string_truncate(string, last_nonspace + 1);
+
+				if (pcell->fragment)
+					continue;
+
+				if (!pcell->empty)
+					break;
+			}
+			if (pcell == NULL) {
+				g_string_truncate(string, last_nonempty + 1);
+				attr.column = last_nonemptycol;
 			}
 		}
-		/* If we found no non-whitespace characters on this line, trim
-		 * it, as xterm does. */
-		if (last_nonspacecol == -1) {
-			g_string_truncate(string, line_start);
-		}
+
+		/* Adjust column, in case we want to append a newline */
+		attr.column = MAX(terminal->column_count, attr.column + 1);
+
 		/* Add a newline in block mode. */
 		if (terminal->pvt->block_mode) {
 			string = g_string_append_unichar(string, '\n');
 		}
-		/* Make sure that the attributes array is as long as the
-		 * string. */
-		if (attributes) {
-			g_array_set_size(attributes, string->len);
-		}
-		/* If the last visible column on this line was selected and
-		 * it contained whitespace, append a newline. */
-		if (!terminal->pvt->block_mode &&
-				is_selected(terminal, terminal->column_count - 1,
-				row, data)) {
-			pcell = vte_terminal_find_charcell(terminal,
-							   terminal->column_count - 1,
-							   row);
+		/* Else, if the last visible column on this line was selected and
+		 * not soft-wrapped, append a newline. */
+		else if (is_selected(terminal, terminal->column_count - 1, row, data)) {
 			/* If we didn't softwrap, add a newline. */
 			if (!vte_line_is_wrappable(terminal, row)) {
 				string = g_string_append_c(string, '\n');
 			}
-			/* If it's whitespace, we snipped it off, so add a
-			 * newline, unless we soft-wrapped. */
-			else if ((pcell == NULL) || (pcell->c == '\0') || (pcell->c == ' ')) {
-				string = g_string_append_c(string,
-							   pcell ?
-							   pcell->c :
-							   ' ');
-			}
-			/* Move this last character to the end of the line. */
-			attr.column = MAX(terminal->column_count,
-					  attr.column + 1);
-			/* If we broke out of the loop, there's at least one
-			 * character with missing attributes. */
-			if (attributes) {
-				vte_g_array_fill(attributes, &attr,
-						 string->len);
-			}
+		}
+
+		/* Make sure that the attributes array is as long as the string. */
+		if (attributes) {
+			g_array_set_size(attributes, string->len);
+			vte_g_array_fill(attributes, &attr, string->len);
 		}
 	}
 	/* Sanity check. */
@@ -5152,7 +5144,7 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 {
 	VteScreen *screen;
 	VteRowData *rowdata;
-	long delta, height, width, last_nonspace, i, j;
+	long delta, height, width, i, j, last_nonempty;
 	struct vte_charcell *cell;
 	struct selection_event_coords *origin, *last, *start, *end;
 	struct selection_cell_coords old_start, old_end, *sc, *ec, tc;
@@ -5235,10 +5227,10 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 #endif
 
 	/* Recalculate the selection area in terms of cell positions. */
-	terminal->pvt->selection_start.x = MAX(0, start->x / width);
-	terminal->pvt->selection_start.y = MAX(0, start->y / height);
-	terminal->pvt->selection_end.x = MAX(0, end->x / width);
-	terminal->pvt->selection_end.y = MAX(0, end->y / height);
+	terminal->pvt->selection_start.x = CLAMP(start->x / width,  0, terminal->column_count - 1);
+	terminal->pvt->selection_start.y = CLAMP(start->y / height, delta, delta + terminal->row_count - 1);
+	terminal->pvt->selection_end.x = CLAMP(end->x / width,  0, terminal->column_count - 1);
+	terminal->pvt->selection_end.y = CLAMP(end->y / height, delta, delta + terminal->row_count - 1);
 
 	/* Re-sort using cell coordinates to catch round-offs that make two
 	 * coordinates "the same". */
@@ -5262,17 +5254,16 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 		rowdata = NULL;
 	}
 	if (!terminal->pvt->block_mode && rowdata != NULL) {
-		/* Find the last non-space character on the first line. */
-		last_nonspace = -1;
+		/* Find the last non-empty character on the first line. */
+		last_nonempty = -1;
 		for (i = 0; i < rowdata->cells->len; i++) {
 			cell = &g_array_index(rowdata->cells,
 					      struct vte_charcell, i);
-			if (!g_unichar_isspace(cell->c) && (cell->c != '\0')) {
-				last_nonspace = i;
-			}
+			if (!cell->empty)
+				last_nonempty = i;
 		}
-		/* Now find the first space after it. */
-		i = last_nonspace + 1;
+		/* Now find the first empty after it. */
+		i = last_nonempty + 1;
 		/* If the start point is to its right, then move the
 		 * startpoint up to the beginning of the next line
 		 * unless that would move the startpoint after the end
@@ -5299,17 +5290,16 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 		rowdata = NULL;
 	}
 	if (!terminal->pvt->block_mode && rowdata != NULL) {
-		/* Find the last non-space character on the last line. */
-		last_nonspace = -1;
+		/* Find the last non-empty character on the last line. */
+		last_nonempty = -1;
 		for (i = 0; i < rowdata->cells->len; i++) {
 			cell = &g_array_index(rowdata->cells,
 					      struct vte_charcell, i);
-			if (!g_unichar_isspace(cell->c) && (cell->c != '\0')) {
-				last_nonspace = i;
-			}
+			if (!cell->empty)
+				last_nonempty = i;
 		}
-		/* Now find the first space after it. */
-		i = last_nonspace + 1;
+		/* Now find the first empty after it. */
+		i = last_nonempty + 1;
 		/* If the end point is to its right, then extend the
 		 * endpoint as far right as we can expect. */
 		if (ec->x >= i) {
@@ -6748,6 +6738,7 @@ vte_terminal_init(VteTerminal *terminal, gpointer *klass)
 	pvt->pty_master = -1;
 	pvt->pty_input_source = VTE_INVALID_SOURCE;
 	pvt->pty_output_source = VTE_INVALID_SOURCE;
+	g_static_mutex_init( &(pvt->pty_output_source_mutex) );
 	pvt->pty_pid = -1;
 
 	/* Set up I/O encodings. */
@@ -6831,6 +6822,7 @@ vte_terminal_init(VteTerminal *terminal, gpointer *klass)
 	pvt->bg_tint_color.green = 0;
 	pvt->bg_tint_color.blue = 0;
 	pvt->bg_saturation = 0.4 * VTE_SATURATION_MAX;
+	pvt->bg_opacity = 0xffff;
 	pvt->block_mode = FALSE;
 	pvt->had_block_mode = FALSE;
 
@@ -7439,6 +7431,10 @@ vte_terminal_realize(GtkWidget *widget)
 
 	/* Set the realized flag. */
 	GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
+
+        /* Set window/icon titles */
+        gdk_window_set_title (widget->window, "");
+        gdk_window_set_icon_name (widget->window, "");
 
 	/* Actually load the font. */
 	vte_terminal_set_font_full(terminal, terminal->pvt->fontdesc,
@@ -10187,7 +10183,8 @@ vte_terminal_background_update(gpointer data)
 		gdk_rgb_find_color(colormap, &bgcolor);
 	}
 	gdk_window_set_background(widget->window, &bgcolor);
-	_vte_draw_set_background_color(terminal->pvt->draw, &bgcolor);
+	_vte_draw_set_background_color(terminal->pvt->draw, &bgcolor,
+				       terminal->pvt->bg_opacity);
 
 	/* If we're transparent, and either have no root image or are being
 	 * told to update it, get a new copy of the root window. */

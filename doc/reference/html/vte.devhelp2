@@ -40,6 +40,7 @@
     <keyword type="function" name="vte_terminal_set_color_highlight ()" link="VteTerminal.html#vte-terminal-set-color-highlight" since="0.11.11"/>
     <keyword type="function" name="vte_terminal_set_colors ()" link="VteTerminal.html#vte-terminal-set-colors"/>
     <keyword type="function" name="vte_terminal_set_default_colors ()" link="VteTerminal.html#vte-terminal-set-default-colors"/>
+    <keyword type="function" name="vte_terminal_set_opacity ()" link="VteTerminal.html#vte-terminal-set-opacity"/>
     <keyword type="function" name="vte_terminal_set_background_image ()" link="VteTerminal.html#vte-terminal-set-background-image"/>
     <keyword type="function" name="vte_terminal_set_background_image_file ()" link="VteTerminal.html#vte-terminal-set-background-image-file"/>
     <keyword type="function" name="vte_terminal_set_background_saturation ()" link="VteTerminal.html#vte-terminal-set-background-saturation"/>

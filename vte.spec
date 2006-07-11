@@ -1,5 +1,5 @@
 Name: vte
-Version: 0.13.2
+Version: 0.13.3
 Release: 1
 Summary: An experimental terminal emulator.
 License: LGPL
