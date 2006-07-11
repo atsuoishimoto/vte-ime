@@ -1,3 +1,21 @@
+vte (1:0.13.3-0ubuntu1) edgy; urgency=low
+
+  * New upstream release:
+    - Fixed Bug "copy-paste of empty line"
+    - Fixed Bug "Small UI tweak to select-by-word (only select only letter
+      at a time for non-word characters)"
+    - Fixed Bug "Patch to select localized strings exactly"
+    - Fixed Bug "Race in vte leads to blocking of input."
+    - Fixed Bug "Ctrl-space sends ' ', not NUL."
+    - Fixed Bug "real transparency"
+    - Fixed Bug "-no-undefined doesn't work with latest libtool"
+    - Fixed Bug "vte does not respond to 'CSI 2 1 t' or 'CSI 2 0 t' with the 
+      correct window/icon title"
+  * debian/rules:
+    - bumped shlibs.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue, 11 Jul 2006 11:48:53 +0200
+
 vte (1:0.13.2-0ubuntu1) edgy; urgency=low
 
   * New usptream release:

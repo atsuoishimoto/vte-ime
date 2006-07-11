@@ -1,3 +1,99 @@
+2006-07-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.13.3.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.13.3.
+
+	* src/Makefile.am: Bumped libtool version to 10:0:1.
+
+2006-07-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 141985 – vte does not respond to 'CSI 2 1 t' or 'CSI 2 0 t' with
+	the correct window/icon title
+	Patch from Mariano Suárez-Alvarez
+
+	* src/vte.c (vte_terminal_realize), src/vteseq.c
+	* (vte_sequence_handler_set_title_internal): Set window/icon titles.
+
+2006-07-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 121904 – copy-paste of empty line
+	Bug 25290 – Small UI tweak to select-by-word (only select only letter
+	at a time for non-word characters)
+	Bug 339986 – Patch to select localized strings exactly
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_terminal_set_default_attributes),
+	(_vte_terminal_insert_char), (vte_terminal_is_word_char),
+	(vte_same_class), (vte_terminal_get_text_range_maybe_wrapped),
+	(vte_terminal_extend_selection):
+	* src/vteseq.c (vte_sequence_handler_screen_alignment_test):
+	Fix a bunch of selection-related issues.  We now recognize explicitly
+	put space at the end of lines, and copy/paste it.  The other change is
+	that non-wordchar characters are not grouped together.  Also fixes the
+	fallback on Unicode properties that I added two commits ago.
+
+2006-07-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 311855 – Race in vte leads to blocking of input.
+	Patch from Kalle Raiskila
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_terminal_connect_pty_write),
+	(_vte_terminal_disconnect_pty_write), (vte_terminal_init):
+	Use a mutex for pty_output_source.
+
+2006-07-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 339986 – Patch to select localized strings exactly
+	Patch from Takao Fujiwara
+
+	* src/vte.c (vte_terminal_is_word_char): Fall back on Unicode
+	properties for non-ASCII characters or when no array is set.
+
+2006-07-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 342396 – Ctrl-space sends " ", not NUL.
+
+	* src/keymap.c (_vte_keymap_map): Fix keymap lookup bug that I
+	introduced during the char*->char[] work on 2006-04-18.
+
+2006-07-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 345377 – real transparency
+	Patch from Kristian Høgsberg <krh redhat.com>
+
+	* doc/reference/tmpl/vte.sgml:
+	* doc/reference/vte-sections.txt:
+	* python/vte.defs:
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_set_opacity), (vte_terminal_init),
+	(vte_terminal_background_update):
+	* src/vte.h:
+	* src/vteapp.c (main):
+	* src/vtedraw.c (_vte_draw_set_background_color):
+	* src/vtedraw.h:
+	* src/vteft2.c (_vte_ft2_set_background_color):
+	* src/vtegl.c (_vte_gl_set_background_color):
+	* src/vtepango.c (_vte_pango_set_background_color):
+	* src/vtepangox.c (_vte_pango_x_set_background_color):
+	* src/vteskel.c (_vte_skel_set_background_color):
+	* src/vtexft.c (_vte_xft_create), (_vte_xft_set_background_color),
+	(_vte_xft_clear):
+	Add vte_terminal_set_opacity().
+
+2006-07-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am: Allow _vte_debug_.* into exported symbols.
+
+2006-06-21  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 345514 – -no-undefined doesn't work with latest libtool
+
+	* src/Makefile.am: Remove -no-undefined.
+
 2006-06-12  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.13.2.

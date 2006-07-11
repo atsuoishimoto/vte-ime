@@ -458,11 +458,13 @@ vte_sequence_handler_set_title_internal(VteTerminal *terminal,
 			if (strcmp(signal, "window") == 0) {
 				g_free(terminal->window_title);
 				terminal->window_title = g_strdup(validated);
+				gdk_window_set_title (GTK_WIDGET (terminal)->window, validated);
 				vte_terminal_emit_window_title_changed(terminal);
 			} else
 			if (strcmp(signal, "icon") == 0) {
 				g_free (terminal->icon_title);
 				terminal->icon_title = g_strdup(validated);
+				gdk_window_set_icon_name (GTK_WIDGET (terminal)->window, validated);
 				vte_terminal_emit_icon_title_changed(terminal);
 			}
 			g_free(validated);
@@ -3727,6 +3729,7 @@ vte_sequence_handler_screen_alignment_test(VteTerminal *terminal,
 		cell = screen->basic_defaults;
 		cell.c = 'E';
 		cell.columns = 1;
+		cell.empty = 0;
 		vte_g_array_fill(rowdata->cells, &cell, terminal->column_count);
 		_vte_terminal_emit_text_inserted(terminal);
 	}

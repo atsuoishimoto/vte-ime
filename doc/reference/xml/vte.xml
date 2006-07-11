@@ -92,6 +92,8 @@ enum        <link linkend="VteTerminalEraseBinding">VteTerminalEraseBinding</lin
                                              const <link linkend="GdkColor">GdkColor</link> *palette,
                                              <link linkend="glong">glong</link> palette_size);
 <link linkend="void">void</link>        <link linkend="vte-terminal-set-default-colors">vte_terminal_set_default_colors</link> (<link linkend="VteTerminal">VteTerminal</link> *terminal);
+<link linkend="void">void</link>        <link linkend="vte-terminal-set-opacity">vte_terminal_set_opacity</link>        (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                             <link linkend="guint16">guint16</link> opacity);
 <link linkend="void">void</link>        <link linkend="vte-terminal-set-background-image">vte_terminal_set_background_image</link>
                                             (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *image);
@@ -1018,6 +1020,23 @@ Reset the terminal palette to reasonable compiled-in defaults.</para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="vte-terminal-set-opacity" role="function"/>vte_terminal_set_opacity ()</title>
+<indexterm><primary>vte_terminal_set_opacity</primary></indexterm><programlisting><link linkend="void">void</link>        vte_terminal_set_opacity        (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                             <link linkend="guint16">guint16</link> opacity);</programlisting>
+<para>
+Sets the opacity of the terminal background, were 0 means completely
+transparent and 65535 means completely opaque.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opacity</parameter>&nbsp;:</term>
+<listitem><simpara> the new opacity
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
