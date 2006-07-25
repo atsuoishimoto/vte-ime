@@ -1,3 +1,46 @@
+2006-07-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.13.4.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.13.4.
+
+	* src/Makefile.am: Bumped libtool version to 10:1:1.
+
+2006-07-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 336947 – [patch] Redundant vte_terminal_set_font_full() calls
+	Patch from Aivars Kalvans
+
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_set_font_full), (vte_terminal_init),
+	(vte_terminal_realize):
+	AVoid redundant set_font_full and invalidate_all calls.
+
+2006-07-19  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 134800 – gnome-termnal hung up when input by ATOK
+	Patch from Yukihiro Nakai  <nakai@gnome.gr.jp>
+
+	* src/vte.c (vte_terminal_unrealize): Delay _vte_draw_free().
+
+2006-07-19  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_extend_selection):  Oops.  Fix selection
+	that I broke recently.
+
+2006-07-11  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 339983 – gnome-pty-helper should log username
+	Patch from Brian Cameron
+
+	* gnome-pty-helper/gnome-pty-helper.c (pty_remove), (shutdown_pty),
+	(pty_add), (open_ptys):
+	* gnome-pty-helper/gnome-pty.h:
+	* gnome-pty-helper/gnome-utmp.c (write_logout_record):
+	Log username if system supports it.
+
 2006-07-10  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.13.3.
