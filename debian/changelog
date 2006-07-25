@@ -1,3 +1,13 @@
+vte (1:0.13.4-0ubuntu1) edgy; urgency=low
+
+  * New upstream release:
+    - Fix selection that I broke in last release.
+    - Fixed Bug "[patch] Redundant vte_terminal_set_font_full() calls"
+    - Fixed Bug "gnome-termnal hung up when input by ATOK"
+    - Fixed Bug "gnome-pty-helper should log username"
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue, 25 Jul 2006 09:09:24 +0200
+
 vte (1:0.13.3-0ubuntu1) edgy; urgency=low
 
   * New upstream release:

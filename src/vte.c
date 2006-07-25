@@ -5227,10 +5227,10 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 #endif
 
 	/* Recalculate the selection area in terms of cell positions. */
-	terminal->pvt->selection_start.x = CLAMP(start->x / width,  0, terminal->column_count - 1);
-	terminal->pvt->selection_start.y = CLAMP(start->y / height, delta, delta + terminal->row_count - 1);
-	terminal->pvt->selection_end.x = CLAMP(end->x / width,  0, terminal->column_count - 1);
-	terminal->pvt->selection_end.y = CLAMP(end->y / height, delta, delta + terminal->row_count - 1);
+	terminal->pvt->selection_start.x = MAX(0, start->x / width);
+	terminal->pvt->selection_start.y = MAX(0, start->y / height);
+	terminal->pvt->selection_end.x = MAX(0, end->x / width);
+	terminal->pvt->selection_end.y = MAX(0, end->y / height);
 
 	/* Re-sort using cell coordinates to catch round-offs that make two
 	 * coordinates "the same". */
@@ -6161,6 +6161,8 @@ vte_terminal_set_font_full(VteTerminal *terminal,
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
 	widget = GTK_WIDGET(terminal);
 
+	terminal->pvt->has_fonts = TRUE;
+
 	/* Create an owned font description. */
 	if (font_desc != NULL) {
 		desc = pango_font_description_copy(font_desc);
@@ -6202,8 +6204,8 @@ vte_terminal_set_font_full(VteTerminal *terminal,
 				   _vte_draw_get_text_ascent(terminal->pvt->draw),
 				   _vte_draw_get_text_height(terminal->pvt->draw) -
 				   _vte_draw_get_text_ascent(terminal->pvt->draw));
-	/* Repaint with the new font. */
-	_vte_invalidate_all(terminal);
+	/* vte_terminal_apply_metrics already called _vte_invalidate_all so
+	 * we don't. */
 }
 
 /**
@@ -6709,11 +6711,11 @@ vte_terminal_init(VteTerminal *terminal, gpointer *klass)
 	terminal->window_title = NULL;
 	terminal->icon_title = NULL;
 
-	/* Set up dummy metrics. */
-	terminal->char_width = 0;
-	terminal->char_height = 0;
-	terminal->char_ascent = 0;
-	terminal->char_descent = 0;
+	/* Set up dummy metrics, value != 0 to avoid division by 0 */
+	terminal->char_width = 1;
+	terminal->char_height = 1;
+	terminal->char_ascent = 1;
+	terminal->char_descent = 1;
 
 	/* Initialize private data. */
 	pvt = terminal->pvt = G_TYPE_INSTANCE_GET_PRIVATE (terminal, VTE_TYPE_TERMINAL, VteTerminalPrivate);
@@ -6814,7 +6816,6 @@ vte_terminal_init(VteTerminal *terminal, gpointer *klass)
 	pvt->fontantialias = VTE_ANTI_ALIAS_USE_DEFAULT;
 	gtk_widget_ensure_style(widget);
 	vte_terminal_connect_xft_settings(terminal);
-	vte_terminal_set_font_full(terminal, NULL, VTE_ANTI_ALIAS_USE_DEFAULT);
 
 	/* Set up background information. */
 	pvt->bg_update_tag = VTE_INVALID_SOURCE;
@@ -6825,6 +6826,7 @@ vte_terminal_init(VteTerminal *terminal, gpointer *klass)
 	pvt->bg_opacity = 0xffff;
 	pvt->block_mode = FALSE;
 	pvt->had_block_mode = FALSE;
+	pvt->has_fonts = FALSE;
 
 	/* Assume we're visible unless we're told otherwise. */
 	pvt->visibility_state = GDK_VISIBILITY_UNOBSCURED;
@@ -7024,12 +7026,6 @@ vte_terminal_unrealize(GtkWidget *widget)
 	g_assert(VTE_IS_TERMINAL(widget));
 	terminal = VTE_TERMINAL(widget);
 
-	/* Clean up our draw structure. */
-	if (terminal->pvt->draw != NULL) {
-		_vte_draw_free(terminal->pvt->draw);
-	}
-	terminal->pvt->draw = NULL;
-
 	/* Disconnect from background-change events. */
 	bg = vte_bg_get_for_screen(gtk_widget_get_screen(widget));
 	g_signal_handlers_disconnect_by_func(G_OBJECT(bg),
@@ -7066,6 +7062,12 @@ vte_terminal_unrealize(GtkWidget *widget)
 		terminal->pvt->im_preedit_attrs = NULL;
 	}
 	terminal->pvt->im_preedit_cursor = 0;
+
+	/* Clean up our draw structure. */
+	if (terminal->pvt->draw != NULL) {
+		_vte_draw_free(terminal->pvt->draw);
+	}
+	terminal->pvt->draw = NULL;
 
 	/* Unmap the widget if it hasn't been already. */
 	if (GTK_WIDGET_MAPPED(widget)) {
@@ -7370,10 +7372,9 @@ vte_terminal_realize(GtkWidget *widget)
 	terminal = VTE_TERMINAL(widget);
 
 	/* Create the draw structure if we don't already have one. */
-	if (terminal->pvt->draw != NULL) {
-		_vte_draw_free(terminal->pvt->draw);
+	if (terminal->pvt->draw == NULL) {
+		terminal->pvt->draw = _vte_draw_new(GTK_WIDGET(terminal));
 	}
-	terminal->pvt->draw = _vte_draw_new(GTK_WIDGET(terminal));
 
 	/* Create the stock cursors. */
 	terminal->pvt->mouse_cursor_visible = TRUE;
@@ -7436,9 +7437,11 @@ vte_terminal_realize(GtkWidget *widget)
         gdk_window_set_title (widget->window, "");
         gdk_window_set_icon_name (widget->window, "");
 
-	/* Actually load the font. */
-	vte_terminal_set_font_full(terminal, terminal->pvt->fontdesc,
-				   terminal->pvt->fontantialias);
+	/* Load default fonts, if no fonts have been loaded. */
+	if (!terminal->pvt->has_fonts) {
+		vte_terminal_set_font_full(terminal, terminal->pvt->fontdesc,
+					   terminal->pvt->fontantialias);
+   	}
 
 	/* Allocate colors. */
 	for (i = 0; i < G_N_ELEMENTS(terminal->pvt->palette); i++) {
