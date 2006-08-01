@@ -1,3 +1,13 @@
+vte (1:0.13.5-0ubuntu1) edgy; urgency=low
+
+  * New upstream release:
+    - Fix Bug "terminal backspace behavior not set to UTF-8 mode"
+    - Fix Bug "crash on Terminal"
+  * debian/patches/08_set_backspace_to_utf8.patch:
+    - dropped, Fixed upstream.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue,  1 Aug 2006 09:30:31 +0200
+
 vte (1:0.13.4-0ubuntu1) edgy; urgency=low
 
   * New upstream release:
