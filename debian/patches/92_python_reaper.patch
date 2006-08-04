@@ -28,7 +28,7 @@ diff -Nur vte-0.11.15/python/vte.defs vte-0.11.15.new/python/vte.defs
 +
 +(define-function reaper_get
 +  (c-name "vte_reaper_get")
-+  (return-type "VteReaper")
++  (return-type "VteReaper*")
 +)
 diff -Nur vte-0.11.15/python/vte.override vte-0.11.15.new/python/vte.override
 --- vte-0.11.15/python/vte.override	2005-10-28 15:59:45.000000000 -0400

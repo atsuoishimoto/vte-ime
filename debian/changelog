@@ -1,3 +1,10 @@
+vte (1:0.13.5-0ubuntu2) edgy; urgency=low
+
+  * debian/patches/92_vte_reaper.diff:
+    - fix the "reaper_get()" function to work with latest pygtk
+  
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Fri,  4 Aug 2006 13:00:05 +0200
+
 vte (1:0.13.5-0ubuntu1) edgy; urgency=low
 
   * New upstream release:
