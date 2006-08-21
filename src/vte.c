@@ -4763,6 +4763,7 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 		last_emptycol = last_nonemptycol = -1;
 
 		attr.row = row;
+		attr.column = col;
 		pcell = NULL;
 		while ((pcell = vte_terminal_find_charcell(terminal, col, row))) {
 
@@ -4854,7 +4855,6 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 
 		/* Make sure that the attributes array is as long as the string. */
 		if (attributes) {
-			g_array_set_size(attributes, string->len);
 			vte_g_array_fill(attributes, &attr, string->len);
 		}
 	}
