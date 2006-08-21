@@ -1,3 +1,14 @@
+vte (1:0.13.6-0ubuntu1) edgy; urgency=low
+
+  * New upstream version:
+    Bugs fixed:
+    Bug 351696 – crash on Terminal, check ->window before 
+                 setting icon/window title
+    Bug 350623 – Accessible text getTextAtOffset is broken
+	         Patch from Willie Walker
+
+ -- Sebastien Bacher <seb128@canonical.com>  Mon, 21 Aug 2006 10:28:31 +0200
+
 vte (1:0.13.5-0ubuntu2) edgy; urgency=low
 
   * debian/patches/92_vte_reaper.diff:
