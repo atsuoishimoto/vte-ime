@@ -1,3 +1,11 @@
+vte (1:0.13.6-0ubuntu2) edgy; urgency=low
+
+  * debian/patches/revert-fix-for-350623.patch:
+    - revert http://cvs.gnome.org/viewcvs/vte/src/vte.c?r1=1.478&r2=1.479 to
+      fix http://bugzilla.gnome.org/show_bug.cgi?id=352439
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Thu, 24 Aug 2006 11:54:36 +0200
+
 vte (1:0.13.6-0ubuntu1) edgy; urgency=low
 
   * New upstream version:
