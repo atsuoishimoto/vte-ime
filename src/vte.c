@@ -4753,6 +4753,9 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 	g_assert(is_selected != NULL);
 	screen = terminal->pvt->screen;
 
+	if (attributes)
+		g_array_set_size (attributes, 0);
+
 	string = g_string_new(NULL);
 	memset(&attr, 0, sizeof(attr));
 
@@ -4786,6 +4789,11 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 				attr.underline = pcell->underline;
 				attr.strikethrough = pcell->strikethrough;
 
+				/* Store the character. */
+				string = g_string_append_unichar(string,
+								 pcell->c ?
+								 pcell->c :
+								 ' ');
 				if (pcell->empty) {
 					last_empty = string->len;
 					last_emptycol = col;
@@ -4794,17 +4802,12 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 					last_nonemptycol = col;
 				}
 
-				/* Store the character. */
-				string = g_string_append_unichar(string,
-								 pcell->c ?
-								 pcell->c :
-								 ' ');
-			}
-			/* If we added a character to the string, record its
-			 * attributes, one per byte. */
-			if (attributes) {
-				vte_g_array_fill(attributes,
-						 &attr, string->len);
+				/* If we added a character to the string, record its
+				 * attributes, one per byte. */
+				if (attributes) {
+					vte_g_array_fill(attributes,
+							 &attr, string->len);
+				}
 			}
 			/* If we're on the last line, and have just looked in
 			 * the last column, stop. */
@@ -4832,7 +4835,9 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 					break;
 			}
 			if (pcell == NULL) {
-				g_string_truncate(string, last_nonempty + 1);
+				g_string_truncate(string, last_nonempty);
+				if (attributes)
+					g_array_set_size(attributes, string->len);
 				attr.column = last_nonemptycol;
 			}
 		}
@@ -7068,6 +7073,13 @@ vte_terminal_unrealize(GtkWidget *widget)
 		terminal->pvt->im_preedit_attrs = NULL;
 	}
 	terminal->pvt->im_preedit_cursor = 0;
+
+	/* Clean up our draw structure. */
+	if (terminal->pvt->draw != NULL) {
+		_vte_draw_free(terminal->pvt->draw);
+	}
+	terminal->pvt->draw = NULL;
+	terminal->pvt->has_fonts = FALSE;
 
 	/* Unmap the widget if it hasn't been already. */
 	if (GTK_WIDGET_MAPPED(widget)) {
