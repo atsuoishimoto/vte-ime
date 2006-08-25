@@ -1,3 +1,49 @@
+2006-08-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.13.7.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.13.7.
+
+	* src/Makefile.am: Bumped libtool version to 10:4:1.
+
+2006-08-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 352365 – font caching problem for not-found glyphs
+
+	* src/vtexft.c (_vte_xft_font_for_char): Add caching on a missing
+	path.  This only affects the second time a character is looked up.
+
+	* src/vtexft.c (_vte_xft_font_close), (_vte_xft_font_for_char),
+	(_vte_xft_char_width): Remove g_assert()'s that are not needed, as
+	we will definitely crash pretty soon if the assertion is not true
+	anyway.
+
+2006-08-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 350236 – Cannot copy text containing invalid character sequences
+
+	* src/vte.c (vte_terminal_get_text_range_maybe_wrapped): Fix another
+	bug in my rewritten selection code, that was assuming that
+	last_nonempty character is one byte long.
+
+2006-08-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 352439 – URL highlighting seriously broken
+
+	* src/vte.c (vte_terminal_get_text_range_maybe_wrapped): Followup to
+	changes made for bug 350623.  Put back the g_array_set_size(), in the
+	correct place this time.
+
+2006-08-22  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 351494 – Gnome-terminal doesn't kills bash on tab close
+	Patch from Aivars Kalvans
+
+	* src/vte.c (vte_terminal_unrealize): Undo the change from bug 348814.
+	Dispose draw in unrealize again, but also set has_fonts to FALSE.
+
 2006-08-20  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.13.6.

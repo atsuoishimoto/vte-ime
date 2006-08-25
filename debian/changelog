@@ -1,3 +1,16 @@
+vte (1:0.13.7-0ubuntu1) edgy; urgency=low
+
+  * New upstream version:
+    Fix:
+    – Cannot copy text; invalid character sequence errors
+    – URL highlighting seriously broken
+    – Gnome-terminal doesn't kills bash on tab close
+    – font caching problem for not-found glyphs
+  * debian/patches/revert-fix-for-350623.patch:
+    - fixed with the new version
+
+ -- Sebastien Bacher <seb128@canonical.com>  Fri, 25 Aug 2006 09:52:05 +0200
+
 vte (1:0.13.6-0ubuntu2) edgy; urgency=low
 
   * debian/patches/revert-fix-for-350623.patch:
