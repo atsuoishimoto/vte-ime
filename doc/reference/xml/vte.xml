@@ -489,10 +489,10 @@ the terminal.</para>
                                              <link linkend="gboolean">gboolean</link> wtmp);</programlisting>
 <para>
 Starts the specified command under a newly-allocated controlling
-pseudo-terminal.  The <parameter>argv</parameter> and <parameter>envv</parameter> lists should be NULL-terminated, and
+pseudo-terminal.  The <parameter>argv</parameter> and <parameter>envv</parameter> lists should be <link linkend="NULL:CAPS"><literal>NULL</literal></link>-terminated, and
 argv[0] is expected to be the name of the file being run, as it would be if
 <link linkend="execve"><function>execve()</function></link> were being called.  TERM is automatically set to reflect the
-terminal widget's emulation setting.  If <parameter>lastlog</parameter>, <parameter>utmp</parameter>, or <parameter>wtmp</parameter> are TRUE,
+terminal widget's emulation setting.  If <parameter>lastlog</parameter>, <parameter>utmp</parameter>, or <parameter>wtmp</parameter> are <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>,
 logs the session to the specified system log files.</para>
 <para>
 </para><variablelist role="params">
@@ -500,26 +500,26 @@ logs the session to the specified system log files.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>command</parameter>&nbsp;:</term>
-<listitem><simpara> the name of a binary to run
+<listitem><simpara> the name of a binary to run, or <link linkend="NULL:CAPS"><literal>NULL</literal></link> to get user's shell
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
-<listitem><simpara> the argument list to be passed to <parameter>command</parameter>
+<listitem><simpara> the argument list to be passed to <parameter>command</parameter>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>envv</parameter>&nbsp;:</term>
 <listitem><simpara> a list of environment variables to be added to the environment before
-starting <parameter>command</parameter>, or NULL
+starting <parameter>command</parameter>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>directory</parameter>&nbsp;:</term>
-<listitem><simpara> the name of a directory the command should start in, or NULL
+<listitem><simpara> the name of a directory the command should start in, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>lastlog</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the session should be logged to the lastlog
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the session should be logged to the lastlog
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>utmp</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the session should be logged to the utmp/utmpx log
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the session should be logged to the utmp/utmpx log
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>wtmp</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the session should be logged to the wtmp/wtmpx log
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the session should be logged to the wtmp/wtmpx log
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the ID of the new process
 </simpara></listitem></varlistentry>
@@ -535,7 +535,7 @@ starting <parameter>command</parameter>, or NULL
 <para>
 Starts a new child process under a newly-allocated controlling
 pseudo-terminal.  TERM is automatically set to reflect the terminal widget's
-emulation setting.  If <parameter>lastlog</parameter>, <parameter>utmp</parameter>, or <parameter>wtmp</parameter> are TRUE, logs the session
+emulation setting.  If <parameter>lastlog</parameter>, <parameter>utmp</parameter>, or <parameter>wtmp</parameter> are <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>, logs the session
 to the specified system log files.</para>
 <para>
 
@@ -545,20 +545,20 @@ to the specified system log files.</para>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>envv</parameter>&nbsp;:</term>
 <listitem><simpara> a list of environment variables to be added to the environment before
-starting returning in the child process, or NULL
+starting returning in the child process, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>directory</parameter>&nbsp;:</term>
 <listitem><simpara> the name of a directory the child process should change to, or
-NULL
+<link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>lastlog</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the session should be logged to the lastlog
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the session should be logged to the lastlog
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>utmp</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the session should be logged to the utmp/utmpx log
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the session should be logged to the utmp/utmpx log
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>wtmp</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the session should be logged to the wtmp/wtmpx log
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the session should be logged to the wtmp/wtmpx log
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the ID of the new process in the parent, 0 in the child, and -1 if
 there was an error
@@ -740,7 +740,7 @@ Controls whether or not the terminal will beep when the child outputs the
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>is_audible</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the terminal should beep
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should beep
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -755,7 +755,7 @@ Checks whether or not the terminal will beep when the child outputs the
 <varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if audible bell is enabled, FALSE if not
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if audible bell is enabled, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if not
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -773,7 +773,7 @@ will clear itself to the default foreground color and then repaint itself.</para
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>is_visible</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the terminal should flash
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should flash
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -789,7 +789,7 @@ will clear itself to the default foreground color and then repaint itself.</para
 <varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if visible bell is enabled, FALSE if not
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if visible bell is enabled, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if not
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -806,7 +806,7 @@ repainting text with a different offset.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>allow_bold</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the terminal should attempt to draw bold text
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should attempt to draw bold text
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -821,7 +821,7 @@ repainting text with a one-pixel offset.</para>
 <varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if bolding is enabled, FALSE if not
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if bolding is enabled, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if not
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -839,7 +839,7 @@ the viewable history when the new data is received from the child.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>scroll</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the terminal should scroll on output
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should scroll on output
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -858,7 +858,7 @@ trigger this behavior.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>scroll</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the terminal should scroll on keystrokes
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should scroll on keystrokes
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -934,7 +934,7 @@ Sets the color used to draw dim text in the default foreground color.</para>
 <indexterm role="0.11.11"><primary>vte_terminal_set_color_cursor</primary></indexterm><programlisting><link linkend="void">void</link>        vte_terminal_set_color_cursor   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                              const <link linkend="GdkColor">GdkColor</link> *cursor_background);</programlisting>
 <para>
-Sets the background color for text which is under the cursor.  If NULL, text
+Sets the background color for text which is under the cursor.  If <link linkend="NULL:CAPS"><literal>NULL</literal></link>, text
 under the cursor will be drawn with foreground and background colors
 reversed.</para>
 <para>
@@ -955,7 +955,7 @@ reversed.</para>
                                             (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                              const <link linkend="GdkColor">GdkColor</link> *highlight_background);</programlisting>
 <para>
-Sets the background color for text which is highlighted.  If NULL,
+Sets the background color for text which is highlighted.  If <link linkend="NULL:CAPS"><literal>NULL</literal></link>,
 highlighted text (which is usually highlighted because it is selected) will
 be drawn with foreground and background colors reversed.</para>
 <para>
@@ -984,9 +984,9 @@ color, an eight color palette, bold versions of the eight color palette,
 and a dim version of the the eight color palette.
 </para>
 <para>
-<parameter>palette_size</parameter> must be either 0, 8, 16, or 24.  If <parameter>foreground</parameter> is NULL and
+<parameter>palette_size</parameter> must be either 0, 8, 16, or 24.  If <parameter>foreground</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link> and
 <parameter>palette_size</parameter> is greater than 0, the new foreground color is taken from
-<parameter>palette</parameter>[7].  If <parameter>background</parameter> is NULL and <parameter>palette_size</parameter> is greater than 0,
+<parameter>palette</parameter>[7].  If <parameter>background</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link> and <parameter>palette_size</parameter> is greater than 0,
 the new background color is taken from <parameter>palette</parameter>[0].  If
 <parameter>palette_size</parameter> is 8 or 16, the third (dim) and possibly the second (bold)
 8-color palettes are extrapolated from the new background color and the items
@@ -998,10 +998,10 @@ in <parameter>palette</parameter>.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>foreground</parameter>&nbsp;:</term>
-<listitem><simpara> the new foreground color, or <link linkend="NULL:CAPS"><type>NULL</type></link>
+<listitem><simpara> the new foreground color, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>background</parameter>&nbsp;:</term>
-<listitem><simpara> the new background color, or <link linkend="NULL:CAPS"><type>NULL</type></link>
+<listitem><simpara> the new background color, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>palette</parameter>&nbsp;:</term>
 <listitem><simpara> the color palette
@@ -1058,7 +1058,7 @@ in-memory copy of the image before applying it to the terminal.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>image</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link> to use, or <link linkend="NULL:CAPS"><type>NULL</type></link> to cancel
+<listitem><simpara> a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link> to use, or <link linkend="NULL:CAPS"><literal>NULL</literal></link> to cancel
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1119,7 +1119,7 @@ the widget will appear to be transparent.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>transparent</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the terminal should fake transparency
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should fake transparency
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1165,7 +1165,7 @@ one is set) when the text in the window must be scrolled.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>scroll</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the terminal should scroll the background image along with
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should scroll the background image along with
 text.
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  0.11
@@ -1185,7 +1185,7 @@ is controlled by the "gtk-cursor-blink-time" GTK+ setting.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>blink</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the cursor should blink
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the cursor should blink
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1327,7 +1327,7 @@ but in practice usually matches the behavior of GTK+ itself.</para>
 <varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the terminal is using fontconfig to find fonts, FALSE if
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal is using fontconfig to find fonts, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if
 the terminal is using PangoX.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -1344,7 +1344,7 @@ is different from determining if the terminal is the owner of any
 <varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if part of the text in the terminal is selected.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if part of the text in the terminal is selected.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1358,7 +1358,7 @@ as parts of words, and all other characters as word separators.  Ranges of
 characters can be specified by separating them with a hyphen.
 </para>
 <para>
-As a special case, if <parameter>spec</parameter> is NULL or the empty string, the terminal will
+As a special case, if <parameter>spec</parameter> is <link linkend="NULL:CAPS"><literal>NULL</literal></link> or the empty string, the terminal will
 treat all graphic non-punctuation non-space characters as word characters.</para>
 <para>
 
@@ -1386,7 +1386,7 @@ based on the values last passed to <link linkend="vte-terminal-set-word-chars"><
 <varlistentry><term><parameter>c</parameter>&nbsp;:</term>
 <listitem><simpara> a candidate Unicode code point
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the character is considered to be part of a word
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the character is considered to be part of a word
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1442,7 +1442,7 @@ shown when the user moves the mouse.  This setting can be read using
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>setting</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE if the autohide should be enabled
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the autohide should be enabled
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1459,7 +1459,7 @@ using <link linkend="vte-terminal-set-mouse-autohide"><function>vte_terminal_set
 <varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if autohiding is enabled, FALSE if not.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if autohiding is enabled, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if not.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1479,10 +1479,10 @@ selection state, and encoding.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>full</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE to reset tabstops
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> to reset tabstops
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>clear_history</parameter>&nbsp;:</term>
-<listitem><simpara> TRUE to empty the terminal's scrollback buffer
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> to empty the terminal's scrollback buffer
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1493,7 +1493,7 @@ selection state, and encoding.</para>
                                              <link linkend="GArray">GArray</link> *attributes);</programlisting>
 <para>
 Extracts a view of the visible part of the terminal.  If <parameter>is_selected</parameter> is not
-NULL, characters will only be read if <parameter>is_selected</parameter> returns TRUE after being
+<link linkend="NULL:CAPS"><literal>NULL</literal></link>, characters will only be read if <parameter>is_selected</parameter> returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> after being
 passed the column and row, respectively.  A <link linkend="VteCharAttributes"><type>VteCharAttributes</type></link> structure
 is added to <parameter>attributes</parameter> for each byte added to the returned string detailing
 the character's position, colors, and other characteristics.</para>
@@ -1512,7 +1512,7 @@ the character's position, colors, and other characteristics.</para>
 <varlistentry><term><parameter>attributes</parameter>&nbsp;:</term>
 <listitem><simpara> location for storing text attributes
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a text string which must be freed by the caller, or NULL.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a text string which must be freed by the caller, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1524,7 +1524,7 @@ the character's position, colors, and other characteristics.</para>
                                              <link linkend="GArray">GArray</link> *attributes);</programlisting>
 <para>
 Extracts a view of the visible part of the terminal.  If <parameter>is_selected</parameter> is not
-NULL, characters will only be read if <parameter>is_selected</parameter> returns TRUE after being
+<link linkend="NULL:CAPS"><literal>NULL</literal></link>, characters will only be read if <parameter>is_selected</parameter> returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> after being
 passed the column and row, respectively.  A <link linkend="VteCharAttributes"><type>VteCharAttributes</type></link> structure
 is added to <parameter>attributes</parameter> for each byte added to the returned string detailing
 the character's position, colors, and other characteristics. This function
@@ -1545,7 +1545,7 @@ lines are included.</para>
 <varlistentry><term><parameter>attributes</parameter>&nbsp;:</term>
 <listitem><simpara> location for storing text attributes
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a text string which must be freed by the caller, or NULL.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a text string which must be freed by the caller, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 
 Since 0.11.11
 </simpara></listitem></varlistentry>
@@ -1562,7 +1562,7 @@ Since 0.11.11
                                              <link linkend="GArray">GArray</link> *attributes);</programlisting>
 <para>
 Extracts a view of the visible part of the terminal.  If <parameter>is_selected</parameter> is not
-NULL, characters will only be read if <parameter>is_selected</parameter> returns TRUE after being
+<link linkend="NULL:CAPS"><literal>NULL</literal></link>, characters will only be read if <parameter>is_selected</parameter> returns <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> after being
 passed the column and row, respectively.  A <link linkend="VteCharAttributes"><type>VteCharAttributes</type></link> structure
 is added to <parameter>attributes</parameter> for each byte added to the returned string detailing
 the character's position, colors, and other characteristics.  The
@@ -1595,7 +1595,7 @@ contents of the buffer using this function.</para>
 <varlistentry><term><parameter>attributes</parameter>&nbsp;:</term>
 <listitem><simpara> location for storing text attributes
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a text string which must be freed by the caller, or NULL.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a text string which must be freed by the caller, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1680,7 +1680,7 @@ moves the mouse cursor over matching text.</para>
 <para>
 Checks if the text in and around the specified position matches any of the
 regular expressions previously set using <link linkend="vte-terminal-match-add"><function>vte_terminal_match_add()</function></link>.  If a
-match exists, the text string is returned and if <parameter>tag</parameter> is not NULL, the number
+match exists, the text string is returned and if <parameter>tag</parameter> is not <link linkend="NULL:CAPS"><literal>NULL</literal></link>, the number
 associated with the matched regular expression will be stored in <parameter>tag</parameter>.
 </para>
 <para>
@@ -1794,7 +1794,7 @@ Queries the terminal for its current emulation, as last set by a call to
                                             (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Queries the terminal for its default emulation, which is attempted if the
-terminal type passed to <link linkend="vte-terminal-set-emulation"><function>vte_terminal_set_emulation()</function></link> is NULL.</para>
+terminal type passed to <link linkend="vte-terminal-set-emulation"><function>vte_terminal_set_emulation()</function></link> is <link linkend="NULL:CAPS"><literal>NULL</literal></link>.</para>
 <para>
 
 </para><variablelist role="params">

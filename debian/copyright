@@ -1,9 +1,12 @@
 This package was debianized by Christian Marillat <marillat@debian.org> on
 Sun, 21 Jul 2002 16:30:57 +0200.
 
-It was downloaded from http://people.redhat.com/nalin/vte/
+It was downloaded from http://download.gnome.org/sources/vte/
 
-Upstream Author: Nalin Dahyabhai <nalin@redhat.com>
+Upstream Author: Behdad Esfahbod <behdad@gnome.org>
+	 	 Guilherme de S. Pastore <gpastore@gnome.org>
+		 Nalin Dahyabhai <nalin@redhat.com>
+	 	 
 
 Copyright: 2002 Nalin Dahyabhai
 
@@ -25,4 +28,3 @@ License:
 
 On Debian systems, the complete text of the GNU Lesser General
 Public License can be found in `/usr/share/common-licenses/LGPL'.
-

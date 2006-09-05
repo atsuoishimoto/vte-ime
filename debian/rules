@@ -10,16 +10,46 @@ include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
 
 version := $(shell sed -n 's/Package: \(.*\)/\1/p' debian/control | head -n 1)
 
+PY_VERSIONS = $(shell pyversions --requested debian/control)
+
 DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/${version}
 DEB_FIXPERMS_EXCLUDE := gnome-pty-helper
 DEB_DH_MAKESHLIBS_ARGS_ALL = -V 'libvte9 (>= 1:0.13.3)'
 
-binary-install/python-vte::
-	dh_python
+DEB_BUILDDIR := build
 
-binary-install/python2.4-vte::
-	dh_python
+configure-stamp-%:
+	mkdir build-$*
+	cd build-$* && PYTHON=`which $*` $(DEB_CONFIGURE_SCRIPT_ENV) \
+	    $(DEB_CONFIGURE_SCRIPT) \
+		$(DEB_CONFIGURE_NORMAL_ARGS) \
+		--disable-maintainer-mode \
+		$(cdbs_configure_flags) \
+		$(DEB_CONFIGURE_EXTRA_FLAGS) \
+		$(DEB_CONFIGURE_USER_FLAGS)
+	touch $@
+
+configure/python-vte:: $(addprefix configure-stamp-, $(PY_VERSIONS))
+
+build-stamp-%:
+	make -C build-$*
+	touch $@
+
+build/python-vte:: $(addprefix build-stamp-, $(PY_VERSIONS))
+
+install-stamp-%:
+	make -C build-$* install DESTDIR=$(CURDIR)/debian/tmp
+	touch $@
+
+install/python-vte:: $(addprefix install-stamp-, $(PY_VERSIONS))
+
+binary-install/python-vte::
+	dh_pysupport -d
 
 clean::
-	-rm -rf debian/tmp-2.3 debian/tmp-2.4 build build-2.3 build-2.4
+	-rm -rf $(DEB_BUILDDIR)
+	-rm -rf $(addprefix build-, $(PY_VERSIONS))
+	-rm -rf $(addprefix configure-stamp-, $(PY_VERSIONS))
+	-rm -rf $(addprefix build-stamp-, $(PY_VERSIONS))
+	-rm -rf $(addprefix install-stamp-, $(PY_VERSIONS))
 
