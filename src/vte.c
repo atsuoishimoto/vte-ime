@@ -2431,8 +2431,18 @@ vte_terminal_handle_sequence(GtkWidget *widget,
 		/* Let the handler handle it. */
 		ret = handler(terminal, match_s, match, params);
 	} else {
+#ifdef VTE_DEBUG
 		g_warning(_("No handler for control sequence `%s' defined."),
-			  match_s);
+				match_s);
+#else
+		/* suppress multiple warnings for each widget */
+		if (!g_object_get_qdata(G_OBJECT (widget), match)) {
+			g_warning(_("No handler for control sequence `%s' defined."),
+					match_s);
+			g_object_set_qdata(G_OBJECT (widget),
+					match, (gpointer)0x1);
+		}
+#endif
 		ret = FALSE;
 	}
 
@@ -5579,7 +5589,7 @@ vte_terminal_autoscroll(gpointer data)
 		}
 #endif
 	}
-	if (terminal->pvt->mouse_last_y >
+	if (terminal->pvt->mouse_last_y >=
 	    terminal->row_count * terminal->char_height) {
 		if (terminal->adjustment) {
 			/* Try to scroll up by one line. */
@@ -5608,7 +5618,7 @@ vte_terminal_autoscroll(gpointer data)
 		if (terminal->pvt->mouse_last_y < 0 && !terminal->pvt->block_mode) {
 			x = 0;
 		}
-		if (terminal->pvt->mouse_last_y > ymax && !terminal->pvt->block_mode) {
+		if (terminal->pvt->mouse_last_y >= ymax && !terminal->pvt->block_mode) {
 			x = terminal->column_count * terminal->char_width;
 		}
 		/* Extend selection to cover the newly-scrolled area. */
@@ -5717,7 +5727,7 @@ vte_terminal_motion_notify(GtkWidget *widget, GdkEventMotion *event)
 
 	/* Start scrolling if we need to. */
 	if ((event->y < VTE_PAD_WIDTH) ||
-	    (event->y > (widget->allocation.height - VTE_PAD_WIDTH))) {
+	    (event->y >= (terminal->row_count * terminal->char_height + VTE_PAD_WIDTH))) {
 		switch (terminal->pvt->mouse_last_button) {
 		case 1:
 			if (!event_mode) {
@@ -6190,9 +6200,11 @@ vte_terminal_set_font_full(VteTerminal *terminal,
 	} else {
 		gtk_widget_ensure_style(widget);
 		desc = pango_font_description_copy(widget->style->font_desc);
+		pango_font_description_set_family_static (desc, "monospace");
+
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_MISC)) {
-			fprintf(stderr, "Using default pango font.\n");
+			fprintf(stderr, "Using default monospace font.\n");
 		}
 #endif
 	}
@@ -6257,7 +6269,6 @@ vte_terminal_set_font_from_string_full(VteTerminal *terminal, const char *name,
 	PangoFontDescription *font_desc;
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
 	g_return_if_fail(name != NULL);
-	g_return_if_fail(strlen(name) > 0);
 
 	font_desc = pango_font_description_from_string(name);
 	vte_terminal_set_font_full(terminal, font_desc, antialias);
@@ -6997,9 +7008,14 @@ vte_terminal_show(GtkWidget *widget)
 	}
 #endif
 
-	g_assert(widget != NULL);
 	g_assert(VTE_IS_TERMINAL(widget));
 	terminal = VTE_TERMINAL(widget);
+
+	/* Load default fonts, if no fonts have been loaded. */
+	if (!terminal->pvt->has_fonts) {
+		vte_terminal_set_font_full(terminal, terminal->pvt->fontdesc,
+					   terminal->pvt->fontantialias);
+   	}
 
 	widget_class = g_type_class_peek(GTK_TYPE_WIDGET);
 	if (GTK_WIDGET_CLASS(widget_class)->show) {
