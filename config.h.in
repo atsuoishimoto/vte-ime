@@ -1,8 +1,5 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
-/* The location where arch-independent package-specific data can be found. */
-#undef DATADIR
-
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
 
@@ -199,12 +196,6 @@
 /* Whether we have Xft2 */
 #undef HAVE_XFT2
 
-/* The location where package-specific helpers can be found. */
-#undef LIBEXECDIR
-
-/* The location where locale data can be found. */
-#undef LOCALEDIR
-
 /* Package name. */
 #undef PACKAGE
 
@@ -225,9 +216,6 @@
 
 /* Disable deprecated Pango features. */
 #undef PANGO_DISABLE_DEPRECATED
-
-/* The location where package-specific helpers can be found. */
-#undef PKGLIBDIR
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS

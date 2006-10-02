@@ -1,3 +1,15 @@
+vte (1:0.14.1-0ubuntu1) edgy; urgency=low
+
+  * New upstream version:
+    - autoscroll only works one way in fullscreen [PATCH]
+    - font setting cleanup
+    - libvte broken with new autotools
+    - Suppress multiple warnings for missing control sequence handlers
+    - vte-0.14.0: undefined C code
+    - Define G_LOG_DOMAIN=Vte.
+
+ -- Sebastien Bacher <seb128@canonical.com>  Mon,  2 Oct 2006 23:22:07 +0200
+
 vte (1:0.14.0-0ubuntu1) edgy; urgency=low
 
   * New upstream release:
