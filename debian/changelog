@@ -1,53 +1,30 @@
-vte (1:0.14.1-0ubuntu1) edgy; urgency=low
-
-  * New upstream version:
-    - autoscroll only works one way in fullscreen [PATCH]
-    - font setting cleanup
-    - libvte broken with new autotools
-    - Suppress multiple warnings for missing control sequence handlers
-    - vte-0.14.0: undefined C code
-    - Define G_LOG_DOMAIN=Vte.
-
- -- Sebastien Bacher <seb128@canonical.com>  Mon,  2 Oct 2006 23:22:07 +0200
-
-vte (1:0.14.0-0ubuntu1) edgy; urgency=low
+vte (1:0.15.0-0ubuntu1) feisty; urgency=low
 
   * New upstream release:
-    - Minor doc syntax update.
-    - Fix bug causing empty lines to not being copied.
-  * Resynchronized with Debian, only Ubuntu changes are:
-    - debian/patches/91_keep_fds.patch: Distro fix.
-    - debian/pyversions: "2.3-" -> "2"
-    - debian/python-vte.install: simplify installation rules (and don't ship
-      python2.3 which we don't have).
+    - Fixed Bug "cursor timeout runs all the time"
+    - Fixed Bug "Mouse scroll mode not controllable"
+    - Fixed Bug "const cast warning fixes for libvte"
+    - Fixed Bug 'In gnome-terminal, the deleted character reported as "space"'
+    - Fixed Bug "337252 – ALT + Arrow keys don't work in irssi through 
+      gnome-terminal"
+  * Resynchronized with Debian, remaining Ubuntu changes are:
+    - debian/control.in, debian/libvte?.install, debian/rules: newer version,
+      soname changes.
+    - debian/patches/08_set_backspace_to_utf8.patch,
+      debian/patches/09_multiscreen_safe.patch: dropped, is Upstream.
+    - debian/patches/12_python_reaper.patch, 
+      debian/patches/91_keep_fds.patch: Distro fix.
+    - debian/patches/70_relibtoolize.patch: dropped, not needed.
 
- -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue,  5 Sep 2006 12:33:44 +0200
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Wed,  6 Dec 2006 16:14:29 +0100
 
-vte (1:0.13.7-1) experimental; urgency=low
+vte (1:0.12.2-4) unstable; urgency=medium
 
-  * New upstream development release; no API change.
+  * Remove references to the forgotten hardcoded python2.3 and python2.4
+    version from the python-vte.install file, thanks Daniel Holbach.
+  * Urgency medium since this will cause FTBFS in the future.
 
- -- Loic Minier <lool@dooz.org>  Fri, 25 Aug 2006 20:20:03 +0200
-
-vte (1:0.13.6-1) experimental; urgency=low
-
-  * New upstream development release; no API change.
-  * Merge 1:0.12.2-3.
-
- -- Loic Minier <lool@dooz.org>  Wed, 23 Aug 2006 15:56:50 +0200
-
-vte (1:0.13.5-1) experimental; urgency=low
-
-  * New upstream development releases, with API changes.
-    - Target at experimental.
-    - Rename livte4 to libvte9 for the new SONAME.
-    - Bump shlibs to >= 1:0.13.3.
-    - Drop 08_set_backspace_to_utf8 patch, merged upstream.
-    - Drop 09_multiscreen_safe, fixed upstream.
-    - Drop 70_relibtoolize, I'm too lazy to update it for dev releases.
-    - Bump up libglib2.0-dev build-dep to > 2.9.0.
-
- -- Loic Minier <lool@dooz.org>  Wed,  9 Aug 2006 22:45:15 +0200
+ -- Loic Minier <lool@dooz.org>  Tue,  5 Sep 2006 16:36:09 +0200
 
 vte (1:0.12.2-3) unstable; urgency=medium
 
