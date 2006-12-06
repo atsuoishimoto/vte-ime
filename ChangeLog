@@ -1,3 +1,59 @@
+2006-12-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.15.0.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.15.0.
+
+	* src/Makefile.am: Bumped libtool version to 10:7:1.
+
+2006-12-05  Ryan Lortie  <desrt@desrt.ca>
+
+	Bug 356552 – cursor timeout runs all the time
+
+	* src/vte-private.h: Rework how cursor blinking works.
+	* src/vte.c: Rework how cursor blinking works.  Only register the
+	cursor blink callback when cursor blink is enabled and the window
+	is focused.
+
+2006-11-16 Mariano Suárez-Alvarez <mariano@gnome.org>
+
+	Bug 307396 – Mouse scroll mode not controllable
+
+	* src/vte.c(vte_terminal_scroll): make the scrollwheel scroll by tenths of
+	a screen (or 1 line, whichever is bigger) instead of half screens.
+
+2006-11-16 Mariano Suárez-Alvarez <mariano@gnome.org>
+
+	Bug 356602 – const cast warning fixes for libvte
+	Patch by Ryan Lortie (desrt)
+
+	* src/matcher.h: Use const char * where appropriate.
+	* src/matcher.c: Use const char * where appropriate.  Cast g_strdup
+	to (GCacheDupFunc) to avoid a warning.
+	* src/vtetc.h: Use const char * where appropriate.
+	* src/vtetc.c: Use const char * where appropriate.  Cast g_strdup
+	to (GCacheDupFunc) to avoid a warning.
+	* src/vte.c: Use const char * where appropriate.
+
+2006-11-01 Rich Burridge <rich.burridge@sun.com>
+
+	* src/vteaccess.c:
+	Fixed bug #150858 - In gnome-terminal, the deleted character 
+	is reported as "space".
+
+2006-10-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* po/POTFILES.in: Include vteseq.c
+
+2006-10-11  Mariano Suárez-Alvarez  <msuarezalvarez@arnet.com.ar>
+
+	Bug 337252 – ALT + Arrow keys don't work in irssi through gnome-terminal
+
+	* src/keymap.c (_vte_keymap_key_add_key_modifiers): Match the (newer)
+	xterm behavior when reporting modifiers to things running in a terminal.
+
 2006-10-02  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.14.1.
@@ -74,12 +130,17 @@
 
 2006-08-31  Behdad Esfahbod  <behdad@gnome.org>
 
+	Bug 340631 – Printed lines containing tab characters are not wrapped 
+	correctly
+
+	* src/vteseq.c (vte_sequence_handler_ta): make sure we don't move the 
+	cursor back when tabbing past the end of the line.
+
 	* src/pty.c:
 	* src/ring.c:
 	* src/trie.c:
 	* src/vte.c:
 	* src/vtebg.c:
-	* src/vteseq.c (vte_sequence_handler_ta):
 	* src/vtetc.c:
 	Minor doc syntax update.
 
