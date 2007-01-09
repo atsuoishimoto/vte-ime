@@ -1,3 +1,17 @@
+vte (1:0.15.1-0ubuntu1) feisty; urgency=low
+
+  * New usptream release:
+    - Fixed Bug "Excessive use of strlen by _vte_termcap_create"
+    - Fixed Bug "Gtk-Warning spew in gnome-terminal"
+    - Fixed Bug "Variable modified in signal handler should be volatile"
+    - Fixed Bug "last -ad"i print junk in last column
+  * debian/control.in:
+    - build with --enable-gtk-doc
+  * debian/patches/10-from-cvs-fix-crasher-394890.patch:
+    - apply http://svn.gnome.org/viewcvs/vte/trunk/src/vtetc.c?r1=1421&r2=1426
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue,  9 Jan 2007 10:20:55 +0100
+
 vte (1:0.15.0-0ubuntu1) feisty; urgency=low
 
   * New upstream release:
