@@ -1,42 +1,60 @@
-vte (1:0.15.1-0ubuntu2) feisty; urgency=low
+vte (1:0.15.1-0ubuntu3) feisty; urgency=low
 
-  * Rebuild for python2.5 as the default python version.
-
- -- Matthias Klose <doko@ubuntu.com>  Fri, 12 Jan 2007 13:18:46 +0000
-
-vte (1:0.15.1-0ubuntu1) feisty; urgency=low
-
-  * New usptream release:
-    - Fixed Bug "Excessive use of strlen by _vte_termcap_create"
-    - Fixed Bug "Gtk-Warning spew in gnome-terminal"
-    - Fixed Bug "Variable modified in signal handler should be volatile"
-    - Fixed Bug "last -ad"i print junk in last column
+  * Sync with Debian, Ubuntu changes are:
   * debian/control.in:
+    - use "XB-Python-Version: ${python:Versions}"
+  * debian/pyversions:
+    - use "2.4-" to build for the different python versions (Ubuntu: #79420)
+  * debian/rules:
     - build with --enable-gtk-doc
+    - don't install the ".a" or ".la" files
   * debian/patches/10-from-cvs-fix-crasher-394890.patch:
     - apply http://svn.gnome.org/viewcvs/vte/trunk/src/vtetc.c?r1=1421&r2=1426
+  * debian/patches/91_keep_fds.patch:
+    - ubuntu patch
 
- -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue,  9 Jan 2007 10:20:55 +0100
+ -- Sebastien Bacher <seb128@canonical.com>  Tue, 16 Jan 2007 13:54:48 +0100
 
-vte (1:0.15.0-0ubuntu1) feisty; urgency=low
+vte (1:0.14.1-1) experimental; urgency=low
 
-  * New upstream release:
-    - Fixed Bug "cursor timeout runs all the time"
-    - Fixed Bug "Mouse scroll mode not controllable"
-    - Fixed Bug "const cast warning fixes for libvte"
-    - Fixed Bug 'In gnome-terminal, the deleted character reported as "space"'
-    - Fixed Bug "337252 – ALT + Arrow keys don't work in irssi through 
-      gnome-terminal"
-  * Resynchronized with Debian, remaining Ubuntu changes are:
-    - debian/control.in, debian/libvte?.install, debian/rules: newer version,
-      soname changes.
-    - debian/patches/08_set_backspace_to_utf8.patch,
-      debian/patches/09_multiscreen_safe.patch: dropped, is Upstream.
-    - debian/patches/12_python_reaper.patch, 
-      debian/patches/91_keep_fds.patch: Distro fix.
-    - debian/patches/70_relibtoolize.patch: dropped, not needed.
+  * New upstream release.
 
- -- Daniel Holbach <daniel.holbach@ubuntu.com>  Wed,  6 Dec 2006 16:14:29 +0100
+ -- Josselin Mouette <joss@debian.org>  Tue, 21 Nov 2006 20:37:02 +0100
+
+vte (1:0.14.0-1) experimental; urgency=low
+
+  * New upstream release; no API change.
+  * Preemptively fix the 12_python_reaper patch to work with newer codegen,
+    thanks Daniel Holbach and Michael Vogt for all the fish.
+  * Merge 1:0.12.2-4.
+
+ -- Loic Minier <lool@dooz.org>  Tue,  5 Sep 2006 16:43:37 +0200
+
+vte (1:0.13.7-1) experimental; urgency=low
+
+  * New upstream development release; no API change.
+
+ -- Loic Minier <lool@dooz.org>  Fri, 25 Aug 2006 20:20:03 +0200
+
+vte (1:0.13.6-1) experimental; urgency=low
+
+  * New upstream development release; no API change.
+  * Merge 1:0.12.2-3.
+
+ -- Loic Minier <lool@dooz.org>  Wed, 23 Aug 2006 15:56:50 +0200
+
+vte (1:0.13.5-1) experimental; urgency=low
+
+  * New upstream development releases, with API changes.
+    - Target at experimental.
+    - Rename livte4 to libvte9 for the new SONAME.
+    - Bump shlibs to >= 1:0.13.3.
+    - Drop 08_set_backspace_to_utf8 patch, merged upstream.
+    - Drop 09_multiscreen_safe, fixed upstream.
+    - Drop 70_relibtoolize, I'm too lazy to update it for dev releases.
+    - Bump up libglib2.0-dev build-dep to > 2.9.0.
+
+ -- Loic Minier <lool@dooz.org>  Wed,  9 Aug 2006 22:45:15 +0200
 
 vte (1:0.12.2-4) unstable; urgency=medium
 

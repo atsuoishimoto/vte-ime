@@ -46,6 +46,8 @@ install/python-vte:: $(addprefix install-stamp-, $(PY_VERSIONS))
 
 binary-install/python-vte::
 	dh_pysupport -d
+	find debian/python-vte -name '*.la' -exec rm {} \;
+	find debian/python-vte -name '*.a' -exec rm {} \;
 
 clean::
 	-rm -rf $(DEB_BUILDDIR)
