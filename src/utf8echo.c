@@ -48,7 +48,7 @@ main(int argc, char **argv)
 	}
 
 	conv = _vte_conv_open("UTF-8", VTE_CONV_GUNICHAR_TYPE);
-	if (conv == ((VteConv) -1)) {
+	if (conv == VTE_INVALID_CONV) {
 		return 1;
 	}
 
@@ -60,7 +60,7 @@ main(int argc, char **argv)
 		outbuf = buf;
 		outsize = sizeof(buf);
 		if (_vte_conv(conv, &inbuf, &insize, &outbuf, &outsize) != -1) {
-			printf("%.*s", outbuf - buf, buf);
+			printf("%.*s", (int)(outbuf - buf), buf);
 		}
 	}
 

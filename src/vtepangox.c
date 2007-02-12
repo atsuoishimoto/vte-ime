@@ -81,31 +81,21 @@ _vte_pango_x_destroy(struct _vte_draw *draw)
 	struct _vte_pango_x_data *data;
 	data = (struct _vte_pango_x_data*) draw->impl_data;
 
-	data->scrollx = data->scrolly = 0;
-
-	if (GDK_IS_PIXMAP(data->pixmap)) {
-		g_object_unref(G_OBJECT(data->pixmap));
-		data->pixmap = NULL;
-		data->pixmapw = data->pixmaph = 0;
+	if (data->pixmap != NULL) {
+		g_object_unref(data->pixmap);
 	}
 	if (data->font != NULL) {
 		pango_font_description_free(data->font);
-		data->font = NULL;
 	}
-	if (PANGO_IS_LAYOUT(data->layout)) {
-		g_object_unref(G_OBJECT(data->layout));
-		data->layout = NULL;
+	if (data->layout != NULL) {
+		g_object_unref(data->layout);
 	}
-	if (GDK_IS_GC(data->gc)) {
-		g_object_unref(G_OBJECT(data->gc));
-		data->gc = NULL;
+	if (data->gc != NULL) {
+		g_object_unref(data->gc);
 	}
-	if (PANGO_IS_CONTEXT(data->ctx)) {
-		g_object_unref(G_OBJECT(data->ctx));
-		data->ctx = NULL;
+	if (data->ctx != NULL) {
+		g_object_unref(data->ctx);
 	}
-
-	memset(&data->color, 0, sizeof(data->color));
 
 	g_slice_free(struct _vte_pango_x_data, draw->impl_data);
 }
@@ -133,22 +123,22 @@ _vte_pango_x_start(struct _vte_draw *draw)
 	data = (struct _vte_pango_x_data*) draw->impl_data;
 
 	display = gdk_x11_drawable_get_xdisplay(draw->widget->window);
-	if (PANGO_IS_CONTEXT(data->ctx)) {
-		g_object_unref(G_OBJECT(data->ctx));
+	if (data->ctx != NULL) {
+		g_object_unref(data->ctx);
 	}
 	data->ctx = pango_x_get_context(display);
 
-	if (PANGO_IS_LAYOUT(data->layout)) {
-		g_object_unref(G_OBJECT(data->layout));
+	if (data->layout != NULL) {
+		g_object_unref(data->layout);
 	}
 	data->layout = pango_layout_new(data->ctx);
 
-	if (data->font) {
+	if (data->font != NULL) {
 		pango_layout_set_font_description(data->layout, data->font);
 	}
 
-	if (GDK_IS_GC(data->gc)) {
-		g_object_unref(G_OBJECT(data->gc));
+	if (data->gc != NULL) {
+		g_object_unref(data->gc);
 	}
 	data->gc = gdk_gc_new(draw->widget->window);
 
@@ -172,18 +162,18 @@ _vte_pango_x_end(struct _vte_draw *draw)
 	data->x_offs = 0;
 	data->y_offs = 0;
 
-	if (PANGO_IS_LAYOUT(data->layout)) {
-		g_object_unref(G_OBJECT(data->layout));
+	if (data->layout != NULL) {
+		g_object_unref(data->layout);
 	}
 	data->layout = NULL;
 
-	if (GDK_IS_GC(data->gc)) {
-		g_object_unref(G_OBJECT(data->gc));
+	if (data->gc != NULL) {
+		g_object_unref(data->gc);
 	}
 	data->gc = NULL;
 
-	if (PANGO_IS_CONTEXT(data->ctx)) {
-		g_object_unref(G_OBJECT(data->ctx));
+	if (data->ctx != NULL) {
+		g_object_unref(data->ctx);
 	}
 	data->ctx = NULL;
 }
@@ -215,12 +205,12 @@ _vte_pango_x_set_background_image(struct _vte_draw *draw,
 				   type, pixbuf, file,
 				   color, saturation,
 				   _vte_draw_get_colormap(draw, TRUE));
-	if (data->pixmap) {
-		g_object_unref(G_OBJECT(data->pixmap));
+	if (data->pixmap != NULL) {
+		g_object_unref(data->pixmap);
 	}
 	data->pixmap = NULL;
 	data->pixmapw = data->pixmaph = 0;
-	if (pixmap) {
+	if (pixmap != NULL) {
 		data->pixmap = pixmap;
 		gdk_drawable_get_size(pixmap, &data->pixmapw, &data->pixmaph);
 	}
@@ -291,8 +281,8 @@ _vte_pango_x_set_text_font(struct _vte_draw *draw,
 	data = (struct _vte_pango_x_data*) draw->impl_data;
 
 	display = gdk_x11_display_get_xdisplay(gtk_widget_get_display(draw->widget));
-	if (PANGO_IS_CONTEXT(data->ctx)) {
-		g_object_unref(G_OBJECT(data->ctx));
+	if (data->ctx != NULL) {
+		g_object_unref(data->ctx);
 	}
 	ctx = pango_x_get_context(display);
 
@@ -343,12 +333,12 @@ _vte_pango_x_set_text_font(struct _vte_draw *draw,
 
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_MISC)) {
-		fprintf(stderr, "VtePangoX font metrics = %dx%d (%d).\n",
+		g_printerr("VtePangoX font metrics = %dx%d (%d).\n",
 			draw->width, draw->height, draw->ascent);
 	}
 #endif
-	g_object_unref(G_OBJECT(layout));
-	g_object_unref(G_OBJECT(ctx));
+	g_object_unref(layout);
+	g_object_unref(ctx);
 }
 
 static int
@@ -470,8 +460,8 @@ _vte_pango_x_set_scroll(struct _vte_draw *draw, gint x, gint y)
 	data->scrolly = y;
 }
 
-struct _vte_draw_impl _vte_draw_pango_x = {
-	"VtePangoX", "VTE_USE_PANGOX",
+const struct _vte_draw_impl _vte_draw_pango_x = {
+	"PangoX",
 	_vte_pango_x_check,
 	_vte_pango_x_create,
 	_vte_pango_x_destroy,

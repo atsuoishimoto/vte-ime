@@ -1,3 +1,1018 @@
+2007-01-22  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.15.2.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.15.2.
+
+	* src/Makefile.am: Bumped libtool version to 10:9:1.
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 399137 - continuation.
+
+	* src/vteaccess.c: (vte_terminal_accessible_text_modified):
+		Classic bug:
+			clen = cp - old
+		rather than the more correct
+			clen = cp - current
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vteapp.c: (char_size_changed), (char_size_realized), (main):
+		Don't try to perform gdk operations on unrealized windows.
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/pty.c: (_vte_pty_run_on_pty):
+		Print out the argument vector for VTE_DEBUG_MISC.
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/pty.c: (_vte_pty_run_on_pty):
+		Protect against g_strv_length(NULL)
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 399137 - continuation.
+
+	* src/vteaccess.c: (vte_terminal_accessible_text_modified):
+		After walking back along the UTF-8 string, remember to update
+		the string lengths that are used to detect insertions and
+		deletions!
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	If the caret is at the end of the buffer, then it set past the
+	end of the offset array - do not use this as a lookup!
+
+	* src/vteaccess.c: (vte_terminal_accessible_text_modified):
+		If the caret points to past the last character, set the
+		offset to the string's NUL terminator.
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* configure.in:
+		Earlier configure.in update introduced a trailing ']', pair
+		it with its '['
+		
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 132316 – terminal widget's context menu posting isn't exposed as an AtkAction
+
+	Original patch by <padraig.obriain@sun.com>
+
+	* src/vteaccess.c: (vte_terminal_accessible_free_private_data),
+	(vte_terminal_accessible_component_init),
+	(vte_terminal_accessible_do_action),
+	(vte_terminal_accessible_get_n_actions),
+	(vte_terminal_accessible_action_get_description),
+	(vte_terminal_accessible_action_get_name),
+	(vte_terminal_accessible_action_get_keybinding),
+	(vte_terminal_accessible_action_set_description),
+	(vte_terminal_accessible_action_init),
+	(vte_terminal_accessible_get_type):
+		Remove grab_focus and defer to the parent's implementation.
+		Add an AtkAction iface.
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 156161 – AccessibleText_getTextAtOffset returns wrong values in gnome-terminal
+
+	The code for ATK_TEXT_BOUNDARY_WORD_START and
+	ATK_TEXT_BOUNDARY_WORD_END is the same.
+
+	Patch by <padraig.obriain@sun.com>
+
+	* src/vteaccess.c: (vte_terminal_accessible_get_text_somewhere):
+		Actually provide an implementation for
+		ATK_TEXT_BOUNDARY_WORD_END.
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 399137 – UTF-8 problem in VteAccess
+
+	* src/vteaccess.c: (emit_text_changed_insert),
+	(emit_text_changed_delete):
+		use g_utf8_pointer_to_offset() instead of open coding
+	(vte_terminal_accessible_update_private_data_if_needed):
+		add the number of UTF-8 characters to the debug output.
+	(vte_terminal_accessible_text_modified):
+		iterate backwards over the UTF-8 string using
+		g_utf8_prev_char() and convert the caret into a byte offset
+		before it as such.
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 123591 – vte_terminal_fork_command succeeds even when it does not
+
+	* python/vte.defs:
+	* python/vte.override:
+	* src/reaper.c: (vte_reaper_child_watch_cb):
+	* src/vte-private.h:
+	* src/vte.c: (vte_terminal_catch_child_exited),
+	(_vte_terminal_fork_basic), (vte_terminal_forkpty):
+	* src/vte.h:
+	* src/vteapp.c:
+		s/pid_t/GPid/ portable variant, no API/ABI implications
+	* src/pty.c: (vte_pty_child_setup), (_vte_pty_run_on_pty),
+	(_vte_pty_fork_on_pty_name), (_vte_pty_fork_on_pty_fd),
+	(_vte_pty_open_unix98), (_vte_pty_pipe_open), (n_read), (n_write),
+	(_vte_pty_start_helper), (_vte_pty_open_with_helper),
+	(_vte_pty_open), (main):
+		Replace custom fork() and pipe based syncrohonisation scheme
+		with g_spawn_async_with_pipes() as it actually handles all
+		failure modes correctly, and gives us overtures of portability.
+		
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Hack'n'slash my way through doing a bit of weeding.
+
+	Fixed:
+	- Bug 345514 – -no-undefined doesn't work with latest libtool
+	- Bug 162003 – vte configure.in X checking can fail
+	             – though this may cause other regressions!
+	- Bug 314669 – Please specialize AC_PATH_XTRA
+
+	* configure.in:
+		Export LIBTOOL_EXPORT_OPTIONS for -no-undefined on windos.
+		Add to rather than override X_CFLAGS, X_LIBS
+		AC_PATH_XTRA - Find X11 using XFlush() rather than XtMalloc().
+		Print configuration details.
+	* src/Makefile.am:
+		Conditional compilation of backends.
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 389538 – crash in Terminal: nothing
+
+	* src/vteaccess.c: (vte_terminal_accessible_get_text):
+		Guard against negative length strings.
+
+2007-01-22  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 161479 – Scroll wheel generates Release events
+
+	 vte sends release events on scroll but xterm doesn't which breaks
+	 mc among others.
+
+	 Patch by Benedikt Meurer.
+
+	* src/vte.c: (vte_terminal_scroll):
+		Remove the offending release event.
+
+2007-01-20  Chris Wilson <chris@chris-wilson.co.uk>
+
+	<kmaraas> ickle: sparse complains about dubious 1 bit bitfields
+		if you use gboolean instead of guint
+	<kmaraas> so s/gboolean/guint at line 166 and 174
+	<mariano> unless that changes the API, of course...
+	<kmaraas> it doesn't
+	<mariano> gboolean a:1 is not very correct anyways
+	<kmaraas> ickle: we've done the same change in other modules
+	<ickle> if I do it quick, behdad might not even notice ;)
+
+	* src/vte.h:
+		Convert signed single bit field to unsigned. The code
+		was setting it to 1 anyhow (and not -1 as the type indicated).
+
+2007-01-20  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 398602 – Build Failure
+
+	* src/vte.c: (vte_terminal_expose):
+		Fixup typo. [Grrr. Must get git-svn back into sync]
+
+2006-11-19 Rich Burridge <rich.burridge@sun.com>
+
+        * src/vteaccess.c:
+        Fixed bug #397724 - Orca incorrect echo's certain input in 
+        gnome-terminal when key echo is set to off (on Ubuntu Feisty).
+
+2007-01-20  Chris Wilson <chris@chris-wilson.co.uk>
+	
+	* src/vte.c: (vte_terminal_expose):
+		Also if the entire terminal is invalidated,
+		do not add more GTK+ exposes to it.
+
+2007-01-20  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Track when we have invalidated the entire terminal and skip adding
+	new regions when possible.
+
+	* src/vte-private.h:
+	* src/vte.c: (update_regions), (_vte_invalidate_cells),
+	(_vte_invalidate_all), (vte_terminal_size_allocate),
+	(reset_update_regions):
+
+2007-01-20  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 398244 – Gnome-terminal opens a huge sized window
+
+	* src/vte.c: (vte_terminal_ensure_font),
+	(vte_terminal_set_font_full), (vte_terminal_size_request),
+	(vte_terminal_realize), (vte_terminal_get_char_width),
+	(vte_terminal_get_char_height), (vte_terminal_get_char_descent),
+	(vte_terminal_get_char_ascent):
+		Ensure the font metrics are calculated before use.
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vte.c: (vte_terminal_process_incoming):
+		Do not invalidate the old cursor position if it was not
+		visible.
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vte.c: (process_timeout):
+		Make sure ->process_timeout is set to VTE_INVALID_SOURCE on
+		all paths that remove the timeout.
+
+2007-01-19  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Add <> to mark boundaries of process_timeout().
+
+	* src/vte.c: (vte_terminal_class_init), (process_timeout):
+
+2007-01-19  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Add {},[] to mark boundaries of update_timeout() and notice that
+	the display limited update_timeout was not dying.
+
+	* src/vte.c: (vte_terminal_class_init), (update_repeat_timeout),
+	(update_timeout):
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vte.c: (vte_terminal_realize), (remove_process_timeout):
+		Small cleanup:
+		 - protect remove_process_timeout against an invalid source.
+		 - move static prototypes into common block.
+		 - gdk_window_show() is done in map not realize.
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vte-private.h:
+	* src/vte.c: (vte_terminal_process_incoming):
+		Introduce a bit of slack in the bbox check to allow
+		for a small of amount of cursor motion e.g. due to line
+		scrolling. This turns the long sequence of
+		'(?!?!??? ... ????!)'
+		during a hexdump into the better behaved 
+		'.(?!?!?!??!)-+=.(?!?!??!)-+=........'. Although it is
+		puzzling why we now how have a block of IO and then two quick
+		display upates...
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vte.c: (process_timeout), (update_repeat_timeout),
+	(update_timeout):
+		Repeat _vte_terminal_process_incoming until we have drained
+		the incoming buffers or we can handle no more. Fixes a
+		problem where the display wouldn't update if we hadn't
+		processed enough data (e.g. on startup, displaying the first
+		prompt). This bug corresponds with the sequence
+		'*-+=..()?!(?!?!?!)-+=' below, which now reads
+		'*-+=..()(?!?!?!)-+='
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vte.c: (_vte_invalidate_cursor_once):
+		"%ld" for cursor indices.
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vte.c: (_vte_invalidate_cells),
+	(_vte_invalidate_cursor_once):
+		Cursor indices are long.
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vte-private.h:
+	* src/vte.c: (_vte_invalidate_cell):
+		Cursor indices are long.
+	* src/vte.c: (_vte_terminal_expose):
+		Prepend the GTK+ generated expose if we already have an
+		display update pending.
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Add a new debug flag to visualize the work flow.
+	VTE_DEBUG_FLAGS=work generates output like:
+	Debugging work flow (top input to bottom output):
+	  .  _vte_terminal_process_incoming
+	  (  start _vte_terminal_process_incoming
+	  ?  _vte_invalidate_cells (call)
+	  !  _vte_invalidate_cells (dirty)
+	  *  _vte_invalidate_all
+	  )  end _vte_terminal_process_incoming
+	  -  gdk_window_process_all_updates
+	  +  vte_terminal_expose
+	  =  vte_terminal_paint
+	*?!**+=*-+=..()?!(?!?!?!)-+=?!-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.().(?!?!?!)-+=.().(?!?!?!)-+=.().().(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!?!)-+=.(?!?!)-+=.............................................................................................................................................................................................................................................................................(?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????!??!)-+=.......................................................................
+
+	Which tells me I have two bugs to track:
+		1. the initial '..()' is a missing invalidate.
+		2. '(?!?!????????????????????!??!)' is not very efficient.
+
+	* src/debug.c: (_vte_debug_parse_string):
+	* src/debug.h:
+	* src/vte.c: (update_regions), (_vte_invalidate_cells),
+	(_vte_invalidate_all), (vte_terminal_process_incoming),
+	(vte_terminal_io_read), (vte_terminal_paint),
+	(vte_terminal_expose), (vte_terminal_class_init):
+		Add VTE_DEBUG_WORK
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 398150 – cursor leaves trail behind in vim
+
+	* src/vte-private.h:
+	* src/vte.c: (_vte_invalidate_cell),
+	(vte_terminal_process_incoming):
+	* src/vteseq.c: (vte_sequence_handler_decset_internal):
+		Invalidate the old cursor position if we detect the cursor
+		moved during the sequence or if the cursor changed state.
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/Makefile.am:
+		Missing $(X_CFLAGS)
+
+2007-01-19  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 398243 – Crash
+
+	* src/vtebg.c: (vte_bg_cache_prune_int):
+		Use the return from g_list_delete_link to maintain the list
+		head.
+
+2007-01-18  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vte.c: (_vte_invalidate_cells):
+		Check that the start of the invalid region is on screen.
+
+2007-01-18  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 398116 – lags behind when widget not visible
+
+	* src/vte.c: (vte_terminal_handle_scroll):
+		During the spring clean, I converted a few GTK_WIDGET_REALIZED()
+		checks to GTK_WIDGET_DRAWABLE()+visibility check.
+		Unfortunately, it broke keeping the scroll delta in sync with
+		the insert delta. Sync the pair, then perform the check before
+		making updates on the visible area.
+
+2007-01-18  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 398083 – background not painted correctly when starting up
+
+	* src/vte.c: (_vte_invalidate_all):
+		Compute drawable area in window co-ordinates and not widget
+		co-ordinates.
+
+2007-01-18  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vte.c: (vte_terminal_expose):
+		Small bit of logic inversion that would have tried to paint
+		on unmapped and invisible widgets.
+
+2007-01-18  Chris Wilson <chris@chris-wilson.co.uk>
+	And the corresponding overrides. [The downsides of losing track of
+	which machine you are working on.]
+
+	* python/vte.override:
+		Add (get_text_include_trailing_spaces)
+
+2007-01-18  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Add missing export of vte_terminal_get_text_include_trailing_spaces,
+	needed for building a simple testcase for Bug 397724.
+	vte.defs needs a bit of love...
+
+	* python/vte.defs:
+		Add (get_text_include_trailing_spaces)
+
+2007-01-18  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vterdb.c: (_vte_rdb_search), (_vte_rdb_boolean):
+		Fix a couple of compiler warnings.
+
+2007-01-18  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* src/vte.c: (vte_terminal_process_incoming):
+		Delete some dead code.
+
+2007-01-18  Chris Wilson <chris@chris-wilson.co.uk>
+
+	* configure.in:
+		Restore --enable-debugging. 
+
+2007-01-18  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Copy Behdad's MAYBE_WARN comprehensive set of warnings from Cairo,
+	and fixup the immediate compilation failures.
+
+	* configure.in:
+		Iterate over a list of warnings and check that they are valid
+		for the compiler.
+		
+	* src/debug.c: (_vte_debug_on):
+		Kill fflush() [redundant with g_printerr].
+
+2007-01-18  Behdad Esfahbod  <behdad@gnome.org>
+
+	* configure.in: Don't call AC_CANONICAL_HOST.  Libtool calls it
+	already.
+
+	* src/Makefile.am: Don't build extra, test, programs by default.
+	Speeds build up.
+
+2007-01-18  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/ring.c (_vte_ring_insert_preserve):
+	* src/vte.c (vte_terminal_paint):
+	Fix loop-optimization warnings.
+
+2007-01-18  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/ssfe.c (cleanupexit), (barf):
+	* src/vtebg.c (vte_bg_cache_prune_int):
+	* src/vtetc.c (main):
+	Fix more warnings.
+
+2007-01-18  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/table.c (main):
+	* src/trie.c (_vte_trie_addx), (main):
+	* src/utf8echo.c (main):
+	Fix int vs long int mismatches in printf args.
+
+2007-01-18  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/iso2022.c (_vte_iso2022_find_nextctl):
+	* src/reaper.c (vte_reaper_finalize):
+	* src/vte.c (_vte_terminal_insert_char), (vte_terminal_key_press),
+	(vte_terminal_init), (vte_terminal_size_allocate):
+	* src/vteapp.c (main):
+	* src/vtedraw.c (_vte_draw_init_default):
+	* src/vteglyph.c (_vte_glyph_cache_free):
+	* src/vtergb.c (_vte_rgb_copy):
+	* src/vtexft.c (_vte_xft_font_for_char):
+	Remove unused variables.
+
+2007-01-18  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 161342 revisited. Reset the box to +-inf and not the current
+	cursor otherwise you just reproduce the slow behaviour (an overly
+	large invalidation area).
+
+	* src/vte.c: (vte_terminal_process_incoming):
+		Reset bbox to +-inf.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Second breakage: VTE_INVALID_SOURCE !=0 and calling
+	vte_terminal_set_scrollback_lines with lines == ->scrollback_lines
+	is not a nop.
+
+	* src/vte.c: (vte_terminal_background_update),
+	(vte_terminal_queue_background_update):
+		VTE_INVALID_SOURCE != 0
+	(vte_terminal_set_scrollback_lines):
+		reset the rowdata everytime.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 397414 - port vteapp to GOption
+
+	* src/vteapp.c: (main):
+		Translation of getopt switch to GOptionEntry[].
+		Missing help for --geometry.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	First breakage spotted: the realized flag is set too late in
+	the realize handler. Note to self: not everybody uses a black
+	background.
+
+	* src/vte.c: (vte_terminal_realize):
+		Restore GTK_WIDGET_SET_FLAGS(REALIZED)
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 395373 - Allow the user to specify backend priorities.
+
+	* src/vtedraw.c: (_vte_draw_init_user), (_vte_draw_init_default),
+	(_vte_draw_new):
+		Scan $ENV{VTE_BACKEND} for the user's preferred backend
+		and failover to the first working backend.
+		Discard checking VTE_USE_*
+
+	* src/vtedraw.h:
+	* src/vteft2.c:
+	* src/vteft2.h:
+	* src/vtegl.c:
+	* src/vtegl.h:
+	* src/vtepango.c:
+	* src/vtepango.h:
+	* src/vtepangox.c:
+	* src/vtepangox.h:
+	* src/vteskel.c: (_vte_skel_check), (_vte_skel_create),
+	(_vte_skel_destroy), (_vte_skel_start):
+	* src/vteskel.h:
+	* src/vtexft.c:
+	* src/vtexft.h:
+		Remove the environment variable field, drop the "Vte" prefix
+		from the backend names and make the exported structure const.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/iso2022.c: (_vte_iso2022_is_ambiguous):
+	* src/vte-private.h:
+	* src/vte.c: (_vte_terminal_set_default_attributes),
+	(vte_terminal_set_default_tabstops), (vte_terminal_set_encoding),
+	(vte_terminal_set_opacity), (vte_terminal_set_default_colors),
+	(vte_terminal_emit_pending_text_signals),
+	(vte_terminal_feed_child_using_modes),
+	(vte_terminal_hierarchy_changed),
+	(vte_terminal_send_mouse_button_internal),
+	(vte_terminal_maybe_send_mouse_drag), (vte_terminal_set_font),
+	(vte_terminal_set_font_from_string), (vte_terminal_set_size),
+	(vte_terminal_handle_scroll), (vte_terminal_set_scroll_adjustment),
+	(vte_terminal_set_emulation), (vte_terminal_set_termcap),
+	(vte_terminal_init), (vte_terminal_size_allocate),
+	(vte_terminal_unrealize), (vte_terminal_finalize),
+	(vte_terminal_realize), (vte_terminal_determine_colors),
+	(vte_terminal_background_update),
+	(vte_terminal_queue_background_update),
+	(vte_terminal_set_background_transparent),
+	(vte_terminal_set_cursor_blinks),
+	(vte_terminal_set_scrollback_lines), (vte_terminal_reset),
+	(vte_terminal_set_pty):
+	* src/vteseq.c: (vte_sequence_handler_st),
+	(vte_sequence_handler_vb),
+	(vte_sequence_handler_device_status_report),
+	(vte_sequence_handler_dec_device_status_report),
+	(vte_sequence_handler_window_manipulation):
+		Janitorial work to improve code readability and small
+		micro-optimisations, such as use the length returned by
+		g_snprintf rather then calling strlen on the result or just
+		using a constant string.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/ring.h:
+		Make the debug checks conditional on VTE_DEBUG.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/matcher.c: (_vte_matcher_add), (_vte_matcher_create),
+	(_vte_matcher_destroy), (_vte_matcher_new), (_vte_matcher_match),
+	(_vte_matcher_print):
+	* src/matcher.h:
+	* src/table.c: (_vte_table_new):
+	* src/table.h:
+	* src/trie.c: (_vte_trie_new):
+	* src/trie.h:
+		_vte_match_match() is called extremely frequently, and the
+		switch shows up on the profiles. Replace the switch with a
+		function pointer obtained by introducing function tables for
+		the matcher implementations.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/vte-private.h:
+	* src/vte.c: (vte_terminal_set_font_full), (vte_terminal_realize):
+		Don't load a font until the terminal is realized.
+		Saves decoding 2 or 3 fonts before g-t is mapped.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/vteseq.c: (vte_g_array_fill):
+		Micro-optimise the loop.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/vteft2.c: (_vte_ft2_create), (_vte_ft2_start),
+	(_vte_ft2_end), (update_bbox), (_vte_ft2_set_text_font),
+	(_vte_ft2_draw_text):
+	* src/vtergb.c: (_vte_rgb_buffer_new), (_vte_rgb_buffer_resize),
+	(_vte_rgb_draw_color_rgb), (_vte_rgb_copy):
+	* src/vtergb.h:
+		Reuse converted glyphs within a run.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/vteconv.c: (_vte_conv_utf8_strlen), (_vte_conv):
+		Micro-optimise the loops.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/vteglyph.c: (_vte_glyph_free), (_vte_cached_glyph_free),
+	(_vte_glyph_cache_new), (_vte_glyph_cache_free),
+	(_vte_glyph_cache_set_font_description),
+	(_vte_glyph_cache_has_char), (_vte_glyph_remap_char),
+	(_vte_glyph_get_uncached), (_vte_glyph_get), (_vte_glyph_draw):
+	* src/vteglyph.h:
+		Avoid the double glyph lookup in _vte_glyph_get and
+		replace the tree with a hash.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/iso2022.c: (_vte_iso2022_state_new),
+	(_vte_iso2022_state_free), (_vte_iso2022_state_set_codeset):
+	* src/trie.c: (_vte_trie_add), (convert_mbstowcs):
+	* src/utf8echo.c: (main):
+	* src/vte.c: (vte_terminal_set_encoding), (vte_terminal_send),
+	(vte_terminal_init), (vte_terminal_finalize),
+	(vte_terminal_set_word_chars):
+	* src/vteconv.c: (_vte_conv_open), (_vte_conv_close), (_vte_conv):
+	* src/vteconv.h:
+	* src/vteseq.c: (vte_sequence_handler_set_title_internal):
+		s/(VteConv)-1/VTE_INVALID_CONV/
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/vte.c: (_vte_new_row_data), (_vte_new_row_data_sized),
+	(_vte_terminal_find_row_data), (_vte_row_data_find_charcell),
+	(vte_line_is_wrappable), (vte_terminal_extend_selection),
+	(vte_terminal_draw_row):
+		Refactor vte_find_row_data to simplify and improve
+		some logic.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/vte.c: (vte_g_array_fill), (vte_terminal_emit_commit),
+	(_vte_terminal_ensure_cursor), (_vte_terminal_insert_char),
+	(_vte_terminal_fork_basic), (vte_terminal_process_incoming),
+	(vte_terminal_key_press), (vte_terminal_visibility_notify),
+	(vte_terminal_apply_metrics), (vte_terminal_paint),
+	(vte_terminal_expose):
+		Callgrind driven rewrite of critical loops.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/vte-private.h:
+	* src/vte.c: (_vte_terminal_connect_pty_write),
+	(_vte_terminal_disconnect_pty_write), (vte_terminal_io_read),
+	(vte_terminal_feed), (vte_terminal_feed_child_binary),
+	(vte_terminal_init), (vte_terminal_unrealize),
+	(add_process_timeout), (add_update_timeout),
+	(remove_process_timeout), (vte_terminal_stop_processing),
+	(vte_terminal_is_processing), (vte_terminal_start_processing),
+	(process_timeout), (update_repeat_timeout), (update_timeout):
+		The rate-limiting step is the display update - we do not need
+		to process input faster than we are displaying it. So use the
+		update display timeout to process new input (and dirty some
+		more pixels).
+
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/interpret.c: (main):
+	* src/iso2022.c: (_vte_iso2022_fragment_input),
+	(_vte_iso2022_process), (main):
+	* src/vte.c: (vte_terminal_match_contents_refresh),
+	(vte_terminal_process_incoming), (vte_terminal_init),
+	(vte_terminal_set_word_chars):
+	* src/vteaccess.c:
+	(vte_terminal_accessible_update_private_data_if_needed):
+	* src/vtefc.c: (_vte_fc_patterns_from_pango_font_desc):
+	* src/vtefc.h:
+	* src/vteglyph.c: (_vte_glyph_cache_new), (_vte_glyph_cache_free),
+	(_vte_glyph_cache_set_font_description):
+	* src/vteglyph.h:
+	* src/vteregex.c: (_vte_regex_sort_matches):
+	* src/vtexft.c: (_vte_xft_font_open), (_vte_xft_font_close),
+	(_vte_xft_font_for_char):
+		s/g_array_new(TRUE, TRUE/g_array_new(FALSE, FALSE/
+		All uses of GArray respect their lengths and do not
+		zero-termination or untouched members to be cleared.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/iso2022.c: (_vte_iso2022_state_free):
+	* src/matcher.c: (_vte_matcher_free_params_array):
+	* src/ring.c: (_vte_ring_free):
+	* src/table.c: (_vte_table_free):
+	* src/trie.c: (_vte_trie_match):
+	* src/vte.c: (_vte_terminal_match_contents_clear),
+	(_vte_terminal_fork_basic),
+	(vte_terminal_get_text_range_maybe_wrapped), (vte_terminal_copy),
+	(vte_terminal_finalize), (vte_terminal_draw_cells_with_attributes):
+	* src/vteaccess.c: (vte_terminal_accessible_free_private_data):
+	* src/vtebg.c: (vte_bg_root_pixmap), (vte_bg_cache_item_free):
+	* src/vteconv.c: (_vte_conv_close):
+	* src/vtedraw.c: (_vte_draw_free):
+	* src/vteft2.c: (_vte_ft2_destroy):
+	* src/vtegl.c: (_vte_gl_destroy):
+	* src/vteglyph.c: (_vte_glyph_cache_free):
+	* src/vtepango.c: (_vte_pango_destroy):
+	* src/vtepangox.c: (_vte_pango_x_destroy):
+	* src/vtergb.c: (_vte_rgb_buffer_new), (_vte_rgb_buffer_free):
+	* src/vteseq.c: (vte_sequence_handler_se),
+	(vte_sequence_handler_so):
+	* src/vteskel.c: (_vte_skel_destroy):
+	* src/vtexft.c: (_vte_xft_font_close), (_vte_xft_destroy):
+		Do not zero memory in destructors, as glib will zero all
+		freed memory if G_DEBUG=gc-friendly.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/reaper.c: (vte_reaper_add_child), (vte_reaper_init),
+	(vte_reaper_constructor), (vte_reaper_finalize),
+	(vte_reaper_class_init), (vte_reaper_get), (main):
+	* src/vte.c: (G_DEFINE_TYPE_WITH_CODE), (_vte_terminal_fork_basic),
+	(vte_terminal_key_press), (vte_terminal_init), (vte_terminal_show),
+	(vte_terminal_finalize), (vte_terminal_get_accessible),
+	(vte_terminal_class_init):
+	* src/vteaccess.c: (vte_terminal_initialize),
+	(vte_terminal_accessible_finalize),
+	(vte_terminal_accessible_class_init),
+	(vte_terminal_accessible_get_type),
+	(vte_terminal_accessible_factory_init),
+	(vte_terminal_accessible_factory_new):
+	* src/vtebg.c: (vte_bg_native_new), (vte_bg_finalize),
+	(vte_bg_class_init), (vte_bg_init), (vte_bg_get_for_screen),
+	(vte_bg_cache_item_free), (vte_bg_cache_prune_int),
+	(_vte_bg_resize_pixbuf), (vte_bg_set_root_pixmap),
+	(vte_bg_cache_add), (vte_bg_cache_search), (vte_bg_get_pixmap),
+	(vte_bg_get_pixbuf):
+		Use GObject boiler-plate code (G_DEFINE_TYPE),
+		as opposed to open coding.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/vte-private.h:
+	* src/vte.c: (vte_free_row_data), (vte_g_array_fill),
+	(vte_terminal_find_charcell), (vte_terminal_preedit_width),
+	(vte_terminal_preedit_length), (_vte_invalidate_cursor_once),
+	(vte_invalidate_cursor_periodic), (vte_terminal_deselect_all),
+	(vte_terminal_set_default_tabstops),
+	(vte_terminal_match_contents_refresh), (vte_terminal_cursor_new),
+	(vte_terminal_match_check_internal),
+	(vte_terminal_emit_adjustment_changed),
+	(vte_terminal_queue_adjustment_changed),
+	(vte_terminal_scroll_pages), (vte_terminal_maybe_scroll_to_top),
+	(vte_terminal_maybe_scroll_to_bottom),
+	(_vte_terminal_set_pointer_visible), (vte_terminal_new),
+	(vte_terminal_set_color_internal), (vte_terminal_set_color_bold),
+	(vte_terminal_set_color_dim), (vte_terminal_set_color_foreground),
+	(vte_terminal_set_color_background),
+	(vte_terminal_set_color_cursor),
+	(vte_terminal_set_color_highlight), (vte_terminal_handle_sequence),
+	(vte_terminal_catch_child_exited),
+	(_vte_terminal_connect_pty_read),
+	(_vte_terminal_connect_pty_write), (_vte_terminal_fork_basic),
+	(vte_terminal_eof), (vte_terminal_im_reset),
+	(vte_terminal_process_incoming), (vte_terminal_io_read),
+	(vte_terminal_io_write), (vte_terminal_send),
+	(vte_terminal_im_commit), (vte_terminal_im_preedit_start),
+	(vte_terminal_im_preedit_end), (vte_terminal_im_preedit_changed),
+	(vte_terminal_configure_toplevel),
+	(vte_terminal_hierarchy_changed), (vte_terminal_style_changed),
+	(add_cursor_timeout), (vte_terminal_key_press), (vte_same_class),
+	(vte_line_is_wrappable), (vte_terminal_paste_cb),
+	(vte_terminal_send_mouse_button_internal),
+	(vte_terminal_maybe_send_mouse_drag), (vte_terminal_clear_cb),
+	(vte_terminal_copy_cb),
+	(vte_terminal_get_text_range_maybe_wrapped),
+	(vte_terminal_clipboard_get), (vte_terminal_copy),
+	(vte_terminal_paste), (vte_terminal_autoscroll),
+	(vte_terminal_start_autoscroll), (vte_terminal_motion_notify),
+	(vte_terminal_button_press), (vte_terminal_button_release),
+	(vte_terminal_focus_in), (vte_terminal_focus_out),
+	(vte_terminal_visibility_notify), (vte_terminal_apply_metrics),
+	(vte_terminal_set_font_full), (vte_terminal_refresh_size),
+	(vte_terminal_handle_scroll), (vte_terminal_set_scroll_adjustment),
+	(vte_terminal_connect_xft_settings),
+	(vte_terminal_disconnect_xft_settings),
+	(_vte_terminal_codeset_changed_cb), (vte_terminal_init),
+	(vte_terminal_size_request), (vte_terminal_size_allocate),
+	(vte_terminal_show), (root_pixmap_changed_cb),
+	(vte_terminal_unrealize), (vte_terminal_finalize),
+	(vte_terminal_realize), (vte_terminal_determine_colors),
+	(vte_terminal_paint), (vte_terminal_expose), (vte_terminal_scroll),
+	(vte_terminal_get_accessible), (vte_terminal_im_append_menuitems),
+	(vte_terminal_background_update),
+	(vte_terminal_queue_background_update),
+	(vte_terminal_set_background_image),
+	(vte_terminal_set_background_image_file),
+	(vte_terminal_set_cursor_blinks), (vte_terminal_reset),
+	(vte_terminal_set_pty):
+	* src/vteaccess.c: (vte_terminal_initialize),
+	(vte_terminal_accessible_finalize):
+	* src/vtedraw.c: (_vte_draw_new), (_vte_draw_free),
+	(_vte_draw_start), (_vte_draw_end):
+	* src/vtefc.c: (_vte_fc_transcribe_from_pango_font_description),
+	(_vte_fc_defaults_from_gtk), (_vte_fc_connect_settings_changes),
+	(_vte_fc_disconnect_settings_changes):
+	* src/vteft2.c: (_vte_ft2_destroy),
+	(_vte_ft2_set_background_image), (_vte_ft2_clear):
+	* src/vtegl.c: (_vte_gl_destroy), (_vte_gl_set_background_image),
+	(_vte_gl_clear):
+	* src/vtepango.c: (_vte_pango_destroy), (_vte_pango_start),
+	(_vte_pango_end), (_vte_pango_set_background_image),
+	(_vte_pango_set_text_font):
+	* src/vtepangox.c: (_vte_pango_x_destroy), (_vte_pango_x_start),
+	(_vte_pango_x_end), (_vte_pango_x_set_background_image),
+	(_vte_pango_x_set_text_font):
+	* src/vterdb.c: (_vte_rdb_get):
+	* src/vteseq.c: (vte_sequence_handler_scroll_up_or_down),
+	(vte_sequence_handler_set_title_internal), (vte_terminal_beep),
+	(vte_sequence_handler_do), (vte_sequence_handler_sf),
+	(vte_sequence_handler_sr), (vte_sequence_handler_vb),
+	(vte_sequence_handler_window_manipulation):
+	* src/vteskel.c: (_vte_skel_destroy):
+	* src/vtetree.c: (_vte_tree_new), (_vte_tree_destroy):
+	* src/vtexft.c: (_vte_xft_set_background_image), (_vte_xft_clear):
+		Remove superfluous checks and run-time checked type casts.
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	As part of Bug 397439.
+
+	* src/debug.c:
+	* src/iso2022.c: (_vte_iso2022_ambiguous_width_guess),
+	(_vte_iso2022_state_new), (_vte_iso2022_state_set_codeset),
+	(process_8_bit_sequence), (process_cdata), (process_control),
+	(_vte_iso2022_process):
+	* src/keymap.c: (_vte_keymap_map):
+	* src/matcher.c: (_vte_matcher_init), (_vte_matcher_create),
+	(_vte_matcher_destroy):
+	* src/pty.c: (_vte_pty_run_on_pty), (_vte_pty_fork_on_pty_name),
+	(_vte_pty_fork_on_pty_fd), (_vte_pty_set_size),
+	(_vte_pty_get_size), (_vte_pty_ptsname), (_vte_pty_open_unix98),
+	(_vte_pty_open_with_helper), (_vte_pty_open), (main):
+	* src/reaper.c: (vte_reaper_emit_signal),
+	(vte_reaper_child_watch_cb), (vte_reaper_init),
+	(vte_reaper_finalize):
+	* src/reflect.c: (text_changed_insert), (text_changed_delete):
+	* src/ring.c: (_vte_ring_insert), (_vte_ring_insert_preserve),
+	(_vte_ring_remove), (scrolled_off), (main):
+	* src/slowcat.c: (main):
+	* src/table.c: (_vte_table_printi), (_vte_table_print):
+	* src/trie.c: (char_class_string_extract):
+	* src/vte.c: (_vte_invalidate_cursor_once),
+	(vte_terminal_emit_selection_changed), (vte_terminal_emit_commit),
+	(vte_terminal_emit_emulation_changed),
+	(vte_terminal_emit_encoding_changed),
+	(vte_terminal_emit_child_exited),
+	(_vte_terminal_emit_contents_changed),
+	(vte_terminal_emit_cursor_moved), (vte_terminal_emit_eof),
+	(vte_terminal_emit_char_size_changed),
+	(_vte_terminal_emit_status_line_changed),
+	(vte_terminal_emit_increase_font_size),
+	(vte_terminal_emit_decrease_font_size),
+	(_vte_terminal_emit_text_inserted),
+	(_vte_terminal_emit_text_deleted),
+	(vte_terminal_emit_text_modified),
+	(vte_terminal_emit_text_scrolled), (vte_terminal_deselect_all),
+	(vte_terminal_match_check_internal), (vte_terminal_match_check),
+	(vte_terminal_emit_adjustment_changed),
+	(vte_terminal_queue_adjustment_changed),
+	(_vte_terminal_adjust_adjustments), (vte_terminal_scroll_pages),
+	(vte_terminal_maybe_scroll_to_bottom), (vte_terminal_set_encoding),
+	(_vte_terminal_set_pointer_visible), (vte_terminal_new),
+	(vte_terminal_generate_bold), (_vte_terminal_insert_char),
+	(display_control_sequence), (vte_terminal_fork_command),
+	(vte_terminal_emit_pending_text_signals),
+	(vte_terminal_process_incoming), (vte_terminal_io_write),
+	(vte_terminal_send), (vte_terminal_im_commit),
+	(vte_terminal_im_preedit_start), (vte_terminal_im_preedit_end),
+	(vte_terminal_im_preedit_changed),
+	(vte_terminal_configure_toplevel),
+	(vte_terminal_hierarchy_changed), (vte_terminal_style_changed),
+	(vte_terminal_key_press), (vte_terminal_paste_cb),
+	(vte_terminal_match_hilite_clear), (vte_terminal_match_hilite),
+	(vte_terminal_clear_cb), (vte_terminal_copy_cb),
+	(vte_terminal_copy), (vte_terminal_paste),
+	(vte_terminal_start_selection), (vte_terminal_extend_selection),
+	(vte_terminal_autoscroll), (vte_terminal_motion_notify),
+	(vte_terminal_button_press), (vte_terminal_button_release),
+	(vte_terminal_focus_in), (vte_terminal_focus_out),
+	(vte_terminal_set_font_full), (vte_terminal_set_size),
+	(vte_terminal_handle_scroll), (vte_terminal_set_emulation),
+	(vte_terminal_set_termcap), (vte_terminal_reset_rowdata),
+	(vte_terminal_fc_settings_changed), (vte_terminal_init),
+	(vte_terminal_size_request), (vte_terminal_size_allocate),
+	(vte_terminal_show), (vte_terminal_unrealize),
+	(vte_terminal_finalize), (vte_terminal_realize),
+	(vte_terminal_draw_cells), (_vte_terminal_map_pango_color),
+	(vte_terminal_paint), (vte_terminal_scroll),
+	(vte_terminal_class_init), (vte_terminal_get_type),
+	(vte_terminal_copy_clipboard), (vte_terminal_paste_clipboard),
+	(vte_terminal_copy_primary), (vte_terminal_paste_primary),
+	(vte_terminal_background_update),
+	(vte_terminal_queue_background_update),
+	(vte_terminal_set_background_saturation),
+	(vte_terminal_set_background_tint_color),
+	(vte_terminal_set_background_transparent),
+	(vte_terminal_set_background_image),
+	(vte_terminal_set_background_image_file),
+	(vte_terminal_set_word_chars):
+	* src/vteaccess.c: (emit_text_caret_moved),
+	(emit_text_changed_insert), (emit_text_changed_delete),
+	(vte_terminal_accessible_update_private_data_if_needed),
+	(vte_terminal_accessible_invalidate_cursor),
+	(vte_terminal_accessible_finalize),
+	(vte_terminal_accessible_get_text),
+	(vte_terminal_accessible_get_text_somewhere),
+	(vte_terminal_accessible_text_init),
+	(vte_terminal_accessible_component_init),
+	(vte_terminal_accessible_factory_new):
+	* src/vteapp.c: (main):
+	* src/vtebg.c: (vte_bg_root_pixmap), (_vte_bg_resize_pixbuf):
+	* src/vtedraw.c: (_vte_draw_new):
+	* src/vtepango.c: (_vte_pango_set_text_font):
+	* src/vtepangox.c: (_vte_pango_x_set_text_font):
+	* src/vteseq.c: (vte_terminal_emit_deiconify_window),
+	(vte_terminal_emit_iconify_window),
+	(vte_terminal_emit_icon_title_changed),
+	(vte_terminal_emit_window_title_changed),
+	(vte_terminal_emit_raise_window), (vte_terminal_emit_lower_window),
+	(vte_terminal_emit_maximize_window),
+	(vte_terminal_emit_refresh_window),
+	(vte_terminal_emit_restore_window),
+	(vte_terminal_emit_move_window), (vte_terminal_emit_resize_window),
+	(vte_sequence_handler_set_title_internal),
+	(vte_sequence_handler_decset_internal), (vte_sequence_handler_bt),
+	(vte_sequence_handler_application_keypad),
+	(vte_sequence_handler_normal_keypad),
+	(vte_sequence_handler_window_manipulation):
+	* src/vtetc.c: (main):
+	* src/vtexft.c: (_vte_xft_set_text_font):
+		s/fprintf(stderr,/g_printerr(/
+
+2007-01-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Only invalidate groups of inserted chars and not the whole bbox.
+	This speeds up applications like vim which maintain a status line
+	at the bottom of the screen. Fixes bug 161342.
+
+	* src/vte-private.h:
+	* src/vte.c: (update_regions), (_vte_invalidate_cells),
+	(_vte_invalidate_all), (_vte_terminal_scroll_region),
+	(vte_terminal_process_incoming), (reset_update_regions),
+	(remove_update_timeout), (update_repeat_timeout), (update_timeout):
+
+2007-01-15  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 387171 – vte fails to install on FreeBSD due to missing header
+	Patch from Roy Marples
+
+	* src/vteseq.c: #include <limits.h>
+
+2007-01-15  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 396831 – Unable to compile without X
+	Patch from Chris Wilson
+
+	* src/vtebg.c (_vte_bg_display_sync), (vte_bg_root_pixmap): Add stubs.
+
+2007-01-09  Ryan Lortie  <desrt@desrt.ca>
+
+	Bug 394890 – Segfault when running vte or gnome-terminal
+
+	* src/vtetc.c (_vte_termcap_find_string): change 'int' to 'gssize' to
+	match previous fixup.  Hopefully that does it. :)
+
 2007-01-08  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.15.1.

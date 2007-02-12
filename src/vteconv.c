@@ -42,14 +42,12 @@ struct _VteConv {
 static glong
 _vte_conv_utf8_strlen(const gchar *p, gssize max)
 {
-	const gchar *q = p;
-	glong length = 0;
-	while (q < p + max) {
-		q = g_utf8_next_char(q);
-		if (q <= p + max) {
-			length++;
-		}
-	}
+	const gchar *q = p + max;
+	glong length = -1;
+	do {
+		length++;
+		p = g_utf8_next_char(p);
+	} while (p < q);
 	return length;
 }
 
@@ -146,7 +144,7 @@ _vte_conv_open(const char *target, const char *source)
 	if (!utf8) {
 		conv = g_iconv_open(real_target, real_source);
 		if (conv == ((GIConv) -1)) {
-			return (VteConv) -1;
+			return VTE_INVALID_CONV;
 		}
 	}
 
@@ -178,26 +176,17 @@ gint
 _vte_conv_close(VteConv converter)
 {
 	g_assert(converter != NULL);
-	g_assert(converter != ((VteConv) -1));
+	g_assert(converter != VTE_INVALID_CONV);
 
 	/* Close the underlying descriptor, if there is one. */
 	if (converter->conv != NULL) {
 		g_assert(converter->close != NULL);
 		converter->close(converter->conv);
 	}
-	converter->conv = NULL;
-	converter->convert = NULL;
-	converter->close = NULL;
-
-	/* Clear the rest of the structure. */
-	converter->in_unichar = FALSE;
-	converter->out_unichar = FALSE;
 
 	/* Free the scratch buffers. */
 	_vte_buffer_free(converter->in_scratch);
 	_vte_buffer_free(converter->out_scratch);
-	converter->in_scratch = NULL;
-	converter->out_scratch = NULL;
 
 	/* Free the structure itself. */
 	g_slice_free(struct _VteConv, converter);
@@ -217,7 +206,7 @@ _vte_conv(VteConv converter,
 	gsize in_converted, out_converted;
 
 	g_assert(converter != NULL);
-	g_assert(converter != ((VteConv) -1));
+	g_assert(converter != VTE_INVALID_CONV);
 
 	work_inbuf_start = work_inbuf_working = *inbuf;
 	work_outbuf_start = work_outbuf_working = *outbuf;
@@ -301,24 +290,19 @@ _vte_conv(VteConv converter,
 
 	/* Possibly convert the output from UTF-8 to gunichars. */
 	if (converter->out_unichar) {
-		int i, chars;
+		int  left = *outbytes_left;
 		char *p;
 		gunichar *g;
 
-		chars = _vte_conv_utf8_strlen(work_outbuf_start,
-					      work_outbuf_working - work_outbuf_start);
-		g_assert(*outbytes_left >= sizeof(gunichar) * chars);
-
-		p = work_outbuf_start;
 		g = (gunichar*) *outbuf;
-		for (i = 0; i < chars; i++) {
-		       g_assert(g_utf8_next_char(p) <= work_outbuf_working);
+		for(p = work_outbuf_start;
+			       	p < work_outbuf_working;
+			       	p = g_utf8_next_char(p)) {
+		       g_assert(left>=0);
 		       *g++ = g_utf8_get_char(p);
-		       p = g_utf8_next_char(p);
-		       g_assert(*outbytes_left >= sizeof(gunichar));
-		       *outbytes_left -= sizeof(gunichar);
-		       g_assert(p <= work_outbuf_working);
+					 left -= sizeof(gunichar);
 		}
+		*outbytes_left = left;
 		*outbuf = (gchar*) g;
 	} else {
 		/* Pass on the output results. */

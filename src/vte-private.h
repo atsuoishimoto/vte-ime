@@ -81,10 +81,10 @@ G_BEGIN_DECLS
 #define VTE_REGEXEC_FLAGS		0
 #define VTE_INPUT_CHUNK_SIZE		0x1000
 #define VTE_INVALID_BYTE		'?'
-#define VTE_COALESCE_TIMEOUT		10
 #define VTE_DISPLAY_TIMEOUT		10
 #define VTE_UPDATE_TIMEOUT		10
 #define VTE_UPDATE_REPEAT_TIMEOUT	25
+#define VTE_CELL_BBOX_SLACK		1
 
 /* The structure we use to hold characters we're supposed to display -- this
  * includes any supported visible attributes. */
@@ -171,8 +171,7 @@ struct _VteTerminalPrivate {
 	guint pty_input_source;
 	GIOChannel *pty_output;		/* master output watch */
 	guint pty_output_source;
- 	GStaticMutex pty_output_source_mutex;	/* pty_output_source mutex */
-	pid_t pty_pid;			/* pid of child using pty slave */
+	GPid pty_pid;			/* pid of child using pty slave */
 	VteReaper *pty_reaper;
 
 	/* Input data queues. */
@@ -180,11 +179,10 @@ struct _VteTerminalPrivate {
 	struct _vte_iso2022_state *iso2022;
 	struct _vte_buffer *incoming;	/* pending bytestream */
 	GArray *pending;		/* pending characters */
-	gint coalesce_timeout;
-	gint display_timeout;
+	gint process_timeout;
 	gint update_timeout;
-	GdkRegion *update_region;
-
+	GSList *update_regions;
+	gboolean invalidated_all;	/* pending refresh of entire terminal */
 
 	/* Output data queue. */
 	struct _vte_buffer *outgoing;	/* pending input characters */
@@ -307,6 +305,7 @@ struct _VteTerminalPrivate {
 	 * resources and which can be kept after unrealizing. */
 	PangoFontDescription *fontdesc;
 	VteTerminalAntiAlias fontantialias;
+	gboolean fontdirty;
 	GtkSettings *connected_settings;
 
 	/* Data used when rendering the text which reflects server resources
@@ -340,11 +339,10 @@ struct _VteTerminalPrivate {
 	gboolean adjustment_changed_tag;
 
 	/* Background images/"transparency". */
-	gboolean bg_update_pending;
+	guint bg_update_pending;
 	gboolean bg_transparent;
 	GdkPixbuf *bg_pixbuf;
 	char *bg_file;
-	guint bg_update_tag;
 	GdkColor bg_tint_color;
 	long bg_saturation;	/* out of VTE_SATURATION_MAX */
 	guint16 bg_opacity;
@@ -365,7 +363,8 @@ void _vte_invalidate_all(VteTerminal *terminal);
 void _vte_invalidate_cells(VteTerminal *terminal,
 			   glong column_start, gint column_count,
 			   glong row_start, gint row_count);
-void _vte_invalidate_cursor_once(gpointer data, gboolean periodic);
+void _vte_invalidate_cell(VteTerminal *terminal, glong col, glong row);
+void _vte_invalidate_cursor_once(VteTerminal *terminal, gboolean periodic);
 VteRowData * _vte_new_row_data(VteTerminal *terminal);
 VteRowData * _vte_new_row_data_sized(VteTerminal *terminal, gboolean fill);
 void _vte_terminal_adjust_adjustments(VteTerminal *terminal, gboolean immediate);

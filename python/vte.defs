@@ -59,7 +59,7 @@
 (define-method fork_command
   (of-object "VteTerminal")
   (c-name "vte_terminal_fork_command")
-  (return-type "pid_t")
+  (return-type "GPid")
   (parameters
     '("const-char*" "command")
     '("char**" "argv")
@@ -74,7 +74,7 @@
 (define-method forkpty
   (of-object "VteTerminal")
   (c-name "vte_terminal_forkpty")
-  (return-type "pid_t")
+  (return-type "GPid")
   (parameters
     '("char**" "envv")
     '("const-char*" "directory")
@@ -502,6 +502,15 @@
 (define-method get_text
   (of-object "VteTerminal")
   (c-name "vte_terminal_get_text")
+  (return-type "char*")
+  (parameters
+    '("gboolean(*" "is_selected")
+  )
+)
+
+(define-method get_text_include_trailing_spaces
+  (of-object "VteTerminal")
+  (c-name "vte_terminal_get_text_include_trailing_spaces")
   (return-type "char*")
   (parameters
     '("gboolean(*" "is_selected")

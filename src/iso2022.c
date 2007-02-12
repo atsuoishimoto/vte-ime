@@ -19,7 +19,6 @@
 #include "../config.h"
 #include <sys/types.h>
 #include <errno.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -304,7 +303,7 @@ _vte_iso2022_is_ambiguous(gunichar c)
 		}
 	}
 	if (!ambiguous) {
-		ambiguous = g_hash_table_new (g_direct_hash, g_direct_equal);
+		ambiguous = g_hash_table_new (NULL, NULL);
 
 		for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_ambiguous_chars); i++) {
 			p = GINT_TO_POINTER(_vte_iso2022_ambiguous_chars[i]);
@@ -347,7 +346,7 @@ _vte_iso2022_ambiguous_width_guess(void)
 	}
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-		fprintf(stderr, "Ambiguous characters will have width = %d.\n",
+		g_printerr("Ambiguous characters will have width = %d.\n",
 			ret);
 	}
 #endif
@@ -772,7 +771,7 @@ _vte_iso2022_state_new(const char *native_codeset,
 	state->target_codeset = VTE_CONV_GUNICHAR_TYPE;
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-		fprintf(stderr, "Native codeset \"%s\", currently %s\n",
+		g_printerr("Native codeset \"%s\", currently %s\n",
 			state->native_codeset, state->codeset);
 	}
 #endif
@@ -780,18 +779,18 @@ _vte_iso2022_state_new(const char *native_codeset,
 	state->codeset_changed = fn;
 	state->codeset_changed_data = data;
 	state->buffer = _vte_buffer_new();
-	if (state->conv == (VteConv) -1) {
+	if (state->conv == VTE_INVALID_CONV) {
 		g_warning(_("Unable to convert characters from %s to %s."),
 			  state->codeset, state->target_codeset);
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-			fprintf(stderr, "Using UTF-8 instead.\n");
+			g_printerr("Using UTF-8 instead.\n");
 		}
 #endif
 		state->codeset = state->utf8_codeset;
 		state->conv = _vte_conv_open(state->target_codeset,
 					     state->codeset);
-		if (state->conv == (VteConv) -1) {
+		if (state->conv == VTE_INVALID_CONV) {
 			g_error(_("Unable to convert characters from %s to %s."),
 				state->codeset, state->target_codeset);
 		}
@@ -803,24 +802,9 @@ void
 _vte_iso2022_state_free(struct _vte_iso2022_state *state)
 {
 	_vte_buffer_free(state->buffer);
-	state->buffer = NULL;
-	state->codeset_changed_data = NULL;
-	state->codeset_changed = NULL;
-	if (state->conv != ((VteConv) -1)) {
+	if (state->conv != VTE_INVALID_CONV) {
 		_vte_conv_close(state->conv);
 	}
-	state->conv = (VteConv) -1;
-	state->target_codeset = NULL;
-	state->utf8_codeset = NULL;
-	state->native_codeset = NULL;
-	state->codeset = NULL;
-	state->g[3] = WIDE_FUDGE + 'D';
-	state->g[2] = 'J';
-	state->g[1] = '0';
-	state->g[0] = 'B';
-	state->override = -1;
-	state->current = 0;
-	state->nrc_enabled = FALSE;
 	g_slice_free(struct _vte_iso2022_state, state);
 }
 
@@ -836,16 +820,16 @@ _vte_iso2022_state_set_codeset(struct _vte_iso2022_state *state,
 
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-		fprintf(stderr, "%s\n", codeset);
+		g_printerr("%s\n", codeset);
 	}
 #endif
 	conv = _vte_conv_open(state->target_codeset, codeset);
-	if (conv == (VteConv) -1) {
+	if (conv == VTE_INVALID_CONV) {
 		g_warning(_("Unable to convert characters from %s to %s."),
 			  codeset, state->target_codeset);
 		return;
 	}
-	if (state->conv != (VteConv) -1) {
+	if (state->conv != VTE_INVALID_CONV) {
 		_vte_conv_close(state->conv);
 	}
 	state->codeset = g_quark_to_string(g_quark_from_string(codeset));
@@ -861,7 +845,6 @@ _vte_iso2022_state_get_codeset(struct _vte_iso2022_state *state)
 static char *
 _vte_iso2022_find_nextctl(const char *p, size_t length)
 {
-	char *ret;
 	int i;
 
 	if (length == 0) {
@@ -1076,13 +1059,16 @@ _vte_iso2022_sequence_length(const unsigned char *nextctl, gsize length)
 	return sequence_length;
 }
 
-static void
-_vte_iso2022_fragment_input(struct _vte_buffer *input, GArray *blocks)
+static GArray *
+_vte_iso2022_fragment_input(struct _vte_buffer *input)
 {
 	unsigned char *nextctl = NULL, *p, *q;
 	glong sequence_length = 0;
 	struct _vte_iso2022_block block;
 	gboolean quit;
+	GArray *blocks;
+
+	blocks = g_array_new(FALSE, FALSE, sizeof(struct _vte_iso2022_block));
 
 	p = input->bytes;
 	q = input->bytes + _vte_buffer_length(input);
@@ -1139,6 +1125,8 @@ _vte_iso2022_fragment_input(struct _vte_buffer *input, GArray *blocks)
 			break;
 		}
 	}
+
+	return blocks;
 }
 
 static int
@@ -1196,7 +1184,7 @@ process_8_bit_sequence(struct _vte_iso2022_state *state,
 	if ((c == 0) && (acc != 0)) {
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-			fprintf(stderr, "%04lx -(%c)-> %04lx(?)\n",
+			g_printerr("%04lx -(%c)-> %04lx(?)\n",
 				acc, state->g[current] & 0xff, acc);
 		}
 #endif
@@ -1211,7 +1199,7 @@ process_8_bit_sequence(struct _vte_iso2022_state *state,
 		}
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-			fprintf(stderr, "%05lx -> " "%04x\n", acc, c);
+			g_printerr("%05lx -> " "%04x\n", acc, c);
 		}
 #endif
 		c = _vte_iso2022_set_encoded_width(c, width);
@@ -1252,7 +1240,7 @@ process_cdata(struct _vte_iso2022_state *state, guchar *cdata, gsize length,
 
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-		fprintf(stderr, "Current map = %d (%c).\n",
+		g_printerr("Current map = %d (%c).\n",
 			current, (state->g[current] & 0xff));
 	}
 #endif
@@ -1352,7 +1340,7 @@ process_cdata(struct _vte_iso2022_state *state, guchar *cdata, gsize length,
 				if ((c == 0) && (acc != 0)) {
 #ifdef VTE_DEBUG
 					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						fprintf(stderr, "%04lx -(%c)-> "
+						g_printerr("%04lx -(%c)-> "
 							"%04lx(?)\n",
 							acc,
 							state->g[current] & 0xff,
@@ -1371,7 +1359,7 @@ process_cdata(struct _vte_iso2022_state *state, guchar *cdata, gsize length,
 					}
 #ifdef VTE_DEBUG
 					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						fprintf(stderr, "%05lx -> "
+						g_printerr("%05lx -> "
 							"%04x\n", acc, c);
 					}
 #endif
@@ -1431,7 +1419,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 			g_array_append_val(gunichars, c);
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				fprintf(stderr, "\tCR\n");
+				g_printerr("\tCR\n");
 			}
 #endif
 			break;
@@ -1440,7 +1428,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 			g_array_append_val(gunichars, c);
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				fprintf(stderr, "\tLF\n");
+				g_printerr("\tLF\n");
 			}
 #endif
 			break;
@@ -1449,7 +1437,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 			state->override = -1;
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				fprintf(stderr, "\tSO (^N)\n");
+				g_printerr("\tSO (^N)\n");
 			}
 #endif
 			break;
@@ -1458,7 +1446,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 			state->override = -1;
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				fprintf(stderr, "\tSI (^O)\n");
+				g_printerr("\tSI (^O)\n");
 			}
 #endif
 			break;
@@ -1467,7 +1455,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 			state->override = 2;
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				fprintf(stderr, "\tSS2 (8-bit)\n");
+				g_printerr("\tSS2 (8-bit)\n");
 			}
 #endif
 			break;
@@ -1476,7 +1464,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 			state->override = 3;
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				fprintf(stderr, "\tSS3 (8-bit)\n");
+				g_printerr("\tSS3 (8-bit)\n");
 			}
 #endif
 			break;
@@ -1495,17 +1483,17 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 					}
 #ifdef VTE_DEBUG
 					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						fprintf(stderr, "\t");
+						g_printerr("\t");
 						for (i = 0; i < length; i++) {
 							c = (guchar) ctl[i];
-							fprintf(stderr,
+							g_printerr(
 								"(%s%c)",
 								c < 0x20 ?
 								"^" : "",
 								c < 0x20 ?
 								c : c + 64);
 						}
-						fprintf(stderr, "\n");
+						g_printerr("\n");
 					}
 #endif
 					break;
@@ -1513,7 +1501,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 					state->override = 2;
 #ifdef VTE_DEBUG
 					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						fprintf(stderr, "\tSS2\n");
+						g_printerr("\tSS2\n");
 					}
 #endif
 					break;
@@ -1521,7 +1509,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 					state->override = 3;
 #ifdef VTE_DEBUG
 					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						fprintf(stderr, "\tSS3\n");
+						g_printerr("\tSS3\n");
 					}
 #endif
 					break;
@@ -1530,7 +1518,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 					state->override = -1;
 #ifdef VTE_DEBUG
 					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						fprintf(stderr, "\tLS2\n");
+						g_printerr("\tLS2\n");
 					}
 #endif
 					break;
@@ -1539,7 +1527,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 					state->override = -1;
 #ifdef VTE_DEBUG
 					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						fprintf(stderr, "\tLS3\n");
+						g_printerr("\tLS3\n");
 					}
 #endif
 					break;
@@ -1575,7 +1563,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 						}
 #ifdef VTE_DEBUG
 						if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-							fprintf(stderr,
+							g_printerr(
 								"\tG[%d] = %c.\n",
 								g, c);
 						}
@@ -1593,7 +1581,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 							_vte_iso2022_state_set_codeset(state, state->native_codeset);
 #ifdef VTE_DEBUG
 							if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-								fprintf(stderr,
+								g_printerr(
 									"\tNative encoding.\n");
 							}
 #endif
@@ -1605,7 +1593,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 							_vte_iso2022_state_set_codeset(state, state->utf8_codeset);
 #ifdef VTE_DEBUG
 							if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-								fprintf(stderr,
+								g_printerr(
 									"\tUTF-8 encoding.\n");
 							}
 #endif
@@ -1665,7 +1653,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 						}
 #ifdef VTE_DEBUG
 						if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-							fprintf(stderr,
+							g_printerr(
 								"\tG[%d] = wide %c.\n",
 								g, c);
 						}
@@ -1691,7 +1679,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 						}
 #ifdef VTE_DEBUG
 						if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-							fprintf(stderr,
+							g_printerr(
 								"\tG[0] = wide %c.\n",
 								c);
 						}
@@ -1722,9 +1710,7 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 	gboolean preserve_last = FALSE;
 	int i, initial;
 
-	blocks = g_array_new(TRUE, TRUE, sizeof(struct _vte_iso2022_block));
-
-	_vte_iso2022_fragment_input(input, blocks);
+	blocks = _vte_iso2022_fragment_input(input);
 
 	for (i = 0; i < blocks->len; i++) {
 		block = &g_array_index(blocks, struct _vte_iso2022_block, i);
@@ -1733,19 +1719,19 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
 				int j;
-				fprintf(stderr, "%3ld %3ld CDATA \"%.*s\"",
+				g_printerr("%3ld %3ld CDATA \"%.*s\"",
 					block->start, block->end,
 					(int) (block->end - block->start),
 					input->bytes + block->start);
-				fprintf(stderr, " (");
+				g_printerr(" (");
 				for (j = block->start; j < block->end; j++) {
 					if (j > block->start) {
-						fprintf(stderr, ", ");
+						g_printerr(", ");
 					}
-					fprintf(stderr, "0x%02x",
+					g_printerr("0x%02x",
 						input->bytes[j]);
 				}
-				fprintf(stderr, ")\n");
+				g_printerr(")\n");
 			}
 #endif
 			initial = 0;
@@ -1775,7 +1761,7 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 		case _vte_iso2022_control:
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				fprintf(stderr, "%3ld %3ld CONTROL ",
+				g_printerr("%3ld %3ld CONTROL ",
 					block->start, block->end);
 			}
 #endif
@@ -1788,7 +1774,7 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 		case _vte_iso2022_preserve:
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				fprintf(stderr, "%3ld %3ld PRESERVE\n",
+				g_printerr("%3ld %3ld PRESERVE\n",
 					block->start, block->end);
 			}
 #endif
@@ -1804,7 +1790,7 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 		block = &g_array_index(blocks, struct _vte_iso2022_block, blocks->len - 1);
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-			fprintf(stderr, "Consuming %ld bytes.\n", block->start);
+			g_printerr("Consuming %ld bytes.\n", block->start);
 		}
 #endif
 		_vte_buffer_consume(input, block->start);
@@ -1812,7 +1798,7 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 	} else {
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-			fprintf(stderr, "Consuming %ld bytes.\n",
+			g_printerr("Consuming %ld bytes.\n",
 				(long) _vte_buffer_length(input));
 		}
 #endif
@@ -1835,6 +1821,7 @@ _vte_iso2022_unichar_width(gunichar c)
 }
 
 #ifdef ISO2022_MAIN
+#include <stdio.h>
 int
 main(int argc, char **argv)
 {
@@ -1867,7 +1854,7 @@ main(int argc, char **argv)
 
 	state = _vte_iso2022_state_new(NULL, NULL, NULL);
 	buffer = _vte_buffer_new();
-	gunichars = g_array_new(TRUE, TRUE, sizeof(gunichar));
+	gunichars = g_array_new(FALSE, FALSE, sizeof(gunichar));
 	if (argc > 1) {
 		string = g_string_new(NULL);
 		for (i = 1; i < argc; i++) {

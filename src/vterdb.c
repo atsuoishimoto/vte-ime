@@ -58,13 +58,13 @@ _vte_rdb_get(GtkWidget *widget, gboolean screen_setting)
 	GdkDisplay *display;
 	GdkScreen *screen;
 
-	if (GTK_IS_WIDGET(widget)) {
+	if (widget != NULL) {
 		display = gtk_widget_get_display(widget);
 	} else {
 		display = gdk_display_get_default();
 	}
 
-	if (GTK_IS_WIDGET(widget) &&
+	if (widget != NULL &&
 	    gtk_widget_has_screen(widget) &&
 	    screen_setting) {
 		screen = gtk_widget_get_screen(widget);
@@ -107,7 +107,7 @@ static gchar *
 _vte_rdb_search(GtkWidget *widget, const char *setting)
 {
 	gchar *ret = NULL;
-	int i, j, l;
+	guint i, j, l;
 	gchar **rdb;
 	gboolean per_screen[] = {TRUE, FALSE};
 
@@ -172,14 +172,14 @@ static gboolean
 _vte_rdb_boolean(GtkWidget *widget, const char *setting, gboolean default_value)
 {
 	char *start, *endptr = NULL;
-	int n;
+	gboolean n;
 	start = _vte_rdb_search(widget, setting);
 	if (start == NULL) {
 		return default_value;
 	}
-	n = CLAMP(g_ascii_strtoull(start, &endptr, 10), 0, INT_MAX);
+	n = g_ascii_strtoull(start, &endptr, 10) != 0;
 	if ((endptr != NULL) && (*endptr == '\0')) {
-		n = (n != 0) ? TRUE : FALSE;
+		/* use current value of n */
 	} else
 	if (g_ascii_strcasecmp(start, "true") == 0) {
 		n = TRUE;

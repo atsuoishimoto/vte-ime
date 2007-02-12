@@ -43,11 +43,19 @@ bin_PROGRAMS = vte$(EXEEXT)
 pkglib_PROGRAMS = interpret$(EXEEXT) utf8echo$(EXEEXT) \
 	nativeecho$(EXEEXT) utf8mode$(EXEEXT) iso8859mode$(EXEEXT) \
 	slowcat$(EXEEXT) vterdb$(EXEEXT)
-noinst_PROGRAMS = buffer$(EXEEXT) dumpkeys$(EXEEXT) iso2022$(EXEEXT) \
+EXTRA_PROGRAMS = buffer$(EXEEXT) dumpkeys$(EXEEXT) iso2022$(EXEEXT) \
 	pty$(EXEEXT) reaper$(EXEEXT) reflect-text-view$(EXEEXT) \
 	reflect-vte$(EXEEXT) ring$(EXEEXT) mev$(EXEEXT) ssfe$(EXEEXT) \
 	table$(EXEEXT) trie$(EXEEXT) xticker$(EXEEXT) vteconv$(EXEEXT) \
 	vtetc$(EXEEXT)
+@BUILD_XFT_TRUE@am__append_1 = \
+@BUILD_XFT_TRUE@	vtexft.c \
+@BUILD_XFT_TRUE@	vtexft.h
+
+@BUILD_PANGOX_TRUE@am__append_2 = \
+@BUILD_PANGOX_TRUE@	vtepangox.c \
+@BUILD_PANGOX_TRUE@	vtepangox.h
+
 subdir = src
 DIST_COMMON = $(pkginclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -73,16 +81,29 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libvte_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
+am__libvte_la_SOURCES_DIST = buffer.c buffer.h caps.c caps.h debug.c \
+	debug.h iso2022.c iso2022.h keymap.c keymap.h marshal.c \
+	marshal.h matcher.c matcher.h pty.c pty.h reaper.c reaper.h \
+	ring.c ring.h table.c table.h trie.c trie.h vte.c vte.h \
+	vte-private.h vteaccess.c vteaccess.h vtebg.c vtebg.h \
+	vteconv.c vteconv.h vtedraw.c vtedraw.h vtefc.c vtefc.h \
+	vteft2.c vteft2.h vtegl.c vtegl.h vteglyph.c vteglyph.h \
+	vteint.h vtepango.c vtepango.h vterdb.c vterdb.h vteregex.c \
+	vteregex.h vtergb.c vtergb.h vteseq.c vteseq.h vteseq-list.h \
+	vteseq-table.h vteskel.c vteskel.h vtetc.c vtetc.h vtetree.c \
+	vtetree.h vtexft.c vtexft.h vtepangox.c vtepangox.h
+@BUILD_XFT_TRUE@am__objects_1 = vtexft.lo
+@BUILD_PANGOX_TRUE@am__objects_2 = vtepangox.lo
 am_libvte_la_OBJECTS = buffer.lo caps.lo debug.lo iso2022.lo keymap.lo \
 	marshal.lo matcher.lo pty.lo reaper.lo ring.lo table.lo \
 	trie.lo vte.lo vteaccess.lo vtebg.lo vteconv.lo vtedraw.lo \
-	vtefc.lo vteft2.lo vtegl.lo vteglyph.lo vtepango.lo \
-	vtepangox.lo vterdb.lo vteregex.lo vtergb.lo vteseq.lo \
-	vteskel.lo vtetc.lo vtetree.lo vtexft.lo
+	vtefc.lo vteft2.lo vtegl.lo vteglyph.lo vtepango.lo vterdb.lo \
+	vteregex.lo vtergb.lo vteseq.lo vteskel.lo vtetc.lo vtetree.lo \
+	$(am__objects_1) $(am__objects_2)
 libvte_la_OBJECTS = $(am_libvte_la_OBJECTS)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 pkglibPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
-PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS) $(pkglib_PROGRAMS)
+PROGRAMS = $(bin_PROGRAMS) $(pkglib_PROGRAMS)
 am_buffer_OBJECTS = buffer-buffer.$(OBJEXT)
 buffer_OBJECTS = $(am_buffer_OBJECTS)
 buffer_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -215,15 +236,16 @@ SOURCES = $(libvte_la_SOURCES) $(EXTRA_libvte_la_SOURCES) \
 	$(table_SOURCES) $(trie_SOURCES) $(utf8echo_SOURCES) \
 	utf8mode.c $(vte_SOURCES) $(vteconv_SOURCES) $(vterdb_SOURCES) \
 	$(vtetc_SOURCES) $(xticker_SOURCES)
-DIST_SOURCES = $(libvte_la_SOURCES) $(EXTRA_libvte_la_SOURCES) \
-	$(buffer_SOURCES) $(dumpkeys_SOURCES) $(interpret_SOURCES) \
-	$(iso2022_SOURCES) iso8859mode.c $(mev_SOURCES) \
-	$(nativeecho_SOURCES) $(pty_SOURCES) $(reaper_SOURCES) \
-	$(reflect_text_view_SOURCES) $(reflect_vte_SOURCES) \
-	$(ring_SOURCES) $(slowcat_SOURCES) $(ssfe_SOURCES) \
-	$(table_SOURCES) $(trie_SOURCES) $(utf8echo_SOURCES) \
-	utf8mode.c $(vte_SOURCES) $(vteconv_SOURCES) $(vterdb_SOURCES) \
-	$(vtetc_SOURCES) $(xticker_SOURCES)
+DIST_SOURCES = $(am__libvte_la_SOURCES_DIST) \
+	$(EXTRA_libvte_la_SOURCES) $(buffer_SOURCES) \
+	$(dumpkeys_SOURCES) $(interpret_SOURCES) $(iso2022_SOURCES) \
+	iso8859mode.c $(mev_SOURCES) $(nativeecho_SOURCES) \
+	$(pty_SOURCES) $(reaper_SOURCES) $(reflect_text_view_SOURCES) \
+	$(reflect_vte_SOURCES) $(ring_SOURCES) $(slowcat_SOURCES) \
+	$(ssfe_SOURCES) $(table_SOURCES) $(trie_SOURCES) \
+	$(utf8echo_SOURCES) utf8mode.c $(vte_SOURCES) \
+	$(vteconv_SOURCES) $(vterdb_SOURCES) $(vtetc_SOURCES) \
+	$(xticker_SOURCES)
 pkgincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(pkginclude_HEADERS)
 ETAGS = etags
@@ -241,8 +263,12 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BUILD_GNOME_PTY_HELPER_FALSE = @BUILD_GNOME_PTY_HELPER_FALSE@
 BUILD_GNOME_PTY_HELPER_TRUE = @BUILD_GNOME_PTY_HELPER_TRUE@
+BUILD_PANGOX_FALSE = @BUILD_PANGOX_FALSE@
+BUILD_PANGOX_TRUE = @BUILD_PANGOX_TRUE@
 BUILD_PYTHON_MODULES_FALSE = @BUILD_PYTHON_MODULES_FALSE@
 BUILD_PYTHON_MODULES_TRUE = @BUILD_PYTHON_MODULES_TRUE@
+BUILD_XFT_FALSE = @BUILD_XFT_FALSE@
+BUILD_XFT_TRUE = @BUILD_XFT_TRUE@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -319,6 +345,8 @@ LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
+LIBTOOL_EXPORT_OPTIONS = @LIBTOOL_EXPORT_OPTIONS@
+LIBTOOL_FLAGS = @LIBTOOL_FLAGS@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
@@ -329,6 +357,8 @@ MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
 NEEDEDPACKAGES = @NEEDEDPACKAGES@
 OBJEXT = @OBJEXT@
+OS_WIN32_FALSE = @OS_WIN32_FALSE@
+OS_WIN32_TRUE = @OS_WIN32_TRUE@
 OTHERCFLAGS = @OTHERCFLAGS@
 OTHERLIBS = @OTHERLIBS@
 PACKAGE = @PACKAGE@
@@ -339,6 +369,8 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_WIN32_FALSE = @PLATFORM_WIN32_FALSE@
+PLATFORM_WIN32_TRUE = @PLATFORM_WIN32_TRUE@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
@@ -364,6 +396,7 @@ VERSION = @VERSION@
 VTE_CFLAGS = @VTE_CFLAGS@
 VTE_DEFAULT_EMULATION = @VTE_DEFAULT_EMULATION@
 VTE_LIBS = @VTE_LIBS@
+WARN_CFLAGS = @WARN_CFLAGS@
 XGETTEXT = @XGETTEXT@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
@@ -418,7 +451,6 @@ sharedstatedir = @sharedstatedir@
 subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-vte_std_c99 = @vte_std_c99@
 pkginclude_HEADERS = pty.h reaper.h vte.h vteaccess.h
 lib_LTLIBRARIES = libvte.la
 pkglib_SCRIPTS = decset osc window
@@ -448,79 +480,22 @@ AM_CPPFLAGS = -DDATADIR='"$(datadir)"' \
 
 AM_LDFLAGS = $(LDFLAGS)
 EXTRA_libvte_la_SOURCES = keysyms.c
-libvte_la_SOURCES = \
-	buffer.c \
-	buffer.h \
-	caps.c \
-	caps.h \
-	debug.c \
-	debug.h \
-	iso2022.c \
-	iso2022.h \
-	keymap.c \
-	keymap.h \
-	marshal.c \
-	marshal.h \
-	matcher.c \
-	matcher.h \
-	pty.c \
-	pty.h \
-	reaper.c \
-	reaper.h \
-	ring.c \
-	ring.h \
-	table.c \
-	table.h \
-	trie.c \
-	trie.h \
-	vte.c \
-	vte.h \
-	vte-private.h \
-	vteaccess.c \
-	vteaccess.h \
-	vtebg.c \
-	vtebg.h \
-	vteconv.c \
-	vteconv.h \
-	vtedraw.c \
-	vtedraw.h \
-	vtefc.c \
-	vtefc.h \
-	vteft2.c \
-	vteft2.h \
-	vtegl.c \
-	vtegl.h \
-	vteglyph.c \
-	vteglyph.h \
-	vteint.h \
-	vtepango.c \
-	vtepango.h \
-	vtepangox.c \
-	vtepangox.h \
-	vterdb.c \
-	vterdb.h \
-	vteregex.c \
-	vteregex.h \
-	vtergb.c \
-	vtergb.h \
-	vteseq.c \
-	vteseq.h \
-	vteseq-list.h \
-	vteseq-table.h \
-	vteskel.c \
-	vteskel.h \
-	vtetc.c \
-	vtetc.h \
-	vtetree.c \
-	vtetree.h \
-	vtexft.c \
-	vtexft.h
-
+libvte_la_SOURCES = buffer.c buffer.h caps.c caps.h debug.c debug.h \
+	iso2022.c iso2022.h keymap.c keymap.h marshal.c marshal.h \
+	matcher.c matcher.h pty.c pty.h reaper.c reaper.h ring.c \
+	ring.h table.c table.h trie.c trie.h vte.c vte.h vte-private.h \
+	vteaccess.c vteaccess.h vtebg.c vtebg.h vteconv.c vteconv.h \
+	vtedraw.c vtedraw.h vtefc.c vtefc.h vteft2.c vteft2.h vtegl.c \
+	vtegl.h vteglyph.c vteglyph.h vteint.h vtepango.c vtepango.h \
+	vterdb.c vterdb.h vteregex.c vteregex.h vtergb.c vtergb.h \
+	vteseq.c vteseq.h vteseq-list.h vteseq-table.h vteskel.c \
+	vteskel.h vtetc.c vtetc.h vtetree.c vtetree.h $(am__append_1) \
+	$(am__append_2)
 
 # Libtool shared library versioning stuffs.
 # REVISION gets incremented whenever the source code changes without adding
 # an API or ABI change.
-VERSION_REVISION = 8
+VERSION_REVISION = 9
 # CURRENT must be incremented when an API or ABI change (addition or removal)
 # is made, and REVISION must be reset to 0 when this happens.
 VERSION_CURRENT = 10
@@ -529,7 +504,8 @@ VERSION_CURRENT = 10
 VERSION_AGE = 1
 libvte_la_LDFLAGS = $(LDFLAGS) \
 	-version-info $(VERSION_CURRENT):$(VERSION_REVISION):$(VERSION_AGE) \
-	-export-symbols-regex "^vte_terminal_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*"
+	-export-symbols-regex "^vte_terminal_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
+	@LIBTOOL_EXPORT_OPTIONS@ @LIBTOOL_FLAGS@
 
 libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS)
 CLEANFILES = marshal.c marshal.h
@@ -692,7 +668,7 @@ reaper_SOURCES = \
 	reaper.h
 
 reaper_LDADD = $(LDFLAGS) $(LIBS) $(GOBJECT_LIBS)
-vterdb_CFLAGS = $(GTK_CFLAGS) -DVTERDB_MAIN
+vterdb_CFLAGS = $(GTK_CFLAGS) $(X_CFLAGS) -DVTERDB_MAIN
 vterdb_SOURCES = vterdb.c
 vterdb_LDADD = $(LDFLAGS) $(LIBS) $(GTK_LIBS)
 vteconv_CFLAGS = $(GLIB_CFLAGS) -DVTECONV_MAIN
@@ -803,13 +779,6 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
-	  echo " rm -f $$p $$f"; \
-	  rm -f $$p $$f ; \
-	done
-
-clean-noinstPROGRAMS:
-	@list='$(noinst_PROGRAMS)'; for p in $$list; do \
 	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
@@ -2067,8 +2036,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-noinstPROGRAMS clean-pkglibPROGRAMS \
-	mostlyclean-am
+	clean-libtool clean-pkglibPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -2121,15 +2089,14 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am \
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-binPROGRAMS \
 	clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-noinstPROGRAMS clean-pkglibPROGRAMS ctags distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-binPROGRAMS install-data \
-	install-data-am install-exec install-exec-am install-info \
-	install-info-am install-libLTLIBRARIES install-man \
-	install-pkgincludeHEADERS install-pkglibPROGRAMS \
-	install-pkglibSCRIPTS install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
+	clean-pkglibPROGRAMS ctags distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-binPROGRAMS install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am \
+	install-libLTLIBRARIES install-man install-pkgincludeHEADERS \
+	install-pkglibPROGRAMS install-pkglibSCRIPTS install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-binPROGRAMS \

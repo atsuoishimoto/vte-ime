@@ -18,7 +18,6 @@
 
 #include "../config.h"
 #include <glib.h>
-#include <stdio.h>
 #include "debug.h"
 
 static VteDebugFlags _vte_debug_flags = 0;
@@ -76,6 +75,9 @@ _vte_debug_parse_string(const char *string)
 			} else
 			if (g_ascii_strcasecmp(flags[i], "TRIE") == 0) {
 				_vte_debug_flags |= VTE_DEBUG_TRIE;
+			} else
+			if (g_ascii_strcasecmp(flags[i], "WORK") == 0) {
+				_vte_debug_flags |= VTE_DEBUG_WORK;
 			}
 		}
 		g_strfreev(flags);
@@ -85,8 +87,5 @@ _vte_debug_parse_string(const char *string)
 gboolean
 _vte_debug_on(VteDebugFlags flags)
 {
-#ifdef VTE_DEBUG
-	fflush(NULL);
-#endif
 	return (_vte_debug_flags & flags) == flags;
 }
