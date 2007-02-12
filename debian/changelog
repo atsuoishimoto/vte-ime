@@ -1,3 +1,17 @@
+vte (1:0.15.2-0ubuntu1) feisty; urgency=low
+
+  [Daniel Holbach]
+  * New upstream release.
+  * debian/patches/10-from-cvs-fix-crasher-394890.patch:
+    - dropped, included in release.
+  [Michael Vogt]
+  * debian/patches/90_fix_envp.patch:
+    - fix for gnome #407091 (envp in fork_command() changed meaning)
+  * debian/patches/91_keep_fds.patch:
+    - ported to the new code
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Mon, 12 Feb 2007 16:50:01 +0100
+
 vte (1:0.15.1-0ubuntu3) feisty; urgency=low
 
   * Sync with Debian, Ubuntu changes are:

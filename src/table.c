@@ -42,6 +42,7 @@
 	(((__c) >= '0') && ((__c) <= '9'))
 
 struct _vte_table {
+	struct _vte_matcher_impl impl;
 	GQuark resultq;
 	const char *result;
 	unsigned char *original;
@@ -68,7 +69,10 @@ struct _vte_table_arginfo {
 struct _vte_table *
 _vte_table_new(void)
 {
-	return g_slice_new0(struct _vte_table);
+	struct _vte_table * ret;
+	ret = g_slice_new0(struct _vte_table);
+	ret->impl.klass = &_vte_matcher_table;
+	return ret;
 }
 
 struct _vte_table **
@@ -86,7 +90,6 @@ _vte_table_free(struct _vte_table *table)
 		for (i = 0; i < VTE_TABLE_MAX_LITERAL; i++) {
 			if (table->table[i] != NULL) {
 				_vte_table_free(table->table[i]);
-				table->table[i] = NULL;
 			}
 		}
 		g_free(table->table);
@@ -103,9 +106,7 @@ _vte_table_free(struct _vte_table *table)
 		g_assert(table->original != NULL);
 	}
 	if (table->original != NULL) {
-		table->original_length = 0;
 		g_free(table->original);
-		table->original = NULL;
 	}
 	g_slice_free(struct _vte_table, table);
 }
@@ -678,7 +679,7 @@ _vte_table_printi(struct _vte_table *table, const char *lead, int *count)
 
 	/* Result? */
 	if (table->result != NULL) {
-		fprintf(stderr, "%s = `%s'(%d)\n", lead,
+		g_printerr("%s = `%s'(%d)\n", lead,
 			table->result, table->increment);
 	}
 
@@ -719,7 +720,7 @@ _vte_table_print(struct _vte_table *table)
 {
 	int count = 0;
 	_vte_table_printi(table, "", &count);
-	fprintf(stderr, "%d nodes = %ld bytes.\n",
+	g_printerr("%d nodes = %ld bytes.\n",
 		count, (long) count * sizeof(struct _vte_table));
 }
 
@@ -850,10 +851,18 @@ main(int argc, char **argv)
 		printf("`%s' => `%s'", tmp, (result ? result : "(NULL)"));
 		g_free(tmp);
 		print_array(array);
-		printf(" (%d chars)\n", consumed ? consumed - candidate: 0);
+		printf(" (%d chars)\n", (int) (consumed ? consumed - candidate: 0));
 		g_free(candidate);
 	}
 	_vte_table_free(table);
 	return 0;
 }
 #endif
+
+const struct _vte_matcher_class _vte_matcher_table = {
+	(_vte_matcher_create_func)_vte_table_new,
+	(_vte_matcher_add_func)_vte_table_add,
+	(_vte_matcher_print_func)_vte_table_print,
+	(_vte_matcher_match_func)_vte_table_match,
+	(_vte_matcher_destroy_func)_vte_table_free
+};

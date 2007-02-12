@@ -3,7 +3,7 @@ pkginclude_HEADERS = pty.h reaper.h vte.h vteaccess.h
 lib_LTLIBRARIES = libvte.la
 pkglib_PROGRAMS = interpret utf8echo nativeecho utf8mode iso8859mode slowcat vterdb
 pkglib_SCRIPTS = decset osc window
-noinst_PROGRAMS = buffer dumpkeys iso2022 pty reaper reflect-text-view reflect-vte ring mev ssfe table trie xticker vteconv vtetc
+EXTRA_PROGRAMS = buffer dumpkeys iso2022 pty reaper reflect-text-view reflect-vte ring mev ssfe table trie xticker vteconv vtetc
 EXTRA_DIST = \
 	$(pkglib_SCRIPTS) \
 	vteseq-gen.c \
@@ -77,8 +77,6 @@ libvte_la_SOURCES = \
 	vteint.h \
 	vtepango.c \
 	vtepango.h \
-	vtepangox.c \
-	vtepangox.h \
 	vterdb.c \
 	vterdb.h \
 	vteregex.c \
@@ -94,14 +92,22 @@ libvte_la_SOURCES = \
 	vtetc.c \
 	vtetc.h \
 	vtetree.c \
-	vtetree.h \
+	vtetree.h
+if BUILD_XFT
+libvte_la_SOURCES += \
 	vtexft.c \
 	vtexft.h
+endif
+if BUILD_PANGOX
+libvte_la_SOURCES += \
+	vtepangox.c \
+	vtepangox.h
+endif
 
 # Libtool shared library versioning stuffs.
 # REVISION gets incremented whenever the source code changes without adding
 # an API or ABI change.
-VERSION_REVISION=8
+VERSION_REVISION=9
 # CURRENT must be incremented when an API or ABI change (addition or removal)
 # is made, and REVISION must be reset to 0 when this happens.
 VERSION_CURRENT=10
@@ -110,7 +116,8 @@ VERSION_CURRENT=10
 VERSION_AGE=1
 libvte_la_LDFLAGS = $(LDFLAGS) \
 	-version-info $(VERSION_CURRENT):$(VERSION_REVISION):$(VERSION_AGE) \
-	-export-symbols-regex "^vte_terminal_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*"
+	-export-symbols-regex "^vte_terminal_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
+	@LIBTOOL_EXPORT_OPTIONS@ @LIBTOOL_FLAGS@
 libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS)
 
 CLEANFILES = marshal.c marshal.h
@@ -280,7 +287,7 @@ reaper_SOURCES = \
 	reaper.h
 reaper_LDADD = $(LDFLAGS) $(LIBS) $(GOBJECT_LIBS)
 
-vterdb_CFLAGS = $(GTK_CFLAGS) -DVTERDB_MAIN
+vterdb_CFLAGS = $(GTK_CFLAGS) $(X_CFLAGS) -DVTERDB_MAIN
 vterdb_SOURCES = vterdb.c
 vterdb_LDADD = $(LDFLAGS) $(LIBS) $(GTK_LIBS)
 

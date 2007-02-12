@@ -289,7 +289,7 @@ _vte_termcap_find_string (VteTermcap *termcap,
                           const char *tname,
                           const char *cap)
 {
-  int length;
+  gssize length;
 
   return _vte_termcap_find_string_length (termcap, tname, cap, &length);
 }
@@ -544,12 +544,12 @@ main (int argc, char **argv)
 {
   VteTermcap *tc;
   char *str;
-  int len;
+  gssize len;
   int i;
 
   if (argc < 4)
   {
-    fprintf (stderr, "vtetc /path/to/termcap termname attrs...\n"
+    g_printerr("vtetc /path/to/termcap termname attrs...\n"
                      "  where attrs are\n"
                      "    :xx for boolean\n"
                      "    =xx for string\n"
@@ -582,14 +582,14 @@ main (int argc, char **argv)
         str = _vte_termcap_find_string_length (tc, argv[2], argv[i] + 1, &len);
 
         if (argv[i][0] == '=')
-          printf ("'%s' (%d)\n", str, len);
+          printf ("'%s' (%d)\n", str, (int)len);
         else
         {
           int i;
 
           for (i = 0; str[i]; i++)
             printf ("%02x", str[i]);
-          printf (" (%d) \n", len);
+          printf (" (%d) \n", (int)len);
         }
         g_free (str);
         break;
@@ -599,7 +599,7 @@ main (int argc, char **argv)
         break;
 
       default:
-        fprintf (stderr, "unrecognised type '%c'\n", argv[i][0]);
+        g_printerr("unrecognised type '%c'\n", argv[i][0]);
     }
   }
 

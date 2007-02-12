@@ -85,6 +85,9 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
+/* Define to 1 if you have the `fork' function. */
+#undef HAVE_FORK
+
 /* Define to 1 if you have the <ft2build.h> header file. */
 #undef HAVE_FT2BUILD_H
 
@@ -136,6 +139,12 @@
 /* Define if you have the recvmsg function. */
 #undef HAVE_RECVMSG
 
+/* Define to 1 if you have the `setpgid' function. */
+#undef HAVE_SETPGID
+
+/* Define to 1 if you have the `setsid' function. */
+#undef HAVE_SETSID
+
 /* Define if you have the socket function. */
 #undef HAVE_SOCKET
 
@@ -174,6 +183,9 @@
 
 /* Define to 1 if you have the <sys/un.h> header file. */
 #undef HAVE_SYS_UN_H
+
+/* Define to 1 if you have the <sys/wait.h> header file. */
+#undef HAVE_SYS_WAIT_H
 
 /* Define if you have termcap.h and libtermcap */
 #undef HAVE_TERMCAP

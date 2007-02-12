@@ -34,9 +34,8 @@
 #include "vteskel.h"
 #include "vtexft.h"
 
-struct _vte_draw_impl
+static const struct _vte_draw_impl
 *_vte_draw_impls[] = {
-	&_vte_draw_skel,
 #ifndef X_DISPLAY_MISSING
 #ifdef HAVE_XFT2
 	&_vte_draw_xft,
@@ -56,44 +55,84 @@ struct _vte_draw_impl
 #endif /* !X_DISPLAY_MISSING */
 };
 
-struct _vte_draw *
-_vte_draw_new(GtkWidget *widget)
+static gboolean
+_vte_draw_init_user (struct _vte_draw *draw)
 {
-	int i;
-	struct _vte_draw *draw;
-	char *var;
+	const gchar *env;
+	gchar **strv, **s;
+	guint i;
+	gboolean success = TRUE;
 
-	/* Create the structure. */
-	draw = g_slice_new0(struct _vte_draw);
-	g_object_ref(G_OBJECT(widget));
-	draw->widget = widget;
-	draw->started = FALSE;
+	env = g_getenv("VTE_BACKEND");
+	if (!env) {
+		return FALSE;
+	}
 
-	/* Let each implementation decide if it's right for the job. */
-	for (i = 0; i < G_N_ELEMENTS(_vte_draw_impls); i++) {
-		if (_vte_draw_impls[i]->environment != NULL) {
-			var = getenv(_vte_draw_impls[i]->environment);
-			if (var != NULL) {
-				if (atol(var) == 0) {
-					continue;
+	strv = g_strsplit(env, ":;, \t", -1);
+	for (s = strv; *s; s++) {
+		if (g_ascii_strcasecmp(*s, _vte_draw_skel.name) == 0) {
+			draw->impl = &_vte_draw_skel;
+			goto out;
+		}
+		for (i = 0; i < G_N_ELEMENTS(_vte_draw_impls); i++) {
+			if (g_ascii_strcasecmp(*s, _vte_draw_impls[i]->name) == 0) {
+				if (_vte_draw_impls[i]->check(draw, draw->widget)) {
+					draw->impl = _vte_draw_impls[i];
+					goto out;
 				}
 			}
 		}
+	}
+
+	success = FALSE;
+out:
+	g_strfreev(strv);
+	return success;
+}
+
+
+static gboolean
+_vte_draw_init_default (struct _vte_draw *draw)
+{
+	guint i;
+
+	for (i = 0; i < G_N_ELEMENTS(_vte_draw_impls); i++) {
 		if (_vte_draw_impls[i]->check(draw, draw->widget)) {
 			draw->impl = _vte_draw_impls[i];
-			draw->impl->create(draw, draw->widget);
-			break;
+			return TRUE;
 		}
 	}
 
-	/* Something has to have worked. */
-	g_assert(i < G_N_ELEMENTS(_vte_draw_impls));
+	return FALSE;
+}
+
+
+struct _vte_draw *
+_vte_draw_new(GtkWidget *widget)
+{
+	struct _vte_draw *draw;
+
+	/* Create the structure. */
+	draw = g_slice_new0(struct _vte_draw);
+	draw->widget = g_object_ref(widget);
+	draw->started = FALSE;
+
+	/* Allow the user to specify her preferred backends */
+	if (!_vte_draw_init_user (draw) &&
+			/* Otherwise use the first thing that works */
+			!_vte_draw_init_default (draw)) {
+		/* Something has to work. */
+		g_assert_not_reached ();
+		draw->impl = &_vte_draw_skel;
+	}
 
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_MISC)) {
-		fprintf(stderr, "Using %s.\n", draw->impl->name);
+		g_printerr("Using %s.\n", draw->impl->name);
 	}
 #endif
+
+	draw->impl->create(draw, draw->widget);
 
 	return draw;
 }
@@ -102,14 +141,10 @@ void
 _vte_draw_free(struct _vte_draw *draw)
 {
 	draw->impl->destroy(draw);
-	draw->impl = NULL;
-	draw->impl_data = NULL;
 
-	if (GTK_IS_WIDGET(draw->widget)) {
-		g_object_unref(G_OBJECT(draw->widget));
-		draw->widget = NULL;
+	if (draw->widget != NULL) {
+		g_object_unref(draw->widget);
 	}
-	draw->started = FALSE;
 
 	g_slice_free(struct _vte_draw, draw);
 }
@@ -151,7 +186,7 @@ _vte_draw_start(struct _vte_draw *draw)
 	g_return_if_fail(GTK_WIDGET_REALIZED(draw->widget));
 	g_return_if_fail(draw->impl != NULL);
 	g_return_if_fail(draw->impl->start != NULL);
-	g_object_ref(G_OBJECT(draw->widget->window));
+	g_object_ref(draw->widget->window);
 	draw->impl->start(draw);
 	draw->started = TRUE;
 }
@@ -163,7 +198,7 @@ _vte_draw_end(struct _vte_draw *draw)
 	g_return_if_fail(draw->impl != NULL);
 	g_return_if_fail(draw->impl->end != NULL);
 	draw->impl->end(draw);
-	g_object_unref(G_OBJECT(draw->widget->window));
+	g_object_unref(draw->widget->window);
 	draw->started = FALSE;
 }
 

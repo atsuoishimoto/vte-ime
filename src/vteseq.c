@@ -19,6 +19,7 @@
 
 #include "../config.h"
 
+#include <limits.h>
 #ifdef HAVE_SYS_SYSLIMITS_H
 #include <sys/syslimits.h>
 #endif
@@ -96,9 +97,10 @@ vte_g_array_fill(GArray *array, gpointer item, guint final_size)
 	}
 	g_assert(item != NULL);
 
-	while (array->len < final_size) {
+	final_size -= array->len;
+	do {
 		g_array_append_vals(array, item, 1);
-	}
+	} while (--final_size);
 }
 
 
@@ -112,7 +114,7 @@ vte_terminal_emit_deiconify_window(VteTerminal *terminal)
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SIGNALS)) {
-		fprintf(stderr, "Emitting `deiconify-window'.\n");
+		g_printerr("Emitting `deiconify-window'.\n");
 	}
 #endif
 	g_signal_emit_by_name(terminal, "deiconify-window");
@@ -124,7 +126,7 @@ vte_terminal_emit_iconify_window(VteTerminal *terminal)
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SIGNALS)) {
-		fprintf(stderr, "Emitting `iconify-window'.\n");
+		g_printerr("Emitting `iconify-window'.\n");
 	}
 #endif
 	g_signal_emit_by_name(terminal, "iconify-window");
@@ -136,7 +138,7 @@ vte_terminal_emit_icon_title_changed(VteTerminal *terminal)
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SIGNALS)) {
-		fprintf(stderr, "Emitting `icon-title-changed'.\n");
+		g_printerr("Emitting `icon-title-changed'.\n");
 	}
 #endif
 	g_signal_emit_by_name(terminal, "icon-title-changed");
@@ -148,7 +150,7 @@ vte_terminal_emit_window_title_changed(VteTerminal *terminal)
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SIGNALS)) {
-		fprintf(stderr, "Emitting `window-title-changed'.\n");
+		g_printerr("Emitting `window-title-changed'.\n");
 	}
 #endif
 	g_signal_emit_by_name(terminal, "window-title-changed");
@@ -160,7 +162,7 @@ vte_terminal_emit_raise_window(VteTerminal *terminal)
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SIGNALS)) {
-		fprintf(stderr, "Emitting `raise-window'.\n");
+		g_printerr("Emitting `raise-window'.\n");
 	}
 #endif
 	g_signal_emit_by_name(terminal, "raise-window");
@@ -172,7 +174,7 @@ vte_terminal_emit_lower_window(VteTerminal *terminal)
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SIGNALS)) {
-		fprintf(stderr, "Emitting `lower-window'.\n");
+		g_printerr("Emitting `lower-window'.\n");
 	}
 #endif
 	g_signal_emit_by_name(terminal, "lower-window");
@@ -184,7 +186,7 @@ vte_terminal_emit_maximize_window(VteTerminal *terminal)
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SIGNALS)) {
-		fprintf(stderr, "Emitting `maximize-window'.\n");
+		g_printerr("Emitting `maximize-window'.\n");
 	}
 #endif
 	g_signal_emit_by_name(terminal, "maximize-window");
@@ -196,7 +198,7 @@ vte_terminal_emit_refresh_window(VteTerminal *terminal)
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SIGNALS)) {
-		fprintf(stderr, "Emitting `refresh-window'.\n");
+		g_printerr("Emitting `refresh-window'.\n");
 	}
 #endif
 	g_signal_emit_by_name(terminal, "refresh-window");
@@ -208,7 +210,7 @@ vte_terminal_emit_restore_window(VteTerminal *terminal)
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SIGNALS)) {
-		fprintf(stderr, "Emitting `restore-window'.\n");
+		g_printerr("Emitting `restore-window'.\n");
 	}
 #endif
 	g_signal_emit_by_name(terminal, "restore-window");
@@ -220,7 +222,7 @@ vte_terminal_emit_move_window(VteTerminal *terminal, guint x, guint y)
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SIGNALS)) {
-		fprintf(stderr, "Emitting `move-window'.\n");
+		g_printerr("Emitting `move-window'.\n");
 	}
 #endif
 	g_signal_emit_by_name(terminal, "move-window", x, y);
@@ -233,7 +235,7 @@ vte_terminal_emit_resize_window(VteTerminal *terminal,
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_SIGNALS)) {
-		fprintf(stderr, "Emitting `resize-window'.\n");
+		g_printerr("Emitting `resize-window'.\n");
 	}
 #endif
 	g_signal_emit_by_name(terminal, "resize-window", width, height);
@@ -336,12 +338,10 @@ vte_sequence_handler_multiple(VteTerminal *terminal,
 static gboolean
 vte_sequence_handler_scroll_up_or_down(VteTerminal *terminal, int scroll_amount)
 {
-	GtkWidget *widget;
 	VteRowData *row;
 	long start, end, i;
 	VteScreen *screen;
 
-	widget = GTK_WIDGET(terminal);
 	screen = terminal->pvt->screen;
 
 	if (screen->scrolling_restricted) {
@@ -418,12 +418,12 @@ vte_sequence_handler_set_title_internal(VteTerminal *terminal,
 			_vte_buffer_set_minimum_size(terminal->pvt->conv_buffer,
 						     outbuf_len);
 			outbuf = outbufptr = terminal->pvt->conv_buffer->bytes;
-			if (conv != ((VteConv) -1)) {
+			if (conv != VTE_INVALID_CONV) {
 				if (_vte_conv(conv, &inbuf, &inbuf_len,
 					      &outbuf, &outbuf_len) == -1) {
 #ifdef VTE_DEBUG
 					if (_vte_debug_on(VTE_DEBUG_IO)) {
-						fprintf(stderr, "Error "
+						g_printerr("Error "
 							"converting %ld title "
 							"bytes (%s), "
 							"skipping.\n",
@@ -458,15 +458,15 @@ vte_sequence_handler_set_title_internal(VteTerminal *terminal,
 			if (strcmp(signal, "window") == 0) {
 				g_free(terminal->window_title);
 				terminal->window_title = g_strdup(validated);
-				if (GTK_WIDGET (terminal)->window)
-					gdk_window_set_title (GTK_WIDGET (terminal)->window, validated);
+				if (terminal->widget.window)
+					gdk_window_set_title (terminal->widget.window, validated);
 				vte_terminal_emit_window_title_changed(terminal);
 			} else
 			if (strcmp(signal, "icon") == 0) {
 				g_free (terminal->icon_title);
 				terminal->icon_title = g_strdup(validated);
-				if (GTK_WIDGET (terminal)->window)
-					gdk_window_set_icon_name (GTK_WIDGET (terminal)->window, validated);
+				if (terminal->widget.window)
+					gdk_window_set_icon_name (terminal->widget.window, validated);
 				vte_terminal_emit_icon_title_changed(terminal);
 			}
 			g_free(validated);
@@ -663,7 +663,7 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 			set = (p != NULL);
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Setting %d was %s.\n",
+				g_printerr("Setting %d was %s.\n",
 					setting, set ? "set" : "unset");
 			}
 #endif
@@ -683,7 +683,7 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 			}
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Setting %d is %s, saving.\n",
+				g_printerr("Setting %d is %s, saving.\n",
 					setting, set ? "set" : "unset");
 			}
 #endif
@@ -695,7 +695,7 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 		if (!save) {
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Setting %d to %s.\n",
+				g_printerr("Setting %d to %s.\n",
 					setting, set ? "set" : "unset");
 			}
 #endif
@@ -727,9 +727,9 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
 			if (set) {
-				fprintf(stderr, "Entering application cursor mode.\n");
+				g_printerr("Entering application cursor mode.\n");
 			} else {
-				fprintf(stderr, "Leaving application cursor mode.\n");
+				g_printerr("Leaving application cursor mode.\n");
 			}
 		}
 #endif
@@ -755,11 +755,6 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 		terminal->pvt->screen->cursor_current.col = 0;
 		terminal->pvt->screen->cursor_current.row =
 			terminal->pvt->screen->insert_delta;
-		break;
-	case 25:
-	case 1048:
-		/* Repaint the cell the cursor is in. */
-		_vte_invalidate_cursor_once(terminal, FALSE);
 		break;
 	case 47:
 	case 1047:
@@ -830,9 +825,9 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
 			if (set) {
-				fprintf(stderr, "Entering application keypad mode.\n");
+				g_printerr("Entering application keypad mode.\n");
 			} else {
-				fprintf(stderr, "Leaving application keypad mode.\n");
+				g_printerr("Leaving application keypad mode.\n");
 			}
 		}
 #endif
@@ -841,9 +836,9 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
 			if (set) {
-				fprintf(stderr, "Entering Sun fkey mode.\n");
+				g_printerr("Entering Sun fkey mode.\n");
 			} else {
-				fprintf(stderr, "Leaving Sun fkey mode.\n");
+				g_printerr("Leaving Sun fkey mode.\n");
 			}
 		}
 #endif
@@ -852,9 +847,9 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
 			if (set) {
-				fprintf(stderr, "Entering HP fkey mode.\n");
+				g_printerr("Entering HP fkey mode.\n");
 			} else {
-				fprintf(stderr, "Leaving HP fkey mode.\n");
+				g_printerr("Leaving HP fkey mode.\n");
 			}
 		}
 #endif
@@ -863,9 +858,9 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
 			if (set) {
-				fprintf(stderr, "Entering Legacy fkey mode.\n");
+				g_printerr("Entering Legacy fkey mode.\n");
 			} else {
-				fprintf(stderr, "Leaving Legacy fkey mode.\n");
+				g_printerr("Leaving Legacy fkey mode.\n");
 			}
 		}
 #endif
@@ -874,9 +869,9 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
 			if (set) {
-				fprintf(stderr, "Entering VT220 fkey mode.\n");
+				g_printerr("Entering VT220 fkey mode.\n");
 			} else {
-				fprintf(stderr, "Leaving VT220 fkey mode.\n");
+				g_printerr("Leaving VT220 fkey mode.\n");
 			}
 		}
 #endif
@@ -1035,7 +1030,7 @@ vte_terminal_beep(VteTerminal *terminal)
 	GdkDisplay *display;
 
 	g_assert(VTE_IS_TERMINAL(terminal));
-	display = gtk_widget_get_display(GTK_WIDGET(terminal));
+	display = gtk_widget_get_display(&terminal->widget);
 	gdk_display_beep(display);
 }
 
@@ -1088,7 +1083,7 @@ vte_sequence_handler_bt(VteTerminal *terminal,
 	/* Warp the cursor. */
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-		fprintf(stderr, "Moving cursor to column %ld.\n", (long)newcol);
+		g_printerr("Moving cursor to column %ld.\n", (long)newcol);
 	}
 #endif
 	terminal->pvt->screen->cursor_current.col = newcol;
@@ -1653,11 +1648,9 @@ vte_sequence_handler_do(VteTerminal *terminal,
 			GQuark match_quark,
 			GValueArray *params)
 {
-	GtkWidget *widget;
 	long start, end;
 	VteScreen *screen;
 
-	widget = GTK_WIDGET(terminal);
 	screen = terminal->pvt->screen;
 
 	if (screen->scrolling_restricted) {
@@ -2235,21 +2228,11 @@ vte_sequence_handler_se(VteTerminal *terminal,
 		terminal->pvt->screen->defaults.standout = 0;
 	}
 
-	if (blink) {
-		g_free(blink);
-	}
-	if (bold) {
-		g_free(bold);
-	}
-	if (half) {
-		g_free(half);
-	}
-	if (reverse) {
-		g_free(reverse);
-	}
-	if (underline) {
-		g_free(underline);
-	}
+	g_free(blink);
+	g_free(bold);
+	g_free(half);
+	g_free(reverse);
+	g_free(underline);
 	g_free(standout);
 	return FALSE;
 }
@@ -2261,12 +2244,10 @@ vte_sequence_handler_sf(VteTerminal *terminal,
 			GQuark match_quark,
 			GValueArray *params)
 {
-	GtkWidget *widget;
 	VteRowData *row;
 	long start, end;
 	VteScreen *screen;
 
-	widget = GTK_WIDGET(terminal);
 	screen = terminal->pvt->screen;
 
 	if (screen->scrolling_restricted) {
@@ -2297,7 +2278,6 @@ vte_sequence_handler_sf(VteTerminal *terminal,
 				/* This may generate multiple redraws, so
 				 * disable fast scrolling for now. */
 				terminal->pvt->scroll_lock_count++;
-				gdk_window_freeze_updates(widget->window);
 				/* Force the areas below the region to be
 				 * redrawn -- they've moved. */
 				_vte_terminal_scroll_region(terminal, start,
@@ -2306,7 +2286,6 @@ vte_sequence_handler_sf(VteTerminal *terminal,
 				_vte_terminal_ensure_cursor(terminal, FALSE);
 				_vte_terminal_adjust_adjustments(terminal, TRUE);
 				/* Allow updates again. */
-				gdk_window_thaw_updates(widget->window);
 				terminal->pvt->scroll_lock_count--;
 			} else {
 				/* If we're at the bottom of the scrolling
@@ -2317,7 +2296,6 @@ vte_sequence_handler_sf(VteTerminal *terminal,
 				/* This may generate multiple redraws, so
 				 * disable fast scrolling for now. */
 				terminal->pvt->scroll_lock_count++;
-				gdk_window_freeze_updates(widget->window);
 				/* Update the display. */
 				_vte_terminal_scroll_region(terminal, start,
 							   end - start + 1, -1);
@@ -2325,7 +2303,6 @@ vte_sequence_handler_sf(VteTerminal *terminal,
 						      0, terminal->column_count,
 						      end - 2, 2);
 				/* Allow updates again. */
-				gdk_window_thaw_updates(widget->window);
 				terminal->pvt->scroll_lock_count--;
 			}
 		} else {
@@ -2406,21 +2383,11 @@ vte_sequence_handler_so(VteTerminal *terminal,
 		terminal->pvt->screen->defaults.standout = 1;
 	}
 
-	if (blink) {
-		g_free(blink);
-	}
-	if (bold) {
-		g_free(bold);
-	}
-	if (half) {
-		g_free(half);
-	}
-	if (reverse) {
-		g_free(reverse);
-	}
-	if (underline) {
-		g_free(underline);
-	}
+	g_free(blink);
+	g_free(bold);
+	g_free(half);
+	g_free(reverse);
+	g_free(underline);
 	g_free(standout);
 	return FALSE;
 }
@@ -2432,11 +2399,9 @@ vte_sequence_handler_sr(VteTerminal *terminal,
 			GQuark match_quark,
 			GValueArray *params)
 {
-	GtkWidget *widget;
 	long start, end;
 	VteScreen *screen;
 
-	widget = GTK_WIDGET(terminal);
 	screen = terminal->pvt->screen;
 
 	if (screen->scrolling_restricted) {
@@ -2487,8 +2452,7 @@ vte_sequence_handler_st(VteTerminal *terminal,
 			GValueArray *params)
 {
 	if (terminal->pvt->tabstops == NULL) {
-		terminal->pvt->tabstops = g_hash_table_new(g_direct_hash,
-							   g_direct_equal);
+		terminal->pvt->tabstops = g_hash_table_new(NULL, NULL);
 	}
 	_vte_terminal_set_tabstop(terminal,
 				 terminal->pvt->screen->cursor_current.col);
@@ -2675,23 +2639,19 @@ vte_sequence_handler_vb(VteTerminal *terminal,
 			GValueArray *params)
 {
 	GtkWidget *widget;
-	gint width, height, state;
 
-	widget = GTK_WIDGET(terminal);
+	widget = &terminal->widget;
 	if (GTK_WIDGET_REALIZED(widget)) {
-		gdk_drawable_get_size(widget->window, &width, &height);
-		state = GTK_WIDGET_STATE(widget);
 		/* Fill the screen with the default foreground color, and then
 		 * repaint everything, to provide visual bell. */
 		gdk_draw_rectangle(widget->window,
-				   widget->style->fg_gc[state],
+				   widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
 				   TRUE,
 				   0, 0,
-				   width, height);
+				   widget->allocation.width, widget->allocation.height);
 		gdk_window_process_updates(widget->window, TRUE);
 		/* Force the repaint. */
-		_vte_invalidate_all(terminal);
-		gdk_window_process_updates(widget->window, TRUE);
+		_vte_invalidate_all(terminal); /* max delay of UPDATE_REPEAT_TIMEOUT */
 	}
 	return FALSE;
 }
@@ -3143,7 +3103,7 @@ vte_sequence_handler_application_keypad(VteTerminal *terminal,
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
-		fprintf(stderr, "Entering application keypad mode.\n");
+		g_printerr("Entering application keypad mode.\n");
 	}
 #endif
 	terminal->pvt->keypad_mode = VTE_KEYMODE_APPLICATION;
@@ -3158,7 +3118,7 @@ vte_sequence_handler_normal_keypad(VteTerminal *terminal,
 {
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
-		fprintf(stderr, "Leaving application keypad mode.\n");
+		g_printerr("Leaving application keypad mode.\n");
 	}
 #endif
 	terminal->pvt->keypad_mode = VTE_KEYMODE_NORMAL;
@@ -3563,6 +3523,7 @@ vte_sequence_handler_device_status_report(VteTerminal *terminal,
 	VteScreen *screen;
 	long param;
 	char buf[LINE_MAX];
+	gint len;
 
 	screen = terminal->pvt->screen;
 
@@ -3572,17 +3533,18 @@ vte_sequence_handler_device_status_report(VteTerminal *terminal,
 		switch (param) {
 		case 5:
 			/* Send a thumbs-up sequence. */
-			snprintf(buf, sizeof(buf), "%s%dn", _VTE_CAP_CSI, 0);
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal,
+				       	_VTE_CAP_CSI "0n",
+				       	sizeof(_VTE_CAP_CSI "0n")-1);
 			break;
 		case 6:
 			/* Send the cursor position. */
-			snprintf(buf, sizeof(buf),
-				 "%s%ld;%ldR", _VTE_CAP_CSI,
+			len = g_snprintf(buf, sizeof(buf),
+				 _VTE_CAP_CSI "%ld;%ldR",
 				 screen->cursor_current.row + 1 -
 				 screen->insert_delta,
 				 screen->cursor_current.col + 1);
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal, buf, len);
 			break;
 		default:
 			break;
@@ -3602,6 +3564,7 @@ vte_sequence_handler_dec_device_status_report(VteTerminal *terminal,
 	VteScreen *screen;
 	long param;
 	char buf[LINE_MAX];
+	gint len;
 
 	screen = terminal->pvt->screen;
 
@@ -3611,30 +3574,33 @@ vte_sequence_handler_dec_device_status_report(VteTerminal *terminal,
 		switch (param) {
 		case 6:
 			/* Send the cursor position. */
-			snprintf(buf, sizeof(buf),
-				 "%s?%ld;%ldR", _VTE_CAP_CSI,
+			len = g_snprintf(buf, sizeof(buf),
+				 _VTE_CAP_CSI "?%ld;%ldR",
 				 screen->cursor_current.row + 1 -
 				 screen->insert_delta,
 				 screen->cursor_current.col + 1);
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal, buf, len);
 			break;
 		case 15:
 			/* Send printer status -- 10 = ready,
 			 * 11 = not ready.  We don't print. */
-			snprintf(buf, sizeof(buf), "%s?%dn", _VTE_CAP_CSI, 11);
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal, 
+					_VTE_CAP_CSI "?11n",
+					sizeof(_VTE_CAP_CSI "?11n")-1);
 			break;
 		case 25:
 			/* Send UDK status -- 20 = locked,
 			 * 21 = not locked.  I don't even know what
 			 * that means, but punt anyway. */
-			snprintf(buf, sizeof(buf), "%s?%dn", _VTE_CAP_CSI, 20);
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal, 
+					_VTE_CAP_CSI "?20n",
+					sizeof(_VTE_CAP_CSI "?20n")-1);
 			break;
 		case 26:
 			/* Send keyboard status.  50 = no locator. */
-			snprintf(buf, sizeof(buf), "%s?%dn", _VTE_CAP_CSI, 50);
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal, 
+					_VTE_CAP_CSI "?50n",
+					sizeof(_VTE_CAP_CSI "?50n")-1);
 			break;
 		default:
 			break;
@@ -3772,8 +3738,9 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 	char buf[LINE_MAX];
 	long param, arg1, arg2;
 	guint width, height, i;
+	gint len;
 
-	widget = GTK_WIDGET(terminal);
+	widget = &terminal->widget;
 	screen = terminal->pvt->screen;
 
 	for (i = 0; ((params != NULL) && (i < params->n_values)); i++) {
@@ -3799,7 +3766,7 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 		case 1:
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Deiconifying window.\n");
+				g_printerr("Deiconifying window.\n");
 			}
 #endif
 			vte_terminal_emit_deiconify_window(terminal);
@@ -3807,7 +3774,7 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 		case 2:
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Iconifying window.\n");
+				g_printerr("Iconifying window.\n");
 			}
 #endif
 			vte_terminal_emit_iconify_window(terminal);
@@ -3816,7 +3783,7 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 			if ((arg1 != -1) && (arg2 != -2)) {
 #ifdef VTE_DEBUG
 				if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-					fprintf(stderr, "Moving window to "
+					g_printerr("Moving window to "
 						"%ld,%ld.\n", arg1, arg2);
 				}
 #endif
@@ -3829,7 +3796,7 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 			if ((arg1 != -1) && (arg2 != -1)) {
 #ifdef VTE_DEBUG
 				if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-					fprintf(stderr, "Resizing window "
+					g_printerr("Resizing window "
 						"(to %ldx%ld pixels).\n",
 						arg2, arg1);
 				}
@@ -3845,7 +3812,7 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 		case 5:
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Raising window.\n");
+				g_printerr("Raising window.\n");
 			}
 #endif
 			vte_terminal_emit_raise_window(terminal);
@@ -3853,7 +3820,7 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 		case 6:
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Lowering window.\n");
+				g_printerr("Lowering window.\n");
 			}
 #endif
 			vte_terminal_emit_lower_window(terminal);
@@ -3861,7 +3828,7 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 		case 7:
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Refreshing window.\n");
+				g_printerr("Refreshing window.\n");
 			}
 #endif
 			_vte_invalidate_all(terminal);
@@ -3871,7 +3838,7 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 			if ((arg1 != -1) && (arg2 != -1)) {
 #ifdef VTE_DEBUG
 				if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-					fprintf(stderr, "Resizing window "
+					g_printerr("Resizing window "
 						"(to %ld columns, %ld rows).\n",
 						arg2, arg1);
 				}
@@ -3889,7 +3856,7 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 			case 0:
 #ifdef VTE_DEBUG
 				if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-					fprintf(stderr, "Restoring window.\n");
+					g_printerr("Restoring window.\n");
 				}
 #endif
 				vte_terminal_emit_restore_window(terminal);
@@ -3897,7 +3864,7 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 			case 1:
 #ifdef VTE_DEBUG
 				if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-					fprintf(stderr, "Maximizing window.\n");
+					g_printerr("Maximizing window.\n");
 				}
 #endif
 				vte_terminal_emit_maximize_window(terminal);
@@ -3909,69 +3876,67 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 			break;
 		case 11:
 			/* If we're unmapped, then we're iconified. */
-			snprintf(buf, sizeof(buf),
-				 "%s%dt", _VTE_CAP_CSI,
+			len = g_snprintf(buf, sizeof(buf),
+				 _VTE_CAP_CSI "%dt",
 				 1 + !GTK_WIDGET_MAPPED(widget));
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Reporting window state %s.\n",
+				g_printerr("Reporting window state %s.\n",
 					GTK_WIDGET_MAPPED(widget) ?
 					"non-iconified" : "iconified");
 			}
 #endif
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal, buf, len);
 			break;
 		case 13:
 			/* Send window location, in pixels. */
 			gdk_window_get_origin(widget->window,
 					      &width, &height);
-			snprintf(buf, sizeof(buf),
-				 "%s%d;%dt", _VTE_CAP_CSI,
+			len = g_snprintf(buf, sizeof(buf),
+				 _VTE_CAP_CSI "%d;%dt",
 				 width + VTE_PAD_WIDTH, height + VTE_PAD_WIDTH);
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Reporting window location"
+				g_printerr("Reporting window location"
 					"(%d++,%d++).\n",
 					width, height);
 			}
 #endif
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal, buf, len);
 			break;
 		case 14:
 			/* Send window size, in pixels. */
-			gdk_drawable_get_size(widget->window,
-					      &width, &height);
-			snprintf(buf, sizeof(buf),
-				 "%s%d;%dt", _VTE_CAP_CSI,
-				 height - 2 * VTE_PAD_WIDTH,
-				 width - 2 * VTE_PAD_WIDTH);
+			len = g_snprintf(buf, sizeof(buf),
+				 _VTE_CAP_CSI "%d;%dt",
+				 widget->allocation.height - 2 * VTE_PAD_WIDTH,
+				 widget->allocation.width - 2 * VTE_PAD_WIDTH);
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Reporting window size "
+				g_printerr("Reporting window size "
 					"(%dx%dn",
 					width - 2 * VTE_PAD_WIDTH,
 					height - 2 * VTE_PAD_WIDTH);
 			}
 #endif
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal, buf, len);
 			break;
 		case 18:
 			/* Send widget size, in cells. */
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Reporting widget size.\n");
+				g_printerr("Reporting widget size.\n");
 			}
 #endif
-			snprintf(buf, sizeof(buf),
-				 "%s%ld;%ldt", _VTE_CAP_CSI,
+			len = g_snprintf(buf, sizeof(buf),
+				 _VTE_CAP_CSI "%ld;%ldt",
 				 terminal->row_count,
 				 terminal->column_count);
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal, buf, len);
 			break;
 		case 19:
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Reporting screen size.\n");
+				g_printerr("Reporting screen size.\n");
 			}
 #endif
 			if (gtk_widget_has_screen(widget)) {
@@ -3981,45 +3946,39 @@ vte_sequence_handler_window_manipulation(VteTerminal *terminal,
 			}
 			height = gdk_screen_get_height(gscreen);
 			width = gdk_screen_get_width(gscreen);
-			snprintf(buf, sizeof(buf),
-				 "%s%ld;%ldt", _VTE_CAP_CSI,
+			len = g_snprintf(buf, sizeof(buf),
+				 _VTE_CAP_CSI "%ld;%ldt",
 				 height / terminal->char_height,
 				 width / terminal->char_width);
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal, buf, len);
 			break;
 		case 20:
 			/* Report the icon title. */
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Reporting icon title.\n");
+				g_printerr("Reporting icon title.\n");
 			}
 #endif
-			snprintf(buf, sizeof(buf),
-				 "%sL%s%s",
-				 _VTE_CAP_OSC,
-				 "Terminal",
-				 _VTE_CAP_ST);
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal,
+				 _VTE_CAP_OSC "LTerminal" _VTE_CAP_ST,
+				 sizeof(_VTE_CAP_OSC "LTerminal" _VTE_CAP_ST));
 			break;
 		case 21:
 			/* Report the window title. */
 #ifdef VTE_DEBUG
 			if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-				fprintf(stderr, "Reporting window title.\n");
+				g_printerr("Reporting window title.\n");
 			}
 #endif
-			snprintf(buf, sizeof(buf),
-				 "%sL%s%s",
-				 _VTE_CAP_OSC,
-				 "Terminal",
-				 _VTE_CAP_ST);
-			vte_terminal_feed_child(terminal, buf, strlen(buf));
+			vte_terminal_feed_child(terminal,
+				 _VTE_CAP_OSC "Terminal" _VTE_CAP_ST,
+				 sizeof(_VTE_CAP_OSC "Terminal" _VTE_CAP_ST));
 			break;
 		default:
 			if (param >= 24) {
 #ifdef VTE_DEBUG
 				if (_vte_debug_on(VTE_DEBUG_PARSE)) {
-					fprintf(stderr, "Resizing to %ld rows.\n",
+					g_printerr("Resizing to %ld rows.\n",
 						param);
 				}
 #endif

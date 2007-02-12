@@ -163,34 +163,22 @@ _vte_gl_destroy(struct _vte_draw *draw)
 	struct _vte_gl_data *data;
 	GdkDisplay *gdisplay;
 	Display *display;
-	GdkScreen *gscreen;
-	int screen;
 
 	data = (struct _vte_gl_data*) draw->impl_data;
 	gdisplay = gdk_display_get_default();
 	display = gdk_x11_display_get_xdisplay(gdisplay);
-	gscreen = gdk_screen_get_default();
-	screen = gdk_x11_screen_get_screen_number(gscreen);
 
 	_vte_buffer_free(data->buffer);
-	data->buffer = NULL;
 
 	_vte_glyph_cache_free(data->cache);
-	data->cache = NULL;
 
-	if (GDK_IS_PIXBUF(data->bgpixbuf)) {
-		g_object_unref(G_OBJECT(data->bgpixbuf));
+	if (data->bgpixbuf != NULL) {
+		g_object_unref(data->bgpixbuf);
 	}
-	data->bgpixbuf = NULL;
 
 	glXMakeCurrent(display, None, data->context);
 
 	glXDestroyContext(display, data->context);
-	data->context = NULL;
-
-	data->scrollx = data->scrolly = 0;
-
-	memset(&data->color, 0, sizeof(data->color));
 
 	g_slice_free(struct _vte_gl_data, draw->impl_data);
 }
@@ -285,8 +273,8 @@ _vte_gl_set_background_image(struct _vte_draw *draw,
 	bgpixbuf = vte_bg_get_pixbuf(vte_bg_get_for_screen(screen),
 			 	     type, pixbuf, file,
 				     tint, saturation);
-	if (GDK_IS_PIXBUF(data->bgpixbuf)) {
-		g_object_unref(G_OBJECT(data->bgpixbuf));
+	if (data->bgpixbuf != NULL) {
+		g_object_unref(data->bgpixbuf);
 	}
 	data->bgpixbuf = bgpixbuf;
 }
@@ -308,7 +296,7 @@ _vte_gl_clear(struct _vte_draw *draw, gint x, gint y, gint width, gint height)
 
 	glXMakeCurrent(display, data->glwindow, data->context);
 
-	if (GDK_IS_PIXBUF(data->bgpixbuf)) {
+	if (data->bgpixbuf != NULL) {
 		pixbufw = gdk_pixbuf_get_width(data->bgpixbuf);
 		pixbufh = gdk_pixbuf_get_height(data->bgpixbuf);
 	} else {
@@ -606,8 +594,8 @@ _vte_gl_set_scroll(struct _vte_draw *draw, gint x, gint y)
 	data->scrolly = y;
 }
 
-struct _vte_draw_impl _vte_draw_gl = {
-	"VteGL", "VTE_USE_GL",
+const struct _vte_draw_impl _vte_draw_gl = {
+	"GL",
 	_vte_gl_check,
 	_vte_gl_create,
 	_vte_gl_destroy,

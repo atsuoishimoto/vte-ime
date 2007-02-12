@@ -26,14 +26,29 @@
 
 #include <glib/gi18n-lib.h>
 
+G_DEFINE_TYPE(VteBg, vte_bg, G_TYPE_OBJECT)
+
 struct VteBgPrivate {
 	GList *cache;
 };
 
+struct VteBgCacheItem {
+	enum VteBgSourceType source_type;
+	GdkPixbuf *source_pixbuf;
+	char *source_file;
+
+	GdkColor tint_color;
+	double saturation;
+
+	GdkPixmap *pixmap;
+	GdkPixbuf *pixbuf;
+};
+
+
 static void vte_bg_set_root_pixmap(VteBg *bg, GdkPixmap *pixmap);
-static void vte_bg_init(VteBg *bg, gpointer *klass);
 static GdkPixbuf *_vte_bg_resize_pixbuf(GdkPixbuf *pixbuf,
 					gint min_width, gint min_height);
+static void vte_bg_cache_item_free(struct VteBgCacheItem *item);
 
 #if 0
 static const char *
@@ -73,7 +88,7 @@ static struct VteBgNative *
 vte_bg_native_new(GdkWindow *window)
 {
 	struct VteBgNative *pvt;
-	pvt = g_malloc0(sizeof(struct VteBgNative));
+	pvt = g_slice_new(struct VteBgNative);
 	pvt->window = window;
 	pvt->native_window = gdk_x11_drawable_get_xid(window);
 	pvt->display = gdk_drawable_get_display(GDK_DRAWABLE(window));
@@ -124,14 +139,12 @@ vte_bg_root_pixmap(VteBg *bg)
 				gint pwidth, pheight;
 				gdk_drawable_get_size(pixmap,
 						      &pwidth, &pheight);
-				fprintf(stderr, "New background image %dx%d\n",
+				g_printerr("New background image %dx%d\n",
 					pwidth, pheight);
 			}
 #endif
 		}
-		if (pixmaps != NULL) {
-			g_free(pixmaps);
-		}
+		g_free(pixmaps);
 	}
 	_vte_bg_display_sync(bg);
 	gdk_error_trap_pop();
@@ -175,12 +188,43 @@ vte_bg_root_filter(GdkXEvent *xevent, GdkEvent *event, gpointer data)
 {
 	return GDK_FILTER_CONTINUE;
 }
+static void
+_vte_bg_display_sync(VteBg *bg)
+{
+}
+
+static GdkPixmap *
+vte_bg_root_pixmap(VteBg *bg)
+{
+	return NULL;
+}
 #endif
 
+
 static void
-vte_bg_class_init(VteBgClass *klass, gpointer data)
+vte_bg_finalize (GObject *obj)
 {
+	VteBg *bg;
+
+	bg = VTE_BG (obj);
+
+	if (bg->pvt->cache) {
+		g_list_foreach (bg->pvt->cache, (GFunc)vte_bg_cache_item_free, NULL);
+		g_list_free (bg->pvt->cache);
+	}
+
+	G_OBJECT_CLASS(vte_bg_parent_class)->finalize (obj);
+}
+
+static void
+vte_bg_class_init(VteBgClass *klass)
+{
+	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
+
 	bindtextdomain(PACKAGE, LOCALEDIR);
+
+	gobject_class->finalize = vte_bg_finalize;
+
 	klass->root_pixmap_changed = g_signal_new("root-pixmap-changed",
 						  G_OBJECT_CLASS_TYPE(klass),
 						  G_SIGNAL_RUN_LAST,
@@ -189,35 +233,13 @@ vte_bg_class_init(VteBgClass *klass, gpointer data)
 						  NULL,
 						  _vte_marshal_VOID__VOID,
 						  G_TYPE_NONE, 0);
+	g_type_class_add_private(klass, sizeof (struct VteBgPrivate));
 }
 
-GType
-vte_bg_get_type(void)
+static void
+vte_bg_init(VteBg *bg)
 {
-	static GType bg_type = 0;
-	static GTypeInfo bg_type_info = {
-		sizeof(VteBgClass),
-
-		(GBaseInitFunc)NULL,
-		(GBaseFinalizeFunc)NULL,
-
-		(GClassInitFunc)vte_bg_class_init,
-		(GClassFinalizeFunc)NULL,
-		NULL,
-
-		sizeof(VteBg),
-		0,
-		(GInstanceInitFunc) vte_bg_init,
-
-		(const GTypeValueTable *) NULL,
-	};
-	if (bg_type == 0) {
-		bg_type = g_type_register_static(G_TYPE_OBJECT,
-						     "VteBg",
-						     &bg_type_info,
-						     0);
-	}
-	return bg_type;
+	bg->pvt = G_TYPE_INSTANCE_GET_PRIVATE (bg, VTE_TYPE_BG, struct VteBgPrivate);
 }
 
 /**
@@ -239,15 +261,14 @@ vte_bg_get_for_screen(GdkScreen *screen)
 	bg = g_object_get_data(G_OBJECT(screen), "vte-bg");
 	if (G_UNLIKELY(bg == NULL)) {
 		bg = g_object_new(VTE_TYPE_BG, NULL);
-		g_object_set_data(G_OBJECT(screen), "vte-bg", bg);
+		g_object_set_data_full(G_OBJECT(screen),
+			 	"vte-bg", bg, (GDestroyNotify)g_object_unref);
 
 		/* connect bg to screen */
 		bg->screen = screen;
 		window = gdk_screen_get_root_window(screen);
 		bg->native = vte_bg_native_new(window);
 		bg->root_pixmap = vte_bg_root_pixmap(bg);
-		bg->pvt = g_malloc0(sizeof(struct VteBgPrivate));
-		bg->pvt->cache = NULL;
 		events = gdk_window_get_events(window);
 		events |= GDK_PROPERTY_CHANGE_MASK;
 		gdk_window_set_events(window, events);
@@ -255,23 +276,6 @@ vte_bg_get_for_screen(GdkScreen *screen)
 	}
 
 	return bg;
-}
-
-struct VteBgCacheItem {
-	enum VteBgSourceType source_type;
-	GdkPixbuf *source_pixbuf;
-	char *source_file;
-
-	GdkColor tint_color;
-	double saturation;
-
-	GdkPixmap *pixmap;
-	GdkPixbuf *pixbuf;
-};
-
-static void
-vte_bg_init(VteBg *bg, gpointer *klass)
-{
 }
 
 /* Generate lookup tables for desaturating an image toward a given color.  The
@@ -322,48 +326,42 @@ vte_bg_colors_equal(const GdkColor *a, const GdkColor *b)
 }
 
 static void
+vte_bg_cache_item_free(struct VteBgCacheItem *item)
+{
+	/* Clean up whatever is left in the structure. */
+	if (item->source_pixbuf != NULL) {
+		g_object_remove_weak_pointer(G_OBJECT(item->source_pixbuf),
+				(gpointer*)&item->source_pixbuf);
+	}
+	g_free(item->source_file);
+	if (item->pixmap != NULL) {
+		g_object_remove_weak_pointer(G_OBJECT(item->pixmap),
+				(gpointer*)&item->pixmap);
+	}
+	if (item->pixbuf != NULL) {
+		g_object_remove_weak_pointer(G_OBJECT(item->pixbuf),
+				(gpointer*)&item->pixbuf);
+	}
+
+	g_slice_free(struct VteBgCacheItem, item);
+}
+
+static void
 vte_bg_cache_prune_int(VteBg *bg, gboolean root)
 {
-	GList *i;
-	struct VteBgCacheItem *item;
-	GList *removals = NULL;
-	i = 0;
-	for (i = bg->pvt->cache; i != NULL; i = g_list_next(i)) {
-		item = i->data;
+	GList *i, *next;
+	for (i = bg->pvt->cache; i != NULL; i = next) {
+		struct VteBgCacheItem *item = i->data;
+		next = g_list_next (i);
 		/* Prune the item if either
 		 * it is a "root pixmap" item and we want to prune them, or
 		 * its pixmap and pixbuf fields are both NULL because whichever
 		 * object it created has been destroyoed. */
 		if ((root && (item->source_type == VTE_BG_SOURCE_ROOT)) ||
 		    ((item->pixmap == NULL) && (item->pixbuf == NULL))) {
-			/* Clean up whatever is left in the structure. */
-			if (G_IS_OBJECT(item->source_pixbuf)) {
-				g_object_remove_weak_pointer(G_OBJECT(item->source_pixbuf),
-							     (gpointer*)&item->source_pixbuf);
-			}
-			item->source_pixbuf = NULL;
-			if (item->source_file) {
-				g_free(item->source_file);
-			}
-			item->source_file = NULL;
-			if (G_IS_OBJECT(item->pixmap)) {
-				g_object_remove_weak_pointer(G_OBJECT(item->pixmap),
-							     (gpointer*)&item->pixmap);
-			}
-			item->pixmap = NULL;
-			if (G_IS_OBJECT(item->pixbuf)) {
-				g_object_remove_weak_pointer(G_OBJECT(item->pixbuf),
-							     (gpointer*)&item->pixbuf);
-			}
-			item->pixbuf = NULL;
-			removals = g_list_prepend(removals, i->data);
+			vte_bg_cache_item_free (item);
+			bg->pvt->cache = g_list_delete_link(bg->pvt->cache, i);
 		}
-	}
-	if (removals != NULL) {
-		for (i = removals; i != NULL; i = g_list_next(i)) {
-			bg->pvt->cache = g_list_remove(bg->pvt->cache, i->data);
-		}
-		g_list_free(removals);
 	}
 }
 
@@ -393,10 +391,6 @@ _vte_bg_resize_pixbuf(GdkPixbuf *pixbuf, gint min_width, gint min_height)
 	gint dst_width, dst_height;
 	gint x, y;
 
-	if (!GDK_IS_PIXBUF(pixbuf)) {
-		return pixbuf;
-	}
-
 	src_width = gdk_pixbuf_get_width(pixbuf);
 	src_height = gdk_pixbuf_get_height(pixbuf);
 	dst_width = (((min_width - 1) / src_width) + 1) * src_width;
@@ -407,7 +401,7 @@ _vte_bg_resize_pixbuf(GdkPixbuf *pixbuf, gint min_width, gint min_height)
 
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_MISC) || _vte_debug_on(VTE_DEBUG_EVENTS)) {
-		fprintf(stderr, "Resizing (root?) pixbuf from %dx%d to %dx%d\n",
+		g_printerr("Resizing (root?) pixbuf from %dx%d to %dx%d\n",
 			src_width, src_height, dst_width, dst_height);
 	}
 #endif
@@ -425,14 +419,14 @@ _vte_bg_resize_pixbuf(GdkPixbuf *pixbuf, gint min_width, gint min_height)
 		}
 	}
 
-	g_object_unref(G_OBJECT(pixbuf));
+	g_object_unref(pixbuf);
 	return tmp;
 }
 
 static void
 vte_bg_set_root_pixmap(VteBg *bg, GdkPixmap *pixmap)
 {
-	if (GDK_IS_PIXMAP(bg->root_pixmap)) {
+	if (bg->root_pixmap != NULL) {
 		g_object_unref(bg->root_pixmap);
 	}
 	bg->root_pixmap = pixmap;
@@ -447,15 +441,15 @@ vte_bg_cache_add(VteBg *bg, struct VteBgCacheItem *item)
 {
 	vte_bg_cache_prune(bg);
 	bg->pvt->cache = g_list_prepend(bg->pvt->cache, item);
-	if (G_IS_OBJECT(item->source_pixbuf)) {
+	if (item->source_pixbuf != NULL) {
 		g_object_add_weak_pointer(G_OBJECT(item->source_pixbuf),
 					  (gpointer*)&item->source_pixbuf);
 	}
-	if (G_IS_OBJECT(item->pixbuf)) {
+	if (item->pixbuf != NULL) {
 		g_object_add_weak_pointer(G_OBJECT(item->pixbuf),
 					  (gpointer*)&item->pixbuf);
 	}
-	if (G_IS_OBJECT(item->pixmap)) {
+	if (item->pixmap != NULL) {
 		g_object_add_weak_pointer(G_OBJECT(item->pixmap),
 					  (gpointer*)&item->pixmap);
 	}
@@ -500,7 +494,7 @@ vte_bg_desaturate_pixbuf(GdkPixbuf *pixbuf,
 
 /* Search for a match in the cache, and if found, return an object with an
    additional ref. */
-static GObject *
+static gpointer
 vte_bg_cache_search(VteBg *bg,
 		    enum VteBgSourceType source_type,
 		    const GdkPixbuf *source_pixbuf,
@@ -510,14 +504,13 @@ vte_bg_cache_search(VteBg *bg,
 		    gboolean pixbuf,
 		    gboolean pixmap)
 {
-	struct VteBgCacheItem *item;
 	GList *i;
 
 	g_assert((pixmap && !pixbuf) || (!pixmap && pixbuf));
-	vte_bg_cache_prune(bg);
 
+	vte_bg_cache_prune(bg);
 	for (i = bg->pvt->cache; i != NULL; i = g_list_next(i)) {
-		item = i->data;
+		struct VteBgCacheItem *item = i->data;
 		if (vte_bg_colors_equal(&item->tint_color, tint) &&
 		    (saturation == item->saturation) &&
 		    (source_type == item->source_type)) {
@@ -538,13 +531,11 @@ vte_bg_cache_search(VteBg *bg,
 				g_assert_not_reached();
 				break;
 			}
-			if (pixbuf && GDK_IS_PIXBUF(item->pixbuf)) {
-				g_object_ref(G_OBJECT(item->pixbuf));
-				return G_OBJECT(item->pixbuf);
+			if (pixbuf && item->pixbuf != NULL) {
+				return g_object_ref(item->pixbuf);
 			}
-			if (pixmap && GDK_IS_PIXMAP(item->pixmap)) {
-				g_object_ref(G_OBJECT(item->pixmap));
-				return G_OBJECT(item->pixmap);
+			if (pixmap && item->pixmap != NULL) {
+				return g_object_ref(item->pixmap);
 			}
 		}
 	}
@@ -561,7 +552,7 @@ vte_bg_get_pixmap(VteBg *bg,
 		  GdkColormap *colormap)
 {
 	struct VteBgCacheItem *item;
-	GObject *cached;
+	gpointer cached;
 	GdkColormap *rcolormap;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
@@ -575,11 +566,11 @@ vte_bg_get_pixmap(VteBg *bg,
 	cached = vte_bg_cache_search(bg, source_type,
 				     source_pixbuf, source_file,
 				     tint, saturation, FALSE, TRUE);
-	if (G_IS_OBJECT(cached) && GDK_IS_PIXMAP(cached)) {
-		return GDK_PIXMAP(cached);
+	if (cached != NULL) {
+		return cached;
 	}
 
-	item = g_malloc0(sizeof(struct VteBgCacheItem));
+	item = g_slice_new(struct VteBgCacheItem);
 	item->source_type = source_type;
 	item->source_pixbuf = NULL;
 	item->source_file = NULL;
@@ -628,7 +619,7 @@ vte_bg_get_pixmap(VteBg *bg,
 	case VTE_BG_SOURCE_PIXBUF:
 		pixbuf = source_pixbuf;
 		if (GDK_IS_PIXBUF(pixbuf)) {
-			g_object_ref(G_OBJECT(pixbuf));
+			g_object_ref(pixbuf);
 		}
 		break;
 	case VTE_BG_SOURCE_FILE:
@@ -644,7 +635,7 @@ vte_bg_get_pixmap(VteBg *bg,
 
 	item->source_pixbuf = source_pixbuf;
 	if (G_IS_OBJECT(item->source_pixbuf)) {
-		g_object_ref(G_OBJECT(item->source_pixbuf));
+		g_object_ref(item->source_pixbuf);
 	}
 	item->source_file = file;
 
@@ -666,10 +657,10 @@ vte_bg_get_pixmap(VteBg *bg,
 							       colormap,
 							       &pixmap, &mask,
 							       0);
-		if (G_IS_OBJECT(mask)) {
-			g_object_unref(G_OBJECT(mask));
+		if (mask != NULL) {
+			g_object_unref(mask);
 		}
-		g_object_unref(G_OBJECT(pixbuf));
+		g_object_unref(pixbuf);
 	}
 
 	item->pixmap = pixmap;
@@ -688,7 +679,7 @@ vte_bg_get_pixbuf(VteBg *bg,
 		  double saturation)
 {
 	struct VteBgCacheItem *item;
-	GObject *cached;
+	gpointer cached;
 	GdkPixbuf *pixbuf;
 	GdkColormap *rcolormap;
 	char *file;
@@ -700,11 +691,11 @@ vte_bg_get_pixbuf(VteBg *bg,
 	cached = vte_bg_cache_search(bg, source_type,
 				     source_pixbuf, source_file,
 				     tint, saturation, TRUE, FALSE);
-	if (G_IS_OBJECT(cached) && GDK_IS_PIXBUF(cached)) {
-		return GDK_PIXBUF(cached);
+	if (cached != NULL) {
+		return cached;
 	}
 
-	item = g_malloc0(sizeof(struct VteBgCacheItem));
+	item = g_slice_new(struct VteBgCacheItem);
 	item->source_type = source_type;
 	item->source_pixbuf = NULL;
 	item->source_file = NULL;
@@ -752,7 +743,7 @@ vte_bg_get_pixbuf(VteBg *bg,
 	case VTE_BG_SOURCE_PIXBUF:
 		pixbuf = source_pixbuf;
 		if (G_IS_OBJECT(pixbuf)) {
-			g_object_ref(G_OBJECT(pixbuf));
+			g_object_ref(pixbuf);
 		}
 		break;
 	case VTE_BG_SOURCE_FILE:
@@ -771,7 +762,7 @@ vte_bg_get_pixbuf(VteBg *bg,
 
 	if (GDK_IS_PIXBUF(item->source_pixbuf)) {
 		if (saturation == 1.0) {
-			g_object_ref(G_OBJECT(item->source_pixbuf));
+			g_object_ref(item->source_pixbuf);
 			item->pixbuf = item->source_pixbuf;
 		} else {
 			item->pixbuf = gdk_pixbuf_copy(item->source_pixbuf);
