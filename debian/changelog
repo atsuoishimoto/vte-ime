@@ -1,3 +1,15 @@
+vte (1:0.15.3-0ubuntu1) feisty; urgency=low
+
+  * New upstream release
+  * debian/patches/90_fix_envv.patch:
+    - removed, taken upstream
+  * debian/patches/30_pkg-config-private-field-for-freetype.patch:
+    - removed, taken upstream
+  * debian/patches/91_keep_fds.patch:
+    - updated
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Tue, 13 Feb 2007 09:37:18 +0100
+
 vte (1:0.15.2-0ubuntu1) feisty; urgency=low
 
   [Daniel Holbach]

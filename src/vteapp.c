@@ -147,20 +147,12 @@ destroy_and_quit(GtkWidget *widget, gpointer data)
 static void
 destroy_and_quit_eof(GtkWidget *widget, gpointer data)
 {
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_MISC)) {
-		g_print("Detected EOF.\n");
-	}
-#endif
+	_vte_debug_print(VTE_DEBUG_MISC, "Detected EOF.\n");
 }
 static void
 destroy_and_quit_exited(GtkWidget *widget, gpointer data)
 {
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_MISC)) {
-		g_print("Detected child exit.\n");
-	}
-#endif
+	_vte_debug_print(VTE_DEBUG_MISC, "Detected child exit.\n");
 	destroy_and_quit(widget, data);
 }
 
@@ -392,7 +384,7 @@ take_xconsole_ownership(GtkWidget *widget, gpointer data)
 	char *name, hostname[255];
 	GdkAtom atom;
 	GtkClipboard *clipboard;
-	GtkTargetEntry targets[] = {
+	const GtkTargetEntry targets[] = {
 		{"UTF8_STRING", 0, 0},
 		{"COMPOUND_TEXT", 0, 0},
 		{"TEXT", 0, 0},
@@ -436,15 +428,14 @@ main(int argc, char **argv)
 		NULL};
 	const char *background = NULL;
 	gboolean transparent = FALSE, audible = TRUE, blink = TRUE,
-		 debug = FALSE, dingus = FALSE, geometry = TRUE, dbuffer = TRUE,
+		 debug = FALSE, dingus = FALSE, dbuffer = TRUE,
 		 console = FALSE, scroll = FALSE, keep = FALSE,
 		 icon_title = FALSE, shell = TRUE, highlight_set = FALSE,
 		 cursor_set = FALSE, reverse = FALSE;
 	VteTerminalAntiAlias antialias = VTE_ANTI_ALIAS_USE_DEFAULT;
+        char *geometry = NULL;
 	gint lines = 100;
-#ifdef VTE_DEBUG
 	const char *message = "Launching interactive shell...\r\n";
-#endif
 	const char *font = NULL;
 	const char *termcap = NULL;
 	const char *command = NULL;
@@ -452,33 +443,33 @@ main(int argc, char **argv)
 	GdkColor fore, back, tint, highlight, cursor;
 	const GOptionEntry options[]={
 		{
-		       	"antialias", 'A', 0,
-		       	G_OPTION_ARG_NONE, &antialias,
+			"antialias", 'A', 0,
+			G_OPTION_ARG_NONE, &antialias,
 			"Disable the use of anti-aliasing", NULL
 		},
 		{
-		       	"background", 'B', 0,
-		       	G_OPTION_ARG_FILENAME, &background,
+			"background", 'B', 0,
+			G_OPTION_ARG_FILENAME, &background,
 			"Specify a background image", NULL
 		},
 		{
-		       	"console", 'C', 0,
-		       	G_OPTION_ARG_NONE, &console,
+			"console", 'C', 0,
+			G_OPTION_ARG_NONE, &console,
 			"Watch /dev/console", NULL
 		},
 		{
-		       	"dingus", 'D', 0,
-		       	G_OPTION_ARG_NONE, &dingus,
+			"dingus", 'D', 0,
+			G_OPTION_ARG_NONE, &dingus,
 			"Highlight URLs inside the terminal", NULL
 		},
 		{
-		       	"shell", 'S', G_OPTION_FLAG_REVERSE,
-		       	G_OPTION_ARG_NONE, &shell,
+			"shell", 'S', G_OPTION_FLAG_REVERSE,
+			G_OPTION_ARG_NONE, &shell,
 			"Disable spawning a shell inside the terminal", NULL
 		},
 		{
-		       	"transparent", 'T', 0,
-		       	G_OPTION_ARG_NONE, &transparent,
+			"transparent", 'T', 0,
+			G_OPTION_ARG_NONE, &transparent,
 			"Enable the use of a transparent background", NULL
 		},
 		{
@@ -490,7 +481,7 @@ main(int argc, char **argv)
 			"audible", 'a', G_OPTION_FLAG_REVERSE,
 			G_OPTION_ARG_NONE, &audible,
 			"Switch between the audible and visible terminal bell",
-		       	NULL
+			NULL
 		},
 		{
 			"blink", 'b', G_OPTION_FLAG_REVERSE,
@@ -513,9 +504,9 @@ main(int argc, char **argv)
 			"Specify a font to use", NULL
 		},
 		{
-			"geometry", 'g', G_OPTION_FLAG_REVERSE,
-			G_OPTION_ARG_NONE, &geometry,
-			"???", NULL
+			"geometry", 'g', 0,
+			G_OPTION_ARG_STRING, &geometry,
+			"Set the size (in characters) and position", "GEOMETRY"
 		},
 		{
 			"highlight", 'h', 0,
@@ -530,8 +521,7 @@ main(int argc, char **argv)
 		{
 			"keep", 'k', 0,
 			G_OPTION_ARG_NONE, &keep,
-			"Live on after the window closes",
-		       	NULL
+			"Live on after the window closes", NULL
 		},
 		{
 			"scrollback-lines", 'n', 0,
@@ -545,7 +535,7 @@ main(int argc, char **argv)
 		},
 		{
 			"scroll-background", 's', 0,
-			G_OPTION_ARG_NONE, &cursor_set,
+			G_OPTION_ARG_NONE, &scroll,
 			"Enable a scrolling background", NULL
 		},
 		{
@@ -790,11 +780,8 @@ main(int argc, char **argv)
 	if (!console) {
 		if (shell) {
 			/* Launch a shell. */
-	#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_MISC)) {
+			_VTE_DEBUG_IF(VTE_DEBUG_MISC)
 				vte_terminal_feed(terminal, message, -1);
-			}
-	#endif
 			vte_terminal_fork_command(terminal,
 						  command, NULL, env_add,
 						  working_directory,
@@ -844,7 +831,16 @@ main(int argc, char **argv)
 	/* Go for it! */
 	add_weak_pointer(G_OBJECT(widget), &widget);
 	add_weak_pointer(G_OBJECT(window), &window);
+
+        gtk_widget_realize(widget);
+        if (geometry) {
+                if (!gtk_window_parse_geometry (GTK_WINDOW(window), geometry)) {
+                        g_warning (_("Could not parse the geometry spec passed to --geometry"));
+                }
+        }
+
 	gtk_widget_show_all(window);
+
 
 	gtk_main();
 

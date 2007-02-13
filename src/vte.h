@@ -23,6 +23,8 @@
 #include <gtk/gtk.h>
 #include <pango/pango.h>
 
+#include <sys/types.h> /* for pid_t */
+
 G_BEGIN_DECLS
 
 /* Private implementation details. */
@@ -197,7 +199,7 @@ GtkType vte_terminal_anti_alias_get_type(void);
 
 /* You can get by with just these two functions. */
 GtkWidget *vte_terminal_new(void);
-GPid vte_terminal_fork_command(VteTerminal *terminal,
+pid_t vte_terminal_fork_command(VteTerminal *terminal,
 				const char *command, char **argv,
 				char **envv, const char *directory,
 				gboolean lastlog,
@@ -205,7 +207,7 @@ GPid vte_terminal_fork_command(VteTerminal *terminal,
 				gboolean wtmp);
 
 /* Users of libzvt may find this useful. */
-GPid vte_terminal_forkpty(VteTerminal *terminal,
+pid_t vte_terminal_forkpty(VteTerminal *terminal,
 			   char **envv, const char *directory,
 			   gboolean lastlog,
 			   gboolean utmp,
@@ -223,6 +225,10 @@ void vte_terminal_copy_clipboard(VteTerminal *terminal);
 void vte_terminal_paste_clipboard(VteTerminal *terminal);
 void vte_terminal_copy_primary(VteTerminal *terminal);
 void vte_terminal_paste_primary(VteTerminal *terminal);
+
+/* simple manipulation of selection */
+void vte_terminal_select_all(VteTerminal *terminal);
+void vte_terminal_select_none(VteTerminal *terminal);
 
 /* Set the terminal's size. */
 void vte_terminal_set_size(VteTerminal *terminal,
@@ -349,7 +355,6 @@ char *vte_terminal_get_text_range(VteTerminal *terminal,
 				  GArray *attributes);
 void vte_terminal_get_cursor_position(VteTerminal *terminal,
 				      glong *column, glong *row);
-
 /* Display string matching:  clear all matching expressions. */
 void vte_terminal_match_clear_all(VteTerminal *terminal);
 

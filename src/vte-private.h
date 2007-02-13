@@ -67,7 +67,7 @@ G_BEGIN_DECLS
 #define VTE_CUR_BG			261
 
 #define VTE_SATURATION_MAX		10000
-#define VTE_SCROLLBACK_MIN		100
+#define VTE_SCROLLBACK_INIT		100
 #define VTE_DEFAULT_CURSOR		GDK_XTERM
 #define VTE_MOUSING_CURSOR		GDK_LEFT_PTR
 #define VTE_TAB_MAX			999
@@ -79,7 +79,7 @@ G_BEGIN_DECLS
 #define VTE_FX_PRIORITY			G_PRIORITY_DEFAULT_IDLE
 #define VTE_REGCOMP_FLAGS		REG_EXTENDED
 #define VTE_REGEXEC_FLAGS		0
-#define VTE_INPUT_CHUNK_SIZE		0x1000
+#define VTE_INPUT_CHUNK_SIZE		0x2000
 #define VTE_INVALID_BYTE		'?'
 #define VTE_DISPLAY_TIMEOUT		10
 #define VTE_UPDATE_TIMEOUT		10
@@ -177,12 +177,16 @@ struct _VteTerminalPrivate {
 	/* Input data queues. */
 	const char *encoding;		/* the pty's encoding */
 	struct _vte_iso2022_state *iso2022;
-	struct _vte_buffer *incoming;	/* pending bytestream */
+	struct _vte_incoming_chunk{
+		struct _vte_incoming_chunk *next;
+		gint len;
+		guchar data[VTE_INPUT_CHUNK_SIZE
+			- sizeof(struct _vte_incoming_chunk *) - sizeof(gint)];
+	} *incoming;			/* pending bytestream */
 	GArray *pending;		/* pending characters */
-	gint process_timeout;
-	gint update_timeout;
 	GSList *update_regions;
 	gboolean invalidated_all;	/* pending refresh of entire terminal */
+	GList *active;                  /* is the terminal processing data */
 
 	/* Output data queue. */
 	struct _vte_buffer *outgoing;	/* pending input characters */
@@ -227,7 +231,9 @@ struct _VteTerminalPrivate {
 		struct vte_charcell basic_defaults;	/* original defaults */
 		gboolean status_line;
 		GString *status_line_contents;
+		gboolean status_line_changed;
 	} normal_screen, alternate_screen, *screen;
+	VteRowData *free_row;
 
 	/* Selection information. */
 	GArray *word_chars;
@@ -275,7 +281,7 @@ struct _VteTerminalPrivate {
 	/* Cursor blinking. */
 	gboolean cursor_blink_state;
 	gboolean cursor_blinks;
-	gint cursor_blink_tag;
+	guint cursor_blink_tag;
 	gint cursor_blink_timeout;
 	gint64 cursor_blink_time;
 	gboolean cursor_visible;
@@ -336,10 +342,15 @@ struct _VteTerminalPrivate {
 	gboolean accessible_emit;
 
 	/* Adjustment updates pending. */
-	gboolean adjustment_changed_tag;
+	gboolean adjustment_changed_pending;
+	gboolean adjustment_value_changed_pending;
+
+	/* window name changes */
+	gchar *window_title_changed;
+	gchar *icon_title_changed;
 
 	/* Background images/"transparency". */
-	guint bg_update_pending;
+	gboolean bg_update_pending;
 	gboolean bg_transparent;
 	GdkPixbuf *bg_pixbuf;
 	char *bg_file;
@@ -357,7 +368,7 @@ struct _VteTerminalPrivate {
 };
 
 
-void _vte_terminal_ensure_cursor(VteTerminal *terminal, gboolean current);
+VteRowData *_vte_terminal_ensure_cursor(VteTerminal *terminal, gboolean current);
 void _vte_terminal_set_pointer_visible(VteTerminal *terminal, gboolean visible);
 void _vte_invalidate_all(VteTerminal *terminal);
 void _vte_invalidate_cells(VteTerminal *terminal,
@@ -367,9 +378,9 @@ void _vte_invalidate_cell(VteTerminal *terminal, glong col, glong row);
 void _vte_invalidate_cursor_once(VteTerminal *terminal, gboolean periodic);
 VteRowData * _vte_new_row_data(VteTerminal *terminal);
 VteRowData * _vte_new_row_data_sized(VteTerminal *terminal, gboolean fill);
-void _vte_terminal_adjust_adjustments(VteTerminal *terminal, gboolean immediate);
+VteRowData * _vte_reset_row_data (VteTerminal *terminal, VteRowData *row, gboolean fill);
+void _vte_terminal_adjust_adjustments(VteTerminal *terminal);
 void _vte_terminal_emit_contents_changed(VteTerminal *terminal);
-void _vte_terminal_emit_status_line_changed(VteTerminal *terminal);
 void _vte_terminal_emit_text_deleted(VteTerminal *terminal);
 void _vte_terminal_emit_text_inserted(VteTerminal *terminal);
 void _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
@@ -386,6 +397,8 @@ void _vte_terminal_clear_tabstop(VteTerminal *terminal, int column);
 gboolean _vte_terminal_get_tabstop(VteTerminal *terminal, int column);
 void _vte_terminal_set_tabstop(VteTerminal *terminal, int column);
 void _vte_terminal_update_insert_delta(VteTerminal *terminal);
+
+void _vte_terminal_inline_error_message(VteTerminal *terminal, const char *format, ...) G_GNUC_PRINTF(2,3);
 
 G_END_DECLS
 

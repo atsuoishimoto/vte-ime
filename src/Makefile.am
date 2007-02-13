@@ -7,6 +7,10 @@ EXTRA_PROGRAMS = buffer dumpkeys iso2022 pty reaper reflect-text-view reflect-vt
 EXTRA_DIST = \
 	$(pkglib_SCRIPTS) \
 	vteseq-gen.c \
+	vteseq-2.gperf \
+	vteseq-n.gperf \
+	vteseq-2.c \
+	vteseq-n.c \
 	genkeysyms.py \
 	iso2022.txt \
 	marshal.list \
@@ -21,7 +25,14 @@ EXTRA_DIST = \
 	unitable.JIS0212 \
 	unitable.KSX1001
 
-AM_CFLAGS = $(VTE_CFLAGS) $(FT2_CFLAGS) $(X_CFLAGS) \
+# gperf - files need to be modified afterwards
+#vteseq-2.c: vteseq-2.gperf
+#	gperf vteseq-2.gperf -g -a -S 4 -t -m 100 -C -H vteseq_2_hash -N vteseq_2_lookup > $@
+#vteseq-n.c: vteseq-n.gperf
+#	gperf vteseq-n.gperf -g -a -S 4 -t -m 100 -C -P -l -H vteseq_n_hash -N vteseq_n_lookup -Q vteseq_n_stringpool > $@
+
+
+AM_CFLAGS = $(VTE_CFLAGS) $(FT2_CFLAGS) $(X_CFLAGS) $(PCRE_CFLAGS) \
 	    -DG_DISABLE_ASSERT -DG_LOG_DOMAIN=\"Vte\"
 AM_CPPFLAGS = -DDATADIR='"$(datadir)"' \
 	      -DLIBEXECDIR='"$(libexecdir)"' \
@@ -107,18 +118,18 @@ endif
 # Libtool shared library versioning stuffs.
 # REVISION gets incremented whenever the source code changes without adding
 # an API or ABI change.
-VERSION_REVISION=9
+VERSION_REVISION=0
 # CURRENT must be incremented when an API or ABI change (addition or removal)
 # is made, and REVISION must be reset to 0 when this happens.
-VERSION_CURRENT=10
+VERSION_CURRENT=11
 # AGE must be incremented when an API or ABI addition is made, and REVISION
 # must be reset to 0 when this happens.
-VERSION_AGE=1
+VERSION_AGE=2
 libvte_la_LDFLAGS = $(LDFLAGS) \
 	-version-info $(VERSION_CURRENT):$(VERSION_REVISION):$(VERSION_AGE) \
 	-export-symbols-regex "^vte_terminal_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
 	@LIBTOOL_EXPORT_OPTIONS@ @LIBTOOL_FLAGS@
-libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS)
+libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS) $(PCRE_LIBS)
 
 CLEANFILES = marshal.c marshal.h
 

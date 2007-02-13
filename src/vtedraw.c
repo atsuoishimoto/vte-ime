@@ -126,11 +126,7 @@ _vte_draw_new(GtkWidget *widget)
 		draw->impl = &_vte_draw_skel;
 	}
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_MISC)) {
-		g_printerr("Using %s.\n", draw->impl->name);
-	}
-#endif
+	_vte_debug_print(VTE_DEBUG_MISC, "Using %s.\n", draw->impl->name);
 
 	draw->impl->create(draw, draw->widget);
 
@@ -171,11 +167,7 @@ _vte_draw_get_colormap(struct _vte_draw *draw, gboolean maybe_use_default)
 	if (!maybe_use_default) {
 		return NULL;
 	}
-	if (gtk_widget_has_screen(draw->widget)) {
-		screen = gtk_widget_get_screen(draw->widget);
-	} else {
-		screen = gdk_display_get_default_screen(gtk_widget_get_display(draw->widget));
-	}
+	screen = gtk_widget_get_screen(draw->widget);
 	colormap = gdk_screen_get_default_colormap(screen);
 	return colormap;
 }
@@ -231,6 +223,17 @@ _vte_draw_requires_repaint(struct _vte_draw *draw)
 {
 	g_return_val_if_fail(draw->impl != NULL, TRUE);
 	return draw->impl->requires_repaint;
+}
+
+gboolean
+_vte_draw_clip(struct _vte_draw *draw, GdkRegion *region)
+{
+	g_return_val_if_fail(draw->impl != NULL, FALSE);
+	if (draw->impl->clip == NULL) {
+		return FALSE;
+	}
+	draw->impl->clip(draw, region);
+	return TRUE;
 }
 
 void

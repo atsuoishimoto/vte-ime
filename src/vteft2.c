@@ -130,6 +130,7 @@ _vte_ft2_end(struct _vte_draw *draw)
 					  data->rgb,
 					  data->left, data->top);
 	}
+	gdk_gc_set_clip_region(widget->style->fg_gc[state], NULL);
 }
 
 static void
@@ -163,6 +164,14 @@ _vte_ft2_set_background_image(struct _vte_draw *draw,
 		g_object_unref(data->pixbuf);
 	}
 	data->pixbuf = bgpixbuf;
+}
+
+static void
+_vte_ft2_clip(struct _vte_draw *draw, GdkRegion *region)
+{
+	gdk_gc_set_clip_region(
+			draw->widget->style->fg_gc[GTK_WIDGET_STATE(draw->widget)],
+			region);
 }
 
 static inline void
@@ -213,6 +222,11 @@ _vte_ft2_set_text_font(struct _vte_draw *draw,
 	_vte_glyph_cache_set_font_description(draw->widget, NULL,
 					      data->cache, fontdesc, anti_alias,
 					      NULL, NULL);
+	_vte_debug_print(VTE_DEBUG_MISC,
+			"VteFT2 font metrics = %ldx%ld (%ld).\n",
+			data->cache->width,
+			data->cache->height,
+			data->cache->ascent);
 }
 
 static int
@@ -267,12 +281,13 @@ _vte_ft2_draw_text(struct _vte_draw *draw,
 		   GdkColor *color, guchar alpha)
 {
 	struct _vte_ft2_data *data;
-	int i, j;
+	gsize i, j;
 
 	data = (struct _vte_ft2_data*) draw->impl_data;
 
 	for (i = 0; i < n_requests; i++) {
-		if (requests[i].c == -1 || requests[i].c == 32 /* space */)
+		if (requests[i].c == (gunichar)-1 ||
+			       	requests[i].c == 32 /* space */)
 			continue;
 		_vte_glyph_draw(data->cache, requests[i].c, color,
 				requests[i].x, requests[i].y,
@@ -377,6 +392,7 @@ const struct _vte_draw_impl _vte_draw_ft2 = {
 	_vte_ft2_set_background_color,
 	_vte_ft2_set_background_image,
 	FALSE,
+	_vte_ft2_clip,
 	_vte_ft2_clear,
 	_vte_ft2_set_text_font,
 	_vte_ft2_get_text_width,

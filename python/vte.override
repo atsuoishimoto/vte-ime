@@ -2,6 +2,7 @@
 %%
 headers
 #include <Python.h>
+#define NO_IMPORT_PYGTK
 #include <pygtk/pygtk.h>
 #include <pygobject.h>
 #include <gtk/gtk.h>
@@ -114,7 +115,7 @@ _wrap_vte_terminal_fork_command(PyGObject * self, PyObject * args,
 	PyObject *py_argv = NULL, *py_envv = NULL,
 		 *loglastlog = NULL, *logutmp = NULL, *logwtmp = NULL;
 	int i, n_args, n_envs;
-	GPid pid;
+	pid_t pid;
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|sOOsOOO:fork_command",
 					 kwlist, &command, &py_argv, &py_envv,
@@ -190,7 +191,7 @@ _wrap_vte_terminal_forkpty(PyGObject * self, PyObject * args, PyObject * kwargs)
 	PyObject *py_envv = NULL,
 		 *loglastlog = NULL, *logutmp = NULL, *logwtmp = NULL;
 	int i, n_args, n_envs;
-	GPid pid;
+	pid_t pid;
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OsOOO:forkpty",
 					 kwlist, &py_envv, &directory,

@@ -1,11 +1,11 @@
-diff -Nur vte-0.15.2/src/pty.c vte-0.15.2.new/src/pty.c
---- vte-0.15.2/src/pty.c	2007-02-12 16:43:07.000000000 +0100
-+++ vte-0.15.2.new/src/pty.c	2007-02-12 16:43:08.000000000 +0100
+diff -Nur vte-0.15.3/src/pty.c vte-0.15.3.new/src/pty.c
+--- vte-0.15.3/src/pty.c	2007-02-13 08:26:18.000000000 +0100
++++ vte-0.15.3.new/src/pty.c	2007-02-13 10:31:24.000000000 +0100
 @@ -158,7 +158,27 @@
  		const char *name;
  		int fd;
  	} tty;
-+   int keep_fd;
++	int keep_fd;
  };
 +
 +static int
@@ -26,18 +26,18 @@ diff -Nur vte-0.15.2/src/pty.c vte-0.15.2.new/src/pty.c
 +   return res;
 +}
 +
- static void 
+ static void
  vte_pty_child_setup (gpointer arg)
  {
-@@ -186,7 +206,6 @@
- 	}
- #endif
+@@ -183,7 +203,6 @@
+ 			"Setting up child pty: name = %s, fd = %d\n",
+ 				tty ? tty : "(none)", fd);
  
 -
  	/* Start a new session and become process-group leader. */
  #if defined(HAVE_SETSID) && defined(HAVE_SETPGID)
- #ifdef VTE_DEBUG
-@@ -258,6 +277,20 @@
+ 	_vte_debug_print (VTE_DEBUG_PTY, "Starting new session\n");
+@@ -251,6 +270,20 @@
  		close(fd);
  	}
  
@@ -58,29 +58,30 @@ diff -Nur vte-0.15.2/src/pty.c vte-0.15.2.new/src/pty.c
  
  	/* Reset our signals -- our parent may have done any number of
  	 * weird things to them. */
-@@ -309,12 +342,16 @@
- 		      envp2[i] = g_strdup(envp[k]);
- 		   envp2[i] = NULL;
+@@ -310,13 +343,16 @@
+ 			g_printerr ("    directory: %s\n",
+ 					directory ? directory : "(none)");
  		}
-+		GSpawnFlags flags = (G_SPAWN_CHILD_INHERITS_STDIN |
-+ 				     G_SPAWN_FILE_AND_ARGV_ZERO |
-+ 				     G_SPAWN_SEARCH_PATH |
-+ 				     G_SPAWN_DO_NOT_REAP_CHILD);
-+  		data->keep_fd = _vte_pty_keep_fd(envp);
-+ 		if (data->keep_fd > 0) {
-+ 		   flags |= G_SPAWN_LEAVE_DESCRIPTORS_OPEN;
-+ 		}
+-
++ 		GSpawnFlags flags = (G_SPAWN_CHILD_INHERITS_STDIN |
++  				     G_SPAWN_FILE_AND_ARGV_ZERO |
++  				     G_SPAWN_SEARCH_PATH |
++  				     G_SPAWN_DO_NOT_REAP_CHILD);
++		if(argv)
++		   flags |= G_SPAWN_FILE_AND_ARGV_ZERO;
++  		if (data->keep_fd > 0)
++  		   flags |= G_SPAWN_LEAVE_DESCRIPTORS_OPEN;
  		ret = g_spawn_async_with_pipes (directory,
--				arg2, envp2, 
+-				arg2, envp2,
 -				G_SPAWN_CHILD_INHERITS_STDIN |
--				G_SPAWN_FILE_AND_ARGV_ZERO |
 -				G_SPAWN_SEARCH_PATH |
--				G_SPAWN_DO_NOT_REAP_CHILD,
+-				G_SPAWN_DO_NOT_REAP_CHILD |
+-				(argv ? G_SPAWN_FILE_AND_ARGV_ZERO : 0),
 +				arg2, envp2, flags,
  				vte_pty_child_setup, data,
  				pid,
  				NULL, NULL, NULL,
-@@ -345,6 +382,10 @@
+@@ -372,6 +408,10 @@
  	return ret;
  }
  

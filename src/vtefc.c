@@ -27,6 +27,7 @@
 #include <glib.h>
 #include "vtefc.h"
 #include "vterdb.h"
+#include "debug.h"
 
 static int
 _vte_fc_weight_from_pango_weight(int weight)
@@ -101,46 +102,33 @@ _vte_fc_transcribe_from_pango_font_description(GtkWidget *widget,
 					       FcPattern *pattern,
 				       const PangoFontDescription *font_desc)
 {
-	GdkScreen *screen;
-	const char *family = "monospace";
+	const char *family;
+	gdouble size;
 	PangoLanguage *language;
-	double size = 10.0;
-	int pango_mask;
 	PangoContext *context;
 	PangoWeight weight;
 	PangoStyle style;
 	PangoStretch stretch;
+	guint pango_mask;
 
-	if (font_desc == NULL) {
-		return;
-	}
-
+	/* Assuming font desc at least contains family and size */
 	pango_mask = pango_font_description_get_set_fields(font_desc);
+	g_assert ((pango_mask & (PANGO_FONT_MASK_FAMILY | PANGO_FONT_MASK_SIZE))
+			== (PANGO_FONT_MASK_FAMILY | PANGO_FONT_MASK_SIZE));
 
-	/* Set the family for the pattern, or use a sensible default. */
-	if (pango_mask & PANGO_FONT_MASK_FAMILY) {
-		family = pango_font_description_get_family(font_desc);
-	}
-	FcPatternAddString(pattern, FC_FAMILY, family);
+	/* Set the family for the pattern. */
+	family = pango_font_description_get_family(font_desc);
+	FcPatternAddString(pattern, FC_FAMILY, (guchar *) family);
 
-	/* Set the font size for the pattern, or use a sensible default. */
-	if (pango_mask & PANGO_FONT_MASK_SIZE) {
-		size = pango_font_description_get_size(font_desc);
-		size /= PANGO_SCALE;
-	}
-	FcPatternAddDouble(pattern, FC_SIZE, size);
+	/* Set the font size for the pattern. */
+	size = pango_font_description_get_size(font_desc);
+	FcPatternAddDouble(pattern, FC_SIZE, size / PANGO_SCALE);
 
-	/* Set the language for the pattern. */
-	if (gtk_widget_has_screen(widget)) {
-		screen = gtk_widget_get_screen(widget);
-	} else {
-		screen = gdk_display_get_default_screen(gtk_widget_get_display(widget));
-	}
-	context = gdk_pango_context_get_for_screen(screen);
+	context = gtk_widget_get_pango_context (widget);
 	language = pango_context_get_language(context);
 	if (pango_language_to_string(language) != NULL) {
 		FcPatternAddString(pattern, FC_LANG,
-				   pango_language_to_string(language));
+				   (guchar *) pango_language_to_string(language));
 	}
 
 	/* There aren't any fallbacks for these, so just omit them from the
@@ -150,20 +138,16 @@ _vte_fc_transcribe_from_pango_font_description(GtkWidget *widget,
 		FcPatternAddInteger(pattern, FC_WEIGHT,
 				    _vte_fc_weight_from_pango_weight(weight));
 	}
-
 	if (pango_mask & PANGO_FONT_MASK_STRETCH) {
 		stretch = pango_font_description_get_stretch(font_desc);
 		FcPatternAddInteger(pattern, FC_WIDTH,
 				    _vte_fc_width_from_pango_stretch(stretch));
 	}
-
 	if (pango_mask & PANGO_FONT_MASK_STYLE) {
 		style = pango_font_description_get_style(font_desc);
 		FcPatternAddInteger(pattern, FC_SLANT,
 				    _vte_fc_slant_from_pango_style(style));
 	}
-
-	g_object_unref(context);
 }
 
 static void
@@ -186,30 +170,23 @@ _vte_fc_defaults_from_gtk(GtkWidget *widget, FcPattern *pattern,
 			  VteTerminalAntiAlias explicit_antialias)
 {
 	GtkSettings *settings;
-	GdkScreen *screen;
-	GObjectClass *klass;
 	int i, antialias = -1, hinting = -1, dpi = -1;
 	char *rgba = NULL, *hintstyle = NULL;
 
 	/* Add any defaults configured for GTK+. */
-	if (gtk_widget_has_screen(widget)) {
-		screen = gtk_widget_get_screen(widget);
-	} else {
-		screen = gdk_display_get_default_screen(gtk_widget_get_display(widget));
-	}
-	settings = gtk_settings_get_for_screen(screen);
+	settings = gtk_widget_get_settings (widget);
 	if (settings == NULL) {
 		return;
 	}
 
 	/* Check that the properties we're looking at are defined. */
-	klass = G_OBJECT_GET_CLASS(settings);
-	if (g_object_class_find_property(klass, "gtk-xft-antialias") == NULL) {
+	if (g_object_class_find_property (G_OBJECT_GET_CLASS (settings),
+				"gtk-xft-antialias") == NULL) {
 		return;
 	}
 
 	/* Read the settings. */
-	g_object_get(G_OBJECT(settings),
+	g_object_get (G_OBJECT (settings),
 		     "gtk-xft-antialias", &antialias,
 		     "gtk-xft-dpi", &dpi,
 		     "gtk-xft-rgba", &rgba,
@@ -457,6 +434,11 @@ _vte_fc_patterns_from_pango_font_desc(GtkWidget *widget,
 			save = FcPatternDuplicate(tmp);
 			FcPatternDestroy(tmp);
 			g_ptr_array_add(pattern_array, save);
+			_VTE_DEBUG_IF(VTE_DEBUG_MISC) {
+				FcChar8 *name = FcNameUnparse (save);
+				g_printerr("Added '%s' to fontset\n", name);
+				FcStrFree (name);
+			}
 		}
 		FcFontSetDestroy(fontset);
 		ret = TRUE;
@@ -472,6 +454,11 @@ _vte_fc_patterns_from_pango_font_desc(GtkWidget *widget,
 			save = FcPatternDuplicate(tmp);
 			FcPatternDestroy(tmp);
 			g_ptr_array_add(pattern_array, save);
+			_VTE_DEBUG_IF(VTE_DEBUG_MISC) {
+				FcChar8 *name = FcNameUnparse (save);
+				g_printerr("Added '%s' to fontset\n", name);
+				FcStrFree (name);
+			}
 			ret = TRUE;
 		} else {
 			ret = FALSE;
