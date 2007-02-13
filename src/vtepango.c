@@ -66,7 +66,6 @@ _vte_pango_create(struct _vte_draw *draw, GtkWidget *widget)
 	data->font = NULL;
 	data->layout = NULL;
 	data->gc = NULL;
-	data->ctx = NULL;
 }
 
 static void
@@ -83,9 +82,6 @@ _vte_pango_destroy(struct _vte_draw *draw)
 	}
 	if (data->layout != NULL) {
 		g_object_unref(data->layout);
-	}
-	if (data->ctx != NULL) {
-		g_object_unref(data->ctx);
 	}
 	if (data->gc != NULL) {
 		g_object_unref(data->gc);
@@ -109,22 +105,16 @@ _vte_pango_get_colormap(struct _vte_draw *draw)
 static void
 _vte_pango_start(struct _vte_draw *draw)
 {
-	GdkScreen *screen;
 	PangoContext *ctx;
 	struct _vte_pango_data *data;
 	data = (struct _vte_pango_data*) draw->impl_data;
 
-	screen = gdk_drawable_get_screen(draw->widget->window);
-	ctx = gdk_pango_context_get_for_screen(screen);
-	if (data->ctx != NULL) {
-		g_object_unref(data->ctx);
-	}
-	data->ctx = ctx;
+	ctx = gtk_widget_get_pango_context (draw->widget);
 
 	if (data->layout != NULL) {
 		g_object_unref(data->layout);
 	}
-	data->layout = pango_layout_new(data->ctx);
+	data->layout = pango_layout_new(ctx);
 	if (data->font != NULL) {
 		pango_layout_set_font_description(data->layout, data->font);
 	}
@@ -153,11 +143,6 @@ _vte_pango_end(struct _vte_draw *draw)
 		g_object_unref(data->layout);
 	}
 	data->layout = NULL;
-
-	if (data->ctx != NULL) {
-		g_object_unref(data->ctx);
-	}
-	data->ctx = NULL;
 }
 
 static void
@@ -196,6 +181,13 @@ _vte_pango_set_background_image(struct _vte_draw *draw,
 		data->pixmap = pixmap;
 		gdk_drawable_get_size(pixmap, &data->pixmapw, &data->pixmaph);
 	}
+}
+
+static void
+_vte_pango_clip(struct _vte_draw *draw, GdkRegion *region)
+{
+	struct _vte_pango_data *data = draw->impl_data;
+	gdk_gc_set_clip_region(data->gc, region);
 }
 
 static void
@@ -249,25 +241,19 @@ _vte_pango_set_text_font(struct _vte_draw *draw,
 			 const PangoFontDescription *fontdesc,
 			 VteTerminalAntiAlias antialias)
 {
-	GdkScreen *screen;
 	PangoContext *ctx;
 	PangoLayout *layout;
 	PangoLayoutIter *iter;
 	PangoRectangle ink, logical;
-	gunichar full_codepoints[] = {VTE_DRAW_DOUBLE_WIDE_CHARACTERS};
+	gunichar full_codepoints[] = {VTE_DRAW_DOUBLE_WIDE_IDEOGRAPHS};
 	GString *full_string;
 	gint full_width;
-	int i;
+	guint i;
 	struct _vte_pango_data *data;
 
 	data = (struct _vte_pango_data*) draw->impl_data;
 
-	if (gtk_widget_has_screen(draw->widget)) {
-		screen = gtk_widget_get_screen(draw->widget);
-	} else {
-		screen = gdk_display_get_default_screen(gtk_widget_get_display(draw->widget));
-	}
-	ctx = gdk_pango_context_get_for_screen(screen);
+	ctx = gtk_widget_get_pango_context(draw->widget);
 	layout = pango_layout_new(ctx);
 	if (data->font != NULL) {
 		pango_font_description_free(data->font);
@@ -301,7 +287,8 @@ _vte_pango_set_text_font(struct _vte_draw *draw,
 
 	/* If they're the same, then we have a screwy font. */
 	if (full_width == draw->width) {
-		draw->width /= 2;
+		/* add 1 to round up when dividing by 2 */
+		draw->width = (draw->width + 1) / 2;
 	}
 
 	draw->width = PANGO_PIXELS(draw->width);
@@ -314,15 +301,11 @@ _vte_pango_set_text_font(struct _vte_draw *draw,
 	}
 	pango_layout_iter_free(iter);
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_MISC)) {
-		g_printerr("VtePango font metrics = %dx%d (%d).\n",
+	_vte_debug_print(VTE_DEBUG_MISC,
+			"VtePango font metrics = %dx%d (%d).\n",
 			draw->width, draw->height, draw->ascent);
-	}
-#endif
 
 	g_object_unref(layout);
-	g_object_unref(ctx);
 }
 
 static int
@@ -365,7 +348,7 @@ _vte_pango_draw_text(struct _vte_draw *draw,
 {
 	struct _vte_pango_data *data;
 	char buf[VTE_UTF8_BPC];
-	int i;
+	guint i;
 	gsize length;
 	GdkColor wcolor;
 
@@ -451,6 +434,7 @@ const struct _vte_draw_impl _vte_draw_pango = {
 	_vte_pango_set_background_color,
 	_vte_pango_set_background_image,
 	FALSE,
+	_vte_pango_clip,
 	_vte_pango_clear,
 	_vte_pango_set_text_font,
 	_vte_pango_get_text_width,

@@ -41,11 +41,36 @@ typedef enum {
 	VTE_DEBUG_KEYBOARD	= 1 << 11,
 	VTE_DEBUG_LIFECYCLE	= 1 << 12,
 	VTE_DEBUG_TRIE		= 1 << 13,
-	VTE_DEBUG_WORK	= 1 << 14
+	VTE_DEBUG_WORK		= 1 << 14,
+	VTE_DEBUG_CELLS		= 1 << 15,
+	VTE_DEBUG_TIMEOUT	= 1 << 16
 } VteDebugFlags;
 
 void _vte_debug_parse_string(const char *string);
 gboolean _vte_debug_on(VteDebugFlags flags) G_GNUC_CONST;
+
+#ifdef VTE_DEBUG
+#define _VTE_DEBUG_IF(flags) if (_vte_debug_on (flags))
+#else
+#define _VTE_DEBUG_IF(flags) if (0)
+#endif
+
+#if defined(__GNUC__) && G_HAVE_GNUC_VARARGS
+#define _vte_debug_print(flags, fmt, ...) \
+	_VTE_DEBUG_IF(flags) g_printerr(fmt, ##__VA_ARGS__)
+#else
+#include <stdarg.h>
+#include <glib/gstdio.h>
+static void _vte_debug_print(guint flags, const char *fmt, ...)
+{
+	if (_vte_debug_on (flags)) {
+		va_list  ap;
+		va_start (ap, fmt);
+		g_vfprintf (stderr, fmt, ap);
+		va_end (ap);
+	}
+}
+#endif
 
 G_END_DECLS
 

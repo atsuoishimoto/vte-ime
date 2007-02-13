@@ -187,6 +187,12 @@
 /* Define to 1 if you have the <sys/wait.h> header file. */
 #undef HAVE_SYS_WAIT_H
 
+/* Define to 1 if you have the `tcgetattr' function. */
+#undef HAVE_TCGETATTR
+
+/* Define to 1 if you have the `tcsetattr' function. */
+#undef HAVE_TCSETATTR
+
 /* Define if you have termcap.h and libtermcap */
 #undef HAVE_TERMCAP
 
@@ -231,6 +237,9 @@
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
+
+/* Enable use of PCRE */
+#undef USE_PCRE
 
 /* Version number of package */
 #undef VERSION

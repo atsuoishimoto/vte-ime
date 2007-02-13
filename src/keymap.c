@@ -59,6 +59,72 @@ _vte_keysym_name(guint keyval)
 	}
 	return "(unknown)";
 }
+static void
+_vte_keysym_print(guint keyval,
+		GdkModifierType modifiers,
+		gboolean sun_mode,
+		gboolean hp_mode,
+		gboolean legacy_mode,
+		gboolean vt220_mode)
+{
+	g_printerr("Mapping ");
+	if (modifiers & GDK_CONTROL_MASK) {
+		g_printerr("Control+");
+	}
+	if (modifiers & VTE_META_MASK) {
+		g_printerr("Meta+");
+	}
+	if (modifiers & VTE_NUMLOCK_MASK) {
+		g_printerr("NumLock+");
+	}
+	if (modifiers & GDK_SHIFT_MASK) {
+		g_printerr("Shift+");
+	}
+	g_printerr("%s" , _vte_keysym_name(keyval));
+	if (sun_mode|hp_mode|legacy_mode|vt220_mode) {
+		gboolean first = TRUE;
+		g_printerr("(");
+		if (sun_mode) {
+			if (!first) {
+				g_printerr(",");
+			}
+			first = FALSE;
+			g_printerr("Sun");
+		}
+		if (hp_mode) {
+			if (!first) {
+				g_printerr(",");
+			}
+			first = FALSE;
+			g_printerr("HP");
+		}
+		if (legacy_mode) {
+			if (!first) {
+				g_printerr(",");
+			}
+			first = FALSE;
+			g_printerr("Legacy");
+		}
+		if (vt220_mode) {
+			if (!first) {
+				g_printerr(",");
+			}
+			first = FALSE;
+			g_printerr("VT220");
+		}
+		g_printerr(")");
+	}
+}
+#else
+static void
+_vte_keysym_print(guint keyval,
+		GdkModifierType modifiers,
+		gboolean sun_mode,
+		gboolean hp_mode,
+		gboolean legacy_mode,
+		gboolean vt220_mode)
+{
+}
 #endif
 
 enum _vte_cursor_mode {
@@ -931,7 +997,7 @@ _vte_keymap_map(guint keyval,
 		gssize *normal_length,
 		const char **special)
 {
-	int i;
+	gsize i;
 	const struct _vte_keymap_entry *entries;
 	enum _vte_cursor_mode cursor_mode;
 	enum _vte_keypad_mode keypad_mode;
@@ -947,57 +1013,12 @@ _vte_keymap_map(guint keyval,
 	g_return_if_fail(normal_length != NULL);
 	g_return_if_fail(special != NULL);
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
-		g_printerr("Mapping ");
-		if (modifiers & GDK_CONTROL_MASK) {
-			g_printerr("Control+");
-		}
-		if (modifiers & VTE_META_MASK) {
-			g_printerr("Meta+");
-		}
-		if (modifiers & VTE_NUMLOCK_MASK) {
-			g_printerr("NumLock+");
-		}
-		if (modifiers & GDK_SHIFT_MASK) {
-			g_printerr("Shift+");
-		}
-		g_printerr("%s" , _vte_keysym_name(keyval));
-		if (sun_mode || hp_mode || legacy_mode || vt220_mode) {
-			i = 0;
-			g_printerr("(");
-			if (sun_mode) {
-				if (i > 0) {
-					g_printerr(",");
-				}
-				i++;
-				g_printerr("Sun");
-			}
-			if (hp_mode) {
-				if (i > 0) {
-					g_printerr(",");
-				}
-				i++;
-				g_printerr("HP");
-			}
-			if (legacy_mode) {
-				if (i > 0) {
-					g_printerr(",");
-				}
-				i++;
-				g_printerr("Legacy");
-			}
-			if (vt220_mode) {
-				if (i > 0) {
-					g_printerr(",");
-				}
-				i++;
-				g_printerr("VT220");
-			}
-			g_printerr(")");
-		}
-	}
-#endif
+	_VTE_DEBUG_IF(VTE_DEBUG_KEYBOARD) 
+		_vte_keysym_print(keyval, modifiers,
+				sun_mode,
+				hp_mode,
+				legacy_mode,
+				vt220_mode);
 
 	/* Start from scratch. */
 	*normal = NULL;
@@ -1054,11 +1075,8 @@ _vte_keymap_map(guint keyval,
 		}
 	}
 	if (entries == NULL) {
-#ifdef VTE_DEBUG
-		if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
-			g_printerr(" (ignoring, no map for key).\n");
-		}
-#endif
+		_vte_debug_print(VTE_DEBUG_KEYBOARD,
+				" (ignoring, no map for key).\n");
 		return;
 	}
 
@@ -1104,8 +1122,7 @@ _vte_keymap_map(guint keyval,
 							  vt220_mode,
 							  normal,
 							  normal_length);
-#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
+			_VTE_DEBUG_IF(VTE_DEBUG_KEYBOARD) {
 				int j;
 				g_printerr(" to '");
 				for (j = 0; j < *normal_length; j++) {
@@ -1120,7 +1137,6 @@ _vte_keymap_map(guint keyval,
 				}
 				g_printerr("'.\n");
 			}
-#endif
 			return;
 		} else {
 			termcap_special = entries[i].special;
@@ -1132,21 +1148,14 @@ _vte_keymap_map(guint keyval,
 				if (strlen(cap) > 0) {
 					/* Save the special string. */
 					*special = entries[i].special;
-#ifdef VTE_DEBUG
-					if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
-						g_printerr(" to \"%s\"",
-							*special);
-					}
-#endif
+					_vte_debug_print(VTE_DEBUG_KEYBOARD,
+							" to \"%s\"", *special);
 				}
 				g_free(cap);
 				if (*special != NULL) {
 					/* Return the special string. */
-#ifdef VTE_DEBUG
-					if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
-						g_printerr(", returning.\n");
-					}
-#endif
+					_vte_debug_print(VTE_DEBUG_KEYBOARD,
+							", returning.\n");
 					return;
 				}
 			}
@@ -1201,11 +1210,8 @@ _vte_keymap_map(guint keyval,
 	}
 #endif
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_KEYBOARD)) {
-		g_printerr(" (ignoring, no match for modifier state).\n");
-	}
-#endif
+	_vte_debug_print(VTE_DEBUG_KEYBOARD,
+			" (ignoring, no match for modifier state).\n");
 }
 
 gboolean

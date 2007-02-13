@@ -19,9 +19,6 @@
 
 #include "../config.h"
 
-#ifndef X_DISPLAY_MISSING
-#ifdef HAVE_XFT2
-
 #include <sys/param.h>
 #include <string.h>
 #include <gtk/gtk.h>
@@ -35,14 +32,17 @@
 #include "vtefc.h"
 #include "vtexft.h"
 #include "vtetree.h"
+#include "vte-private.h"
 
 #include <glib/gi18n-lib.h>
 
 #define FONT_INDEX_FUDGE 10
 #define CHAR_WIDTH_FUDGE 10
 
+#define DPY_FUDGE 1
+
 struct _vte_xft_font {
-	GdkDisplay *display;
+	Display *display;
 	GPtrArray *patterns;
 	GPtrArray *fonts;
 	VteTree *fontmap;
@@ -76,17 +76,14 @@ _vte_xft_direct_compare(gconstpointer a, gconstpointer b)
 static gboolean
 _vte_xft_char_exists(struct _vte_xft_font *font, XftFont *ftfont, FcChar32 c)
 {
-	return XftCharExists(GDK_DISPLAY_XDISPLAY(font->display),
-			     ftfont,
-			     c) == FcTrue;
+	return XftCharExists(font->display, ftfont, c) == FcTrue;
 }
 
 static void
 _vte_xft_text_extents(struct _vte_xft_font *font, XftFont *ftfont, FcChar32 c,
 		      XGlyphInfo *extents)
 {
-	XftTextExtents32(GDK_DISPLAY_XDISPLAY(font->display),
-				ftfont, &c, 1, extents);
+	XftTextExtents32(font->display, ftfont, &c, 1, extents);
 }
 
 static struct _vte_xft_font *
@@ -104,7 +101,7 @@ _vte_xft_font_open(GtkWidget *widget, const PangoFontDescription *fontdesc,
 	}
 
 	font = g_slice_new(struct _vte_xft_font);
-	font->display = gtk_widget_get_display(widget);
+	font->display = GDK_DISPLAY_XDISPLAY (gtk_widget_get_display (widget));
 	font->patterns = patterns;
 	font->fonts = g_ptr_array_new();
 	font->fontmap = _vte_tree_new(_vte_xft_direct_compare);
@@ -116,27 +113,22 @@ _vte_xft_font_open(GtkWidget *widget, const PangoFontDescription *fontdesc,
 static void
 _vte_xft_font_close(struct _vte_xft_font *font)
 {
-	GdkDisplay *gdisplay;
-	Display *display;
 	XftFont *ftfont;
 	FcPattern *pattern;
-	int i;
+	guint i;
 
 	for (i = 0; i < font->patterns->len; i++) {
 		pattern = g_ptr_array_index(font->patterns, i);
-		if (pattern == NULL) {
-			continue;
+		if (pattern != NULL) {
+			FcPatternDestroy(pattern);
 		}
-		FcPatternDestroy(pattern);
 	}
 	g_ptr_array_free(font->patterns, TRUE);
 
-	gdisplay = gdk_display_get_default();
-	display = gdk_x11_display_get_xdisplay(gdisplay);
 	for (i = 0; i < font->fonts->len; i++) {
 		ftfont = g_ptr_array_index(font->fonts, i);
 		if (ftfont != NULL) {
-			XftFontClose(display, ftfont);
+			XftFontClose(font->display, ftfont);
 		}
 	}
 	g_ptr_array_free(font->fonts, TRUE);
@@ -150,10 +142,8 @@ _vte_xft_font_close(struct _vte_xft_font *font)
 static XftFont *
 _vte_xft_font_for_char(struct _vte_xft_font *font, gunichar c)
 {
-	int i;
+	guint i;
 	XftFont *ftfont;
-	GdkDisplay *gdisplay;
-	Display *display;
 	gpointer p = GINT_TO_POINTER(c);
 
 	/* Check if we have a char-to-font entry for it. */
@@ -162,12 +152,7 @@ _vte_xft_font_for_char(struct _vte_xft_font *font, gunichar c)
 		switch (i) {
 		/* Checked before, no luck. */
 		case -FONT_INDEX_FUDGE:
-			if (font->fonts->len > 0) {
-				return g_ptr_array_index(font->fonts, 0);
-			} else {
-				/* What to do? */
-				g_assert_not_reached();
-			}
+			return NULL;
 		/* Matched before. */
 		default:
 			return g_ptr_array_index(font->fonts,
@@ -176,67 +161,43 @@ _vte_xft_font_for_char(struct _vte_xft_font *font, gunichar c)
 	}
 
 	/* Look the character up in the fonts we have. */
-	gdisplay = gdk_display_get_default();
-	display = gdk_x11_display_get_xdisplay(gdisplay);
 	for (i = 0; i < font->fonts->len; i++) {
 		ftfont = g_ptr_array_index(font->fonts, i);
-		if ((ftfont != NULL) &&
-		    (_vte_xft_char_exists(font, ftfont, c))) {
-			break;
-		}
-	}
-
-	/* Match? */
-	if (i < font->fonts->len) {
-		_vte_tree_insert(font->fontmap,
-			      p,
-			      GINT_TO_POINTER(i + FONT_INDEX_FUDGE));
-		ftfont = g_ptr_array_index(font->fonts, i);
-		if (ftfont != NULL) {
+		if (_vte_xft_char_exists(font, ftfont, c)) {
+			_vte_tree_insert(font->fontmap,
+					p,
+					GINT_TO_POINTER(i + FONT_INDEX_FUDGE));
 			return ftfont;
-		} else {
-			g_assert_not_reached();
 		}
 	}
 
 	/* Look the character up in other fonts. */
-	for (i = font->fonts->len; i < font->patterns->len; i++) {
-		ftfont = XftFontOpenPattern(display,
-			       	g_ptr_array_index(font->patterns, i));
+	for (; i < font->patterns->len; i++) {
+		if (g_ptr_array_index(font->patterns, i) == NULL) {
+			continue;
+		}
+		ftfont = XftFontOpenPattern(font->display,
+				g_ptr_array_index(font->patterns, i));
+		g_ptr_array_index(font->patterns, i) = NULL;
 		/* If the font was opened, it owns the pattern. */
 		if (ftfont != NULL) {
-			g_ptr_array_index(font->patterns, i) = NULL;
-		}
-		g_ptr_array_add(font->fonts, ftfont);
-		if ((ftfont != NULL) &&
-		    (_vte_xft_char_exists(font, ftfont, c))) {
-			break;
+			g_ptr_array_add(font->fonts, ftfont);
+			if (_vte_xft_char_exists(font, ftfont, c)) {
+				_vte_tree_insert(font->fontmap,
+						p,
+						GINT_TO_POINTER(i + FONT_INDEX_FUDGE));
+				g_assert (i < fonts->fonts->len);
+				return ftfont;
+			}
 		}
 	}
 
 	/* No match? */
-	if (i >= font->patterns->len) {
-		_vte_tree_insert(font->fontmap,
-			      p,
-			      GINT_TO_POINTER(-FONT_INDEX_FUDGE));
-		if (font->fonts->len > 0) {
-			return g_ptr_array_index(font->fonts, 0);
-		} else {
-			/* What to do? */
-			g_assert_not_reached();
-		}
-	} else {
-		_vte_tree_insert(font->fontmap,
-			      p,
-			      GINT_TO_POINTER(i + FONT_INDEX_FUDGE));
-	}
-
-	/* Return the match. */
-	if (i < font->fonts->len) {
-		return g_ptr_array_index(font->fonts, i);
-	} else {
-		return NULL;
-	}
+	_vte_tree_insert(font->fontmap,
+			p,
+			GINT_TO_POINTER(-FONT_INDEX_FUDGE));
+	g_warning(_("Can not find appropiate font for character U+%04x.\n"), c);
+	return NULL;
 }
 
 static int
@@ -282,19 +243,11 @@ _vte_xft_create(struct _vte_draw *draw, GtkWidget *widget)
 	struct _vte_xft_data *data;
 	data = g_slice_new0(struct _vte_xft_data);
 	draw->impl_data = data;
-	data->font = NULL;
-	data->display = NULL;
 	data->drawable = -1;
-	data->visual = NULL;
 	data->colormap = -1;
-	data->draw = NULL;
-	data->gc = NULL;
-	memset(&data->color, 0, sizeof(data->color));
 	data->opacity = 0xffff;
-	data->pixmap = NULL;
 	data->xpixmap = -1;
 	data->pixmapw = data->pixmaph = -1;
-	data->scrollx = data->scrolly = 0;
 }
 
 static void
@@ -305,7 +258,6 @@ _vte_xft_destroy(struct _vte_draw *draw)
 	if (data->font != NULL) {
 		_vte_xft_font_close(data->font);
 	}
-	data->colormap = -1;
 	if (data->draw != NULL) {
 		XftDrawDestroy(data->draw);
 	}
@@ -349,6 +301,8 @@ _vte_xft_start(struct _vte_draw *draw)
 	gcolormap = gdk_drawable_get_colormap(drawable);
 	data->colormap = gdk_x11_colormap_get_xcolormap(gcolormap);
 
+	gdk_error_trap_push ();
+
 	if (data->draw != NULL) {
 		XftDrawDestroy(data->draw);
 	}
@@ -375,6 +329,8 @@ _vte_xft_end(struct _vte_draw *draw)
 	}
 	data->drawable = -1;
 	data->x_offs = data->y_offs = 0;
+
+	gdk_error_trap_pop ();
 }
 
 static void
@@ -417,6 +373,33 @@ _vte_xft_set_background_image(struct _vte_draw *draw,
 		data->xpixmap = gdk_x11_drawable_get_xid(pixmap);
 		gdk_drawable_get_size(pixmap, &data->pixmapw, &data->pixmaph);
 	}
+}
+
+static void
+_vte_xft_clip(struct _vte_draw *draw,
+		GdkRegion *region)
+{
+	struct _vte_xft_data *data = draw->impl_data;
+	GdkRectangle *rect;
+	gint i, n;
+
+	gdk_region_get_rectangles(region, &rect, &n);
+	if (n>0) {
+		XRectangle *xrect = g_new (XRectangle, n);
+		for (i=0; i<n; i++) {
+			/* we include the offset here as XftDrawSetClipRectangles() has a
+			 * byte-sex bug in its offset parameters. Bug 403159.
+			 */
+			xrect[i].x = rect[i].x - data->x_offs;
+			xrect[i].y = rect[i].y - data->y_offs;
+			xrect[i].width = rect[i].width;
+			xrect[i].height = rect[i].height;
+		}
+		XftDrawSetClipRectangles(data->draw,
+				0, 0, xrect, n);
+		g_free (xrect);
+	}
+	g_free(rect);
 }
 
 static void
@@ -483,20 +466,29 @@ _vte_xft_set_text_font(struct _vte_draw *draw,
 		       const PangoFontDescription *fontdesc,
 		       VteTerminalAntiAlias antialias)
 {
-	XftFont *font;
+	struct _vte_xft_font *ft;
+	XftFont *font, *prev_font;
 	XGlyphInfo extents;
 	struct _vte_xft_data *data;
 	gunichar wide_chars[] = {VTE_DRAW_DOUBLE_WIDE_CHARACTERS};
-	int i, n, width, height;
+	guint i;
+	gint n, width, height, min = G_MAXINT, max = G_MININT;
 	FcChar32 c;
 
 	data = (struct _vte_xft_data*) draw->impl_data;
 
-	if (data->font != NULL) {
-		_vte_xft_font_close(data->font);
-		data->font = NULL;
+	ft = _vte_xft_font_open(draw->widget, fontdesc, antialias);
+	if (ft != NULL) {
+		if (data->font != NULL) {
+			_vte_xft_font_close(data->font);
+		}
+		data->font = ft;
 	}
-	data->font = _vte_xft_font_open(draw->widget, fontdesc, antialias);
+	if (data->font == NULL) {
+		return;
+	}
+
+	gdk_error_trap_push ();
 
 	draw->width = 1;
 	draw->height = 1;
@@ -505,15 +497,23 @@ _vte_xft_set_text_font(struct _vte_draw *draw,
 	n = width = height = 0;
 	/* Estimate a typical cell width by looking at single-width
 	 * characters. */
-	for (i = 0; i < strlen(VTE_DRAW_SINGLE_WIDE_CHARACTERS); i++) {
+	for (i = 0; i < sizeof(VTE_DRAW_SINGLE_WIDE_CHARACTERS) - 1; i++) {
 		c = VTE_DRAW_SINGLE_WIDE_CHARACTERS[i];
 		font = _vte_xft_font_for_char(data->font, c);
-		if ((font != NULL) &&
-		    (_vte_xft_char_exists(data->font, font, c))) {
+		if (font != NULL) {
 			memset(&extents, 0, sizeof(extents));
 			_vte_xft_text_extents(data->font, font, c, &extents);
 			n++;
 			width += extents.xOff;
+			if (extents.xOff < min) {
+				min = extents.xOff;
+			}
+			if (extents.xOff > max) {
+				max = extents.xOff;
+			}
+			if (extents.height > height) {
+				height = extents.height;
+			}
 		}
 	}
 	if (n > 0) {
@@ -526,30 +526,45 @@ _vte_xft_set_text_font(struct _vte_draw *draw,
 	/* Estimate a typical cell width by looking at double-width
 	 * characters, and if it's the same as the single width, assume the
 	 * single-width stuff is broken. */
-	n = 0;
+	n = width = 0;
+	prev_font = NULL;
 	for (i = 0; i < G_N_ELEMENTS(wide_chars); i++) {
 		c = wide_chars[i];
 		font = _vte_xft_font_for_char(data->font, c);
-		if ((font != NULL) &&
-		    (_vte_xft_char_exists(data->font, font, c))) {
+		if (font != NULL) {
+			if (n && prev_font != font) {/* font change */
+				width = howmany(width, n);
+				if (width >= draw->width -1 &&
+						width <= draw->width + 1){
+					/* add 1 to round up when dividing by 2 */
+					draw->width = (draw->width + 1) / 2;
+					break;
+				}
+				n = width = 0;
+			}
 			memset(&extents, 0, sizeof(extents));
 			_vte_xft_text_extents(data->font, font, c, &extents);
 			n++;
 			width += extents.xOff;
+			prev_font = font;
 		}
 	}
 	if (n > 0) {
-		if (howmany(width, n) == draw->width) {
-			draw->width /= 2;
+		width = howmany(width, n);
+		if (width >= draw->width -1 &&
+				width <= draw->width + 1){
+			/* add 1 to round up when dividing by 2 */
+			draw->width = (draw->width + 1) / 2;
 		}
 	}
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_MISC)) {
-		g_printerr("VteXft font metrics = %dx%d (%d).\n",
-			draw->width, draw->height, draw->ascent);
-	}
-#endif
+	gdk_error_trap_pop ();
+
+	_vte_debug_print(VTE_DEBUG_MISC,
+			"VteXft font metrics = %dx%d (%d),"
+			" width range [%d, %d].\n",
+			draw->width, draw->height, draw->ascent,
+			min, max);
 }
 
 static int
@@ -577,6 +592,9 @@ _vte_xft_get_char_width(struct _vte_draw *draw, gunichar c, int columns)
 	XftFont *ftfont;
 
 	data = (struct _vte_xft_data*) draw->impl_data;
+	if (data->font == NULL) {
+		return _vte_xft_get_text_width(draw) * columns;
+	}
 	ftfont = _vte_xft_font_for_char(data->font, c);
 	if (ftfont == NULL) {
 		return _vte_xft_get_text_width(draw) * columns;
@@ -590,94 +608,95 @@ _vte_xft_get_using_fontconfig(struct _vte_draw *draw)
 	return TRUE;
 }
 
-#if 0
-/* We're just a barely-there wrapper around XftDrawCharFontSpec(). */
-static void
-_vte_xft_drawcharfontspec(XftDraw *draw, XftColor *color,
-			  XftCharFontSpec *specs, int n)
-{
-	XftDrawCharFontSpec(draw, color, specs, n);
-}
-#else
-/* We need to break down the draw request into runs which use the same
- * font, to work around a bug which appears to be in Xft and which I
- * haven't pinned down yet. */
-static void
-_vte_xft_drawcharfontspec(XftDraw *draw, XftColor *color,
-			  XftCharFontSpec *specs, int n)
-{
-	int i, j;
-
-	i = j = 0;
-	while (i < n) {
-		for (j = i + 1; j < n; j++) {
-			if (specs[i].font != specs[j].font) {
-				break;
-			}
-		}
-		XftDrawCharFontSpec(draw, color, specs + i, j - i);
-		i = j;
-	}
-}
-#endif
-
 static void
 _vte_xft_draw_text(struct _vte_draw *draw,
 		   struct _vte_draw_text_request *requests, gsize n_requests,
 		   GdkColor *color, guchar alpha)
 {
-	XftCharFontSpec local_specs[VTE_DRAW_MAX_LENGTH], *specs;
+	XftGlyphSpec glyphs[VTE_DRAW_MAX_LENGTH];
 	XRenderColor rcolor;
 	XftColor ftcolor;
 	struct _vte_xft_data *data;
-	int i, j, width, pad;
+	gsize i, j;
+	gint width, pad;
+	XftFont *font, *ft;
 
 	data = (struct _vte_xft_data*) draw->impl_data;
-	if (n_requests > G_N_ELEMENTS(local_specs)) {
-		specs = g_malloc(n_requests * sizeof(XftCharFontSpec));
-	} else {
-		specs = local_specs;
+	if (G_UNLIKELY (data->font == NULL)){
+		return; /* cannot draw anything */
 	}
 
-	for (i = j = 0; i < n_requests; i++) {
-		specs[j].font = _vte_xft_font_for_char(data->font,
-						       requests[i].c);
-		if (specs[j].font != NULL && requests[i].c != 32) {
-			specs[j].x = requests[i].x - data->x_offs;
-			width = _vte_xft_char_width(data->font,
-						    specs[j].font,
-						    requests[i].c);
-			if (width != 0) {
-				pad = requests[i].columns * draw->width - width;
-				pad = CLAMP(pad / 2, 0, draw->width);
-				specs[j].x += pad;
+	/* find the first displayable character ... */
+	font = NULL;
+	for (i = 0; i < n_requests; i++) {
+		if (requests[i].c == ' ') {
+			continue;
+		}
+		font = _vte_xft_font_for_char(data->font, requests[i].c);
+		if (G_UNLIKELY (font == NULL)) {
+			continue;
+		}
+		break;
+	}
+	if (G_UNLIKELY (i == n_requests)) {
+		return; /* nothing to see here, please move along */
+	}
+
+	rcolor.red = color->red;
+	rcolor.green = color->green;
+	rcolor.blue = color->blue;
+	rcolor.alpha = (alpha == VTE_DRAW_OPAQUE) ?
+		0xffff : (alpha << 8);
+	if (!XftColorAllocValue(data->display, data->visual,
+				data->colormap, &rcolor, &ftcolor)) {
+		return;
+	}
+
+	/* split the text into runs of the same font, because
+	 * "We need to break down the draw request into runs which use the same
+	 * font, to work around a bug which appears to be in Xft and which I
+	 * haven't pinned down yet." */
+	do {
+		j = 0;
+		do {
+			glyphs[j].glyph = XftCharIndex(data->display,
+					font, requests[i].c);
+			if (G_LIKELY (glyphs[j].glyph != 0)) {
+				glyphs[j].x = requests[i].x - data->x_offs;
+				width = _vte_xft_char_width(data->font,
+						font, requests[i].c);
+				if (width != 0) {
+					pad = requests[i].columns * draw->width - width;
+					pad = CLAMP(pad / 2, 0, draw->width);
+					glyphs[j].x += pad;
+				}
+				glyphs[j].y = requests[i].y - data->y_offs + draw->ascent;
+				j++;
 			}
-			specs[j].y = requests[i].y - data->y_offs + draw->ascent;
-			specs[j].ucs4 = requests[i].c;
-			j++;
-		} else if (requests[i].c != 32) {
-			g_warning(_("Can not draw character U+%04x.\n"),
-				  requests[i].c);
-		}
-	}
-	if (j > 0) {
-		rcolor.red = color->red;
-		rcolor.green = color->green;
-		rcolor.blue = color->blue;
-		rcolor.alpha = (alpha == VTE_DRAW_OPAQUE) ?
-			       0xffff : (alpha << 8);
-		if (XftColorAllocValue(data->display, data->visual,
-				       data->colormap, &rcolor, &ftcolor)) {
-			_vte_xft_drawcharfontspec(data->draw, &ftcolor,
-						  specs, j);
-			XftColorFree(data->display, data->visual,
-				     data->colormap, &ftcolor);
-		}
-	}
+			i++;
 
-	if (specs != local_specs) {
-		g_free(specs);
-	}
+			/* find the next displayable character ... */
+			ft = NULL;
+			for (; i < n_requests; i++) {
+				if (G_UNLIKELY (requests[i].c == ' ')) {
+					continue;
+				}
+				ft = _vte_xft_font_for_char(data->font,
+						requests[i].c);
+				if (G_UNLIKELY (ft == NULL)) {
+					continue;
+				}
+				break;
+			}
+		} while (j < VTE_DRAW_MAX_LENGTH && ft == font);
+		if (j > 0) {
+			XftDrawGlyphSpec (data->draw,
+					&ftcolor, font, glyphs, j);
+		}
+		font = ft;
+	} while (i < n_requests);
+	XftColorFree(data->display, data->visual,
+			data->colormap, &ftcolor);
 }
 
 static gboolean
@@ -688,7 +707,8 @@ _vte_xft_draw_char(struct _vte_draw *draw,
 	struct _vte_xft_data *data;
 
 	data = (struct _vte_xft_data*) draw->impl_data;
-	if (_vte_xft_font_for_char(data->font, request->c) != NULL) {
+	if (data->font != NULL &&
+			_vte_xft_font_for_char(data->font, request->c) != NULL) {
 		_vte_xft_draw_text(draw, request, 1, color, alpha);
 		return TRUE;
 	}
@@ -774,6 +794,7 @@ const struct _vte_draw_impl _vte_draw_xft = {
 	_vte_xft_set_background_color,
 	_vte_xft_set_background_image,
 	FALSE,
+	_vte_xft_clip,
 	_vte_xft_clear,
 	_vte_xft_set_text_font,
 	_vte_xft_get_text_width,
@@ -787,5 +808,3 @@ const struct _vte_draw_impl _vte_draw_xft = {
 	_vte_xft_fill_rectangle,
 	_vte_xft_set_scroll,
 };
-#endif
-#endif

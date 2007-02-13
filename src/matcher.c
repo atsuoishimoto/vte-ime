@@ -30,6 +30,7 @@
 struct _vte_matcher {
 	_vte_matcher_match_func match; /* shortcut to the most common op */
 	struct _vte_matcher_impl *impl;
+	GValueArray *free_params;
 };
 
 static GStaticMutex _vte_matcher_mutex = G_STATIC_MUTEX_INIT;
@@ -61,39 +62,38 @@ _vte_matcher_init(struct _vte_matcher *matcher, const char *emulation,
 	char *stripped;
 	int i;
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_LIFECYCLE)) {
-		g_printerr("_vte_matcher_init()\n");
-	}
-#endif
+	_vte_debug_print(VTE_DEBUG_LIFECYCLE, "_vte_matcher_init()\n");
 
-	/* Load the known capability strings from the termcap structure into
-	 * the table for recognition. */
-	for (i = 0;
-	     _vte_terminal_capability_strings[i].capability[0];
-	     i++) {
-		if (_vte_terminal_capability_strings[i].key) {
-			continue;
-		}
-		code = _vte_terminal_capability_strings[i].capability;
-		stripped = _vte_termcap_find_string_length(termcap,
-                                                           emulation,
-                                                           code,
-                                                           &stripped_length);
-		if (stripped[0] != '\0') {
-			_vte_matcher_add(matcher, stripped, stripped_length,
-					 code, 0);
-			if (stripped[0] == '\r') {
-				found_cr = TRUE;
-			} else
-			if (stripped[0] == '\n') {
-				if ((strcmp(code, "sf") == 0) ||
-				    (strcmp(code, "do") == 0)) {
-					found_lf = TRUE;
-				}
+	if (termcap != NULL) {
+		/* Load the known capability strings from the termcap
+		 * structure into the table for recognition. */
+		for (i = 0;
+				_vte_terminal_capability_strings[i].capability[0];
+				i++) {
+			if (_vte_terminal_capability_strings[i].key) {
+				continue;
 			}
+			code = _vte_terminal_capability_strings[i].capability;
+			stripped = _vte_termcap_find_string_length(termcap,
+					emulation,
+					code,
+					&stripped_length);
+			if (stripped[0] != '\0') {
+				_vte_matcher_add(matcher,
+						stripped, stripped_length,
+						code, 0);
+				if (stripped[0] == '\r') {
+					found_cr = TRUE;
+				} else
+					if (stripped[0] == '\n') {
+						if (strcmp(code, "sf") == 0 ||
+								strcmp(code, "do") == 0) {
+							found_lf = TRUE;
+						}
+					}
+			}
+			g_free(stripped);
 		}
-		g_free(stripped);
 	}
 
 	/* Add emulator-specific sequences. */
@@ -117,13 +117,11 @@ _vte_matcher_init(struct _vte_matcher *matcher, const char *emulation,
 		_vte_matcher_add(matcher, "\n", 1, "sf", 0);
 	}
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_TRIE)) {
+	_VTE_DEBUG_IF(VTE_DEBUG_TRIE) {
 		g_printerr("Trie contents:\n");
 		_vte_matcher_print(matcher);
 		g_printerr("\n");
 	}
-#endif
 }
 
 /* Allocates new matcher structure. */
@@ -133,14 +131,11 @@ _vte_matcher_create(gpointer key)
 	char *emulation = key;
 	struct _vte_matcher *ret = NULL;
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_LIFECYCLE)) {
-		g_printerr("_vte_matcher_create()\n");
-	}
-#endif
+	_vte_debug_print(VTE_DEBUG_LIFECYCLE, "_vte_matcher_create()\n");
 	ret = g_slice_new(struct _vte_matcher);
 	ret->impl = &dummy_vte_matcher_trie;
 	ret->match = NULL;
+	ret->free_params = NULL;
 
 	if (strcmp(emulation, "xterm") == 0) {
 		ret->impl = &dummy_vte_matcher_table;
@@ -158,11 +153,10 @@ _vte_matcher_destroy(gpointer value)
 {
 	struct _vte_matcher *matcher = value;
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_LIFECYCLE)) {
-		g_printerr("_vte_matcher_destroy()\n");
+	_vte_debug_print(VTE_DEBUG_LIFECYCLE, "_vte_matcher_destroy()\n");
+	if (matcher->free_params != NULL) {
+		g_value_array_free (matcher->free_params);
 	}
-#endif
 	if (matcher->match != NULL) /* do not call destroy on dummy values */
 		matcher->impl->klass->destroy(matcher->impl);
 	g_slice_free(struct _vte_matcher, matcher);
@@ -182,7 +176,7 @@ _vte_matcher_new(const char *emulation, struct _vte_termcap *termcap)
 	if (_vte_matcher_cache == NULL) {
 		_vte_matcher_cache = g_cache_new(_vte_matcher_create,
 				_vte_matcher_destroy,
-			       	(GCacheDupFunc) g_strdup, g_free,
+				(GCacheDupFunc) g_strdup, g_free,
 				g_str_hash, g_direct_hash, g_str_equal);
 	}
 
@@ -215,6 +209,10 @@ _vte_matcher_match(struct _vte_matcher *matcher,
 		   const char **res, const gunichar **consumed,
 		   GQuark *quark, GValueArray **array)
 {
+	if (G_UNLIKELY (array != NULL && matcher->free_params != NULL)) {
+		*array = matcher->free_params;
+		matcher->free_params = NULL;
+	}
 	return matcher->match(matcher->impl, pattern, length,
 					res, consumed, quark, array);
 }
@@ -230,19 +228,21 @@ _vte_matcher_print(struct _vte_matcher *matcher)
  * themselves, but we're using gpointers to hold unicode character strings, and
  * we need to free those ourselves. */
 void
-_vte_matcher_free_params_array(GValueArray *params)
+_vte_matcher_free_params_array(struct _vte_matcher *matcher,
+		               GValueArray *params)
 {
 	guint i;
-	GValue *value;
-	if (params != NULL) {
-		for (i = 0; i < params->n_values; i++) {
-			value = g_value_array_get_nth(params, i);
-			if (G_VALUE_HOLDS_POINTER(value)) {
-				g_free(g_value_get_pointer(value));
-				g_value_set_pointer(value, NULL);
-			}
+	for (i = 0; i < params->n_values; i++) {
+		GValue *value = &params->values[i];
+		if (G_UNLIKELY (g_type_is_a (value->g_type, G_TYPE_POINTER))) {
+			g_free (g_value_get_pointer (value));
 		}
-		g_value_array_free(params);
+	}
+	if (G_UNLIKELY (matcher == NULL || matcher->free_params != NULL)) {
+		g_value_array_free (params);
+	} else {
+		matcher->free_params = params;
+		params->n_values = 0;
 	}
 }
 

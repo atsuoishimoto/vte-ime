@@ -67,6 +67,7 @@ struct _vte_iso2022_state {
 	int current, override;
 	gunichar g[4];
 	const gchar *codeset, *native_codeset, *utf8_codeset, *target_codeset;
+	gint ambiguous_width;
 	VteConv conv;
 	_vte_iso2022_codeset_changed_cb_fn codeset_changed;
 	gpointer codeset_changed_data;
@@ -285,26 +286,13 @@ _vte_direct_compare(gconstpointer a, gconstpointer b)
 }
 
 static gboolean
-_vte_iso2022_is_ambiguous(gunichar c)
+_vte_iso2022_is_ambiguous_ht(gunichar c)
 {
-	int i;
-	gpointer p;
-	static GHashTable *ambiguous = NULL;
-	for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_ambiguous_ranges); i++) {
-		if ((c >= _vte_iso2022_ambiguous_ranges[i].start) &&
-		    (c <= _vte_iso2022_ambiguous_ranges[i].end)) {
-			return TRUE;
-		}
-	}
-	for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_unambiguous_ranges); i++) {
-		if ((c >= _vte_iso2022_unambiguous_ranges[i].start) &&
-		    (c <= _vte_iso2022_unambiguous_ranges[i].end)) {
-			return FALSE;
-		}
-	}
-	if (!ambiguous) {
+	static GHashTable *ambiguous;
+	if (G_UNLIKELY (ambiguous == NULL)) {
+		gpointer p;
+		gsize i;
 		ambiguous = g_hash_table_new (NULL, NULL);
-
 		for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_ambiguous_chars); i++) {
 			p = GINT_TO_POINTER(_vte_iso2022_ambiguous_chars[i]);
 			g_hash_table_insert(ambiguous, p, p);
@@ -312,6 +300,24 @@ _vte_iso2022_is_ambiguous(gunichar c)
 	}
 
 	return g_hash_table_lookup(ambiguous, GINT_TO_POINTER(c)) != NULL;
+}
+static inline gboolean
+_vte_iso2022_is_ambiguous(gunichar c)
+{
+	gsize i;
+	for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_unambiguous_ranges); i++) {
+		if ((c >= _vte_iso2022_unambiguous_ranges[i].start) &&
+		    (c <= _vte_iso2022_unambiguous_ranges[i].end)) {
+			return FALSE;
+		}
+	}
+	for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_ambiguous_ranges); i++) {
+		if ((c >= _vte_iso2022_ambiguous_ranges[i].start) &&
+		    (c <= _vte_iso2022_ambiguous_ranges[i].end)) {
+			return TRUE;
+		}
+	}
+	return _vte_iso2022_is_ambiguous_ht (c);
 }
 
 /* If we only have a codepoint, guess what the ambiguous width should be based
@@ -344,12 +350,8 @@ _vte_iso2022_ambiguous_width_guess(void)
 			ret = 2;
 		}
 	}
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-		g_printerr("Ambiguous characters will have width = %d.\n",
-			ret);
-	}
-#endif
+	_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+			"Ambiguous characters will have width = %d.\n", ret);
 	return ret;
 }
 
@@ -371,7 +373,7 @@ _vte_iso2022_ambiguous_width(struct _vte_iso2022_state *state)
 		"gbk",
 		"tcvn",
 	};
-	int i, j;
+	gsize i, j;
 	char codeset[16];
 
 	/* Catch weirdo cases. */
@@ -421,13 +423,14 @@ _vte_iso2022_map_init(const struct _vte_iso2022_map *map, gssize length)
 
 static void
 _vte_iso2022_map_get(gunichar mapname,
-		     GTree **tree, gint *bytes_per_char, gint *force_width,
+		     GTree **tree, guint *bytes_per_char, guint *force_width,
 		     gulong *or_mask, gulong *and_mask)
 {
 	struct _vte_iso2022_map _vte_iso2022_map_NUL[256];
 	static GTree *maps = NULL;
-	gint bytes = 0, width = 0, i;
+	gint bytes = 0, width = 0;
 	GTree *map = NULL;
+	gsize i;
 
 	if (or_mask) {
 		*or_mask = 0;
@@ -769,12 +772,9 @@ _vte_iso2022_state_new(const char *native_codeset,
 	}
 	state->utf8_codeset = "UTF-8";
 	state->target_codeset = VTE_CONV_GUNICHAR_TYPE;
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-		g_printerr("Native codeset \"%s\", currently %s\n",
+	_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+			"Native codeset \"%s\", currently %s\n",
 			state->native_codeset, state->codeset);
-	}
-#endif
 	state->conv = _vte_conv_open(state->target_codeset, state->codeset);
 	state->codeset_changed = fn;
 	state->codeset_changed_data = data;
@@ -782,11 +782,8 @@ _vte_iso2022_state_new(const char *native_codeset,
 	if (state->conv == VTE_INVALID_CONV) {
 		g_warning(_("Unable to convert characters from %s to %s."),
 			  state->codeset, state->target_codeset);
-#ifdef VTE_DEBUG
-		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-			g_printerr("Using UTF-8 instead.\n");
-		}
-#endif
+		_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+				"Using UTF-8 instead.\n");
 		state->codeset = state->utf8_codeset;
 		state->conv = _vte_conv_open(state->target_codeset,
 					     state->codeset);
@@ -795,6 +792,7 @@ _vte_iso2022_state_new(const char *native_codeset,
 				state->codeset, state->target_codeset);
 		}
 	}
+	state->ambiguous_width = _vte_iso2022_ambiguous_width(state);
 	return state;
 }
 
@@ -818,11 +816,7 @@ _vte_iso2022_state_set_codeset(struct _vte_iso2022_state *state,
 	g_return_if_fail(codeset != NULL);
 	g_return_if_fail(strlen(codeset) > 0);
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-		g_printerr("%s\n", codeset);
-	}
-#endif
+	_vte_debug_print(VTE_DEBUG_SUBSTITUTION, "%s\n", codeset);
 	conv = _vte_conv_open(state->target_codeset, codeset);
 	if (conv == VTE_INVALID_CONV) {
 		g_warning(_("Unable to convert characters from %s to %s."),
@@ -832,7 +826,7 @@ _vte_iso2022_state_set_codeset(struct _vte_iso2022_state *state,
 	if (state->conv != VTE_INVALID_CONV) {
 		_vte_conv_close(state->conv);
 	}
-	state->codeset = g_quark_to_string(g_quark_from_string(codeset));
+	state->codeset = g_intern_string (codeset);
 	state->conv = conv;
 }
 
@@ -842,14 +836,10 @@ _vte_iso2022_state_get_codeset(struct _vte_iso2022_state *state)
 	return state->codeset;
 }
 
-static char *
-_vte_iso2022_find_nextctl(const char *p, size_t length)
+static const guchar *
+_vte_iso2022_find_nextctl(const guchar *p, gsize length)
 {
-	int i;
-
-	if (length == 0) {
-		return NULL;
-	}
+	gsize i;
 
 	for (i = 0; i < length; ++i) {
 		if (p[i] == '\033' ||
@@ -861,12 +851,12 @@ _vte_iso2022_find_nextctl(const char *p, size_t length)
 		    /* This breaks UTF-8 and other encodings which
 		     * use the high bits.
 		     */
-  		                 ||
+		                 ||
 		    p[i] == 0x8e ||
 		    p[i] == 0x8f
 #endif
 			) {
-			return (char *)p + i;
+			return p + i;
 		}
 	}
 	return NULL;
@@ -875,8 +865,8 @@ _vte_iso2022_find_nextctl(const char *p, size_t length)
 static long
 _vte_iso2022_sequence_length(const unsigned char *nextctl, gsize length)
 {
-	const unsigned char *valids = NULL;
-	long sequence_length = -1, i;
+	long sequence_length = -1;
+	gsize i;
 
 	switch (nextctl[0]) {
 	case '\n':
@@ -1011,9 +1001,13 @@ _vte_iso2022_sequence_length(const unsigned char *nextctl, gsize length)
 				} else {
 					/* ESC % @ */
 					/* ESC % G */
-					valids = "@G";
-					if (strchr(valids, nextctl[2])) {
+					switch (nextctl[2]) {
+					case '@':
+					case 'G':
 						sequence_length = 3;
+						break;
+					default:
+						break;
 					}
 				}
 				break;
@@ -1041,9 +1035,22 @@ _vte_iso2022_sequence_length(const unsigned char *nextctl, gsize length)
 							/* Inconclusive. */
 							sequence_length = 0;
 						} else {
-							valids = WIDE_GMAPS;
-							if (strchr(valids, nextctl[3])) {
+							/* strchr(WIDE_GMAPS, nextctl[3]) */
+							switch (nextctl[3]) {
+							case 'C':
+							case 'A':
+							case 'G':
+							case 'H':
+							case 'I':
+							case 'J':
+							case 'K':
+							case 'L':
+							case 'M':
+							case 'D':
 								sequence_length = 4;
+								break;
+							default:
+								break;
 							}
 						}
 						break;
@@ -1060,26 +1067,24 @@ _vte_iso2022_sequence_length(const unsigned char *nextctl, gsize length)
 }
 
 static GArray *
-_vte_iso2022_fragment_input(struct _vte_buffer *input)
+_vte_iso2022_fragment_input(guchar *input, gsize length)
 {
-	unsigned char *nextctl = NULL, *p, *q;
+	const guchar *nextctl, *p, *q;
 	glong sequence_length = 0;
 	struct _vte_iso2022_block block;
-	gboolean quit;
 	GArray *blocks;
 
 	blocks = g_array_new(FALSE, FALSE, sizeof(struct _vte_iso2022_block));
 
-	p = input->bytes;
-	q = input->bytes + _vte_buffer_length(input);
-	quit = FALSE;
-	while ((p < q) && !quit) {
+	p = input;
+	q = input + length;
+	do {
 		nextctl = _vte_iso2022_find_nextctl(p, q - p);
 		if (nextctl == NULL) {
 			/* It's all garden-variety data. */
 			block.type = _vte_iso2022_cdata;
-			block.start = p - input->bytes;
-			block.end = q - input->bytes;
+			block.start = p - input;
+			block.end = q - input;
 			g_array_append_val(blocks, block);
 			/* Break out of the loop. */
 			break;
@@ -1087,8 +1092,8 @@ _vte_iso2022_fragment_input(struct _vte_buffer *input)
 		/* We got some garden-variety data. */
 		if (nextctl != p) {
 			block.type = _vte_iso2022_cdata;
-			block.start = p - input->bytes;
-			block.end = nextctl - input->bytes;
+			block.start = p - input;
+			block.end = nextctl - input;
 			g_array_append_val(blocks, block);
 		}
 		/* Move on to the control data. */
@@ -1099,53 +1104,51 @@ _vte_iso2022_fragment_input(struct _vte_buffer *input)
 		case -1:
 			/* It's just garden-variety data. */
 			block.type = _vte_iso2022_cdata;
-			block.start = p - input->bytes;
-			block.end = nextctl + 1 - input->bytes;
-			g_array_append_val(blocks, block);
+			block.start = p - input;
+			block.end = nextctl + 1 - input;
 			/* Continue at the next byte. */
 			p = nextctl + 1;
 			break;
 		case 0:
 			/* Inconclusive.  Save this data and try again later. */
 			block.type = _vte_iso2022_preserve;
-			block.start = nextctl - input->bytes;
-			block.end = q - input->bytes;
-			g_array_append_val(blocks, block);
+			block.start = nextctl - input;
+			block.end = q - input;
 			/* Trigger an end-of-loop. */
-			quit = TRUE;
+			p = q;
 			break;
 		default:
 			/* It's a control sequence. */
 			block.type = _vte_iso2022_control;
-			block.start = nextctl - input->bytes;
-			block.end = nextctl + sequence_length - input->bytes;
-			g_array_append_val(blocks, block);
+			block.start = nextctl - input;
+			block.end = nextctl + sequence_length - input;
 			/* Continue after the sequence. */
 			p = nextctl + sequence_length;
 			break;
 		}
-	}
+		g_array_append_val(blocks, block);
+	} while (p < q);
 
 	return blocks;
 }
 
 static int
 process_8_bit_sequence(struct _vte_iso2022_state *state,
-		       char **inbuf, gsize *inbytes,
+		       const guchar **inbuf, gsize *inbytes,
 		       gunichar **outbuf, gsize *outbytes)
 {
-	int i, width;
+	guint i, width;
 	gpointer p;
 	gunichar c, *outptr;
-	char *inptr;
+	const guchar *inptr;
 	gulong acc, or_mask, and_mask;
 	GTree *map;
-	gint bytes_per_char, force_width, current;
+	guint bytes_per_char, force_width, current;
 
 	/* Check if it's an 8-bit escape.  If it is, take a note of which map
 	 * it's for, and if it isn't, fail. */
 	current = 0;
-	switch (**(guint8**)inbuf) {
+	switch (**inbuf) {
 	case 0x8e:
 		current = 2;
 		break;
@@ -1182,26 +1185,20 @@ process_8_bit_sequence(struct _vte_iso2022_state *state,
 	p = GINT_TO_POINTER(acc);
 	c = GPOINTER_TO_INT(g_tree_lookup(map, p));
 	if ((c == 0) && (acc != 0)) {
-#ifdef VTE_DEBUG
-		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-			g_printerr("%04lx -(%c)-> %04lx(?)\n",
+		_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+				"%04lx -(%c)-> %04lx(?)\n",
 				acc, state->g[current] & 0xff, acc);
-		}
-#endif
 	} else {
 		width = 0;
 		if (force_width != 0) {
 			width = force_width;
 		} else {
-			if (_vte_iso2022_is_ambiguous(c)) {
-				width = _vte_iso2022_ambiguous_width(state);
+			if (G_UNLIKELY (_vte_iso2022_is_ambiguous(c))) {
+				width = state->ambiguous_width;
 			}
 		}
-#ifdef VTE_DEBUG
-		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-			g_printerr("%05lx -> " "%04x\n", acc, c);
-		}
-#endif
+		_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+				"%05lx -> " "%04x\n", acc, c);
 		c = _vte_iso2022_set_encoded_width(c, width);
 	}
 	/* Save the unichar. */
@@ -1214,44 +1211,41 @@ process_8_bit_sequence(struct _vte_iso2022_state *state,
 }
 
 static glong
-process_cdata(struct _vte_iso2022_state *state, guchar *cdata, gsize length,
+process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize length,
 	      GArray *gunichars)
 {
-	int ambiguous_width = 0;
+	int ambiguous_width;
 	glong processed = 0;
 	GTree *map;
-	gint bytes_per_char, force_width, current;
-	size_t converted;
-	gchar *inbuf, *buf;
-	gunichar *outbuf;
+	guint bytes_per_char, force_width, current;
+	gsize converted;
+	const guchar *inbuf;
+	gunichar *outbuf, *buf;
 	gsize inbytes, outbytes;
-	int i, width;
+	guint i, width;
 	gulong acc, or_mask, and_mask;
 	gunichar c;
 	gpointer p;
 	gboolean single, stop;
 
-	ambiguous_width = _vte_iso2022_ambiguous_width(state);
+	ambiguous_width = state->ambiguous_width;
 
 	single = (state->override != -1);
 	current = (state->override != -1) ? state->override : state->current;
 	state->override = -1;
-	g_assert((current >= 0) && (current < G_N_ELEMENTS(state->g)));
+	g_assert(current < G_N_ELEMENTS(state->g));
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-		g_printerr("Current map = %d (%c).\n",
+	_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+			"Current map = %d (%c).\n",
 			current, (state->g[current] & 0xff));
-	}
-#endif
 
 	if (!state->nrc_enabled || (state->g[current] == 'B')) {
 		inbuf = cdata;
 		inbytes = length;
 		_vte_buffer_set_minimum_size(state->buffer,
 					     sizeof(gunichar) * length * 2);
-		buf = state->buffer->bytes;
-		outbuf = (gunichar*)buf;
+		buf = (gunichar *)state->buffer->bytes;
+		outbuf = buf;
 		outbytes = sizeof(gunichar) * length * 2;
 		do {
 			converted = _vte_conv_cu(state->conv,
@@ -1259,7 +1253,7 @@ process_cdata(struct _vte_iso2022_state *state, guchar *cdata, gsize length,
 					         &outbuf, &outbytes);
 			stop = FALSE;
 			switch (converted) {
-			case ((size_t)-1):
+			case ((gsize)-1):
 				switch (errno) {
 				case EILSEQ:
 					/* Check if it's an 8-bit sequence. */
@@ -1306,13 +1300,13 @@ process_cdata(struct _vte_iso2022_state *state, guchar *cdata, gsize length,
 		} while ((inbytes > 0) && !stop);
 
 		/* Append the unichars to the GArray. */
-		for (i = 0; &buf[i] < (char*)outbuf; i += sizeof(gunichar)) {
-			c = *(gunichar*)(buf + i);
+		for (i = 0; buf + i < outbuf; i ++) {
+			c = buf[i];
 			if (c == '\0') {
 				/* Skip the padding character. */
 				continue;
 			}
-			if (_vte_iso2022_is_ambiguous(c)) {
+			if (G_UNLIKELY (_vte_iso2022_is_ambiguous(c))) {
 				width = ambiguous_width;
 				c = _vte_iso2022_set_encoded_width(c, width);
 			}
@@ -1338,31 +1332,25 @@ process_cdata(struct _vte_iso2022_state *state, guchar *cdata, gsize length,
 				p = GINT_TO_POINTER(acc);
 				c = GPOINTER_TO_INT(g_tree_lookup(map, p));
 				if ((c == 0) && (acc != 0)) {
-#ifdef VTE_DEBUG
-					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						g_printerr("%04lx -(%c)-> "
+					_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+							"%04lx -(%c)-> "
 							"%04lx(?)\n",
 							acc,
 							state->g[current] & 0xff,
 							acc);
-					}
-#endif
 					g_array_append_val(gunichars, acc);
 				} else {
 					width = 0;
 					if (force_width != 0) {
 						width = force_width;
 					} else {
-						if (_vte_iso2022_is_ambiguous(c)) {
+						if (G_UNLIKELY (_vte_iso2022_is_ambiguous(c))) {
 							width = ambiguous_width;
 						}
 					}
-#ifdef VTE_DEBUG
-					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						g_printerr("%05lx -> "
+					_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+							"%05lx -> "
 							"%04x\n", acc, c);
-					}
-#endif
 					c = _vte_iso2022_set_encoded_width(c, width);
 					g_array_append_val(gunichars, c);
 				}
@@ -1384,8 +1372,8 @@ _vte_iso2022_process_single(struct _vte_iso2022_state *state,
 	GTree *tree;
 	gunichar ret = c;
 	gpointer p;
-	gint bytes_per_char, force_width;
-	glong or_mask, and_mask;
+	guint bytes_per_char, force_width;
+	gulong or_mask, and_mask;
 
 	_vte_iso2022_map_get(map,
 			     &tree, &bytes_per_char, &force_width,
@@ -1411,62 +1399,40 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 		GArray *gunichars)
 {
 	gunichar c;
-	int i;
+	gsize i;
 	if (length >= 1) {
 		switch (ctl[0]) {
 		case '\r':  /* CR */
 			c = '\r';
 			g_array_append_val(gunichars, c);
-#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				g_printerr("\tCR\n");
-			}
-#endif
+			_vte_debug_print(VTE_DEBUG_SUBSTITUTION, "\tCR\n");
 			break;
 		case '\n':  /* LF */
 			c = '\n';
 			g_array_append_val(gunichars, c);
-#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				g_printerr("\tLF\n");
-			}
-#endif
+			_vte_debug_print(VTE_DEBUG_SUBSTITUTION, "\tLF\n");
 			break;
 		case '\016': /* SO */
 			state->current = 1;
 			state->override = -1;
-#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				g_printerr("\tSO (^N)\n");
-			}
-#endif
+			_vte_debug_print(VTE_DEBUG_SUBSTITUTION, "\tSO (^N)\n");
 			break;
 		case '\017': /* SI */
 			state->current = 0;
 			state->override = -1;
-#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				g_printerr("\tSI (^O)\n");
-			}
-#endif
+			_vte_debug_print(VTE_DEBUG_SUBSTITUTION, "\tSI (^O)\n");
 			break;
 		case 0x8e:
 			/* SS2 - 8bit */
 			state->override = 2;
-#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				g_printerr("\tSS2 (8-bit)\n");
-			}
-#endif
+			_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+					"\tSS2 (8-bit)\n");
 			break;
 		case 0x8f:
 			/* SS3 - 8bit */
 			state->override = 3;
-#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				g_printerr("\tSS3 (8-bit)\n");
-			}
-#endif
+			_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+				"\tSS3 (8-bit)\n");
 			break;
 		case '\033':
 			if (length >= 2) {
@@ -1481,8 +1447,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 						g_array_append_val(gunichars,
 								   c);
 					}
-#ifdef VTE_DEBUG
-					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
+					_VTE_DEBUG_IF(VTE_DEBUG_SUBSTITUTION) {
 						g_printerr("\t");
 						for (i = 0; i < length; i++) {
 							c = (guchar) ctl[i];
@@ -1495,41 +1460,28 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 						}
 						g_printerr("\n");
 					}
-#endif
 					break;
 				case 'N': /* SS2 */
 					state->override = 2;
-#ifdef VTE_DEBUG
-					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						g_printerr("\tSS2\n");
-					}
-#endif
+					_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+						"\tSS2\n");
 					break;
 				case 'O': /* SS3 */
 					state->override = 3;
-#ifdef VTE_DEBUG
-					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						g_printerr("\tSS3\n");
-					}
-#endif
+					_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+						"\tSS3\n");
 					break;
 				case 'n': /* LS2 */
 					state->current = 2;
 					state->override = -1;
-#ifdef VTE_DEBUG
-					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						g_printerr("\tLS2\n");
-					}
-#endif
+					_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+							"\tLS2\n");
 					break;
 				case 'o': /* LS3 */
 					state->current = 3;
 					state->override = -1;
-#ifdef VTE_DEBUG
-					if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-						g_printerr("\tLS3\n");
-					}
-#endif
+					_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+							"\tLS3\n");
 					break;
 				case '(':
 				case ')':
@@ -1537,7 +1489,6 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 				case '+':
 					if (length >= 3) {
 						int g = -1;
-						gunichar c;
 						switch (ctl[1]) {
 						case '(':
 							g = 0;
@@ -1555,19 +1506,38 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 							g_assert_not_reached();
 							break;
 						}
-						c = ctl[2];
-						if (strchr(NARROW_MAPS, c) != NULL) {
-							state->g[g] = c;
-						} else {
-							g_warning(_("Attempt to set invalid NRC map '%c'."), c);
+						/* strchr(NARROW_MAPS, c) */
+						switch (ctl[2]) {
+						case '0':
+						case '1':
+						case '2':
+						case 'A':
+						case 'B':
+						case '4':
+						case 'C':
+						case '5':
+						case 'R':
+						case 'Q':
+						case 'K':
+						case 'Y':
+						case 'E':
+						case '6':
+						case 'Z':
+						case 'H':
+						case '7':
+						case '=':
+						case 'J':
+						case 'U':
+							state->g[g] = ctl[2];
+							break;
+
+						default:
+							g_warning(_("Attempt to set invalid NRC map '%c'."), ctl[2]);
+							break;
 						}
-#ifdef VTE_DEBUG
-						if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-							g_printerr(
+						_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
 								"\tG[%d] = %c.\n",
 								g, c);
-						}
-#endif
 					}
 					break;
 				case '%':
@@ -1579,24 +1549,16 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 								notify = TRUE;
 							}
 							_vte_iso2022_state_set_codeset(state, state->native_codeset);
-#ifdef VTE_DEBUG
-							if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-								g_printerr(
+							_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
 									"\tNative encoding.\n");
-							}
-#endif
 							break;
 						case 'G':
 							if (strcmp(state->codeset, state->utf8_codeset) != 0) {
 								notify = TRUE;
 							}
 							_vte_iso2022_state_set_codeset(state, state->utf8_codeset);
-#ifdef VTE_DEBUG
-							if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-								g_printerr(
+							_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
 									"\tUTF-8 encoding.\n");
-							}
-#endif
 							break;
 						default:
 							/* Application signalled an "identified coding system" we haven't heard of.  See ECMA-35 for gory details. */
@@ -1612,7 +1574,7 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 				case '$':
 					if (length >= 4) {
 						int g = -1;
-						gunichar c = 0;
+						c = 0;
 						switch (ctl[2]) {
 						case '@':
 							g = 0;
@@ -1624,19 +1586,15 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 							break;
 						case '(':
 							g = 0;
-							c = 0;
 							break;
 						case ')':
 							g = 1;
-							c = 0;
 							break;
 						case '*':
 							g = 2;
-							c = 0;
 							break;
 						case '+':
 							g = 3;
-							c = 0;
 							break;
 						default:
 							g_assert_not_reached();
@@ -1645,22 +1603,32 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 						if (c == 0) {
 							c = ctl[3];
 						}
-						if ((strchr(WIDE_MAPS, c) != NULL) ||
-						    (strchr(WIDE_GMAPS, c) != NULL)) {
+						/* strchr(WIDE_MAPS WIDE_GMAPS, c) */
+						switch (c) {
+						case '@':
+						case 'B':
+						case 'C':
+						case 'A':
+						case 'G':
+						case 'H':
+						case 'I':
+						case 'J':
+						case 'K':
+						case 'L':
+						case 'M':
+						case 'D':
 							state->g[g] = c + WIDE_FUDGE;
-						} else {
+							break;
+
+						default:
 							g_warning(_("Attempt to set invalid wide NRC map '%c'."), c);
+							break;
 						}
-#ifdef VTE_DEBUG
-						if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-							g_printerr(
+						_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
 								"\tG[%d] = wide %c.\n",
 								g, c);
-						}
-#endif
 					} else
 					if (length >= 3) {
-						gunichar c = 0;
 						switch (ctl[2]) {
 						case '@':
 							c = '@';
@@ -1672,18 +1640,19 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 							c = ctl[2];
 							break;
 						}
-						if (strchr(WIDE_MAPS, c) != NULL) {
+						/* strchr(WIDE_MAPS, c) */
+						switch (c){
+						case '@':
+						case 'B':
 							state->g[0] = c + WIDE_FUDGE;
-						} else {
+							break;
+
+						default:
 							g_warning(_("Attempt to set invalid wide NRC map '%c'."), c);
 						}
-#ifdef VTE_DEBUG
-						if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-							g_printerr(
+						_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
 								"\tG[0] = wide %c.\n",
 								c);
-						}
-#endif
 					}
 					break;
 				default:
@@ -1700,45 +1669,43 @@ process_control(struct _vte_iso2022_state *state, guchar *ctl, gsize length,
 	}
 }
 
-void
+gsize
 _vte_iso2022_process(struct _vte_iso2022_state *state,
-		     struct _vte_buffer *input,
+		     guchar *input, gsize length,
 		     GArray *gunichars)
 {
 	GArray *blocks;
 	struct _vte_iso2022_block *block = NULL;
 	gboolean preserve_last = FALSE;
-	int i, initial;
+	guint i, initial;
 
-	blocks = _vte_iso2022_fragment_input(input);
+	blocks = _vte_iso2022_fragment_input(input, length);
 
 	for (i = 0; i < blocks->len; i++) {
 		block = &g_array_index(blocks, struct _vte_iso2022_block, i);
 		switch (block->type) {
 		case _vte_iso2022_cdata:
-#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
+			_VTE_DEBUG_IF(VTE_DEBUG_SUBSTITUTION) {
 				int j;
 				g_printerr("%3ld %3ld CDATA \"%.*s\"",
 					block->start, block->end,
 					(int) (block->end - block->start),
-					input->bytes + block->start);
+					input + block->start);
 				g_printerr(" (");
 				for (j = block->start; j < block->end; j++) {
 					if (j > block->start) {
 						g_printerr(", ");
 					}
 					g_printerr("0x%02x",
-						input->bytes[j]);
+						input[j]);
 				}
 				g_printerr(")\n");
 			}
-#endif
 			initial = 0;
 			while (initial < block->end - block->start) {
 				int j;
 				j = process_cdata(state,
-						  input->bytes +
+						  input +
 						  block->start +
 						  initial,
 						  block->end -
@@ -1759,25 +1726,19 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 			}
 			break;
 		case _vte_iso2022_control:
-#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				g_printerr("%3ld %3ld CONTROL ",
+			_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+					"%3ld %3ld CONTROL ",
 					block->start, block->end);
-			}
-#endif
 			process_control(state,
-					input->bytes + block->start,
+					input + block->start,
 					block->end - block->start,
 					gunichars);
 			preserve_last = FALSE;
 			break;
 		case _vte_iso2022_preserve:
-#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-				g_printerr("%3ld %3ld PRESERVE\n",
+			_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+					"%3ld %3ld PRESERVE\n",
 					block->start, block->end);
-			}
-#endif
 			g_assert(i == blocks->len - 1);
 			preserve_last = TRUE;
 			break;
@@ -1788,30 +1749,19 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 	}
 	if (preserve_last && (blocks->len > 0)) {
 		block = &g_array_index(blocks, struct _vte_iso2022_block, blocks->len - 1);
-#ifdef VTE_DEBUG
-		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-			g_printerr("Consuming %ld bytes.\n", block->start);
-		}
-#endif
-		_vte_buffer_consume(input, block->start);
-		g_assert(_vte_buffer_length(input) == block->end - block->start);
-	} else {
-#ifdef VTE_DEBUG
-		if (_vte_debug_on(VTE_DEBUG_SUBSTITUTION)) {
-			g_printerr("Consuming %ld bytes.\n",
-				(long) _vte_buffer_length(input));
-		}
-#endif
-		_vte_buffer_clear(input);
+		length = block->start;
 	}
 	g_array_free(blocks, TRUE);
+	_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+			"Consuming %ld bytes.\n", (long) length);
+	return length;
 }
 
 gssize
 _vte_iso2022_unichar_width(gunichar c)
 {
 	c = c & ~(VTE_ISO2022_ENCODED_WIDTH_MASK); /* just in case */
-	if (_vte_iso2022_is_ambiguous(c)) {
+	if (G_UNLIKELY (_vte_iso2022_is_ambiguous(c))) {
 		return _vte_iso2022_ambiguous_width_guess();
 	}
 	if (g_unichar_iswide(c)) {

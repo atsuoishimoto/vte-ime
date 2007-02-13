@@ -217,6 +217,13 @@ _vte_pango_x_set_background_image(struct _vte_draw *draw,
 }
 
 static void
+_vte_pango_x_clip(struct _vte_draw *draw, GdkRegion *region)
+{
+	struct _vte_pango_x_data *data = draw->impl_data;
+	gdk_gc_set_clip_region(data->gc, region);
+}
+
+static void
 _vte_pango_x_clear(struct _vte_draw *draw,
 		   gint x, gint y, gint width, gint height)
 {
@@ -272,10 +279,10 @@ _vte_pango_x_set_text_font(struct _vte_draw *draw,
 	PangoLayout *layout;
 	PangoLayoutIter *iter;
 	PangoRectangle ink, logical;
-	gunichar full_codepoints[] = {VTE_DRAW_DOUBLE_WIDE_CHARACTERS};
+	gunichar full_codepoints[] = {VTE_DRAW_DOUBLE_WIDE_IDEOGRAPHS};
 	GString *full_string;
 	gint full_width;
-	int i;
+	guint i;
 	struct _vte_pango_x_data *data;
 
 	data = (struct _vte_pango_x_data*) draw->impl_data;
@@ -318,7 +325,8 @@ _vte_pango_x_set_text_font(struct _vte_draw *draw,
 
 	/* If they're the same, then we have a screwy font. */
 	if (full_width == draw->width) {
-		draw->width /= 2;
+		/* add 1 to round up when dividing by 2 */
+		draw->width = (draw->width + 1) / 2;
 	}
 
 	draw->width = PANGO_PIXELS(draw->width);
@@ -331,12 +339,9 @@ _vte_pango_x_set_text_font(struct _vte_draw *draw,
 	}
 	pango_layout_iter_free(iter);
 
-#ifdef VTE_DEBUG
-	if (_vte_debug_on(VTE_DEBUG_MISC)) {
-		g_printerr("VtePangoX font metrics = %dx%d (%d).\n",
+	_vte_debug_print(VTE_DEBUG_MISC,
+			"VtePangoX font metrics = %dx%d (%d).\n",
 			draw->width, draw->height, draw->ascent);
-	}
-#endif
 	g_object_unref(layout);
 	g_object_unref(ctx);
 }
@@ -381,8 +386,7 @@ _vte_pango_x_draw_text(struct _vte_draw *draw,
 	GC gc;
 	struct _vte_pango_x_data *data;
 	char buf[VTE_UTF8_BPC];
-	int i;
-	gsize length;
+	gsize i, length;
 	GdkColor wcolor;
 
 	data = (struct _vte_pango_x_data*) draw->impl_data;
@@ -472,6 +476,7 @@ const struct _vte_draw_impl _vte_draw_pango_x = {
 	_vte_pango_x_set_background_color,
 	_vte_pango_x_set_background_image,
 	FALSE,
+	_vte_pango_x_clip,
 	_vte_pango_x_clear,
 	_vte_pango_x_set_text_font,
 	_vte_pango_x_get_text_width,

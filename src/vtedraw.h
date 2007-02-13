@@ -31,10 +31,15 @@ G_BEGIN_DECLS
 
 #define VTE_DRAW_SINGLE_WIDE_CHARACTERS	"ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
 					"abcdefgjijklmnopqrstuvwxyz" \
-					"0123456789./+@"
-#define VTE_DRAW_DOUBLE_WIDE_CHARACTERS	0x4e00, 0x4e8c, 0x4e09, 0x56db, 0x4e94
+					"0123456789./+@&"
+#define VTE_DRAW_DOUBLE_WIDE_CHARACTERS 0x4e00, 0x4e8c, 0x4e09, 0x56db, 0x4e94,\
+					0xac00, 0xac01, 0xac04, 0xac08, 0xac10
+/* For Pango, we have to use CJK Ideographs alone. Otherwise, 'width'
+   returned by pango_layout would be screwed up for Chinese and Japanese
+   fonts without Hangul */
+#define VTE_DRAW_DOUBLE_WIDE_IDEOGRAPHS 0x4e00, 0x4e8c, 0x4e09, 0x56db, 0x4e94
 #define VTE_DRAW_OPAQUE 0xff
-#define VTE_DRAW_MAX_LENGTH 88
+#define VTE_DRAW_MAX_LENGTH 540
 
 /* The _vte_draw structure. */
 struct _vte_draw;
@@ -45,7 +50,7 @@ struct _vte_draw;
    left end of the baseline. */
 struct _vte_draw_text_request {
 	gunichar c;
-	gint x, y, columns;
+	gshort x, y, columns;
 };
 
 struct _vte_draw_impl {
@@ -65,6 +70,7 @@ struct _vte_draw_impl {
 				     const GdkColor *color,
 				     double saturation);
 	gboolean requires_repaint;
+	void (*clip)(struct _vte_draw *, GdkRegion *);
 	void (*clear)(struct _vte_draw *, gint, gint, gint, gint);
 	void (*set_text_font)(struct _vte_draw *,
 			      const PangoFontDescription *,
@@ -125,6 +131,7 @@ void _vte_draw_set_background_image(struct _vte_draw *draw,
 				    const GdkColor *color,
 				    double saturation);
 gboolean _vte_draw_requires_repaint(struct _vte_draw *draw);
+gboolean _vte_draw_clip(struct _vte_draw *draw, GdkRegion *region);
 void _vte_draw_clear(struct _vte_draw *draw,
 		     gint x, gint y, gint width, gint height);
 

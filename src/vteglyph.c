@@ -83,7 +83,7 @@ _vte_glyph_cache_new(void)
 void
 _vte_glyph_cache_free(struct _vte_glyph_cache *cache)
 {
-	int i;
+	guint i;
 
 	g_return_if_fail(cache != NULL);
 
@@ -121,12 +121,13 @@ _vte_glyph_cache_set_font_description(GtkWidget *widget,
 				      gpointer defaults_data)
 {
 	FcChar8 *facefile;
-	int i, j, error, count, width, faceindex;
+	int b, error, count, width, faceindex;
+	guint i,j;
 	double dpi, size;
 	GList *iter;
 	FcPattern *pattern;
 	GPtrArray *patterns;
-	FT_Face face;
+	FT_Face face, prev_face;
 	gunichar double_wide_characters[] = {VTE_DRAW_DOUBLE_WIDE_CHARACTERS};
 
 	g_return_if_fail(cache != NULL);
@@ -207,19 +208,19 @@ _vte_glyph_cache_set_font_description(GtkWidget *widget,
 	/* Pull out other settings. */
 	cache->ft_load_flags = 0;
 	cache->ft_render_flags = 0;
-	i = 0;
+	b = 0;
 	pattern = g_ptr_array_index(cache->patterns, 0);
 	/* Read and set the "use the autohinter", er, hint. */
 #if defined(FC_AUTOHINT) && defined(FT_LOAD_FORCE_AUTOHINT)
-	if (FcPatternGetBool(pattern, FC_AUTOHINT, 0, &i) == FcResultMatch) {
-		if (i != 0) {
+	if (FcPatternGetBool(pattern, FC_AUTOHINT, 0, &b) == FcResultMatch) {
+		if (b != 0) {
 			cache->ft_load_flags |= FT_LOAD_FORCE_AUTOHINT;
 		}
 	}
 #endif
 	/* Read and set the "use antialiasing" hint. */
-	if (FcPatternGetBool(pattern, FC_ANTIALIAS, 0, &i) == FcResultMatch) {
-		if (i == 0) {
+	if (FcPatternGetBool(pattern, FC_ANTIALIAS, 0, &b) == FcResultMatch) {
+		if (b == 0) {
 			cache->ft_load_flags |= FT_LOAD_MONOCHROME;
 #if HAVE_DECL_FT_RENDER_MODE_MONO
 			cache->ft_render_flags = FT_RENDER_MODE_MONO;
@@ -230,14 +231,14 @@ _vte_glyph_cache_set_font_description(GtkWidget *widget,
 		}
 	}
 	/* Read and set the "hinting" hint. */
-	if (FcPatternGetBool(pattern, FC_HINTING, 0, &i) == FcResultMatch) {
-		if (i == 0) {
+	if (FcPatternGetBool(pattern, FC_HINTING, 0, &b) == FcResultMatch) {
+		if (b == 0) {
 			cache->ft_load_flags |= FT_LOAD_NO_HINTING;
 		} else {
 #if defined(FC_AUTOHINT) && defined(FT_LOAD_FORCE_AUTOHINT)
 			if (FcPatternGetBool(pattern, FC_AUTOHINT, 0,
-					     &i) == FcResultMatch) {
-				if (i != 0) {
+					     &b) == FcResultMatch) {
+				if (b != 0) {
 					cache->ft_render_flags |=
 						FT_LOAD_FORCE_AUTOHINT;
 				}
@@ -245,8 +246,8 @@ _vte_glyph_cache_set_font_description(GtkWidget *widget,
 #endif
 #ifdef FC_HINT_STYLE
 			if (FcPatternGetInteger(pattern, FC_HINT_STYLE, 0,
-						&i) == FcResultMatch) {
-				switch (i) {
+						&b) == FcResultMatch) {
+				switch (b) {
 #if HAVE_DECL_FT_LOAD_NO_HINTING
 				case FC_HINT_NONE:
 					cache->ft_load_flags |=
@@ -326,7 +327,9 @@ _vte_glyph_cache_set_font_description(GtkWidget *widget,
 		cache->height = 1;
 		cache->ascent = 1;
 	}
-	width = 0;
+	/* detect if font measured above has the fixed-width property */
+	width = count = 0;
+	prev_face = NULL;
 	for (i = 0; i < G_N_ELEMENTS(double_wide_characters); i++) {
 		face = _vte_glyph_cache_face_for_char(cache,
 						      double_wide_characters[i]);
@@ -341,13 +344,27 @@ _vte_glyph_cache_set_font_description(GtkWidget *widget,
 						cache->ft_render_flags);
 		}
 		if (error == 0) {
+			if (count && prev_face != face) {
+				width /= 64 * count;
+				if (cache->width >= width - 1 &&
+						cache->width <= width + 1) {
+					/* add 1 to round up when dividing by 2 */
+					cache->width = (cache->width + 1) / 2;
+					break;
+				}
+				count = width =0;
+			}
 			width += face->glyph->metrics.horiAdvance;
 			count++;
+			prev_face = face;
 		}
 	}
 	if (count > 0) {
-		if (cache->width == width / 64 / count) {
-			cache->width /= 2;
+		width /= 64 * count;
+		if (cache->width >= width - 1 &&
+				cache->width <= width + 1) {
+			/* add 1 to round up when dividing by 2 */
+			cache->width = (cache->width + 1) / 2;
 		}
 	}
 }
