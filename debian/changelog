@@ -1,3 +1,11 @@
+vte (1:0.15.3-0ubuntu2) feisty; urgency=low
+
+  * Add 'debian/patches/01_fix_scrolling.patch': taken from upstream:
+    "scrolling inside screen with a status line was broken" (LP: #85023).
+    Thanks to Mika Fischer for tracking this down.
+
+ -- Kees Cook <kees@ubuntu.com>  Wed, 14 Feb 2007 11:23:32 -0800
+
 vte (1:0.15.3-0ubuntu1) feisty; urgency=low
 
   * New upstream release
