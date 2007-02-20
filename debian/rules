@@ -19,6 +19,11 @@ DEB_DH_MAKESHLIBS_ARGS_ALL = -V 'libvte9 (>= 1:0.13.3)'
 
 DEB_BUILDDIR := build
 
+DEB_DBG_PACKAGE_python-vte = python-vte-dbg
+DEB_COMPRESS_EXCLUDE = .py
+
+.PRECIOUS: configure-stamp-% dbg-configure-stamp-%
+
 configure-stamp-%:
 	mkdir build-$*
 	cd build-$* && PYTHON=`which $*` $(DEB_CONFIGURE_SCRIPT_ENV) \
@@ -30,29 +35,59 @@ configure-stamp-%:
 		$(DEB_CONFIGURE_USER_FLAGS)
 	touch $@
 
+dbg-configure-stamp-%:
+	mkdir dbg-build-$*
+	cd dbg-build-$* && PYTHON=`which $*-dbg` $(subst -O2,-O0,$(DEB_CONFIGURE_SCRIPT_ENV)) \
+	    $(DEB_CONFIGURE_SCRIPT) \
+		$(DEB_CONFIGURE_NORMAL_ARGS) \
+		--disable-maintainer-mode \
+		$(cdbs_configure_flags) \
+		$(DEB_CONFIGURE_EXTRA_FLAGS) \
+		$(DEB_CONFIGURE_USER_FLAGS)
+	touch $@
+
 configure/python-vte:: $(addprefix configure-stamp-, $(PY_VERSIONS))
+configure/python-vte-dbg:: $(addprefix dbg-configure-stamp-, $(PY_VERSIONS))
 
 build-stamp-%:
 	make -C build-$*
 	touch $@
 
+dbg-build-stamp-%:
+	make -C dbg-build-$*
+	touch $@
+
 build/python-vte:: $(addprefix build-stamp-, $(PY_VERSIONS))
+build/python-vte-dbg:: $(addprefix dbg-build-stamp-, $(PY_VERSIONS))
 
 install-stamp-%:
 	make -C build-$* install DESTDIR=$(CURDIR)/debian/tmp
-	touch $@
+
+dbg-install-stamp-%:
+	make -C dbg-build-$* install DESTDIR=$(CURDIR)/debian/python-vte-dbg
 
 install/python-vte:: $(addprefix install-stamp-, $(PY_VERSIONS))
+
+install/python-vte-dbg:: $(addprefix dbg-install-stamp-, $(PY_VERSIONS))
+	for i in $$(find debian/python-*-dbg/usr/lib/py* -name '*.so'); do \
+	  b=$$(basename $$i .so); \
+	  mv $$i $$(dirname $$i)/$${b}_d.so; \
+	done
+	find debian/python-*-dbg ! -type d ! -name '*_d.so' | xargs rm -f
+	find debian/python-*-dbg -depth -empty -exec rmdir {} \;
 
 binary-install/python-vte::
 	dh_pysupport -d
 	find debian/python-vte -name '*.la' -exec rm {} \;
 	find debian/python-vte -name '*.a' -exec rm {} \;
 
+binary-predeb/python-vte-dbg::
+	rm -rf debian/python-vte-dbg/usr/share/doc/python-vte-dbg
+	ln -s python-vte debian/python-vte-dbg/usr/share/doc/python-vte-dbg
+
 clean::
 	-rm -rf $(DEB_BUILDDIR)
 	-rm -rf $(addprefix build-, $(PY_VERSIONS))
 	-rm -rf $(addprefix configure-stamp-, $(PY_VERSIONS))
 	-rm -rf $(addprefix build-stamp-, $(PY_VERSIONS))
-	-rm -rf $(addprefix install-stamp-, $(PY_VERSIONS))
-
+	rm -rf dbg-build* dbg-*-stamp-*

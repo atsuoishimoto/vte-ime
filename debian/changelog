@@ -1,3 +1,14 @@
+vte (1:0.15.3-0ubuntu3) feisty; urgency=low
+
+  * Build a python-vte-dbg package.
+  * acinclude.m4: Fix PYTHON_INCLUDES macro; run autoconf.
+  * debian/rules: Don't remove intermediate stamp files, don't create
+    stamps for the install targets.
+  * Install python-vte examples.
+  * Set Ubuntu maintainer address.
+
+ -- Matthias Klose <doko@ubuntu.com>  Tue, 20 Feb 2007 15:57:04 +0100
+
 vte (1:0.15.3-0ubuntu2) feisty; urgency=low
 
   * Add 'debian/patches/01_fix_scrolling.patch': taken from upstream:
