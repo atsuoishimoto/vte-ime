@@ -42,6 +42,7 @@ extern char *strdup(const char *);
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
+#include <sys/param.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <errno.h>
@@ -93,13 +94,13 @@ static pty_info *pty_list;
 #endif
 #endif /* CMSG_DATA */
 
-#define CONTROLLEN (sizeof (struct cmsghdr)  + sizeof (int))
-
 static struct cmsghdr *cmptr;
+static int CONTROLLEN;
 
 static int
-init_msg_pass ()
+init_msg_pass (void)
 {
+	CONTROLLEN = (CMSG_DATA (cmptr) - (unsigned char *)cmptr) + sizeof(int);
 	cmptr = malloc (CONTROLLEN);
 
 	if (cmptr)
@@ -654,16 +655,39 @@ sanity_checks (void)
 	}
 }
 
+static gboolean done;
+
+static void
+exit_handler (int signum)
+{
+	done = TRUE;
+}
+
+
 int
 main (int argc, char *argv [])
 {
 	int res, n;
 	void *tag;
 	GnomePtyOps op;
+	const char *logname;
 
 	sanity_checks ();
 
-	pwent = getpwuid (getuid ());
+	pwent = NULL;
+
+	logname = getenv ("LOGNAME");
+	if (logname != NULL) {
+		pwent = getpwnam (logname);
+		if (pwent != NULL && pwent->pw_uid != getuid ()) {
+			/* LOGNAME is lying, fall back to looking up the uid */
+			pwent = NULL;
+		}
+	}
+
+	if (pwent == NULL)
+		pwent = getpwuid (getuid ());
+
 	if (pwent)
 		login_name = pwent->pw_name;
 	else {
@@ -675,16 +699,21 @@ main (int argc, char *argv [])
 	if (!display_name)
 		display_name = "localhost";
 
+	done = FALSE;
+
+	/* Make sure we clean up utmp/wtmp even under vncserver */
+	signal (SIGHUP, exit_handler);
+	signal (SIGTERM, exit_handler);
 
 	if (init_msg_pass () == -1)
 		exit (1);
 
-	for (;;) {
+	while (!done) {
 		res = n_read (STDIN_FILENO, &op, sizeof (op));
 
 		if (res != sizeof (op)) {
-			shutdown_helper ();
-			return 1;
+			done = TRUE;
+			continue;
 		}
 
 		switch (op) {
@@ -727,7 +756,7 @@ main (int argc, char *argv [])
 			n = n_read (STDIN_FILENO, &tag, sizeof (tag));
 			if (n != sizeof (tag)) {
 				shutdown_helper ();
-				return 1;
+				exit (1);
 			}
 			close_pty_pair (tag);
 			break;
@@ -735,6 +764,7 @@ main (int argc, char *argv [])
 
 	}
 
+	shutdown_helper ();
 	return 0;
 }
 

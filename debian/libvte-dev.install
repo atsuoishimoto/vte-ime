@@ -1,6 +1,4 @@
 debian/tmp/usr/include
-debian/tmp/usr/share/gtk-doc
 debian/tmp/usr/lib/pkgconfig
 debian/tmp/usr/lib/libvte.a
-debian/tmp/usr/lib/libvte.la
 debian/tmp/usr/lib/libvte.so

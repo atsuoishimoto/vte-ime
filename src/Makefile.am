@@ -6,6 +6,7 @@ pkglib_SCRIPTS = decset osc window
 noinst_PROGRAMS = buffer dumpkeys iso2022 pty reaper reflect-text-view reflect-vte $(REFLECT_ZVT) ring mev ssfe table trie xticker vteconv vtetc
 EXTRA_DIST = \
 	$(pkglib_SCRIPTS) \
+	vteseq-gen.c \
 	genkeysyms.py \
 	iso2022.txt \
 	marshal.list \
@@ -20,7 +21,7 @@ EXTRA_DIST = \
 	unitable.JIS0212 \
 	unitable.KSX1001
 
-AM_CFLAGS = @VTE_CFLAGS@ @CFLAGS@ @X_CFLAGS@
+AM_CFLAGS = @VTE_CFLAGS@ @CFLAGS@ @X_CFLAGS@ -DG_DISABLE_ASSERT
 AM_LDFLAGS = @LDFLAGS@
 
 EXTRA_libvte_la_SOURCES = keysyms.c
@@ -52,6 +53,7 @@ libvte_la_SOURCES = \
 	trie.h \
 	vte.c \
 	vte.h \
+	vte-private.h \
 	vteaccess.c \
 	vteaccess.h \
 	vtebg.c \
@@ -79,6 +81,10 @@ libvte_la_SOURCES = \
 	vteregex.h \
 	vtergb.c \
 	vtergb.h \
+	vteseq.c \
+	vteseq.h \
+	vteseq-list.h \
+	vteseq-table.h \
 	vteskel.c \
 	vteskel.h \
 	vtetc.c \
@@ -91,13 +97,13 @@ libvte_la_SOURCES = \
 # Libtool shared library versioning stuffs.
 # REVISION gets incremented whenever the source code changes without adding
 # an API or ABI change.
-VERSION_REVISION=0
+VERSION_REVISION=1
 # CURRENT must be incremented when an API or ABI change (addition or removal)
 # is made, and REVISION must be reset to 0 when this happens.
-VERSION_CURRENT=8
+VERSION_CURRENT=9
 # AGE must be incremented when an API or ABI addition is made, and REVISION
 # must be reset to 0 when this happens.
-VERSION_AGE=4
+VERSION_AGE=5
 libvte_la_LDFLAGS = @LDFLAGS@ -version-info $(VERSION_CURRENT):$(VERSION_REVISION):$(VERSION_AGE)
 libvte_la_LIBADD = @LIBS@ @VTE_LIBS@ @X_LIBS@
 
@@ -155,6 +161,8 @@ iso2022_CFLAGS = @CFLAGS@ @GTK_CFLAGS@ -DISO2022_MAIN
 iso2022_SOURCES = \
 	buffer.c \
 	buffer.h \
+	caps.c \
+	caps.h \
 	debug.c \
 	debug.h \
 	iso2022.c \
@@ -166,13 +174,17 @@ iso2022_SOURCES = \
 	trie.c \
 	trie.h \
 	vteconv.c \
-	vteconv.h
+	vteconv.h \
+	vtetc.c \
+	vtetc.h
 iso2022_LDADD = @LDFLAGS@ @LIBS@ @GOBJECT_LIBS@
 
 utf8echo_CFLAGS = @CFLAGS@ @GOBJECT_CFLAGS@ -DUTF8ECHO_MAIN
 utf8echo_SOURCES = \
 	buffer.c \
 	buffer.h \
+	caps.c \
+	caps.h \
 	debug.c \
 	debug.h \
 	matcher.c \
@@ -183,13 +195,15 @@ utf8echo_SOURCES = \
 	trie.h \
 	utf8echo.c \
 	vteconv.c \
-	vteconv.h
+	vteconv.h \
+	vtetc.c \
+	vtetc.h
 utf8echo_LDADD = @LDFLAGS@ @LIBS@ @GOBJECT_LIBS@
 
 nativeecho_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@ -DNATIVEECHO_MAIN
 nativeecho_SOURCES = \
 	nativeecho.c
-nativeecho_LDADD = @LDFLAGS@ @LIBS@
+nativeecho_LDADD = @LDFLAGS@ @LIBS@ @GLIB_LIBS@
 
 ring_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@ -DRING_MAIN
 ring_SOURCES = \
@@ -207,22 +221,8 @@ table_CFLAGS = @CFLAGS@ @GOBJECT_CFLAGS@ -DTABLE_MAIN
 table_SOURCES = \
 	buffer.c \
 	buffer.h \
-	debug.c \
-	debug.h \
-	matcher.c \
-	matcher.h \
-	table.c \
-	table.h \
-	trie.c \
-	trie.h \
-	vteconv.c \
-	vteconv.h
-table_LDADD = @LDFLAGS@ @LIBS@ @GOBJECT_LIBS@
-
-trie_CFLAGS = @CFLAGS@ @GOBJECT_CFLAGS@ -DTRIE_MAIN
-trie_SOURCES = \
-	buffer.c \
-	buffer.h \
+	caps.c \
+	caps.h \
 	debug.c \
 	debug.h \
 	matcher.c \
@@ -235,6 +235,26 @@ trie_SOURCES = \
 	vteconv.h \
 	vtetc.c \
 	vtetc.h
+table_LDADD = @LDFLAGS@ @LIBS@ @GOBJECT_LIBS@
+
+trie_CFLAGS = @CFLAGS@ @GOBJECT_CFLAGS@ -DTRIE_MAIN
+trie_SOURCES = \
+	buffer.c \
+	buffer.h \
+	caps.c \
+	caps.h \
+	debug.c \
+	debug.h \
+	matcher.c \
+	matcher.h \
+	table.c \
+	table.h \
+	trie.c \
+	trie.h \
+	vteconv.c \
+	vteconv.h \
+	vtetc.c \
+	vtetc.h 
 trie_LDADD = @LDFLAGS@ @LIBS@ @GOBJECT_LIBS@
 
 vtetc_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@ -DTERMCAP_MAIN
@@ -292,4 +312,8 @@ ssfe_LDADD = @LDFLAGS@ @OTHERLIBS@
 
 xticker_CFLAGS = @CFLAGS@ @GLIB_CFLAGS@
 xticker_SOURCES = xticker.c
-xticker_LDADD = @LIBS@ @GLIB_LIBS@
+xticker_LDADD = @LDFLAGS@ @LIBS@ @GLIB_LIBS@
+
+vteseq-table.h: vteseq-gen.c vteseq-list.h
+	$(MAKE) vteseq-gen
+	./vteseq-gen > $@

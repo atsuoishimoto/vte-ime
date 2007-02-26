@@ -19,13 +19,18 @@
 #ifndef vte_vteint_h_included
 #define vte_vteint_h_included
 
-#ident "$Id: vteint.h,v 1.1 2003/06/16 21:16:33 nalin Exp $"
+#ident "$Id: vteint.h,v 1.2 2005/08/10 13:29:12 kmaraas Exp $"
 
 #include "vte.h"
 
 G_BEGIN_DECLS
 
 void _vte_terminal_accessible_ref(VteTerminal *terminal);
+char* _vte_terminal_get_selection(VteTerminal *terminal);
+void _vte_terminal_get_start_selection(VteTerminal *terminal, long *x, long *y);
+void _vte_terminal_get_end_selection(VteTerminal *terminal, long *x, long *y);
+void _vte_terminal_select_text(VteTerminal *terminal, long start_x, long start_y, long end_x, long end_y, int start_offset, int end_offset);
+void _vte_terminal_remove_selection(VteTerminal *terminal);
 
 G_END_DECLS
 

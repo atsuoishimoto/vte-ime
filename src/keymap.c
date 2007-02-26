@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: keymap.c,v 1.29 2005/02/15 11:29:24 kmaraas Exp $"
+#ident "$Id: keymap.c,v 1.30 2006/02/02 03:43:16 behdad Exp $"
 #include "../config.h"
 #include <stdlib.h>
 #include <stdarg.h>
@@ -1253,7 +1253,7 @@ static gboolean
 _vte_keymap_key_gets_modifiers(guint keyval)
 {
 	gboolean fkey = FALSE;
-	/* Determine if this is just a modifier key. */
+	/* Determine if this key gets modifiers. */
 	switch (keyval) {
 	case GDK_Up:
 	case GDK_Down:

@@ -1,3 +1,605 @@
+2006-05-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.12.2.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.12.2.
+	* src/Makefile.am: Bumped libtool version to 9:1:5.
+
+2006-04-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 339980 – nativeecho needs glib in LDADD to build on Solaris
+	Patch from Brian Cameron.
+
+	* src/Makefile.am: Fix it.
+
+2006-04-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 331803 – style needs to be attached/detached to the window on
+	realize/unrealize
+	Patch from Benjamin Berg  <benjamin@sipsolutions.net>.
+
+	* src/vte.c: (vte_terminal_unrealize), (vte_terminal_realize):
+	attach and detach the style of the terminal widget.
+
+2006-04-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.12.1.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.12.1.
+	* src/Makefile.am: Bumped libtool version to 9:0:5.
+
+2006-04-21  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 328850 – Crash when pasting selection
+
+	* src/vte.c: Protect against passing NULL selection to strcmp.
+
+2006-04-20  Behdad Esfahbod  <behdad@gnome.org>
+
+	* doc/reference/tmpl/internals.sgml:
+	* doc/reference/tmpl/reaper.sgml:
+	* doc/reference/tmpl/vte-unused.sgml:
+	* doc/reference/tmpl/vte.sgml:
+	* doc/reference/tmpl/vteaccess.sgml:
+	* doc/reference/vte-sections.txt: Misc fixes and updates.
+
+	* python/vte.defs:
+	* python/vte.override: Updates.
+
+	Bug 160134 – mouse events occurring past column 95 are not passed
+	through to terminal application
+	Based on patch from Sean Estabrooks.
+
+	* src/vte.h:
+	* src/vte.c (vte_terminal_feed_child_binary): New public function.
+
+	* src/vte.c (vte_terminal_send_mouse_button_internal),
+	(vte_terminal_maybe_send_mouse_drag): Use feed_child_binary.
+
+2006-04-19  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 135230 – Feature request to attach VTE to existing pty
+	Based on patch from eric@brouhaha.com, John Swensen, and
+	Chris Moller  <cmoller@redhat.com>
+
+	* src/vte.c:
+	* src/vte.h:
+	* python/vte.defs:
+	* doc/reference/vte-sections.txt: Added vte_terminal_set_pty().
+
+2006-04-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 144456 – UK pound currency symbol rendered incorrectly
+
+	* src/vte.c: Offset characters drawn in draw_graphic for padding.
+
+2006-04-06  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 337552 – Insufficient version requirement for gtk+
+
+	* configure.in: Depend on Gtk+ 2.6 and GLib 2.6.
+
+2006-03-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	Branchpoint for vte-0-12.
+
+2006-03-30  Guntupalli Karunakar  <karunakar@indlinux.org>
+
+	* configure.in: Added "dz" (Dzongkha) to ALL_LINGUAS.
+
+2006-03-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 336128 – vim scrolling issues - emulation errors
+
+	* src/vteseq.c (vte_sequence_handler_sf): Update start and end
+	when updating insert_delta.
+
+2006-03-15  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 334385 – Use intltool
+
+	* Makefile.am, configure.in: Add intltool support.
+
+	* src/iso2022.c, src/reaper.c, src/vteaccess.c, src/vteapp.c,
+	src/vtebg.c, src/vtexft.c, src/vte.c: Include glib/gi18n-lib.h
+	instead of #ifdefing gettext stuff.
+
+	* src/vte.c (vte_terminal_class_init): Use GETTEXT_PACKAGE instead
+	of PACKAGE in bindgettextdomain.
+
+2006-03-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_size_allocate): More tweaks to the
+	previous changes.  Reported by dholbach again.
+
+2006-03-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_size_allocate): Put the stuff changed in
+	previous commit in their original order.  Problem reported by
+	dholbach.
+
+2006-03-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 104841 – scrolling doesn't work inside "screen" windows
+
+	* src/vte.c (vte_terminal_size_allocate): Fix restricted scrolling
+	region readjustment.  Moreover, do not do unnecessary updates when
+	number of rows & columns has not changed.
+
+2006-03-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 333768 – vteapp debug stuff should be conditional
+	Patch from Egmont Koblinger.
+
+	* src/vteapp.c: Make pwd and setting env vars conditional on debug.
+
+2006-03-08  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.12.0.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.12.0.
+
+2006-03-09  Abel Cheung  <maddog@linuxhall.org>
+
+	* configure.in: Readd kn to ALL_LINGUAS and make sure everything
+	builds fine.
+
+2006-03-08  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.11.21.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.11.21.
+
+	* configure.in: Removed kn from ALL_LINGUAS, as it was breaking
+	the build.
+
+2006-03-08  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c, src/vte-private.h: Fix vte_update_timeout repeat to
+	25ms. (bug #333776, Egmont Koblinger)
+
+2006-03-07  Abel Cheung  <maddog@linuxhall.org>
+
+	* configure.in: Added "kn" "zh_HK" to ALL_LINGUAS.
+
+2006-02-28  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h: Step up COALESCE_TIMEOUT and DISPLAY_TIMEOUT
+	from 2ms to 10ms.  This is more compatible with the updated timeout
+	that we are doing at around 25ms.
+
+2006-02-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	* MAINTAINERS: Added.
+
+2006-02-25  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.11.20.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.11.20.
+
+2006-02-25  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtexft.c: (_vte_xft_font_for_char): Rever the patch to
+	optimize memory usage by releasing fonts that aren't needed early.
+	Because that was inserting destroyed fonts into cache. Closes bug
+	#332580 and reverts bug #309322.
+
+2006-02-25  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.11.19.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.11.19.
+
+2006-02-17  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c: Make shift+insert paste PRIMARY and ctrl+shift+insert
+	paste CLIPBOARD (switched them. bug #123844)
+
+2006-02-17  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c: Better update-timeout handling.  Always delay updates
+	a bit.  Schedule updates as G_PRIORITY_DEFAULT_IDLE.  And, set delay
+	as the number of lines, in milliseconds.
+
+2006-02-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq-gen.c (main): Return 0.  (bug #331178)
+
+2006-02-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* gnome-pty-helper/gnome-pty-helper.c (main): Use getpwnam to
+	correctly log multiple users with the same UID. (bug #319564,
+	patch from Laszlo (Laca) Peter.
+
+2006-02-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (update_timeout): Only discontinue timer if nothing
+	was updated in the last cycle.
+
+2006-02-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* gnome-pty-helper/gnome-pty-helper.c: Fix race condition when
+	shutdown_helper may be called again from the signal handler when
+	it's already running. (bug #331056)
+
+2006-02-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* configure.in: Do not prepend X_LIBS and X_CFLAGS to LIBS and
+	CFLAGS. (bug #331021, Sylvain BERTRAND)
+
+2006-02-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_key_press): Handle Ctrl+Shift+Insert to
+	paste PRIMARY.
+
+2006-02-11  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.11.18.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.11.18.
+
+2006-02-11  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/iso2022.c: Change INVALID_CODEPOINT from 0xFFFF to 0xFFFD.
+	(bug #317235, Egmont Koblinger)
+
+2006-02-11  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (_vte_invalidate_cells): Guard more against off values.
+
+2006-02-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Update the build infrastructure.  make distcheck works now!
+
+	* autogen.sh: Use a generic autogen.sh that uses gnome-common.
+
+	* configure.in: Simplify gtk-doc stuff.  Update to newer syntax.
+
+	* Makefile.am, src/Makefile.am, doc/reference/Makefile.am: Updated.
+
+2006-02-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (_vte_invalidate_cells): Throttle invalidating to at most
+	40 times per second, using a timeout.
+
+2006-02-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c: Removed the huge sequence handler table.  Changed to
+	use the compact tables in vteseq-table.h.
+
+	* src/vteseq-gen.c: Generator containing the table removed from above,
+	that generates compact tables.
+
+	* src/vteseq-table.h: Table generated by above.  Can be regenerated
+	using make.
+
+	* src/Makefile.am: Adjusted.
+
+	* src/vteapp.c: Set default font to Monospace instead of Sans.
+
+2006-02-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c: Allocate terminal->pvt using GObject private data.
+
+2006-02-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Moved all sequence handler codes into a separate file.
+
+	* src/vte.c: Stuff moved to other files.
+
+	* src/vte-private.h: Includes all struct definitions from vte.c.
+
+	* src/vteseq.c, src/vteseq.h, src/vteseq-list.h: The sequence
+	handlers are all here now.
+
+2006-02-09  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteapp.c: Make a couple debug messages conditional on
+	DEBUG_MISC.
+
+2006-02-03  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c: Warning cleanup.  A couple were actually bugs.
+
+	* src/vteapp.c: No need to run $SHELL by default.  Handled
+	by vte.c now.  A bug was causing nothing to be run...
+
+2006-02-03  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/debug.c, src/debug.h, src/matcher.c: Add the debug
+	flag TRIE for printing out the trie (previous was using
+	MISC.)
+
+	* src/vte.c (vte_invalidate_cells): Update row_count and
+	column_count when clamping their respective _start values.
+
+	* src/vte.c (vte_terminal_extend_selection, _vte_terminal_select_text): 
+	Pass row_count to vte_invalidate_cells(), instead of row_stop.
+
+	* src/vteapp.c: Run $SHELL by default.
+
+2006-02-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* doc/reference/tmpl/internals.sgml: Added to CVS.
+
+	* vte/src/vte.c: Fix selection vs. primary that have been
+	borked forever. Closes bug #123844.
+
+2006-01-30  Guilherme de S. Pastore  <gpastore@gnome.org>
+
+	* src/trie.c: applied patch from Tomas Mraz to fix a double
+	  free. Closes bug #161337.
+
+2006-01-30  Erdal Ronahi  <erdal.ronahi@gmail.com>
+
+	* configure.in: added ku (Kurdish) to ALL_LINGUAS
+
+2006-01-28  Guilherme de S. Pastore  <gpastore@gnome.org>
+
+	* src/Makefile.am: add -DG_DISABLE_ASSERT to CFLAGS.
+
+	* NEWS: updated.
+
+	* vte.spec: bumped version to 0.11.17.
+
+2006-01-28  Guilherme de S. Pastore  <gpastore@gnome.org>
+
+	* src/vte.c: only try to guess the user's shell when actually
+	  forking, so we avoid unnecessary work if the application
+	  already has to do that itself.
+	
+2006-01-15  Guilherme de S. Pastore  <gpastore@gnome.org>
+
+	* src/: applied patch from Kjartan Maraas that replaces g_return
+	  functions with g_assert. Should give an 8% speed boost.
+
+2006-01-14  Guilherme de S. Pastore  <gpastore@gnome.org>
+
+	* doc/reference/Makefile.am: install more than *.html, based on the
+	  patch from Ed Catmur. Closes bug #321909.
+
+2006-01-14  Olav Vitters  <olav@bkor.dhs.org>
+
+	* src/caps.c: Support save and restore cursor position using \033[s
+	and \033[u. Reported by Dag Wieers. Fixes bug 170032.
+
+2005-12-31  Olav Vitters  <olav@bkor.dhs.org>
+
+	* vte.pc.in: Backup patch from Steve Langasek. It needs pkg-config
+	changes.
+
+2005-12-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* vte.pc.in: Cleanups for the pkg-config file.
+	Patch from Steve Langasek. Closes bug #322240.
+
+2005-12-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* python/vte.override: python-vte seems to have a small bug in
+	the override file that prevents the forkpty() method to be generated.
+	The attached patch fixes this problem. Patch from Michael Vogt.
+	Closes bug #169201.
+
+2005-11-30  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vte.c: (vte_terminal_preedit_length): Remove some
+	unused code.
+	(vte_terminal_process_incoming): Don't emit signals for every
+	character that's output. Patch from Padraig O'Briain. Huge
+	performance gain when a11y is activated.
+
+2005-11-16  Timur Jamakeev  <timurj@cvs.gnome.org>
+
+	* confgiure.in: Added 'ky' to ALL_LINGUAS
+
+2005-11-08  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* NEWS: Update.
+	* Makefile.am:
+	* autogen.sh:
+	* configure.in:
+	* python/Makefile.am:
+	I'm attaching a patch that modernizes the python binding 
+	build stuff. Notably, it excludes python/vte.c from the dist.
+	Right now as it stands, the file is disted, which means people's 
+	builds will not work unless they build against pygtk 2.8, 
+	which makes this bug somewhat important. Patch from Manish Sing
+	Closes bug #320931.
+
+2005-11-01  Bill Haneman <billh@gnome.org>
+
+	* src/vteaccess.c: 
+	(vte_terminal_accessible_get_text):
+	Swap offsets if start > end; fixes crasher
+	bug #153405.  Patch from padraig o'briain,
+	thanks to Kjartan for review.
+
+2005-10-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vtebg.c: (_vte_property_get_pixmaps):
+	* src/vterdb.c: (_vte_property_get_string):
+	Fix gdk warnings. Patch from Michele Baldessari.
+	Closes bug #309025.
+
+2005-09-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vtexft.c: (_vte_xft_font_for_char): Optimize memory
+	usage by releasing fonts that aren't needed early. Patch
+	from Mike Hearn. Closes bug #309322.
+
+2005-08-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-pty-helper/gnome-pty-helper.c: (init_msg_pass):
+	Make VTE work on NetBSD, OpenBSD (sparc and macppc).
+	Reported by Adrian Bunk, patches by Dan Winship and
+	Rich Edelman. Closes bug #126554.
+
+2005-08-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vtetc.c: (_vte_termcap_destroy): Don't crash
+	if there's no termcap file. Michele Baldessari
+	Closes bug #312260.
+
+2005-08-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Correct test for recvmsg(). Patch from
+	Robert Basch. Closes bug #304815 and possibly bug #122055.
+
+2004-08-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	Patch from: Padraig O'Briain  <padraig.obriain@sun.com>
+	Closes bug #113590.
+
+	* src/vte.c, src/vteint.h:
+	Add new functions to support accessible text selection:
+	_vte_terminal_get_selection, _vte_terminal_get_start_selection,
+	_vte_terminal_get_end_selection, _vte_terminal_select_text,
+	_vte_terminal_remove_selection
+	* src/vteaccess.c:
+	(xy_from_offset): Fix for offset being entire text.
+	(vte_terminal_accessibility_selection_changed): VteTerminal's
+	selection-changed signal handler which emits text-selection-changed
+	signal.
+	(vte_terminal_accessible_initialize): Connect to VteTerminal's
+	selection-changed signal.
+	(vte_terminal_accessible_get_n_selections) Add implementation.
+	(vte_terminal_accessible_get_selection) Add implementation.
+	(vte_terminal_accessible_add_selection) Add implementation.
+	(vte_terminal_accessible_remove_selection) Add implementation.
+	(vte_terminal_accessible_set_selection) Add implementation.
+
+2005-08-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-pty-helper/gnome-pty-helper.c: (exit_handler), (main):
+	Clean up utmp/wtmp under vncserver if things fall apart under
+	the terminal. (Dave Lehman). Closes bug #312373
+
+2005-07-26  Michele Baldessari  <michele@pupazzo.org>
+
+	* python/vte.override (_wrap_vte_terminal_set_colors): 
+	pyg_boxed_get should be on item not py_palette. 
+	Reported with fix by Ethan Glasser-Camp <glasse@rpi.edu>
+	Closes bug #311570
+
+2005-07-25  Michele Baldessari  <michele@pupazzo.org>
+
+	* src/vtepango.c (_vte_pango_create): Initialize 
+	PangoContext * data->ctx with NULL. Closes bug #126262
+
+2005-07-21  Danilo Šegan  <danilo@gnome.org>
+
+	Fixes #149925.
+	
+	* src/vte.c (vte_terminal_io_read): Added simple comment for 
+	translators.
+
+2005-07-07  Matthias Clasen  <mclasen@redhat.com>
+
+	* src/vte.c (vte_terminal_unrealize): Unset the user data
+	on the gdk window. 
+
+2005-06-15  Theppitak Karoonboonyanan  <thep@linux.thai.net>
+
+	* configure.in: Added 'th' (Thai) to ALL_LINGUAS.
+
+2005-06-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* NEWS: Update some.
+	* doc/reference/tmpl/reaper.sgml:
+	* doc/reference/tmpl/vte-unused.sgml:
+	* doc/reference/tmpl/vte.sgml:
+	* doc/reference/tmpl/vteaccess.sgml: Docs updates.
+	* src/vte.c: (vte_terminal_init), (vte_terminal_finalize),
+	(vte_terminal_get_accessible), (vte_terminal_class_init):
+	Apply patch from Padraig O'Briain <padraig.obriain@sun.com>
+	to fix a crash. Closes bug #119913.
+
+2005-06-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vte.c: (vte_terminal_style_changed):
+	Fix a crash when reparenting. Closes bug #169326.
+	Patch from Michele Baldessari.
+
+2005-06-05  Ignacio Casal Quinteiro  <nacho.resa@gmail.com>
+
+	* configure.in: Added 'gl' to ALL_LINGUAS.
+
+2005-04-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/table.c: (_vte_table_literal_new), (_vte_table_free),
+	(_vte_table_addi), (_vte_table_matchi), (_vte_table_match),
+	(_vte_table_printi): Final bits of the memory reduction patch
+	from Aivars Kalvans. bug #160993 comment #9
+	* src/vte.c: (vte_terminal_scroll_region): Patch from Egmont
+	Koblinger to fix some scrolling issues. bug #164153
+	* vte.spec: Bump version.
+
+2005-04-07  Abduxukur Abdurixit  <abduxukur.abdurixit@t-systems.ch>
+
+	* configure.in: Added "ug" to ALL_LINGUAS.
+
+2005-04-01  Adi Attar  <aattar@cvs.gnome.org>
+
+	* configure.in: Added "xh" to ALL_LINGUAS.
+
+2005-03-31  Steve Murphy  <murf@e-tools.com>
+
+        * configure.in: Added "rw" to ALL_LINGUAS.
+
+2005-03-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* autogen.sh: Use head -n 1 instead of head -1 to avoid
+	warning about the latter being deprecated in newer versions.
+	Reported by Ali Akcaagac. Closes bug #156022.
+	* vte.spec: Bump version
+
+2005-03-16  Manish Singh  <yosh@gimp.org>
+
+	* python/vtemodule.c: Remove stray underscores so python module
+	works again. Fixes bug #150760.
+
+2005-03-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/Makefile.am: 
+	* src/interpret.c: (main):
+	* src/matcher.c: (_vte_matcher_add), (_vte_matcher_init),
+	(_vte_matcher_create), (_vte_matcher_destroy), (_vte_matcher_new),
+	(_vte_matcher_free):
+	* src/matcher.h:
+	* src/vte.c: (vte_terminal_set_emulation), (vte_terminal_init):
+	* src/vtetc.c: (_vte_termcap_create), (_vte_termcap_destroy),
+	(_vte_termcap_new), (_vte_termcap_free):
+	* src/vtetc.h: Add patch for excessive memory consumption when
+	opening new tabs. This patch makes struct _vte_matcher and
+	struct _vte_termcap shared between terminals and should reduce
+	memory consumption with multiple tabs a lot. Patch from Aivars
+	Kalvans <kalvans at inbox lv>. From bug #160993.
+
+2005-03-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vte.c: (vte_terminal_scroll_region),
+	(vte_sequence_handler_al), (vte_sequence_handler_dl),
+	(vte_sequence_handler_sr), (vte_sequence_handler_insert_lines),
+	(vte_sequence_handler_delete_lines), (vte_terminal_handle_scroll):
+	Back out one of the fedora patches since it apparently causes
+	screen corruption for some users. It was rumored to have issues
+	from the start, so...
+
 2005-03-02  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* src/vte.c: (vte_terminal_process_incoming): Fix the

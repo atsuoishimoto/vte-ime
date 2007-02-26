@@ -1,15 +1,18 @@
 <refentry id="vte-Internals">
 <refmeta>
-<refentrytitle>Internals</refentrytitle>
+<refentrytitle id="top_of_page">Internals</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>VTE Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>Internals</refname><refpurpose></refpurpose>
+<refname>Internals</refname>
+<refpurpose>Internal stuff.</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv><title>Synopsis</title>
+<refsynopsisdiv id="synopsis">
+<title id="synopsis.title">Synopsis</title>
 
 <synopsis>
 
@@ -27,15 +30,16 @@
 
 
 
-<refsect1>
-<title>Description</title>
+<refsect1 id="desc">
+<title id="desc.title">Description</title>
 <para>
+You really shouldn't see this.
 
 </para>
 </refsect1>
 
-<refsect1>
-<title>Details</title>
+<refsect1 id="details">
+<title id="details.title">Details</title>
 
 </refsect1>
 

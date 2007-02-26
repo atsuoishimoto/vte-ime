@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vteapp.c,v 1.70 2004/04/20 05:16:56 nalin Exp $"
+#ident "$Id: vteapp.c,v 1.77 2006/03/15 11:02:59 behdad Exp $"
 
 #include "../config.h"
 
@@ -34,13 +34,7 @@
 #include "debug.h"
 #include "vte.h"
 
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#define _(String) dgettext(PACKAGE, String)
-#else
-#define _(String) String
-#define bindtextdomain(package,dir)
-#endif
+#include <glib/gi18n-lib.h>
 
 #define DINGUS1 "(((news|telnet|nttp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?"
 #define DINGUS2 "(((news|telnet|nttp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?/[-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]*[^]'\\.}>\\) ,\\\"]"
@@ -50,9 +44,9 @@ window_title_changed(GtkWidget *widget, gpointer win)
 {
 	GtkWindow *window;
 
-	g_return_if_fail(VTE_TERMINAL(widget));
-	g_return_if_fail(GTK_IS_WINDOW(win));
-	g_return_if_fail(VTE_TERMINAL(widget)->window_title != NULL);
+	g_assert(VTE_TERMINAL(widget));
+	g_assert(GTK_IS_WINDOW(win));
+	g_assert(VTE_TERMINAL(widget)->window_title != NULL);
 	window = GTK_WINDOW(win);
 
 	gtk_window_set_title(window, VTE_TERMINAL(widget)->window_title);
@@ -63,9 +57,9 @@ icon_title_changed(GtkWidget *widget, gpointer win)
 {
 	GtkWindow *window;
 
-	g_return_if_fail(VTE_TERMINAL(widget));
-	g_return_if_fail(GTK_IS_WINDOW(win));
-	g_return_if_fail(VTE_TERMINAL(widget)->icon_title != NULL);
+	g_assert(VTE_TERMINAL(widget));
+	g_assert(GTK_IS_WINDOW(win));
+	g_assert(VTE_TERMINAL(widget)->icon_title != NULL);
 	window = GTK_WINDOW(win);
 
 	g_message("Icon title changed to \"%s\".\n",
@@ -80,8 +74,8 @@ char_size_changed(GtkWidget *widget, guint width, guint height, gpointer data)
 	GdkGeometry geometry;
 	int xpad, ypad;
 
-	g_return_if_fail(GTK_IS_WINDOW(data));
-	g_return_if_fail(VTE_IS_TERMINAL(widget));
+	g_assert(GTK_IS_WINDOW(data));
+	g_assert(VTE_IS_TERMINAL(widget));
 
 	terminal = VTE_TERMINAL(widget);
 	window = GTK_WINDOW(data);
@@ -117,12 +111,20 @@ destroy_and_quit(GtkWidget *widget, gpointer data)
 static void
 destroy_and_quit_eof(GtkWidget *widget, gpointer data)
 {
-	g_print("Detected EOF.\n");
+#ifdef VTE_DEBUG
+	if (_vte_debug_on(VTE_DEBUG_MISC)) {
+		g_print("Detected EOF.\n");
+	}
+#endif
 }
 static void
 destroy_and_quit_exited(GtkWidget *widget, gpointer data)
 {
-	g_print("Detected child exit.\n");
+#ifdef VTE_DEBUG
+	if (_vte_debug_on(VTE_DEBUG_MISC)) {
+		g_print("Detected child exit.\n");
+	}
+#endif
 	destroy_and_quit(widget, data);
 }
 
@@ -324,7 +326,7 @@ read_and_feed(GIOChannel *source, GIOCondition condition, gpointer data)
 	char buf[2048];
 	gsize size;
 	GIOStatus status;
-	g_return_val_if_fail(VTE_IS_TERMINAL(data), FALSE);
+	g_assert(VTE_IS_TERMINAL(data));
 	status = g_io_channel_read_chars(source, buf, sizeof(buf),
 					 &size, NULL);
 	if ((status == G_IO_STATUS_NORMAL) && (size > 0)) {
@@ -392,7 +394,11 @@ int
 main(int argc, char **argv)
 {
 	GtkWidget *window, *hbox, *scrollbar, *widget;
-	char *env_add[] = {"FOO=BAR", "BOO=BIZ", NULL};
+	char *env_add[] = {
+#ifdef VTE_DEBUG
+		"FOO=BAR", "BOO=BIZ",
+#endif
+		NULL};
 	const char *background = NULL;
 	gboolean transparent = FALSE, audible = TRUE, blink = TRUE,
 		 debug = FALSE, dingus = FALSE, geometry = TRUE, dbuffer = TRUE,
@@ -670,7 +676,7 @@ main(int argc, char **argv)
 
 	/* Set the default font. */
 	if (font == NULL) {
-		font = "Sans 12";
+		font = "Monospace 12";
 	}
 	vte_terminal_set_font_from_string_full(VTE_TERMINAL(widget),
 					       font, antialias);
@@ -744,10 +750,12 @@ main(int argc, char **argv)
 						  command, NULL, env_add,
 						  working_directory,
 						  TRUE, TRUE, TRUE);
+	#ifdef VTE_DEBUG
 			if (command == NULL) {
 				vte_terminal_feed_child(VTE_TERMINAL(widget),
 							"pwd\n", -1);
 			}
+	#endif
 		} else {
 			long i;
 			i = vte_terminal_forkpty(VTE_TERMINAL(widget),

@@ -4,11 +4,57 @@
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
+include /usr/share/cdbs/1/rules/utils.mk
 include /usr/share/cdbs/1/class/gnome.mk
-include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk 
+include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
+-include /usr/share/gnome-pkg-tools/1/rules/gnome-get-source.mk
 
 version := $(shell sed -n 's/Package: \(.*\)/\1/p' debian/control | head -n 1)
 
+PY_VERSIONS = $(shell pyversions --requested debian/control)
+
 DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/${version}
 DEB_FIXPERMS_EXCLUDE := gnome-pty-helper
-DEB_DH_MAKESHLIBS_ARGS_ALL = -V 'libvte4 (>= 1:0.11.11)'
+DEB_DH_MAKESHLIBS_ARGS_ALL = -V 'libvte4 (>= 1:0.12.1)'
+
+DEB_BUILDDIR := build
+
+configure-stamp-%:
+	mkdir build-$*
+	cd build-$* && PYTHON=`which $*` $(DEB_CONFIGURE_SCRIPT_ENV) \
+	    $(DEB_CONFIGURE_SCRIPT) \
+		$(DEB_CONFIGURE_NORMAL_ARGS) \
+		--disable-maintainer-mode \
+		$(cdbs_configure_flags) \
+		$(DEB_CONFIGURE_EXTRA_FLAGS) \
+		$(DEB_CONFIGURE_USER_FLAGS)
+	touch $@
+
+configure/python-vte:: $(addprefix configure-stamp-, $(PY_VERSIONS))
+
+build-stamp-%:
+	make -C build-$*
+	touch $@
+
+build/python-vte:: $(addprefix build-stamp-, $(PY_VERSIONS))
+
+install-stamp-%:
+	make -C build-$* install DESTDIR=$(CURDIR)/debian/tmp
+	# stop shipping *.a and *.la files for the Python module;
+	# python-support moves them anyway (#412477)
+	find $(CURDIR)/debian/tmp/usr/lib/$* -name \*.a -exec rm -f '{}' \;
+	find $(CURDIR)/debian/tmp/usr/lib/$* -name \*.la -exec rm -f '{}' \;
+	touch $@
+
+install/python-vte:: $(addprefix install-stamp-, $(PY_VERSIONS))
+
+binary-install/python-vte::
+	dh_pysupport -d
+
+clean::
+	-rm -rf $(DEB_BUILDDIR)
+	-rm -rf $(addprefix build-, $(PY_VERSIONS))
+	-rm -rf $(addprefix configure-stamp-, $(PY_VERSIONS))
+	-rm -rf $(addprefix build-stamp-, $(PY_VERSIONS))
+	-rm -rf $(addprefix install-stamp-, $(PY_VERSIONS))
+

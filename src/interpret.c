@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: interpret.c,v 1.21 2003/09/15 18:57:33 nalin Exp $"
+#ident "$Id: interpret.c,v 1.22 2005/03/14 14:43:47 kmaraas Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <assert.h>
@@ -72,7 +72,6 @@ main(int argc, char **argv)
 
 	g_type_init();
 	terminal = argv[1];
-	matcher = _vte_matcher_new(terminal);
 	termcap = _vte_termcap_new(g_strdup_printf(DATADIR "/" PACKAGE
 						   "/termcap/%s", terminal));
 	if (termcap == NULL) {
@@ -81,29 +80,7 @@ main(int argc, char **argv)
 	buffer = _vte_buffer_new();
 	array = g_array_new(TRUE, TRUE, sizeof(gunichar));
 
-	for (i = 0;
-	     _vte_terminal_capability_strings[i].capability != NULL;
-	     i++) {
-		const char *capability;
-		char *tmp;
-		capability = _vte_terminal_capability_strings[i].capability;
-		if (_vte_terminal_capability_strings[i].key) {
-			continue;
-		}
-		tmp = _vte_termcap_find_string(termcap, terminal, capability);
-		if ((tmp != NULL) && (strlen(tmp) > 0)) {
-			_vte_matcher_add(matcher, tmp, strlen(tmp), capability,
-				       g_quark_from_static_string(capability));
-		}
-		g_free(tmp);
-	}
-	for (i = 0; _vte_xterm_capability_strings[i].value != NULL; i++) {
-		const char *code, *value;
-		code = _vte_xterm_capability_strings[i].code;
-		value = _vte_xterm_capability_strings[i].value;
-		_vte_matcher_add(matcher, code, strlen(code), value,
-				 g_quark_from_static_string(code));
-	}
+	matcher = _vte_matcher_new(terminal, termcap);
 
 	subst = _vte_iso2022_state_new(NULL, NULL, NULL);
 

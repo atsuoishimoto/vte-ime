@@ -1,3 +1,283 @@
+vte (1:0.12.2-5) unstable; urgency=medium
+
+  * Add a get-orig-source target to retrieve the upstream tarball.
+  * New patch, 20_gtk-style-attach-crash, fixes crash in gtk_style_attach when
+    changing icon theme; backported from GNOME #399282 / vte 0.14.2; see also
+    GNOME #353498.
+  * Stop shipping *.a and *.la files for Python modules.
+
+ -- Loic Minier <lool@dooz.org>  Mon, 26 Feb 2007 14:15:57 +0100
+
+vte (1:0.12.2-4) unstable; urgency=medium
+
+  * Remove references to the forgotten hardcoded python2.3 and python2.4
+    version from the python-vte.install file, thanks Daniel Holbach.
+  * Urgency medium since this will cause FTBFS in the future.
+
+ -- Loic Minier <lool@dooz.org>  Tue,  5 Sep 2006 16:36:09 +0200
+
+vte (1:0.12.2-3) unstable; urgency=medium
+
+  * Drop useless DEB_PYTHON_SYSTEM=pysupport.
+  * Rework package build completely to follow pyversions --requested.
+  * Set pyversions to "2.3-".
+  * Urgency medium since this fixes a FTBFS.
+
+ -- Loic Minier <lool@dooz.org>  Wed, 23 Aug 2006 15:44:03 +0200
+
+vte (1:0.12.2-2) unstable; urgency=low
+
+  [ Loic Minier ]
+  * Remove versions in Conflicts/Replaces with python2.X-vte.
+
+  [ Josselin Mouette ]
+  * 12_python_reaper.patch: patch from Michael Vogt to add a python
+    binding for the reaper object (closes: #364383, #381143).
+
+  [ Loic Minier ]
+  * Add ${misc:Depends}.
+
+ -- Loic Minier <lool@dooz.org>  Wed,  9 Aug 2006 22:15:22 +0200
+
+vte (1:0.12.2-1) unstable; urgency=low
+
+  [ Loic Minier ]
+  * New upstream release.
+    - Relibtoolize.
+      [debian/patches/70_relibtoolize.patch]
+  * Fix watch file.
+
+  [ Gustavo Franco ]
+  * Python New Policy Transition. (Closes: #373405)
+    - debian/control:
+      - python-vte now provides Python 2.3 and 2.4 vte Python bindings.
+      - Add python-support as Build-Depends.
+      - Fix python-vte package description.
+    - debian/rules:
+      - Add DEB_PYTHON_SYSTEM variable and set to pysupport.
+      - Make the needed changes to provide Python 2.3 and 2.4 vte Python
+        bindings in the same binary package (python-vte).
+      - Remove dh_python call since it's no more needed.
+      - Add dh_pysupport call in binary-install/python-vte target.
+    - Remove debian/python{2.3,2.4}-vte.install
+    - Add debian/python-vte.install
+  * Set debhelper compatibility to 5.
+
+ -- Gustavo Franco <stratus@debian.org>  Tue, 11 Jul 2006 01:06:36 -0300
+
+vte (1:0.12.1-1) unstable; urgency=low
+
+  [ Josselin Mouette ]
+  * Set fatalerror as the primary maintainer.
+  * Make the package binNMU-safe.
+    + Build-depend on dpkg-dev 1.13.19.
+    + Use ${source:Version} and ${binary:Version}.
+
+  [ Loic Minier ]
+  * Stop shipping /usr/lib/*.la files in libvte-dev.
+    [debian/libvte-dev.install]
+  * New upstream release, with API additions.
+    - Bump up libgtk2.0-dev build-dep to >=  2.6.0.
+      [debian/control, debian/control.in]
+    - Add a libglib2.0-dev build-dep (>  2.6.0).
+      [debian/control, debian/control.in]
+    - Bump shlibs to >= 1:0.12.1.
+      [debian/rules]
+    - Drop restricted region adjustment patch as upstream merged it and also
+      fixed a couple of issues it had.
+      [debian/patches/20_restricted_region_readjustment.patch]
+    - Relibtoolize.
+      [debian/patches/70_relibtoolize.patch]
+  * Fix clenaup of /debian/tmp-2.3 instead of debian/tmp-2.3 introduced with
+    Python 2.4 support.
+    [debian/rules]
+  * Bump up Standards-Version to 3.7.2.
+    [debian/control, debian/control.in]
+
+ -- Loic Minier <lool@dooz.org>  Fri, 12 May 2006 16:11:16 +0200
+
+vte (1:0.12.0-2) unstable; urgency=low
+
+  * Drop references to libXcursor.la
+
+ -- Guilherme de S. Pastore <gpastore@debian.org>  Fri, 21 Apr 2006 12:49:11 -0300
+
+vte (1:0.12.0-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/patches/20_restricted_region_readjustment.patch:
+    - patch from upstream CVS to fix the famous Blue Screen of
+      Death with irssi running inside screen.
+  * debian/copyright:
+    - updated list of upstream authors
+    - updated to use http://download.gnome.org/
+  * debian/watch:
+    - updated to use http://download.gnome.org/
+
+ -- Guilherme de S. Pastore <guilherme.pastore@terra.com.br>  Sun,  2 Apr 2006 12:15:57 -0300
+
+vte (1:0.11.20-3) unstable; urgency=low
+
+  * Fix Python build-deps, thanks Jan Lübbe.
+    [debian/control, debian/control.in]
+
+ -- Loic Minier <lool@dooz.org>  Mon, 27 Feb 2006 09:55:30 +0100
+
+vte (1:0.11.20-2) unstable; urgency=low
+
+  * Merge nice patch from Jan Lübbe to build vte's python bindings for python
+    2.3 and 2.4. (Closes: #353434)
+    [debian/control, debian/control.in, debian/python-vte.install,
+    debian/python2.3-vte.install, debian/python2.4-vte.install, debian/rules]
+  * Tune up the descriptions slightly.
+    [debian/control, debian/control.in]
+  * Let python2.3-vte replace previous versions of python-vte.
+    [debian/control, debian/control.in]
+
+ -- Loic Minier <lool@dooz.org>  Sun, 26 Feb 2006 21:34:54 +0100
+
+vte (1:0.11.20-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Loic Minier <lool@dooz.org>  Sun, 26 Feb 2006 11:28:15 +0100
+
+vte (1:0.11.19-1) unstable; urgency=low
+
+  * New upstream release.
+    - Shift+Insert pasting works as in the past. (Closes: #354275)
+
+ -- Loic Minier <lool@dooz.org>  Sat, 25 Feb 2006 17:45:13 +0100
+
+vte (1:0.11.18-1) unstable; urgency=low
+
+  * New upstream release.
+    - Drop double free() fix (merged upstream).
+      [debian/patches/07_remove_doublefree.patch]
+
+ -- Loic Minier <lool@dooz.org>  Sun, 12 Feb 2006 20:55:57 +0100
+
+vte (1:0.11.17-1) unstable; urgency=low
+
+  * New upstream release.
+    - This release backs out all changes made to the .pc file in
+      debian/patches/30_pkg-config-private-fields.patch, and hence reopens
+      #340406, but should include proper -I flags. (Closes: #346039)
+    - New patch to move only the libfreetype link flags to Libs.private.
+      [debian/patches/30_pkg-config-private-field-for-freetype.patch]
+      (Closes: #340406)
+    - Drop patch adding console sequesnces to save/restore cursor position
+      (merged upstream).
+      [debian/patches/05_cursor_position.patch]
+    - Drop relibtoolizing patch as the person bootstrapping vte for GNOME was
+      visibly running Debian. :)
+      [debian/patches/70_relibtoolize.patch]
+
+ -- Loic Minier <lool@dooz.org>  Sun, 29 Jan 2006 18:35:39 +0100
+
+vte (1:0.11.16-1) unstable; urgency=low
+
+  * New upstream release.
+    - Drop patch to use .private pkg-config pseudo-headers (included
+      upstream).
+      [debian/patches/30_pkg-config-private-fields.patch]
+    - No need to "rm python/vte.c", this is not distributed upstream anymore.
+      [debian/rules]
+    - Drop patch to fix gdk warnings (included upstream).
+      [debian/patches/20_gdk-warning.patch]
+    - Relibtoolize.
+      [debian/patches/70_relibtoolize.patch]
+
+ -- Loic Minier <lool@dooz.org>  Mon, 23 Jan 2006 22:15:53 +0100
+
+vte (1:0.11.15-4) unstable; urgency=low
+
+  * Build-depend on libfreetype6-dev (>= 2.0.2) to match the checks in
+    configure.in. (Closes: #340412)
+    [debian/control, debian/control.in]
+  * Use pkg-config's Libs.private and Requires.private field for libraries and
+    packages needed only for static linking instead of the Libs / Requires
+    fields; you need to build-depend on pkg-config (>= 0.18) to use these
+    fields.  Based on a patch by Steve Langasek.  (Closes: #340406)
+    [debian/patches/30_pkg-config-private-fields.patch]
+
+ -- Loic Minier <lool@dooz.org>  Wed, 23 Nov 2005 15:23:11 +0100
+
+vte (1:0.11.15-3) unstable; urgency=high
+
+  * Force regeneration of the python bindings by removing python/vte.c.
+    (Closes: #334001, #334668, #338090)
+    [debian/rules]
+
+ -- Loic Minier <lool@dooz.org>  Tue,  8 Nov 2005 22:38:50 +0100
+
+vte (1:0.11.15-2) unstable; urgency=high
+
+  * Urgency high for RC bug fix.
+  * Add libsm-dev, libice-dev, zlib1g-dev, libncurses5-dev | libncurses-dev,
+    libx11-dev, and libfontconfig1-dev deps to vte-dev, according to its .pc
+    file. (Closes: #259671) [debian/control, debian/control.in]
+
+ -- Loic Minier <lool@dooz.org>  Sun, 16 Oct 2005 22:21:33 +0200
+
+vte (1:0.11.15-1) unstable; urgency=low
+
+  [ Sebastien Bacher ]
+  * debian/control.in:
+    - use ${python:Depends}.
+  * debian/python-vte.install:
+    - don't use a specific python version.
+  * debian/rules:
+    - use dh_python.
+
+  [ Loic Minier ]
+  * New upstream releases.
+    - Fix confusion between py_palette and item in
+      _wrap_vte_terminal_set_colors(), doesn't segfault anymore in
+      vte.Terminal.set_colors(). (Closes: #319987)
+  * Add CDBS' utils.
+  * Drop obsolete patches. [debian/patches/02_path_xtra.patch,
+    debian/patches/03_path_xtra-2.patch,
+    debian/patches/11_hide_pageup_behavior.patch]
+  * Temporarily add libxt-dev build-dependency to let
+    AC_PATH_X/AC_PATH_XTRA autodetect X development files, see
+    <http://bugzilla.gnome.org/show_bug.cgi?id=314669>.
+  * Update FSF address. [debian/copyright]
+
+ -- Loic Minier <lool@dooz.org>  Sun, 11 Sep 2005 16:03:32 +0200
+
+vte (1:0.11.13-4) unstable; urgency=high
+
+  * Urgency high for testing targetted RC bugfix.
+  * Add dependencies to libvte-dev on libxft-dev, libfreetype6-dev,
+    libatk1.0-dev, libpango1.0-dev, libglib2.0-dev to conform with libvte.la's
+    dependency_libs. [debian/control, debian/control.in] (Closes: #259671)
+
+ -- Loic Minier <lool@dooz.org>  Sun, 31 Jul 2005 16:01:15 +0200
+
+vte (1:0.11.13-3) unstable; urgency=low
+
+  * Fix Gdk warnings with a patch from upstream. (Closes: #316940, #318549)
+    [debian/patches/20_gdk-warning.patch]
+  * Bump up Standards Version to 3.6.2.
+
+ -- Loic Minier <lool@dooz.org>  Thu, 21 Jul 2005 20:01:23 +0200
+
+vte (1:0.11.13-2) unstable; urgency=low
+
+  * Rebuild on an unstable box to avoid dependencies in experimental.
+
+ -- Josselin Mouette <joss@debian.org>  Sat, 30 Apr 2005 19:07:20 +0200
+
+vte (1:0.11.13-1) unstable; urgency=low
+
+  * New upstream version
+  * Added a new package that contains the documentation (Closes: #300742)
+  * debian/patches:
+    - 01_vtemodule.patch: applied
+
+ -- Arnaud Patard <arnaud.patard@rtp-net.org>  Tue, 19 Apr 2005 23:05:02 +0200
+
 vte (1:0.11.12-1) unstable; urgency=low
 
   * New upstream version. Lots of patches in Gnome's bugzilla have been

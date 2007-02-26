@@ -19,7 +19,7 @@
 /* VTE accessibility object.  Based heavily on inspection of libzvt's
  * accessibility code. */
 
-#ident "$Id: vteaccess.c,v 1.44 2004/05/01 07:12:51 nalin Exp $"
+#ident "$Id: vteaccess.c,v 1.48 2006/03/15 11:02:59 behdad Exp $"
 
 #include "../config.h"
 
@@ -34,12 +34,7 @@
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
 #endif
-
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#else
-#define bindtextdomain(package,dir)
-#endif
+#include <glib/gi18n-lib.h>
 
 #define VTE_TERMINAL_ACCESSIBLE_PRIVATE_DATA "VteTerminalAccessiblePrivateData"
 
@@ -84,7 +79,7 @@ vte_terminal_accessible_new_private_data(void)
 static void
 vte_terminal_accessible_free_private_data(VteTerminalAccessiblePrivate *priv)
 {
-	g_return_if_fail(priv != NULL);
+	g_assert(priv != NULL);
 	if (priv->snapshot_text != NULL) {
 		g_string_free(priv->snapshot_text, TRUE);
 		priv->snapshot_text = NULL;
@@ -150,7 +145,7 @@ xy_from_offset (VteTerminalAccessiblePrivate *priv,
 		}
 	}
 	if (i == priv->snapshot_linebreaks->len) {
-		if (offset < priv->snapshot_characters->len) {
+		if (offset <= priv->snapshot_characters->len) {
 			cur_x = offset - cur_offset;
 			cur_y = i - 1;
 		}
@@ -257,12 +252,12 @@ vte_terminal_accessible_update_private_data_if_needed(AtkObject *text,
 	long row, i, offset, caret;
 	long ccol, crow;
 
-	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text));
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 
 	/* Retrieve the private data structure.  It must already exist. */
 	priv = g_object_get_data(G_OBJECT(text),
 				 VTE_TERMINAL_ACCESSIBLE_PRIVATE_DATA);
-	g_return_if_fail(priv != NULL);
+	g_assert(priv != NULL);
 
 	/* If nothing's changed, just return immediately. */
 	if ((priv->snapshot_contents_invalid == FALSE) &&
@@ -456,16 +451,16 @@ vte_terminal_accessible_text_modified(VteTerminal *terminal, gpointer data)
 	char *old, *current;
 	glong offset, olen, clen;
 
-	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(data));
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(data));
 
 	priv = g_object_get_data(G_OBJECT(data),
 				 VTE_TERMINAL_ACCESSIBLE_PRIVATE_DATA);
-	g_return_if_fail(priv != NULL);
+	g_assert(priv != NULL);
 
 	priv->snapshot_contents_invalid = TRUE;
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(data),
 							      &old, &olen);
-	g_return_if_fail(old != NULL);
+	g_assert(old != NULL);
 
 	current = priv->snapshot_text->str;
 	clen = priv->snapshot_text->len;
@@ -525,12 +520,12 @@ vte_terminal_accessible_text_scrolled(VteTerminal *terminal,
 	struct _VteCharAttributes attr;
 	long i, len, delta;
 
-	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(data));
-	g_return_if_fail(howmuch != 0);
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(data));
+	g_assert(howmuch != 0);
 
 	priv = g_object_get_data(G_OBJECT(data),
 				 VTE_TERMINAL_ACCESSIBLE_PRIVATE_DATA);
-	g_return_if_fail(priv != NULL);
+	g_assert(priv != NULL);
 
 	if (((howmuch < 0) && (howmuch <= -terminal->row_count)) ||
 	    ((howmuch > 0) && (howmuch >= terminal->row_count))) {
@@ -652,11 +647,11 @@ vte_terminal_accessible_invalidate_cursor(VteTerminal *terminal, gpointer data)
 {
 	VteTerminalAccessiblePrivate *priv;
 
-	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(data));
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(data));
 
 	priv = g_object_get_data(G_OBJECT(data),
 				 VTE_TERMINAL_ACCESSIBLE_PRIVATE_DATA);
-	g_return_if_fail(priv != NULL);
+	g_assert(priv != NULL);
 
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_MISC)) {
@@ -672,8 +667,8 @@ vte_terminal_accessible_invalidate_cursor(VteTerminal *terminal, gpointer data)
 static void
 vte_terminal_accessible_title_changed(VteTerminal *terminal, gpointer data)
 {
-	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(data));
-	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(data));
+	g_assert(VTE_IS_TERMINAL(terminal));
 	atk_object_set_description(ATK_OBJECT(data), terminal->window_title);
 }
 
@@ -682,8 +677,8 @@ static void
 vte_terminal_accessible_focus_in(VteTerminal *terminal, GdkEventFocus *event,
 				 gpointer data)
 {
-	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(data));
-	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(data));
+	g_assert(VTE_IS_TERMINAL(terminal));
 	g_signal_emit_by_name(data, "focus-event", TRUE);
 	atk_object_notify_state_change(ATK_OBJECT(data),
 				       ATK_STATE_FOCUSED, TRUE);
@@ -694,8 +689,8 @@ static void
 vte_terminal_accessible_focus_out(VteTerminal *terminal, GdkEventFocus *event,
 				  gpointer data)
 {
-	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(data));
-	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(data));
+	g_assert(VTE_IS_TERMINAL(terminal));
 	g_signal_emit_by_name(data, "focus-event", FALSE);
 	atk_object_notify_state_change(ATK_OBJECT(data),
 				       ATK_STATE_FOCUSED, FALSE);
@@ -709,8 +704,8 @@ vte_terminal_accessible_visibility_notify(VteTerminal *terminal,
 {
 	GtkWidget *widget;
 	gboolean visible;
-	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(data));
-	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(data));
+	g_assert(VTE_IS_TERMINAL(terminal));
 	visible = event->state != GDK_VISIBILITY_FULLY_OBSCURED;
 	/* The VISIBLE state indicates that this widget is "visible". */
 	atk_object_notify_state_change(ATK_OBJECT(data),
@@ -732,6 +727,16 @@ vte_terminal_accessible_visibility_notify(VteTerminal *terminal,
 	atk_object_notify_state_change(ATK_OBJECT(data),
 				       ATK_STATE_SHOWING,
 				       visible);
+}
+
+static void
+vte_terminal_accessible_selection_changed (VteTerminal *terminal,
+					   gpointer data)
+{
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(data));
+	g_assert(VTE_IS_TERMINAL(terminal));
+
+	g_signal_emit_by_name (data, "text_selection_changed");
 }
 
 static void
@@ -776,6 +781,9 @@ vte_terminal_initialize (AtkObject *obj, gpointer data)
 			 obj);
 	g_signal_connect(G_OBJECT(terminal), "visibility-notify-event",
 			 GTK_SIGNAL_FUNC(vte_terminal_accessible_visibility_notify),
+			 obj);
+	g_signal_connect(G_OBJECT(terminal), "selection-changed",
+			 GTK_SIGNAL_FUNC(vte_terminal_accessible_selection_changed),
 			 obj);
 
 	if (GTK_IS_WIDGET((GTK_WIDGET(terminal))->parent)) {
@@ -836,7 +844,7 @@ vte_terminal_accessible_finalize(GObject *object)
 	}
 #endif
 
-	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(object));
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(object));
 	accessible = GTK_ACCESSIBLE(object);
 	gobject_class = g_type_class_peek_parent(VTE_TERMINAL_ACCESSIBLE_GET_CLASS(object));
 
@@ -909,8 +917,16 @@ vte_terminal_accessible_get_text(AtkText *text,
 	int start, end;
 	gchar *ret;
 
-	g_return_val_if_fail((start_offset >= 0) && (end_offset >= -1),
-			     g_strdup(""));
+        /* Swap around if start is greater than end */
+        if (start_offset > end_offset) {
+                gint tmp;
+
+                tmp = start_offset;
+                start_offset = end_offset;
+                end_offset = tmp;
+        }
+
+	g_assert((start_offset >= 0) && (end_offset >= -1));
 
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
@@ -924,7 +940,7 @@ vte_terminal_accessible_get_text(AtkText *text,
 			priv->snapshot_characters->len);
 	}
 #endif
-	g_return_val_if_fail(ATK_IS_TEXT(text), g_strdup(""));
+	g_assert(ATK_IS_TEXT(text));
 
 	/* If the requested area is after all of the text, just return an
 	 * empty string. */
@@ -986,14 +1002,13 @@ vte_terminal_accessible_get_text_somewhere(AtkText *text,
 			offset, priv->snapshot_attributes->len);
 	}
 #endif
-	g_return_val_if_fail(priv->snapshot_text != NULL, g_strdup(""));
-	g_return_val_if_fail(priv->snapshot_characters != NULL, g_strdup(""));
+	g_assert(priv->snapshot_text != NULL);
+	g_assert(priv->snapshot_characters != NULL);
 	if (offset == priv->snapshot_characters->len) {
 		return g_strdup("");
 	}
-	g_return_val_if_fail(offset < priv->snapshot_characters->len,
-			     g_strdup(""));
-	g_return_val_if_fail(offset >= 0, g_strdup(""));
+	g_assert(offset < priv->snapshot_characters->len);
+	g_assert(offset >= 0);
 
 	switch (boundary_type) {
 		case ATK_TEXT_BOUNDARY_CHAR:
@@ -1135,7 +1150,7 @@ vte_terminal_accessible_get_text_before_offset(AtkText *text, gint offset,
 					       gint *start_offset,
 					       gint *end_offset)
 {
-	g_return_val_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text), NULL);
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
 	return vte_terminal_accessible_get_text_somewhere(text,
@@ -1152,7 +1167,7 @@ vte_terminal_accessible_get_text_after_offset(AtkText *text, gint offset,
 					      gint *start_offset,
 					      gint *end_offset)
 {
-	g_return_val_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text), NULL);
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
 	return vte_terminal_accessible_get_text_somewhere(text,
@@ -1169,7 +1184,7 @@ vte_terminal_accessible_get_text_at_offset(AtkText *text, gint offset,
 					   gint *start_offset,
 					   gint *end_offset)
 {
-	g_return_val_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text), NULL);
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
 	return vte_terminal_accessible_get_text_somewhere(text,
@@ -1194,7 +1209,7 @@ vte_terminal_accessible_get_character_at_offset(AtkText *text, gint offset)
 	priv = g_object_get_data(G_OBJECT(text),
 				 VTE_TERMINAL_ACCESSIBLE_PRIVATE_DATA);
 
-	g_return_val_if_fail(offset < priv->snapshot_characters->len, 0);
+	g_assert(offset < priv->snapshot_characters->len);
 
 	mapped = g_array_index(priv->snapshot_characters, int, offset);
 
@@ -1317,7 +1332,7 @@ vte_terminal_accessible_get_character_extents(AtkText *text, gint offset,
 	glong char_width, char_height;
 	gint base_x, base_y;
 
-	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text));
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
@@ -1361,7 +1376,7 @@ vte_terminal_accessible_get_offset_at_point(AtkText *text,
 	glong char_width, char_height;
 	gint base_x, base_y;
 
-	g_return_val_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text), -1);
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
@@ -1382,61 +1397,142 @@ vte_terminal_accessible_get_offset_at_point(AtkText *text,
 static gint
 vte_terminal_accessible_get_n_selections(AtkText *text)
 {
-	g_return_val_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text), 0);
+	GtkWidget *widget;
+	VteTerminal *terminal;
+
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
-	/* FIXME? */
-	return 0;
+
+	widget = GTK_ACCESSIBLE(text)->widget;
+	if (widget == NULL) {
+		/* State is defunct */
+		return -1;
+	}
+	g_assert(VTE_IS_TERMINAL (widget));
+	terminal = VTE_TERMINAL (widget);
+	return (vte_terminal_get_has_selection (terminal)) ? 1 : 0;
 }
 
 static gchar *
 vte_terminal_accessible_get_selection(AtkText *text, gint selection_number,
 				      gint *start_offset, gint *end_offset)
 {
-	g_return_val_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text), NULL);
+	GtkWidget *widget;
+	VteTerminal *terminal;
+	VteTerminalAccessiblePrivate *priv;
+	long start_x, start_y, end_x, end_y;
+
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
-	/* FIXME? */
-	return NULL;
+	widget = GTK_ACCESSIBLE(text)->widget;
+	if (widget == NULL) {
+		/* State is defunct */
+		return NULL;
+	}
+	g_assert(VTE_IS_TERMINAL (widget));
+	terminal = VTE_TERMINAL (widget);
+	if (!vte_terminal_get_has_selection (terminal)) {
+		return NULL;
+	}
+	if (selection_number != 0) {
+		return NULL;
+	}
+
+	priv = g_object_get_data(G_OBJECT(text),
+				 VTE_TERMINAL_ACCESSIBLE_PRIVATE_DATA);
+	_vte_terminal_get_start_selection (terminal, &start_x, &start_y);
+	*start_offset = offset_from_xy (priv, start_x, start_y);
+	_vte_terminal_get_end_selection (terminal, &end_x, &end_y);
+	*end_offset = offset_from_xy (priv, end_x, end_y);
+	return _vte_terminal_get_selection (terminal);
 }
 
 static gboolean
 vte_terminal_accessible_add_selection(AtkText *text,
 				      gint start_offset, gint end_offset)
 {
-	g_return_val_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text), FALSE);
+	GtkWidget *widget;
+	VteTerminal *terminal;
+	VteTerminalAccessiblePrivate *priv;
+	gint start_x, start_y, end_x, end_y;
+
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
-	/* FIXME? */
-	return FALSE;
+	widget = GTK_ACCESSIBLE(text)->widget;
+	if (widget == NULL) {
+		/* State is defunct */
+		return FALSE;
+	}
+	g_assert(VTE_IS_TERMINAL (widget));
+	terminal = VTE_TERMINAL (widget);
+	g_assert(!vte_terminal_get_has_selection (terminal));
+	priv = g_object_get_data(G_OBJECT(text),
+				 VTE_TERMINAL_ACCESSIBLE_PRIVATE_DATA);
+	xy_from_offset (priv, start_offset, &start_x, &start_y);
+	xy_from_offset (priv, end_offset, &end_x, &end_y);
+	_vte_terminal_select_text (terminal, start_x, start_y, end_x, end_y, start_offset, end_offset);
+	return TRUE;
 }
 
 static gboolean
 vte_terminal_accessible_remove_selection(AtkText *text,
 					 gint selection_number)
 {
-	g_return_val_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text), FALSE);
+	GtkWidget *widget;
+	VteTerminal *terminal;
+
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
-	/* FIXME? */
-	return FALSE;
+	widget = GTK_ACCESSIBLE(text)->widget;
+	if (widget == NULL) {
+		/* State is defunct */
+		return FALSE;
+	}
+	g_assert(VTE_IS_TERMINAL (widget));
+	terminal = VTE_TERMINAL (widget);
+	if (selection_number == 0 && vte_terminal_get_has_selection (terminal)) {
+		_vte_terminal_remove_selection (terminal);
+		return TRUE;
+	} else {
+		return FALSE;
+	}
 }
 
 static gboolean
 vte_terminal_accessible_set_selection(AtkText *text, gint selection_number,
 				      gint start_offset, gint end_offset)
 {
-	g_return_val_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text), FALSE);
+	GtkWidget *widget;
+	VteTerminal *terminal;
+
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
-	/* FIXME? */
-	return FALSE;
+	widget = GTK_ACCESSIBLE(text)->widget;
+	if (widget == NULL) {
+		/* State is defunct */
+		return FALSE;
+	}
+	g_assert(VTE_IS_TERMINAL (widget));
+	terminal = VTE_TERMINAL (widget);
+	if (selection_number != 0) {
+		return FALSE;
+	}
+	if (vte_terminal_get_has_selection (terminal)) {
+		_vte_terminal_remove_selection (terminal);
+	}
+
+	return vte_terminal_accessible_add_selection (text, start_offset, end_offset);
 }
 
 static gboolean
 vte_terminal_accessible_set_caret_offset(AtkText *text, gint offset)
 {
-	g_return_val_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(text), FALSE);
+	g_assert(VTE_IS_TERMINAL_ACCESSIBLE(text));
 	vte_terminal_accessible_update_private_data_if_needed(ATK_OBJECT(text),
 							      NULL, NULL);
 	/* Whoa, very not allowed. */
@@ -1447,7 +1543,7 @@ static void
 vte_terminal_accessible_text_init(gpointer iface, gpointer data)
 {
 	AtkTextIface *text;
-	g_return_if_fail(G_TYPE_FROM_INTERFACE(iface) == ATK_TYPE_TEXT);
+	g_assert(G_TYPE_FROM_INTERFACE(iface) == ATK_TYPE_TEXT);
 	text = iface;
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_MISC)) {
@@ -1519,6 +1615,9 @@ vte_terminal_accessible_get_position(AtkComponent *component,
 	*x = 0;
 	*y = 0;
 	widget = (GTK_ACCESSIBLE(component))->widget;
+	if (widget == NULL) {
+		return;
+	}
 	if (!GTK_WIDGET_REALIZED(widget)) {
 		return;
 	}
@@ -1543,6 +1642,9 @@ vte_terminal_accessible_get_size(AtkComponent *component,
 	*width = 0;
 	*height = 0;
 	widget = (GTK_ACCESSIBLE(component))->widget;
+	if (widget == NULL) {
+		return;
+	}
 	if (!GTK_WIDGET_REALIZED(widget)) {
 		return;
 	}
@@ -1575,7 +1677,12 @@ vte_terminal_accessible_set_size(AtkComponent *component,
 {
 	VteTerminal *terminal;
 	gint columns, rows, xpad, ypad;
-	terminal = VTE_TERMINAL((GTK_ACCESSIBLE(component))->widget);
+	GtkWidget *widget;
+	widget = GTK_ACCESSIBLE(component)->widget;
+	if (widget == NULL) {
+		return FALSE;
+	}
+	terminal = VTE_TERMINAL(widget);
 	vte_terminal_get_padding(terminal, &xpad, &ypad);
 	/* If the size is an exact multiple of the cell size, use that,
 	 * otherwise round down. */
@@ -1599,6 +1706,9 @@ vte_terminal_accessible_grab_focus(AtkComponent *component)
 {
 	GtkWidget *widget;
 	widget = (GTK_ACCESSIBLE(component))->widget;
+	if (widget == NULL) {
+		return FALSE;
+	}
 	if (GTK_WIDGET_HAS_FOCUS(widget)) {
 		return TRUE;
 	}
@@ -1642,7 +1752,7 @@ static void
 vte_terminal_accessible_remove_focus_handler(AtkComponent *component,
 					     guint handler_id)
 {
-	g_return_if_fail(g_signal_handler_is_connected(component, handler_id));
+	g_assert(g_signal_handler_is_connected(component, handler_id));
 	g_signal_handler_disconnect(component, handler_id);
 }
 
@@ -1650,7 +1760,7 @@ static void
 vte_terminal_accessible_component_init(gpointer iface, gpointer data)
 {
 	AtkComponentIface *component;
-	g_return_if_fail(G_TYPE_FROM_INTERFACE(iface) == ATK_TYPE_COMPONENT);
+	g_assert(G_TYPE_FROM_INTERFACE(iface) == ATK_TYPE_COMPONENT);
 	component = iface;
 
 #ifdef VTE_DEBUG
@@ -1781,11 +1891,11 @@ vte_terminal_accessible_factory_create_accessible(GObject *obj)
 	GtkAccessible *accessible;
 	VteTerminal *terminal;
 
-	g_return_val_if_fail(VTE_IS_TERMINAL(obj), NULL);
+	g_assert(VTE_IS_TERMINAL(obj));
 
 	terminal = VTE_TERMINAL(obj);
 	accessible = GTK_ACCESSIBLE(vte_terminal_accessible_new(terminal));
-	g_return_val_if_fail(accessible != NULL, NULL);
+	g_assert(accessible != NULL);
 
 	return ATK_OBJECT(accessible);
 }

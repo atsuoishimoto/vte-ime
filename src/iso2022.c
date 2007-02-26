@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: iso2022.c,v 1.52 2005/02/28 21:32:01 kmaraas Exp $"
+#ident "$Id: iso2022.c,v 1.54 2006/03/15 11:02:59 behdad Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <errno.h>
@@ -35,14 +35,7 @@
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
 #endif
-
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#define _(String) dgettext(PACKAGE, String)
-#else
-#define _(String) String
-#define bindtextdomain(package,dir)
-#endif
+#include <glib/gi18n-lib.h>
 
 /* Maps which jive with XTerm's ESC ()*+ ? sequences, RFC 1468.  Add the
  * PC437 map because despite knowing that XTerm doesn't support it, certain
@@ -55,7 +48,7 @@
 /* Fudge factor we add to wide map identifiers to keep them distinct. */
 #define WIDE_FUDGE	0x100000
 /* An invalid codepoint. */
-#define INVALID_CODEPOINT 0xFFFF
+#define INVALID_CODEPOINT 0xFFFD
 
 struct _vte_iso2022_map {
 	gulong from;

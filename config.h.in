@@ -15,6 +15,9 @@
 /* Disable deprecated gdk-pixbuf features. */
 #undef GDK_PIXBUF_DISABLE_DEPRECATED
 
+/* Package translatable messages domain name. */
+#undef GETTEXT_PACKAGE
+
 /* Disable deprecated GTK+ features. */
 #undef GTK_DISABLE_DEPRECATED
 
@@ -130,7 +133,7 @@
 /* Define to 1 if you have the `ptsname_r' function. */
 #undef HAVE_PTSNAME_R
 
-/* Define to 1 if you have the `recvmsg' function. */
+/* Define if you have the recvmsg function. */
 #undef HAVE_RECVMSG
 
 /* Define if you have the socket function. */

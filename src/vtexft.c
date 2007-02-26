@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtexft.c,v 1.21 2005/03/02 08:48:59 kmaraas Exp $"
+#ident "$Id: vtexft.c,v 1.25 2006/03/15 11:02:59 behdad Exp $"
 
 #include "../config.h"
 
@@ -37,13 +37,7 @@
 #include "vtexft.h"
 #include "vtetree.h"
 
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#define _(String) dgettext(PACKAGE, String)
-#else
-#define _(String) String
-#define bindtextdomain(package,dir)
-#endif
+#include <glib/gi18n-lib.h>
 
 #define FONT_INDEX_FUDGE 10
 #define CHAR_WIDTH_FUDGE 10
@@ -140,11 +134,11 @@ _vte_xft_font_close(struct _vte_xft_font *font)
 	FcPattern *pattern;
 	int i;
 
-	g_return_if_fail(font != NULL);
-	g_return_if_fail(font->patterns != NULL);
-	g_return_if_fail(font->fonts != NULL);
-	g_return_if_fail(font->fontmap != NULL);
-	g_return_if_fail(font->widths != NULL);
+	g_assert(font != NULL);
+	g_assert(font->patterns != NULL);
+	g_assert(font->fonts != NULL);
+	g_assert(font->fontmap != NULL);
+	g_assert(font->widths != NULL);
 
 	for (i = 0; i < font->patterns->len; i++) {
 		pattern = g_array_index(font->patterns, FcPattern*, i);
@@ -185,11 +179,11 @@ _vte_xft_font_for_char(struct _vte_xft_font *font, gunichar c)
 	Display *display;
 	gpointer p = GINT_TO_POINTER(c);
 
-	g_return_val_if_fail(font != NULL, NULL);
-	g_return_val_if_fail(font->patterns != NULL, NULL);
-	g_return_val_if_fail(font->fonts != NULL, NULL);
-	g_return_val_if_fail(font->fontmap != NULL, NULL);
-	g_return_val_if_fail(font->widths != NULL, NULL);
+	g_assert(font != NULL);
+	g_assert(font->patterns != NULL);
+	g_assert(font->fonts != NULL);
+	g_assert(font->fontmap != NULL);
+	g_assert(font->widths != NULL);
 
 	/* Check if we have a char-to-font entry for it. */
 	i = GPOINTER_TO_INT(_vte_tree_lookup(font->fontmap, p));
@@ -282,11 +276,11 @@ _vte_xft_char_width(struct _vte_xft_font *font, XftFont *ftfont, gunichar c)
 	gpointer p = GINT_TO_POINTER(c);
 	int i;
 
-	g_return_val_if_fail(font != NULL, 0);
-	g_return_val_if_fail(font->patterns != NULL, 0);
-	g_return_val_if_fail(font->fonts != NULL, 0);
-	g_return_val_if_fail(font->fontmap != NULL, 0);
-	g_return_val_if_fail(font->widths != NULL, 0);
+	g_assert(font != NULL);
+	g_assert(font->patterns != NULL);
+	g_assert(font->fonts != NULL);
+	g_assert(font->fontmap != NULL);
+	g_assert(font->widths != NULL);
 
 	/* Check if we have a char-to-width entry for it. */
 	i = GPOINTER_TO_INT(_vte_tree_lookup(font->widths, p));

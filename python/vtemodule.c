@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtemodule.c,v 1.3 2004/04/20 05:22:54 nalin Exp $"
+#ident "$Id: vtemodule.c,v 1.4 2005/03/17 06:43:44 yosh Exp $"
 
 #ifdef HAVE_CONFIG_H
 #include "../config.h"
@@ -32,14 +32,14 @@ extern DL_EXPORT(void) initvte(void);
 extern PyTypeObject PyVteTerminal_Type;
 
 DL_EXPORT(void)
-init_vte(void)
+initvte(void)
 {
 	PyObject *m, *d;
 
 	init_pygobject();
 	init_pygtk();
 
-	m = Py_InitModule("_vte", pyvte_functions);
+	m = Py_InitModule("vte", pyvte_functions);
 	d = PyModule_GetDict(m);
 
 	pyvte_register_classes(d);

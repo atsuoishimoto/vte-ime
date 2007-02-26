@@ -1,0 +1,23 @@
+Backported from GNOME #399282; fixes crash in gtk_style_attach when changing
+icon theme; see also GNOME #353498.
+
+2007-01-22  Behdad Esfahbod  <behdad@gnome.org>
+
+       Bug 399282 – Fix the gtk_style_attach call on vte_terminal_realize in
+       the gnome 2.16 branch, too
+       Bug 353498 – crash in Terminal: changing icon theme
+
+       * src/vte.c (vte_terminal_realize): Fix the long time crasher.
+
+diff -Nur vte-0.12.2/src/vte.c vte-0.12.2.new/src/vte.c
+--- vte-0.12.2/src/vte.c	2007-02-26 11:34:34.000000000 +0100
++++ vte-0.12.2.new/src/vte.c	2007-02-26 11:34:36.000000000 +0100
+@@ -7535,7 +7535,7 @@
+ 	/* Set up the background, *now*. */
+ 	vte_terminal_background_update(terminal);
+ 	
+-	gtk_style_attach(widget->style, widget->window);
++	widget->style = gtk_style_attach(widget->style, widget->window);
+ 
+ 	g_object_unref(G_OBJECT(bitmap));
+ }

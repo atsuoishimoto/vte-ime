@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtebg.c,v 1.9 2004/04/20 06:35:43 nalin Exp $"
+#ident "$Id: vtebg.c,v 1.11 2006/03/15 11:02:59 behdad Exp $"
 #include "../config.h"
 #include <stdio.h>
 #include <string.h>
@@ -25,13 +25,7 @@
 #include "marshal.h"
 #include "vtebg.h"
 
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#define _(String) dgettext(PACKAGE, String)
-#else
-#define _(String) String
-#define bindtextdomain(package,dir)
-#endif
+#include <glib/gi18n-lib.h>
 
 struct VteBgPrivate {
 	GList *cache;
@@ -112,7 +106,7 @@ _vte_property_get_pixmaps(GdkWindow *window, GdkAtom atom,
 			  XID **pixmaps)
 {
 	return gdk_property_get(window, atom, GDK_TARGET_PIXMAP,
-				0, INT_MAX,
+				0, INT_MAX - 3,
 				FALSE,
 				type, NULL, size,
 				(guchar**) pixmaps);

@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtepango.c,v 1.16 2004/04/20 05:16:56 nalin Exp $"
+#ident "$Id: vtepango.c,v 1.17 2005/07/25 08:49:42 kmaraas Exp $"
 
 #include "../config.h"
 
@@ -67,6 +67,7 @@ _vte_pango_create(struct _vte_draw *draw, GtkWidget *widget)
 	data->font = NULL;
 	data->layout = NULL;
 	data->gc = NULL;
+	data->ctx = NULL;
 }
 
 static void

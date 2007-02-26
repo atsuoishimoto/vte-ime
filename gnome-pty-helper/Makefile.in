@@ -132,6 +132,7 @@ STRIP = @STRIP@
 VERSION = @VERSION@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_STRIP = @ac_ct_STRIP@
+ac_pt_PKG_CONFIG = @ac_pt_PKG_CONFIG@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__include = @am__include@
@@ -167,6 +168,15 @@ gnome_pty_helper_SOURCES = \
 	gnome-login-support.h \
 	gnome-pty-helper.c \
 	gnome-utmp.c
+
+MAINTAINERCLEANFILES = \
+		$(srcdir)/INSTALL \
+		$(srcdir)/aclocal.m4 \
+		$(srcdir)/config.h.in \
+		$(srcdir)/configure \
+		$(srcdir)/omf.make \
+		$(srcdir)/xmldocs.make \
+		`find "$(srcdir)" -type f -name Makefile.in -print`
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -481,6 +491,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 clean: clean-am
 
 clean-am: clean-generic clean-libexecPROGRAMS mostlyclean-am
