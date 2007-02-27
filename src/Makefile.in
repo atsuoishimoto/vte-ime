@@ -387,6 +387,7 @@ PYTHONMODULES = @PYTHONMODULES@
 PYTHONREV = @PYTHONREV@
 PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_INCLUDES = @PYTHON_INCLUDES@
+PYTHON_LDFLAGS = @PYTHON_LDFLAGS@
 PYTHON_LIBS = @PYTHON_LIBS@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
@@ -510,7 +511,7 @@ libvte_la_SOURCES = buffer.c buffer.h caps.c caps.h debug.c debug.h \
 # Libtool shared library versioning stuffs.
 # REVISION gets incremented whenever the source code changes without adding
 # an API or ABI change.
-VERSION_REVISION = 1
+VERSION_REVISION = 2
 # CURRENT must be incremented when an API or ABI change (addition or removal)
 # is made, and REVISION must be reset to 0 when this happens.
 VERSION_CURRENT = 11
