@@ -1,3 +1,37 @@
+vte (1:0.15.4-0ubuntu1) feisty; urgency=low
+
+  * New upstream release:
+    - Fixes Bug "Yet another mouse selection regression...",
+    - Fixes Bug "Orca repeats old text in gnome-terminal",
+    - Fixes Bug "Slow content scrolling, takes 100% of CPU.",
+    - Fixes Bug "Poor interactive performance with multiple terminals",
+    - Fixes Bug "slow highlight",
+    - Fixes Bug "SVN trunk compilation error",
+    - Fixes Bug "Fails to build with -z defs"
+    - Fixes Bug "slider not correctly positioned after calling less" (LP:
+      #87024)
+    - Fixes Bug "Poor interactive performance with multiple terminals",
+    - Fixes Bug "First line displayed incorrectly if prompt changes background
+      color",
+    - Fixes Bug "gnome-terminal not parsing cursor position escape sequence
+      properly",
+    - Fixes Bug "Terminal stays blank" (LP: #85437),
+    - Fixes Bug "gnome-terminal crashed with SIGSEGV in
+      vte_terminal_draw_graphic()" (LP: #85956),
+    - Fixes Bug '"GNOME" Terminal" regression after "vte" update when using
+      "csh"',
+    - Fixes Bug "trouble compiling vte 0.15.3",
+    - Fixes Bug "vte automagic hyperlinks",
+    - Fixes Bug "Use of environ breaks build on Solaris",
+    - Fixes Bug "regression in mouse selection".
+  * debian/patches/01_fix_scrolling.patch:
+    - dropped, fixed upstream.
+  * debian/patches/01-from-svn-fix-412562.patch:
+    - Fixup a few 64bit-isms, notably format strings and an undesired 
+      unsigned integer promotion causing this crash.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue, 27 Feb 2007 08:00:03 +0100
+
 vte (1:0.15.3-0ubuntu3) feisty; urgency=low
 
   * Build a python-vte-dbg package.

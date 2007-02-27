@@ -118,7 +118,7 @@ endif
 # Libtool shared library versioning stuffs.
 # REVISION gets incremented whenever the source code changes without adding
 # an API or ABI change.
-VERSION_REVISION=0
+VERSION_REVISION=1
 # CURRENT must be incremented when an API or ABI change (addition or removal)
 # is made, and REVISION must be reset to 0 when this happens.
 VERSION_CURRENT=11
@@ -129,7 +129,7 @@ libvte_la_LDFLAGS = $(LDFLAGS) \
 	-version-info $(VERSION_CURRENT):$(VERSION_REVISION):$(VERSION_AGE) \
 	-export-symbols-regex "^vte_terminal_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
 	@LIBTOOL_EXPORT_OPTIONS@ @LIBTOOL_FLAGS@
-libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS) $(PCRE_LIBS)
+libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS) $(PCRE_LIBS) $(FT2_LIBS)
 
 CLEANFILES = marshal.c marshal.h
 
@@ -169,6 +169,8 @@ interpret_SOURCES = \
 	vteconv.h \
 	vtetc.c \
 	vtetc.h \
+	vtetree.c \
+	vtetree.h \
 	interpret.c
 interpret_LDADD = $(LDFLAGS) $(GOBJECT_LIBS)
 
@@ -191,7 +193,9 @@ iso2022_SOURCES = \
 	vteconv.c \
 	vteconv.h \
 	vtetc.c \
-	vtetc.h
+	vtetc.h \
+	vtetree.c \
+	vtetree.h
 iso2022_LDADD = $(LDFLAGS) $(LIBS) $(GOBJECT_LIBS)
 
 utf8echo_CFLAGS = $(GOBJECT_CFLAGS) -DUTF8ECHO_MAIN

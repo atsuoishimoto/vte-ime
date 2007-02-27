@@ -80,7 +80,8 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libvte_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am__libvte_la_SOURCES_DIST = buffer.c buffer.h caps.c caps.h debug.c \
 	debug.h iso2022.c iso2022.h keymap.c keymap.h marshal.c \
 	marshal.h matcher.c matcher.h pty.c pty.h reaper.c reaper.h \
@@ -116,14 +117,14 @@ am_interpret_OBJECTS = interpret-buffer.$(OBJEXT) \
 	interpret-iso2022.$(OBJEXT) interpret-matcher.$(OBJEXT) \
 	interpret-table.$(OBJEXT) interpret-trie.$(OBJEXT) \
 	interpret-vteconv.$(OBJEXT) interpret-vtetc.$(OBJEXT) \
-	interpret-interpret.$(OBJEXT)
+	interpret-vtetree.$(OBJEXT) interpret-interpret.$(OBJEXT)
 interpret_OBJECTS = $(am_interpret_OBJECTS)
 interpret_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_iso2022_OBJECTS = iso2022-buffer.$(OBJEXT) iso2022-caps.$(OBJEXT) \
 	iso2022-debug.$(OBJEXT) iso2022-iso2022.$(OBJEXT) \
 	iso2022-matcher.$(OBJEXT) iso2022-table.$(OBJEXT) \
 	iso2022-trie.$(OBJEXT) iso2022-vteconv.$(OBJEXT) \
-	iso2022-vtetc.$(OBJEXT)
+	iso2022-vtetc.$(OBJEXT) iso2022-vtetree.$(OBJEXT)
 iso2022_OBJECTS = $(am_iso2022_OBJECTS)
 iso2022_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
@@ -386,6 +387,7 @@ PYTHONMODULES = @PYTHONMODULES@
 PYTHONREV = @PYTHONREV@
 PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_INCLUDES = @PYTHON_INCLUDES@
+PYTHON_LIBS = @PYTHON_LIBS@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
 PYTHON_VERSION = @PYTHON_VERSION@
@@ -508,7 +510,7 @@ libvte_la_SOURCES = buffer.c buffer.h caps.c caps.h debug.c debug.h \
 # Libtool shared library versioning stuffs.
 # REVISION gets incremented whenever the source code changes without adding
 # an API or ABI change.
-VERSION_REVISION = 0
+VERSION_REVISION = 1
 # CURRENT must be incremented when an API or ABI change (addition or removal)
 # is made, and REVISION must be reset to 0 when this happens.
 VERSION_CURRENT = 11
@@ -520,7 +522,7 @@ libvte_la_LDFLAGS = $(LDFLAGS) \
 	-export-symbols-regex "^vte_terminal_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
 	@LIBTOOL_EXPORT_OPTIONS@ @LIBTOOL_FLAGS@
 
-libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS) $(PCRE_LIBS)
+libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS) $(PCRE_LIBS) $(FT2_LIBS)
 CLEANFILES = marshal.c marshal.h
 vte_SOURCES = \
 	vteapp.c
@@ -552,6 +554,8 @@ interpret_SOURCES = \
 	vteconv.h \
 	vtetc.c \
 	vtetc.h \
+	vtetree.c \
+	vtetree.h \
 	interpret.c
 
 interpret_LDADD = $(LDFLAGS) $(GOBJECT_LIBS)
@@ -574,7 +578,9 @@ iso2022_SOURCES = \
 	vteconv.c \
 	vteconv.h \
 	vtetc.c \
-	vtetc.h
+	vtetc.h \
+	vtetree.c \
+	vtetree.h
 
 iso2022_LDADD = $(LDFLAGS) $(LIBS) $(GOBJECT_LIBS)
 utf8echo_CFLAGS = $(GOBJECT_CFLAGS) -DUTF8ECHO_MAIN
@@ -934,6 +940,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interpret-trie.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interpret-vteconv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interpret-vtetc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interpret-vtetree.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iso2022-buffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iso2022-caps.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iso2022-debug.Po@am__quote@
@@ -943,6 +950,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iso2022-trie.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iso2022-vteconv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iso2022-vtetc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iso2022-vtetree.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iso2022.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iso8859mode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/keymap.Plo@am__quote@
@@ -1182,6 +1190,20 @@ interpret-vtetc.obj: vtetc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(interpret_CFLAGS) $(CFLAGS) -c -o interpret-vtetc.obj `if test -f 'vtetc.c'; then $(CYGPATH_W) 'vtetc.c'; else $(CYGPATH_W) '$(srcdir)/vtetc.c'; fi`
 
+interpret-vtetree.o: vtetree.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(interpret_CFLAGS) $(CFLAGS) -MT interpret-vtetree.o -MD -MP -MF "$(DEPDIR)/interpret-vtetree.Tpo" -c -o interpret-vtetree.o `test -f 'vtetree.c' || echo '$(srcdir)/'`vtetree.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/interpret-vtetree.Tpo" "$(DEPDIR)/interpret-vtetree.Po"; else rm -f "$(DEPDIR)/interpret-vtetree.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vtetree.c' object='interpret-vtetree.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(interpret_CFLAGS) $(CFLAGS) -c -o interpret-vtetree.o `test -f 'vtetree.c' || echo '$(srcdir)/'`vtetree.c
+
+interpret-vtetree.obj: vtetree.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(interpret_CFLAGS) $(CFLAGS) -MT interpret-vtetree.obj -MD -MP -MF "$(DEPDIR)/interpret-vtetree.Tpo" -c -o interpret-vtetree.obj `if test -f 'vtetree.c'; then $(CYGPATH_W) 'vtetree.c'; else $(CYGPATH_W) '$(srcdir)/vtetree.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/interpret-vtetree.Tpo" "$(DEPDIR)/interpret-vtetree.Po"; else rm -f "$(DEPDIR)/interpret-vtetree.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vtetree.c' object='interpret-vtetree.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(interpret_CFLAGS) $(CFLAGS) -c -o interpret-vtetree.obj `if test -f 'vtetree.c'; then $(CYGPATH_W) 'vtetree.c'; else $(CYGPATH_W) '$(srcdir)/vtetree.c'; fi`
+
 interpret-interpret.o: interpret.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(interpret_CFLAGS) $(CFLAGS) -MT interpret-interpret.o -MD -MP -MF "$(DEPDIR)/interpret-interpret.Tpo" -c -o interpret-interpret.o `test -f 'interpret.c' || echo '$(srcdir)/'`interpret.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/interpret-interpret.Tpo" "$(DEPDIR)/interpret-interpret.Po"; else rm -f "$(DEPDIR)/interpret-interpret.Tpo"; exit 1; fi
@@ -1321,6 +1343,20 @@ iso2022-vtetc.obj: vtetc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vtetc.c' object='iso2022-vtetc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(iso2022_CFLAGS) $(CFLAGS) -c -o iso2022-vtetc.obj `if test -f 'vtetc.c'; then $(CYGPATH_W) 'vtetc.c'; else $(CYGPATH_W) '$(srcdir)/vtetc.c'; fi`
+
+iso2022-vtetree.o: vtetree.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(iso2022_CFLAGS) $(CFLAGS) -MT iso2022-vtetree.o -MD -MP -MF "$(DEPDIR)/iso2022-vtetree.Tpo" -c -o iso2022-vtetree.o `test -f 'vtetree.c' || echo '$(srcdir)/'`vtetree.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/iso2022-vtetree.Tpo" "$(DEPDIR)/iso2022-vtetree.Po"; else rm -f "$(DEPDIR)/iso2022-vtetree.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vtetree.c' object='iso2022-vtetree.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(iso2022_CFLAGS) $(CFLAGS) -c -o iso2022-vtetree.o `test -f 'vtetree.c' || echo '$(srcdir)/'`vtetree.c
+
+iso2022-vtetree.obj: vtetree.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(iso2022_CFLAGS) $(CFLAGS) -MT iso2022-vtetree.obj -MD -MP -MF "$(DEPDIR)/iso2022-vtetree.Tpo" -c -o iso2022-vtetree.obj `if test -f 'vtetree.c'; then $(CYGPATH_W) 'vtetree.c'; else $(CYGPATH_W) '$(srcdir)/vtetree.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/iso2022-vtetree.Tpo" "$(DEPDIR)/iso2022-vtetree.Po"; else rm -f "$(DEPDIR)/iso2022-vtetree.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vtetree.c' object='iso2022-vtetree.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(iso2022_CFLAGS) $(CFLAGS) -c -o iso2022-vtetree.obj `if test -f 'vtetree.c'; then $(CYGPATH_W) 'vtetree.c'; else $(CYGPATH_W) '$(srcdir)/vtetree.c'; fi`
 
 nativeecho-nativeecho.o: nativeecho.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nativeecho_CFLAGS) $(CFLAGS) -MT nativeecho-nativeecho.o -MD -MP -MF "$(DEPDIR)/nativeecho-nativeecho.Tpo" -c -o nativeecho-nativeecho.o `test -f 'nativeecho.c' || echo '$(srcdir)/'`nativeecho.c; \
