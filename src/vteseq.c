@@ -717,10 +717,12 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 						NULL);
 		}
 		/* Reset scrollbars and repaint everything. */
+		terminal->adjustment->value =
+			terminal->pvt->screen->scroll_delta;
+		terminal->pvt->adjustment_value_changed_pending = TRUE;
 		vte_terminal_set_scrollback_lines(terminal,
 				terminal->pvt->scrollback_lines);
-		_vte_terminal_match_contents_clear(terminal);
-		_vte_terminal_emit_contents_changed(terminal);
+		_vte_terminal_queue_contents_changed(terminal);
 		_vte_invalidate_all (terminal);
 		break;
 	case 9:
@@ -1139,7 +1141,6 @@ vte_sequence_handler_ce(VteTerminal *terminal,
 	vte_g_array_fill(rowdata->cells,
 			 &screen->fill_defaults,
 			 terminal->column_count);
-	rowdata->soft_wrapped = 0;
 	/* Repaint this row. */
 	_vte_invalidate_cells(terminal,
 			      screen->cursor_current.col,
@@ -1206,12 +1207,11 @@ vte_sequence_handler_cm(VteTerminal *terminal,
 
 	screen = terminal->pvt->screen;
 	/* We need at least two parameters. */
-	if ((params != NULL) && (params->n_values >= 2)) {
+	rowval = colval = 0;
+	if (params != NULL && params->n_values >= 1) {
 		/* The first is the row, the second is the column. */
 		row = g_value_array_get_nth(params, 0);
-		col = g_value_array_get_nth(params, 1);
-		if (G_VALUE_HOLDS_LONG(row) &&
-		    G_VALUE_HOLDS_LONG(col)) {
+		if (G_VALUE_HOLDS_LONG(row)) {
 			if (screen->origin_mode &&
 			    screen->scrolling_restricted) {
 				origin = screen->scrolling_region.start;
@@ -1219,14 +1219,18 @@ vte_sequence_handler_cm(VteTerminal *terminal,
 				origin = 0;
 			}
 			rowval = g_value_get_long(row) + origin;
-			colval = g_value_get_long(col);
 			rowval = CLAMP(rowval, 0, terminal->row_count - 1);
-			colval = CLAMP(colval, 0, terminal->column_count - 1);
-			screen->cursor_current.row = rowval +
-						     screen->insert_delta;
-			screen->cursor_current.col = colval;
+		}
+		if (params->n_values >= 2) {
+			col = g_value_array_get_nth(params, 1);
+			if (G_VALUE_HOLDS_LONG(col)) {
+				colval = g_value_get_long(col);
+				colval = CLAMP(colval, 0, terminal->column_count - 1);
+			}
 		}
 	}
+	screen->cursor_current.row = rowval + screen->insert_delta;
+	screen->cursor_current.col = colval;
 	return FALSE;
 }
 
@@ -1277,7 +1281,19 @@ vte_sequence_handler_cr(VteTerminal *terminal,
 			GQuark match_quark,
 			GValueArray *params)
 {
-	terminal->pvt->screen->cursor_current.col = 0;
+	VteScreen *screen = terminal->pvt->screen;
+	glong col = screen->cursor_current.col;
+	screen->cursor_current.col = 0;
+	if (screen->fill_defaults.back != VTE_DEF_BG) {
+		VteRowData *rowdata;
+		rowdata = _vte_terminal_ensure_cursor (terminal, FALSE);
+		vte_g_array_fill (rowdata->cells,
+				&screen->fill_defaults,
+				terminal->column_count);
+		_vte_invalidate_cells (terminal,
+				      col, terminal->column_count - col,
+				      screen->cursor_current.row, 1);
+	}
 	return FALSE;
 }
 
@@ -1326,7 +1342,6 @@ vte_sequence_handler_cs(VteTerminal *terminal,
 	}
 	screen->cursor_current.row = screen->insert_delta + start;
 	screen->cursor_current.col = 0;
-	_vte_terminal_ensure_cursor(terminal, TRUE);
 	return FALSE;
 }
 
@@ -1372,7 +1387,6 @@ vte_sequence_handler_cS(VteTerminal *terminal,
 	screen->cursor_current.row = CLAMP(screen->cursor_current.row,
 					   screen->insert_delta + start,
 					   screen->insert_delta + end);
-	_vte_terminal_ensure_cursor(terminal, TRUE);
 	return FALSE;
 }
 
@@ -1403,7 +1417,6 @@ vte_sequence_handler_cursor_lower_left(VteTerminal *terminal,
 	row = MAX(0, terminal->row_count - 1);
 	screen->cursor_current.row = screen->insert_delta + row;
 	screen->cursor_current.col = 0;
-	_vte_terminal_ensure_cursor(terminal, TRUE);
 	return FALSE;
 }
 
@@ -1473,26 +1486,22 @@ vte_sequence_handler_dc(VteTerminal *terminal,
 	screen = terminal->pvt->screen;
 
 	if (_vte_ring_next(screen->row_data) > screen->cursor_current.row) {
+		long len;
 		/* Get the data for the row which the cursor points to. */
 		rowdata = _vte_ring_index(screen->row_data,
 					  VteRowData *,
 					  screen->cursor_current.row);
 		g_assert(rowdata != NULL);
 		col = screen->cursor_current.col;
+		len = rowdata->cells->len;
 		/* Remove the column. */
-		if (col < rowdata->cells->len) {
+		if (col < len) {
 			g_array_remove_index(rowdata->cells, col);
+			/* Repaint this row. */
+			_vte_invalidate_cells(terminal,
+					col, len - col,
+					screen->cursor_current.row, 1);
 		}
-		/* Add new cells until we have enough to fill the row. */
-		vte_g_array_fill(rowdata->cells,
-				 &screen->color_defaults,
-				 terminal->column_count);
-		/* Repaint this row. */
-		_vte_invalidate_cells(terminal,
-				      screen->cursor_current.col,
-				      terminal->column_count -
-				      screen->cursor_current.col,
-				      screen->cursor_current.row, 1);
 	}
 
 	/* We've modified the display.  Make a note of it. */
@@ -1745,7 +1754,7 @@ vte_sequence_handler_ic(VteTerminal *terminal,
 
 	save = screen->cursor_current;
 
-	_vte_terminal_insert_char(terminal, ' ', TRUE, TRUE, TRUE, TRUE, 0);
+	_vte_terminal_insert_char(terminal, ' ', TRUE, TRUE, TRUE, 0);
 
 	screen->cursor_current = save;
 
@@ -2197,42 +2206,31 @@ vte_sequence_handler_sf(VteTerminal *terminal,
 				if (terminal->pvt->free_row) {
 					row = _vte_reset_row_data (terminal,
 							terminal->pvt->free_row,
-							TRUE);
+							FALSE);
 				} else {
-					row = _vte_new_row_data_sized(terminal, TRUE);
+					row = _vte_new_row_data_sized(terminal, FALSE);
 				}
 				terminal->pvt->free_row = _vte_ring_insert_preserve(terminal->pvt->screen->row_data,
 							  screen->cursor_current.row,
 							  row);
-				/* This may generate multiple redraws, so
-				 * disable fast scrolling for now. */
-				terminal->pvt->scroll_lock_count++;
 				/* Force the areas below the region to be
 				 * redrawn -- they've moved. */
 				_vte_terminal_scroll_region(terminal, start,
 							    end - start + 1, 1);
 				/* Force scroll. */
-				_vte_terminal_ensure_cursor(terminal, FALSE);
 				_vte_terminal_adjust_adjustments(terminal);
-				/* Allow updates again. */
-				terminal->pvt->scroll_lock_count--;
 			} else {
 				/* If we're at the bottom of the scrolling
 				 * region, add a line at the top to scroll the
 				 * bottom off. */
 				vte_remove_line_internal(terminal, start);
 				vte_insert_line_internal(terminal, end);
-				/* This may generate multiple redraws, so
-				 * disable fast scrolling for now. */
-				terminal->pvt->scroll_lock_count++;
 				/* Update the display. */
 				_vte_terminal_scroll_region(terminal, start,
 							   end - start + 1, -1);
 				_vte_invalidate_cells(terminal,
 						      0, terminal->column_count,
 						      end - 2, 2);
-				/* Allow updates again. */
-				terminal->pvt->scroll_lock_count--;
 			}
 		} else {
 			/* Scroll up with history. */
@@ -2242,10 +2240,7 @@ vte_sequence_handler_sf(VteTerminal *terminal,
 	} else {
 		/* Otherwise, just move the cursor down. */
 		screen->cursor_current.row++;
-		_vte_terminal_ensure_cursor(terminal, TRUE);
 	}
-	/* Adjust the scrollbars if necessary. */
-	_vte_terminal_adjust_adjustments(terminal);
 	return FALSE;
 }
 

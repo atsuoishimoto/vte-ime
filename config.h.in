@@ -85,6 +85,12 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
+/* Define to 1 if you have the `FcNameUnparse' function. */
+#undef HAVE_FCNAMEUNPARSE
+
+/* Define to 1 if you have the `FcStrFree' function. */
+#undef HAVE_FCSTRFREE
+
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
 

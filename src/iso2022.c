@@ -29,6 +29,7 @@
 #include "iso2022.h"
 #include "matcher.h"
 #include "vteconv.h"
+#include "vtetree.h"
 
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
@@ -325,34 +326,32 @@ _vte_iso2022_is_ambiguous(gunichar c)
 static int
 _vte_iso2022_ambiguous_width_guess(void)
 {
-	const char *lang = NULL;
-	int ret = 1;
-	if ((lang == NULL) && (g_getenv("LC_ALL") != NULL)) {
-		lang = g_getenv("LC_ALL");
-	}
-	if ((lang == NULL) && (g_getenv("LC_CTYPE") != NULL)) {
-		lang = g_getenv("LC_CTYPE");
-	}
-	if ((lang == NULL) && (g_getenv("LANG") != NULL)) {
-		lang = g_getenv("LANG");
-	}
-	if (lang != NULL) {
-		if (g_ascii_strncasecmp(lang, "ja", 2) == 0) {
-			ret = 2;
-		} else
-		if (g_ascii_strncasecmp(lang, "ko", 2) == 0) {
-			ret = 2;
-		} else
-		if (g_ascii_strncasecmp(lang, "vi", 2) == 0) {
-			ret = 2;
-		} else
-		if (g_ascii_strncasecmp(lang, "zh", 2) == 0) {
-			ret = 2;
+	static int guess;
+	if (guess == 0) {
+		const char *lang = NULL;
+		guess = 1;
+		if ((lang == NULL) && (g_getenv("LC_ALL") != NULL)) {
+			lang = g_getenv("LC_ALL");
 		}
+		if ((lang == NULL) && (g_getenv("LC_CTYPE") != NULL)) {
+			lang = g_getenv("LC_CTYPE");
+		}
+		if ((lang == NULL) && (g_getenv("LANG") != NULL)) {
+			lang = g_getenv("LANG");
+		}
+		if (lang != NULL) {
+			if (g_ascii_strncasecmp(lang, "ja", 2) == 0 ||
+					g_ascii_strncasecmp(lang, "ko", 2) == 0 ||
+					g_ascii_strncasecmp(lang, "vi", 2) == 0 ||
+					g_ascii_strncasecmp(lang, "zh", 2) == 0) {
+				guess = 2;
+			}
+		}
+		_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
+				"Ambiguous characters will have width = %d.\n",
+				guess);
 	}
-	_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
-			"Ambiguous characters will have width = %d.\n", ret);
-	return ret;
+	return guess;
 }
 
 /* If we have the encoding, decide how wide an ambiguously-wide character is
@@ -404,17 +403,17 @@ _vte_iso2022_ambiguous_width(struct _vte_iso2022_state *state)
 	return 1;
 }
 
-static GTree *
+static GHashTable *
 _vte_iso2022_map_init(const struct _vte_iso2022_map *map, gssize length)
 {
-	GTree *ret;
+	GHashTable *ret;
 	int i;
 	if (length == 0) {
 		return NULL;
 	}
-	ret = g_tree_new(_vte_direct_compare);
+	ret = g_hash_table_new(NULL, NULL);
 	for (i = 0; i < length; i++) {
-		g_tree_insert(ret,
+		g_hash_table_insert(ret,
 			      GINT_TO_POINTER(map[i].from),
 			      GINT_TO_POINTER(map[i].to));
 	}
@@ -423,13 +422,14 @@ _vte_iso2022_map_init(const struct _vte_iso2022_map *map, gssize length)
 
 static void
 _vte_iso2022_map_get(gunichar mapname,
-		     GTree **tree, guint *bytes_per_char, guint *force_width,
+		     GHashTable **_map, guint *bytes_per_char, guint *force_width,
 		     gulong *or_mask, gulong *and_mask)
 {
+	static VteTree *maps = NULL;
 	struct _vte_iso2022_map _vte_iso2022_map_NUL[256];
-	static GTree *maps = NULL;
 	gint bytes = 0, width = 0;
-	GTree *map = NULL;
+	GHashTable *map = NULL;
+	gboolean new_map = FALSE;
 	gsize i;
 
 	if (or_mask) {
@@ -441,16 +441,17 @@ _vte_iso2022_map_get(gunichar mapname,
 
 	/* Make sure we have a map, erm, map. */
 	if (maps == NULL) {
-		maps = g_tree_new(_vte_direct_compare);
+		maps = _vte_tree_new(_vte_direct_compare);
 	}
 
 	/* Check for a cached map for this charset. */
-	map = g_tree_lookup(maps, GINT_TO_POINTER(mapname));
+	map = _vte_tree_lookup(maps, GINT_TO_POINTER(mapname));
+	new_map = map == NULL;
 
 	/* Construct a new one. */
 	switch (mapname) {
 	case '0':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_0,
 					    G_N_ELEMENTS(_vte_iso2022_map_0));
 		}
@@ -458,7 +459,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 1;
 		break;
 	case 'A':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_A,
 					    G_N_ELEMENTS(_vte_iso2022_map_A));
 		}
@@ -468,7 +469,7 @@ _vte_iso2022_map_get(gunichar mapname,
 	case '1': /* treated as an alias in xterm */
 	case '2': /* treated as an alias in xterm */
 	case 'B':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_B,
 					    G_N_ELEMENTS(_vte_iso2022_map_B));
 		}
@@ -476,7 +477,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 1;
 		break;
 	case '4':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_4,
 					    G_N_ELEMENTS(_vte_iso2022_map_4));
 		}
@@ -485,7 +486,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		break;
 	case 'C':
 	case '5':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_C,
 					    G_N_ELEMENTS(_vte_iso2022_map_C));
 		}
@@ -493,7 +494,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 1;
 		break;
 	case 'R':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_R,
 					    G_N_ELEMENTS(_vte_iso2022_map_R));
 		}
@@ -501,7 +502,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 1;
 		break;
 	case 'Q':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_Q,
 					    G_N_ELEMENTS(_vte_iso2022_map_Q));
 		}
@@ -509,7 +510,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 1;
 		break;
 	case 'K':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_K,
 					    G_N_ELEMENTS(_vte_iso2022_map_K));
 		}
@@ -517,7 +518,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 1;
 		break;
 	case 'Y':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_Y,
 					    G_N_ELEMENTS(_vte_iso2022_map_Y));
 		}
@@ -526,7 +527,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		break;
 	case 'E':
 	case '6':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_E,
 					    G_N_ELEMENTS(_vte_iso2022_map_E));
 		}
@@ -534,7 +535,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 1;
 		break;
 	case 'Z':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_Z,
 					    G_N_ELEMENTS(_vte_iso2022_map_Z));
 		}
@@ -543,7 +544,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		break;
 	case 'H':
 	case '7':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_H,
 					    G_N_ELEMENTS(_vte_iso2022_map_H));
 		}
@@ -551,7 +552,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 1;
 		break;
 	case '=':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_equal,
 					    G_N_ELEMENTS(_vte_iso2022_map_equal));
 		}
@@ -559,7 +560,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 1;
 		break;
 	case 'U':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_U,
 					    G_N_ELEMENTS(_vte_iso2022_map_U));
 		}
@@ -567,7 +568,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 1;
 		break;
 	case 'J':
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_J,
 					    G_N_ELEMENTS(_vte_iso2022_map_J));
 		}
@@ -575,7 +576,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 1;
 		break;
 	case '@' + WIDE_FUDGE:
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_wide_at,
 					    G_N_ELEMENTS(_vte_iso2022_map_wide_at));
 		}
@@ -584,7 +585,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		*and_mask = 0xf7f7f;
 		break;
 	case 'A' + WIDE_FUDGE:
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_wide_A,
 					    G_N_ELEMENTS(_vte_iso2022_map_wide_A));
 		}
@@ -593,7 +594,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		*and_mask = 0xf7f7f;
 		break;
 	case 'B' + WIDE_FUDGE:
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_wide_B,
 					    G_N_ELEMENTS(_vte_iso2022_map_wide_B));
 		}
@@ -602,7 +603,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		*and_mask = 0xf7f7f;
 		break;
 	case 'C' + WIDE_FUDGE:
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_wide_C,
 					    G_N_ELEMENTS(_vte_iso2022_map_wide_C));
 		}
@@ -611,7 +612,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		*and_mask = 0xf7f7f;
 		break;
 	case 'D' + WIDE_FUDGE:
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_wide_D,
 					    G_N_ELEMENTS(_vte_iso2022_map_wide_D));
 		}
@@ -620,7 +621,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		*and_mask = 0xf7f7f;
 		break;
 	case 'G' + WIDE_FUDGE:
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_wide_G,
 					    G_N_ELEMENTS(_vte_iso2022_map_wide_G));
 		}
@@ -632,7 +633,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 2;
 		break;
 	case 'H' + WIDE_FUDGE:
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_wide_G,
 					    G_N_ELEMENTS(_vte_iso2022_map_wide_G));
 		}
@@ -644,7 +645,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 2;
 		break;
 	case 'I' + WIDE_FUDGE:
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_wide_G,
 					    G_N_ELEMENTS(_vte_iso2022_map_wide_G));
 		}
@@ -656,7 +657,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 2;
 		break;
 	case 'J' + WIDE_FUDGE:
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_wide_G,
 					    G_N_ELEMENTS(_vte_iso2022_map_wide_G));
 		}
@@ -680,7 +681,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 2;
 		break;
 	case 'L' + WIDE_FUDGE:
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_wide_G,
 					    G_N_ELEMENTS(_vte_iso2022_map_wide_G));
 		}
@@ -692,7 +693,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		bytes = 2;
 		break;
 	case 'M' + WIDE_FUDGE:
-		if (map == NULL) {
+		if (G_UNLIKELY(map == NULL)) {
 			map = _vte_iso2022_map_init(_vte_iso2022_map_wide_G,
 					    G_N_ELEMENTS(_vte_iso2022_map_wide_G));
 		}
@@ -705,7 +706,7 @@ _vte_iso2022_map_get(gunichar mapname,
 		break;
 	default:
 		/* No such map.  Set up a ISO-8859-1 to UCS-4 map. */
-		if (map == NULL) {
+		if (G_UNLIKELY (map == NULL)) {
 			for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_map_NUL); i++) {
 				_vte_iso2022_map_NUL[i].from = (i & 0xff);
 				_vte_iso2022_map_NUL[i].to = (i & 0xff);
@@ -718,12 +719,12 @@ _vte_iso2022_map_get(gunichar mapname,
 		break;
 	}
 	/* Save the new map. */
-	if (map != NULL) {
-		g_tree_insert(maps, GINT_TO_POINTER(mapname), map);
+	if (G_UNLIKELY(new_map && map != NULL)) {
+		_vte_tree_insert(maps, GINT_TO_POINTER(mapname), map);
 	}
 	/* Return. */
-	if (tree) {
-		*tree = map;
+	if (_map) {
+		*_map = map;
 	}
 	if (bytes_per_char) {
 		*bytes_per_char = bytes;
@@ -837,28 +838,25 @@ _vte_iso2022_state_get_codeset(struct _vte_iso2022_state *state)
 }
 
 static const guchar *
-_vte_iso2022_find_nextctl(const guchar *p, gsize length)
+_vte_iso2022_find_nextctl(const guchar *p, const guchar * const q)
 {
-	gsize i;
-
-	for (i = 0; i < length; ++i) {
-		if (p[i] == '\033' ||
-		    p[i] == '\n' ||
-		    p[i] == '\r' ||
-		    p[i] == '\016' ||
-		    p[i] == '\017'
+	do {
+		switch (*p) {
+			case '\033':
+			case '\n':
+			case '\r':
+			case '\016':
+			case '\017':
 #ifdef VTE_ISO2022_8_BIT_CONTROLS
 		    /* This breaks UTF-8 and other encodings which
 		     * use the high bits.
 		     */
-		                 ||
-		    p[i] == 0x8e ||
-		    p[i] == 0x8f
+			case '0x8e':
+			case '0x8f':
 #endif
-			) {
-			return p + i;
+				return p;
 		}
-	}
+	} while (++p < q);
 	return NULL;
 }
 
@@ -1079,7 +1077,7 @@ _vte_iso2022_fragment_input(guchar *input, gsize length)
 	p = input;
 	q = input + length;
 	do {
-		nextctl = _vte_iso2022_find_nextctl(p, q - p);
+		nextctl = _vte_iso2022_find_nextctl(p, q);
 		if (nextctl == NULL) {
 			/* It's all garden-variety data. */
 			block.type = _vte_iso2022_cdata;
@@ -1142,7 +1140,7 @@ process_8_bit_sequence(struct _vte_iso2022_state *state,
 	gunichar c, *outptr;
 	const guchar *inptr;
 	gulong acc, or_mask, and_mask;
-	GTree *map;
+	GHashTable *map;
 	guint bytes_per_char, force_width, current;
 
 	/* Check if it's an 8-bit escape.  If it is, take a note of which map
@@ -1183,7 +1181,7 @@ process_8_bit_sequence(struct _vte_iso2022_state *state,
 	acc &= and_mask;
 	acc |= or_mask;
 	p = GINT_TO_POINTER(acc);
-	c = GPOINTER_TO_INT(g_tree_lookup(map, p));
+	c = GPOINTER_TO_INT(g_hash_table_lookup(map, p));
 	if ((c == 0) && (acc != 0)) {
 		_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
 				"%04lx -(%c)-> %04lx(?)\n",
@@ -1216,22 +1214,21 @@ process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize lengt
 {
 	int ambiguous_width;
 	glong processed = 0;
-	GTree *map;
+	GHashTable *map;
 	guint bytes_per_char, force_width, current;
 	gsize converted;
 	const guchar *inbuf;
 	gunichar *outbuf, *buf;
 	gsize inbytes, outbytes;
-	guint i, width;
+	guint i, j, width;
 	gulong acc, or_mask, and_mask;
 	gunichar c;
-	gpointer p;
 	gboolean single, stop;
 
 	ambiguous_width = state->ambiguous_width;
 
 	single = (state->override != -1);
-	current = (state->override != -1) ? state->override : state->current;
+	current = single ? state->override : state->current;
 	state->override = -1;
 	g_assert(current < G_N_ELEMENTS(state->g));
 
@@ -1299,10 +1296,10 @@ process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize lengt
 			}
 		} while ((inbytes > 0) && !stop);
 
-		/* Append the unichars to the GArray. */
-		for (i = 0; buf + i < outbuf; i ++) {
+		/* encode any ambiguous widths and skip blanks */
+		for (i = j = 0; buf + i < outbuf; i++) {
 			c = buf[i];
-			if (c == '\0') {
+			if (G_UNLIKELY (c == '\0')) {
 				/* Skip the padding character. */
 				continue;
 			}
@@ -1310,8 +1307,10 @@ process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize lengt
 				width = ambiguous_width;
 				c = _vte_iso2022_set_encoded_width(c, width);
 			}
-			g_array_append_val(gunichars, c);
+			buf[j++] = c;
 		}
+		/* And append the unichars to the GArray. */
+		g_array_append_vals(gunichars, buf, j);
 
 		/* Done. */
 		processed = length - inbytes;
@@ -1329,8 +1328,8 @@ process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize lengt
 			if ((i % bytes_per_char) == 0) {
 				acc &= and_mask;
 				acc |= or_mask;
-				p = GINT_TO_POINTER(acc);
-				c = GPOINTER_TO_INT(g_tree_lookup(map, p));
+				c = GPOINTER_TO_INT(g_hash_table_lookup(map,
+							GINT_TO_POINTER(acc)));
 				if ((c == 0) && (acc != 0)) {
 					_vte_debug_print(VTE_DEBUG_SUBSTITUTION,
 							"%04lx -(%c)-> "
@@ -1338,7 +1337,7 @@ process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize lengt
 							acc,
 							state->g[current] & 0xff,
 							acc);
-					g_array_append_val(gunichars, acc);
+					c = acc;
 				} else {
 					width = 0;
 					if (force_width != 0) {
@@ -1352,8 +1351,8 @@ process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize lengt
 							"%05lx -> "
 							"%04x\n", acc, c);
 					c = _vte_iso2022_set_encoded_width(c, width);
-					g_array_append_val(gunichars, c);
 				}
+				g_array_append_val(gunichars, c);
 				if (single) {
 					break;
 				}
@@ -1369,24 +1368,22 @@ gunichar
 _vte_iso2022_process_single(struct _vte_iso2022_state *state,
 			    gunichar c, gunichar map)
 {
-	GTree *tree;
+	GHashTable *hash;
 	gunichar ret = c;
 	gpointer p;
 	guint bytes_per_char, force_width;
 	gulong or_mask, and_mask;
 
 	_vte_iso2022_map_get(map,
-			     &tree, &bytes_per_char, &force_width,
+			     &hash, &bytes_per_char, &force_width,
 			     &or_mask, &and_mask);
 
 	p = GINT_TO_POINTER((c & and_mask) | or_mask);
-	if (tree != NULL) {
-		p = g_tree_lookup(tree, p);
+	if (hash != NULL) {
+		p = g_hash_table_lookup(hash, p);
 	}
 	if (p != NULL) {
 		ret = GPOINTER_TO_INT(p);
-	} else {
-		ret = GPOINTER_TO_INT(c);
 	}
 	if (force_width) {
 		ret = _vte_iso2022_set_encoded_width(ret, force_width);
@@ -1686,7 +1683,7 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 		switch (block->type) {
 		case _vte_iso2022_cdata:
 			_VTE_DEBUG_IF(VTE_DEBUG_SUBSTITUTION) {
-				int j;
+				guint j;
 				g_printerr("%3ld %3ld CDATA \"%.*s\"",
 					block->start, block->end,
 					(int) (block->end - block->start),

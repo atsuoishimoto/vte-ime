@@ -55,6 +55,8 @@ G_BEGIN_DECLS
 #define VTE_PAD_WIDTH			1
 #define VTE_TAB_WIDTH			8
 #define VTE_LINE_WIDTH			1
+#define VTE_ROWS			24
+#define VTE_COLUMNS			80
 #define VTE_LEGACY_COLOR_SET_SIZE	8
 #define VTE_COLOR_PLAIN_OFFSET		0
 #define VTE_COLOR_BRIGHT_OFFSET		8
@@ -80,10 +82,12 @@ G_BEGIN_DECLS
 #define VTE_REGCOMP_FLAGS		REG_EXTENDED
 #define VTE_REGEXEC_FLAGS		0
 #define VTE_INPUT_CHUNK_SIZE		0x2000
+#define VTE_MAX_INPUT_READ		0x1000
 #define VTE_INVALID_BYTE		'?'
 #define VTE_DISPLAY_TIMEOUT		10
-#define VTE_UPDATE_TIMEOUT		10
-#define VTE_UPDATE_REPEAT_TIMEOUT	25
+#define VTE_UPDATE_TIMEOUT		15
+#define VTE_UPDATE_REPEAT_TIMEOUT	30
+#define VTE_MAX_PROCESS_TIME		100
 #define VTE_CELL_BBOX_SLACK		1
 
 /* The structure we use to hold characters we're supposed to display -- this
@@ -169,6 +173,7 @@ struct _VteTerminalPrivate {
 	int pty_master;			/* pty master descriptor */
 	GIOChannel *pty_input;		/* master input watch */
 	guint pty_input_source;
+	gboolean pty_input_active;
 	GIOChannel *pty_output;		/* master output watch */
 	guint pty_output_source;
 	GPid pty_pid;			/* pid of child using pty slave */
@@ -187,6 +192,8 @@ struct _VteTerminalPrivate {
 	GSList *update_regions;
 	gboolean invalidated_all;	/* pending refresh of entire terminal */
 	GList *active;                  /* is the terminal processing data */
+	glong input_bytes;
+	glong max_input_bytes;
 
 	/* Output data queue. */
 	struct _vte_buffer *outgoing;	/* pending input characters */
@@ -273,7 +280,6 @@ struct _VteTerminalPrivate {
 
 	/* Scrolling options. */
 	gboolean scroll_background;
-	long scroll_lock_count;
 	gboolean scroll_on_output;
 	gboolean scroll_on_keystroke;
 	long scrollback_lines;
@@ -302,10 +308,12 @@ struct _VteTerminalPrivate {
 	char *match_contents;
 	GArray *match_attributes;
 	GArray *match_regexes;
-	int match_previous;
+	char *match;
+	int match_tag;
 	struct {
 		long row, column;
 	} match_start, match_end;
+	gboolean show_match;
 
 	/* Data used when rendering the text which does not require server
 	 * resources and which can be kept after unrealizing. */
@@ -345,6 +353,9 @@ struct _VteTerminalPrivate {
 	gboolean adjustment_changed_pending;
 	gboolean adjustment_value_changed_pending;
 
+	gboolean cursor_moved_pending;
+	gboolean contents_changed_pending;
+
 	/* window name changes */
 	gchar *window_title_changed;
 	gchar *icon_title_changed;
@@ -380,16 +391,14 @@ VteRowData * _vte_new_row_data(VteTerminal *terminal);
 VteRowData * _vte_new_row_data_sized(VteTerminal *terminal, gboolean fill);
 VteRowData * _vte_reset_row_data (VteTerminal *terminal, VteRowData *row, gboolean fill);
 void _vte_terminal_adjust_adjustments(VteTerminal *terminal);
-void _vte_terminal_emit_contents_changed(VteTerminal *terminal);
+void _vte_terminal_queue_contents_changed(VteTerminal *terminal);
 void _vte_terminal_emit_text_deleted(VteTerminal *terminal);
 void _vte_terminal_emit_text_inserted(VteTerminal *terminal);
 void _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 			       gboolean force_insert_mode,
 			       gboolean invalidate_cells,
 			       gboolean paint_cells,
-			       gboolean ensure_after,
 			       gint forced_width);
-void _vte_terminal_match_contents_clear(VteTerminal *terminal);
 void _vte_terminal_scroll_region(VteTerminal *terminal,
 				 long row, glong count, glong delta);
 void _vte_terminal_set_default_attributes(VteTerminal *terminal);

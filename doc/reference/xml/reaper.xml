@@ -1,6 +1,6 @@
 <refentry id="VteReaper">
 <refmeta>
-<refentrytitle id="top_of_page">VteReaper</refentrytitle>
+<refentrytitle role="top_of_page">VteReaper</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>VTE Library</refmiscinfo>
 </refmeta>
@@ -12,8 +12,8 @@ GObject-style &quot;child-exited&quot; signals.</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv id="synopsis">
-<title id="synopsis.title">Synopsis</title>
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
@@ -26,8 +26,8 @@ GObject-style &quot;child-exited&quot; signals.</refpurpose>
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 id="object_hierarchy">
-<title id="object_hierarchy.title">Object Hierarchy</title>
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
 <synopsis>
 
   <link linkend="GObject">GObject</link>
@@ -41,8 +41,8 @@ GObject-style &quot;child-exited&quot; signals.</refpurpose>
 
 
 
-<refsect1 id="signal_proto">
-<title id="signal_proto.title">Signals</title>
+<refsect1 role="signal_proto">
+<title role="signal_proto.title">Signals</title>
 <synopsis>
 
 &quot;<link linkend="VteReaper-child-exited">child-exited</link>&quot;
@@ -54,8 +54,8 @@ GObject-style &quot;child-exited&quot; signals.</refpurpose>
 </refsect1>
 
 
-<refsect1 id="desc">
-<title id="desc.title">Description</title>
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
 <para>
 Because an application may need to be notified when child processes
 exit, and because there is only one <link linkend="SIGCHLD:CAPS"><literal>SIGCHLD</literal></link> handler, the <link linkend="VteTerminal"><type>VteTerminal</type></link>
@@ -66,8 +66,8 @@ a proxy for glib's own functionality.
 </para>
 </refsect1>
 
-<refsect1 id="details">
-<title id="details.title">Details</title>
+<refsect1 role="details">
+<title role="details.title">Details</title>
 <refsect2>
 <title><anchor id="VteReaper-struct" role="struct"/>VteReaper</title>
 <indexterm><primary>VteReaper</primary></indexterm><programlisting>typedef struct _VteReaper VteReaper;</programlisting>
@@ -106,8 +106,8 @@ Since 0.11.11
 
 </refsect1>
 
-<refsect1 id="signals">
-<title id="signals.title">Signal Details</title>
+<refsect1 role="signals">
+<title role="signals.title">Signal Details</title>
 <refsect2><title><anchor id="VteReaper-child-exited"/>The &quot;child-exited&quot; signal</title>
 <indexterm><primary>VteReaper::child-exited</primary></indexterm><programlisting><link linkend="void">void</link>        user_function                  (<link linkend="VteReaper">VteReaper</link> *vtereaper,
                                             <link linkend="gint">gint</link>       arg1,
