@@ -1,3 +1,48 @@
+2007-02-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.15.5.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.15.5.
+
+	* src/Makefile.am: Bumped libtool version to 11:2:2.
+
+2007-02-27  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 412562 – Crash in vte_terminal_match_hilite_update
+
+	* src/vte.c  (vte_terminal_match_check_internal),
+	(vte_terminal_process_incoming), (_vte_terminal_feed_chunks),
+	(vte_terminal_paste_cb), (vte_terminal_match_hilite_update),
+	(vte_terminal_copy_cb):
+		Fixup a few 64bit-isms, notably format strings and an
+		undesired unsigned integer promotion causing this crash.
+
+2007-02-27  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 410986 – Fails to build with -z defs
+
+	If you link the vtemodule.so to libpython, then programs importing
+	vte will have the symbols twice in memory: one set from python and
+	the other from libpython.
+
+	* configure.in:
+	* python/Makefile.am:
+		Remove PYTHON_LIBS from linking vtemodule.so.
+		Convert unresolved symbol errors into warnings so that
+		building with -Wl,-z,defs continues to work. This is a 
+		*hack* as it hides real errors if you are updating
+		vte.{def,override}.
+		
+2007-02-27  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vtexft.c	(_vte_xft_open_font_for_char),
+	(_vte_xft_font_for_char), (_vte_xft_compute_char_width),
+	(_vte_xft_char_width), (_vte_xft_start), (_vte_xft_get_char_width),
+	(_vte_xft_draw_text):
+		Avoid some computations whilst drawing text.
+
 2007-02-26  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.15.4.

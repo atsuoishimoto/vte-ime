@@ -1,3 +1,20 @@
+vte (1:0.15.5-0ubuntu1) feisty; urgency=low
+
+  * New upstream version:
+    - Fix a newly-introduced crasher
+    - Do not link to libpython in the python bindings (Ubuntu: #88405)
+    - Bugs fixed in this release:
+      Bug 412562 - Crash in vte_terminal_match_hilite_update
+      Bug 410986 - Fails to build with -z defs
+  * debian/control.in:
+    - use "XS-Python-Version: >= 2.4"
+  * debian/patches/01-from-svn-fix-412562.patch:
+    - dropped, fixed with the new version
+  * debian/patches/80_changes_for_python_vte_dbg.patch:
+    - changes required for the dbg package build
+
+ -- Sebastien Bacher <seb128@canonical.com>  Tue, 27 Feb 2007 22:23:10 +0100
+
 vte (1:0.15.4-0ubuntu1) feisty; urgency=low
 
   * New upstream release:
