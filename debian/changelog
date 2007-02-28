@@ -1,3 +1,11 @@
+vte (1:0.15.5-0ubuntu2) feisty; urgency=low
+
+  * debian/patches/90_from_svn_fix_crasher.patch:
+    - patch from SVN, fix crasher when using the geometry option for example
+      (Ubuntu: #88489)
+
+ -- Sebastien Bacher <seb128@canonical.com>  Wed, 28 Feb 2007 11:44:57 +0100
+
 vte (1:0.15.5-0ubuntu1) feisty; urgency=low
 
   * New upstream version:
