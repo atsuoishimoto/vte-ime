@@ -1,3 +1,21 @@
+vte (1:0.15.6-0ubuntu1) feisty; urgency=low
+
+  * New upstream version:
+    - Fix various bugs introduced in last couple of releases.
+    - Bugs fixed in this release:
+      Bug 410534 - Slow content scrolling, takes 100% of CPU. (Ubuntu: #78343)
+      Bug 413068 - new line added to tab when opened
+      Bug 413262 - Incorrectly coloured tabs
+      Bug 413102 - Incorrect highlighting in vim
+      Bug 413158 - Cursor trails
+      Bug 413078 - Crash during opening a new tab whilst scrolling
+      (Ubuntu: #88602)
+      Bug 412717 - Crash when opening a new tab with window maximized
+  * debian/patches/90_from_svn_fix_crasher.patch:
+    - dropped, fixed with the new version
+
+ -- Sebastien Bacher <seb128@canonical.com>  Thu,  1 Mar 2007 22:00:17 +0100
+
 vte (1:0.15.5-0ubuntu2) feisty; urgency=low
 
   * debian/patches/90_from_svn_fix_crasher.patch:

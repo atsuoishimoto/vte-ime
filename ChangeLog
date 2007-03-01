@@ -1,3 +1,134 @@
+2007-03-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.15.6.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.15.6.
+
+	* src/Makefile.am: Bumped libtool version to 11:3:2.
+
+2007-03-01  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_draw_cells), (vte_terminal_draw_rows),
+	(vte_terminal_paint):
+		Tweak the clear widths to include the pixel widening due to
+		psuedo-bold.
+
+2007-03-01  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_terminal_ensure_row),
+	(vte_terminal_ensure_cursor), (_vte_terminal_insert_char):
+	* src/vteseq.c (vte_sequence_handler_ta):
+		Be more careful when filling in gaps.
+
+2007-03-01  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Fix X11 headers / libraries detection on bi-arch systems.
+	Patch by Frederic Crozat.
+
+	* configure.in:
+		Check for x_includes before ac_x_includes, and similary for
+		ac_x_libraries.
+
+2007-03-01  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 410534 – Slow content scrolling, takes 100% of CPU.
+
+	* src/vtexft.c:
+		Further reduce the cap to 80 after more testing on the
+		broken fglrx driver.
+
+2007-02-28  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 413068 – new line added to tab when opened
+
+	* src/vte.c (vte_terminal_ensure_font), (vte_terminal_realize):
+		Beware when no font is set before the first request...
+		Make sure that at least the default font is set.
+
+2007-02-28  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 413262 – Incorrectly coloured tabs
+
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_ensure_cursor),
+	(_vte_terminal_ensure_cursor), (_vte_terminal_insert_char),
+	(_vte_terminal_feed_chunks), (vte_terminal_set_scrollback_lines):
+	* src/vteseq.c (vte_sequence_handler_ta),
+	(vte_sequence_handler_request_terminal_parameters),
+	(vte_sequence_handler_return_terminal_status),
+	(vte_sequence_handler_send_primary_device_attributes):
+		Fill the tab in the current color, else it will be filled at
+		the time of writing the next character.
+
+2007-02-28  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 413102 – Incorrect highlighting in vim
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_terminal_ensure_row),
+	(_vte_terminal_insert_char):
+	* src/vteseq.c(vte_sequence_handler_cb),
+	(vte_sequence_handler_ce), (vte_sequence_handler_cr),
+	(vte_sequence_handler_ec), (vte_sequence_handler_sf):
+		Paint the row background when scrolling, this more closely
+		matches xterm's behaviour.
+
+2007-02-28  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 413158 – Cursor trails
+
+	* src/vte.c (_vte_invalidate_cell):
+		_vte_invalidate_cell() can be called to invalidate any visible
+		cell so issue the invalidate even for blank cells.
+
+2007-02-28  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (_vte_terminal_insert_char):
+		Correct the OBO in the number of columns ensured.
+
+2007-02-28  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 413078 – Crash during opening a new tab whilst scrolling
+	
+	During input processing it was possible to both remove the timeout and
+	then add a new one. The currently running timeout would believe that
+	it was to continue since the terminal was still active, and so *two*
+	timeouts would be scheduled. Occasionally the second timeout would be
+	called after the first had finished all the work, resulting in the
+	second timeout trying to access a NULL active_terminal list.
+
+	* src/vte.c (add_update_timeout), (remove_from_active_list),
+	(vte_terminal_add_process_timeout), (need_processing),
+	(process_timeout), (update_repeat_timeout), (update_timeout):
+		Watch for recursive g_source_remove() from within timeouts.
+
+2007-02-28  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 410534 – Slow content scrolling, takes 100% of CPU.
+
+	Submitting long glyph runs was causing a dramatic (10x) slow down
+	in the fglrx xserver.
+
+	* src/vtedraw.h:
+	* src/vtexft.c(_vte_xft_draw_text):
+		Cap the max glyph run length to 300.
+
+2007-02-28  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 412717 – Crash when opening a new tab with window maximized
+
+	* src/vte.c (vte_terminal_size_allocate):
+		We didn't carefully check the values we were clamping the
+		cursor to and ended up setting it to -1...  Don't do that!
+
+2007-02-27  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vteaccess.c (vte_terminal_accessible_text_scrolled):
+		Consistently guard against the snapshot being NULL.
+
 2007-02-27  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.15.5.
@@ -12,7 +143,7 @@
 
 	Bug 412562 – Crash in vte_terminal_match_hilite_update
 
-	* src/vte.c  (vte_terminal_match_check_internal),
+	* src/vte.c (vte_terminal_match_check_internal),
 	(vte_terminal_process_incoming), (_vte_terminal_feed_chunks),
 	(vte_terminal_paste_cb), (vte_terminal_match_hilite_update),
 	(vte_terminal_copy_cb):
