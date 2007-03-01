@@ -1019,7 +1019,7 @@ vte_sequence_handler_cb(VteTerminal *terminal,
 	screen = terminal->pvt->screen;
 
 	/* Get the data for the row which the cursor points to. */
-	rowdata = _vte_terminal_ensure_cursor(terminal, FALSE);
+	rowdata = _vte_terminal_ensure_row(terminal);
 	/* Clear the data up to the current column with the default
 	 * attributes.  If there is no such character cell, we need
 	 * to add one. */
@@ -1130,7 +1130,7 @@ vte_sequence_handler_ce(VteTerminal *terminal,
 
 	screen = terminal->pvt->screen;
 	/* Get the data for the row which the cursor points to. */
-	rowdata = _vte_terminal_ensure_cursor(terminal, FALSE);
+	rowdata = _vte_terminal_ensure_row(terminal);
 	g_assert(rowdata != NULL);
 	/* Remove the data at the end of the array until the current column
 	 * is the end of the array. */
@@ -1281,19 +1281,7 @@ vte_sequence_handler_cr(VteTerminal *terminal,
 			GQuark match_quark,
 			GValueArray *params)
 {
-	VteScreen *screen = terminal->pvt->screen;
-	glong col = screen->cursor_current.col;
-	screen->cursor_current.col = 0;
-	if (screen->fill_defaults.back != VTE_DEF_BG) {
-		VteRowData *rowdata;
-		rowdata = _vte_terminal_ensure_cursor (terminal, FALSE);
-		vte_g_array_fill (rowdata->cells,
-				&screen->fill_defaults,
-				terminal->column_count);
-		_vte_invalidate_cells (terminal,
-				      col, terminal->column_count - col,
-				      screen->cursor_current.row, 1);
-	}
+	terminal->pvt->screen->cursor_current.col = 0;
 	return FALSE;
 }
 
@@ -1649,7 +1637,7 @@ vte_sequence_handler_ec(VteTerminal *terminal,
 	}
 
 	/* Clear out the given number of characters. */
-	rowdata = _vte_terminal_ensure_cursor(terminal, TRUE);
+	rowdata = _vte_terminal_ensure_row(terminal);
 	if (_vte_ring_next(screen->row_data) > screen->cursor_current.row) {
 		g_assert(rowdata != NULL);
 		/* Write over the characters.  (If there aren't enough, we'll
@@ -2237,6 +2225,14 @@ vte_sequence_handler_sf(VteTerminal *terminal,
 			screen->cursor_current.row++;
 			_vte_terminal_update_insert_delta(terminal);
 		}
+		/* Match xterm and fill to the end of row when scrolling. */
+		if (screen->fill_defaults.back != VTE_DEF_BG) {
+			VteRowData *rowdata;
+			rowdata = _vte_terminal_ensure_row (terminal);
+			vte_g_array_fill (rowdata->cells,
+					&screen->fill_defaults,
+					terminal->column_count);
+		}
 	} else {
 		/* Otherwise, just move the cursor down. */
 		screen->cursor_current.row++;
@@ -2390,10 +2386,12 @@ vte_sequence_handler_ta(VteTerminal *terminal,
 			GQuark match_quark,
 			GValueArray *params)
 {
+	VteScreen *screen;
 	long newcol;
 
 	/* Calculate which column is the next tab stop. */
-	newcol = terminal->pvt->screen->cursor_current.col;
+	screen = terminal->pvt->screen;
+	newcol = screen->cursor_current.col;
 
 	if (terminal->pvt->tabstops != NULL) {
 		/* Find the next tabstop. */
@@ -2411,8 +2409,17 @@ vte_sequence_handler_ta(VteTerminal *terminal,
 	}
 
 	/* but make sure we don't move cursor back (bug #340631) */
-	if (terminal->pvt->screen->cursor_current.col < newcol)
-		terminal->pvt->screen->cursor_current.col = newcol;
+	if (screen->cursor_current.col < newcol) {
+		VteRowData *rowdata = _vte_terminal_ensure_row (terminal);
+		vte_g_array_fill (rowdata->cells,
+				&screen->fill_defaults,
+				newcol);
+		_vte_invalidate_cells (terminal,
+				screen->cursor_current.col,
+				newcol - screen->cursor_current.col,
+				screen->cursor_current.row, 1);
+		screen->cursor_current.col = newcol;
+	}
 
 	return FALSE;
 }
@@ -2918,7 +2925,7 @@ vte_sequence_handler_request_terminal_parameters(VteTerminal *terminal,
 						 GQuark match_quark,
 						 GValueArray *params)
 {
-	vte_terminal_feed_child(terminal, "[?x", -1);
+	vte_terminal_feed_child(terminal, "\e[?x", strlen("\e[?x"));
 	return FALSE;
 }
 
@@ -2929,7 +2936,7 @@ vte_sequence_handler_return_terminal_status(VteTerminal *terminal,
 					    GQuark match_quark,
 					    GValueArray *params)
 {
-	vte_terminal_feed_child(terminal, "", -1);
+	vte_terminal_feed_child(terminal, "", 0);
 	return FALSE;
 }
 
@@ -2941,7 +2948,7 @@ vte_sequence_handler_send_primary_device_attributes(VteTerminal *terminal,
 						    GValueArray *params)
 {
 	/* Claim to be a VT220 with only national character set support. */
-	vte_terminal_feed_child(terminal, "[?62;9;c", -1);
+	vte_terminal_feed_child(terminal, "\e[?62;9;c", strlen("\e[?62;9;c"));
 	return FALSE;
 }
 

@@ -121,7 +121,9 @@ static gboolean update_timeout (gpointer data);
 
 /* these static variables are guarded by the GDK mutex */
 static guint process_timeout_tag = VTE_INVALID_SOURCE;
+static gboolean in_process_timeout;
 static guint update_timeout_tag = VTE_INVALID_SOURCE;
+static gboolean in_update_timeout;
 static GList *active_terminals;
 static GTimer *process_timer;
 
@@ -582,35 +584,30 @@ vte_terminal_preedit_length(VteTerminal *terminal, gboolean left_only)
 void
 _vte_invalidate_cell(VteTerminal *terminal, glong col, glong row)
 {
-	VteScreen *screen;
 	VteRowData *row_data;
-	struct vte_charcell *cell;
 	int columns;
 
 	if (!GTK_WIDGET_DRAWABLE(terminal) || terminal->pvt->invalidated_all) {
 		return;
 	}
 
-	screen = terminal->pvt->screen;
 	columns = 1;
 	row_data = _vte_terminal_find_row_data(terminal, row);
-	if (row_data == NULL) { /* blank cell, nothing to update */
-		return;
-	}
-
-	cell = _vte_row_data_find_charcell(row_data, col);
-	if (cell == NULL) { /* beyond the end of the row */
-		return;
-	}
-	while (cell->fragment && col> 0) {
-		cell = _vte_row_data_find_charcell(row_data, --col);
-	}
-	columns = cell->columns;
-	if (_vte_draw_get_char_width(terminal->pvt->draw,
-				cell->c,
-				cell->columns) >
-			terminal->char_width * columns) {
-		columns++;
+	if (row_data != NULL) {
+		struct vte_charcell *cell;
+		cell = _vte_row_data_find_charcell(row_data, col);
+		if (cell != NULL) {
+			while (cell->fragment && col> 0) {
+				cell = _vte_row_data_find_charcell(row_data, --col);
+			}
+			columns = cell->columns;
+			if (_vte_draw_get_char_width(terminal->pvt->draw,
+						cell->c,
+						cell->columns) >
+					terminal->char_width * columns) {
+				columns++;
+			}
+		}
 	}
 
 	_vte_invalidate_cells(terminal,
@@ -1847,14 +1844,14 @@ vte_terminal_get_encoding(VteTerminal *terminal)
 /* Make sure we have enough rows and columns to hold data at the current
  * cursor position. */
 VteRowData *
-_vte_terminal_ensure_cursor(VteTerminal *terminal, gboolean current)
+_vte_terminal_ensure_row (VteTerminal *terminal)
 {
 	VteRowData *row;
 	VteScreen *screen;
 	gint delta;
 	glong v;
 
-	g_assert(VTE_IS_TERMINAL(terminal));
+	g_assert (VTE_IS_TERMINAL (terminal));
 
 	/* Must make sure we're in a sane area. */
 	screen = terminal->pvt->screen;
@@ -1888,15 +1885,60 @@ _vte_terminal_ensure_cursor(VteTerminal *terminal, gboolean current)
 	}
 	g_assert(row != NULL);
 
-	v = screen->cursor_current.col + 1;
-	if (G_LIKELY (row->cells->len < v)) {
-		/* Set up defaults we'll use when adding new cells. */
-		vte_g_array_fill(row->cells,
-				current ?
-				&screen->color_defaults :
-				&screen->basic_defaults,
-				v);
+	return row;
+}
+
+static VteRowData *
+vte_terminal_ensure_cursor(VteTerminal *terminal, gint columns)
+{
+	VteRowData *row;
+	VteScreen *screen;
+	gint delta;
+	glong v;
+
+	g_assert (VTE_IS_TERMINAL (terminal));
+
+	/* Must make sure we're in a sane area. */
+	screen = terminal->pvt->screen;
+	v = screen->cursor_current.row;
+
+	if (!_vte_ring_is_cached (screen->row_data, v)) {
+		/* Figure out how many rows we need to add. */
+		delta = v - _vte_ring_next(screen->row_data) + 1;
+		if (delta > 0) {
+			VteRowData *old_row;
+
+			old_row = terminal->pvt->free_row;
+			do {
+				if (old_row) {
+					row = _vte_reset_row_data (terminal, old_row, FALSE);
+				} else {
+					row = _vte_new_row_data_sized (terminal, FALSE);
+				}
+				old_row = _vte_ring_append(screen->row_data, row);
+			} while(--delta);
+			terminal->pvt->free_row = old_row;
+			_vte_terminal_adjust_adjustments(terminal);
+		} else {
+			/* Find the row the cursor is in. */
+			row = _vte_ring_index(screen->row_data,
+					VteRowData *, v);
+		}
+		_vte_ring_set_cache (screen->row_data, v, row);
+	} else {
+		row = _vte_ring_get_cached_data (screen->row_data);
 	}
+	g_assert(row != NULL);
+
+	v = screen->cursor_current.col;
+	if (G_UNLIKELY (row->cells->len < v)) { /* pad */
+		vte_g_array_fill (row->cells, &screen->basic_defaults, v);
+	}
+	v += columns;
+	if (G_LIKELY (row->cells->len < v)) { /* expand for character */
+		vte_g_array_fill (row->cells, &screen->color_defaults, v);
+	}
+	screen->cursor_current.col = v;
 
 	return row;
 }
@@ -2415,7 +2457,7 @@ _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 			/* Wrap. */
 			col = screen->cursor_current.col = 0;
 			/* Mark this line as soft-wrapped. */
-			row = _vte_terminal_ensure_cursor(terminal, FALSE);
+			row = _vte_terminal_ensure_row(terminal);
 			row->soft_wrapped = 1;
 			_vte_sequence_handler_sf(terminal, NULL, 0, NULL);
 		} else {
@@ -2426,68 +2468,62 @@ _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 	}
 
 	/* Make sure we have enough rows to hold this data. */
-	screen->cursor_current.col += columns;
-	row = _vte_terminal_ensure_cursor(terminal, FALSE);
+	row = vte_terminal_ensure_cursor(terminal, columns);
 	g_assert(row != NULL);
 
 	/* Make sure we're not getting random stuff past the right
 	 * edge of the screen at this point, because the user can't
 	 * see it. */
-	if (G_LIKELY (col < terminal->column_count)) {
-		/* Insert the right number of columns. */
-		i = 0;
-		do {
-			/* If we're in insert mode, insert a new cell here
-			 * and use it. */
-			if (insert) {
-				cell = screen->color_defaults;
-				g_array_insert_val(row->cells, col, cell);
-			}
-			cell.c = c;
-			cell.columns = columns;
-			if (paint_cells) {
-				cell.fore = screen->defaults.fore;
-				cell.back = screen->defaults.back;
-			}
-			cell.standout = screen->defaults.standout;
-			cell.underline = screen->defaults.underline;
-			cell.strikethrough = screen->defaults.strikethrough;
-			cell.reverse = screen->defaults.reverse;
-			cell.blink = screen->defaults.blink;
-			cell.half = screen->defaults.half;
-			cell.bold = screen->defaults.bold;
-			cell.invisible = screen->defaults.invisible;
-			cell.protect = screen->defaults.protect;
-			cell.alternate = 0;
-			cell.empty = 0;
-			cell.fragment = i != 0;
+	i = 0;
+	do {
+		/* If we're in insert mode, insert a new cell here
+		 * and use it. */
+		if (insert) {
+			cell = screen->color_defaults;
+			g_array_insert_val(row->cells, col, cell);
+		}
+		cell.c = c;
+		cell.columns = columns;
+		if (paint_cells) {
+			cell.fore = screen->defaults.fore;
+			cell.back = screen->defaults.back;
+		}
+		cell.standout = screen->defaults.standout;
+		cell.underline = screen->defaults.underline;
+		cell.strikethrough = screen->defaults.strikethrough;
+		cell.reverse = screen->defaults.reverse;
+		cell.blink = screen->defaults.blink;
+		cell.half = screen->defaults.half;
+		cell.bold = screen->defaults.bold;
+		cell.invisible = screen->defaults.invisible;
+		cell.protect = screen->defaults.protect;
+		cell.alternate = 0;
+		cell.empty = 0;
+		cell.fragment = i != 0;
 
-			if (G_UNLIKELY (i == 0 &&
+		if (G_UNLIKELY (i == 0 &&
 					c == '_' &&
 					terminal->pvt->flags.ul)) {
-				struct vte_charcell *pcell =
-					&g_array_index (row->cells, struct vte_charcell, col);
-				/* Handle overstrike-style underlining. */
-				if (pcell->c != 0) {
-					/* restore previous contents */
-					cell.c = pcell->c;
-					cell.columns = pcell->columns;
-					cell.fragment = pcell->fragment;
-					cell.empty = pcell->empty;
+			struct vte_charcell *pcell =
+				&g_array_index (row->cells, struct vte_charcell, col);
+			/* Handle overstrike-style underlining. */
+			if (pcell->c != 0) {
+				/* restore previous contents */
+				cell.c = pcell->c;
+				cell.columns = pcell->columns;
+				cell.fragment = pcell->fragment;
+				cell.empty = pcell->empty;
 
-					cell.underline = 1;
-				}
+				cell.underline = 1;
 			}
-			g_array_index(row->cells, struct vte_charcell, col) = cell;
-
-			/* And take a step to the to the right. */
-			col++;
-		} while (++i < columns);
-		if (G_UNLIKELY (row->cells->len > terminal->column_count)) {
-			g_array_set_size(row->cells, terminal->column_count);
 		}
-	} else {
-		col += columns;
+		g_array_index(row->cells, struct vte_charcell, col) = cell;
+
+		/* And take a step to the to the right. */
+		col++;
+	} while (++i < columns);
+	if (G_UNLIKELY (row->cells->len > terminal->column_count)) {
+		g_array_set_size(row->cells, terminal->column_count);
 	}
 
 	/* Signal that this part of the window needs drawing. */
@@ -3449,7 +3485,7 @@ _vte_terminal_feed_chunks (VteTerminal *terminal, struct _vte_incoming_chunk *ch
 {
 	struct _vte_incoming_chunk *last;
 
-	_vte_debug_print(VTE_DEBUG_IO, "Feed %"G_GSIZE_FORMAT" bytes, in %"G_GSIZE_FORMAT"d chunks.\n",
+	_vte_debug_print(VTE_DEBUG_IO, "Feed %"G_GSIZE_FORMAT" bytes, in %"G_GSIZE_FORMAT" chunks.\n",
 			_vte_incoming_chunks_length(chunks),
 			_vte_incoming_chunks_count(chunks));
 
@@ -6608,18 +6644,25 @@ vte_terminal_apply_metrics(VteTerminal *terminal,
 static void
 vte_terminal_ensure_font (VteTerminal *terminal)
 {
-	if (terminal->pvt->draw != NULL &&
-			terminal->pvt->fontdirty) {
-		terminal->pvt->fontdirty = FALSE;
-		_vte_draw_set_text_font(terminal->pvt->draw,
-				terminal->pvt->fontdesc,
-				terminal->pvt->fontantialias);
-		vte_terminal_apply_metrics(terminal,
-				_vte_draw_get_text_width(terminal->pvt->draw),
-				_vte_draw_get_text_height(terminal->pvt->draw),
-				_vte_draw_get_text_ascent(terminal->pvt->draw),
-				_vte_draw_get_text_height(terminal->pvt->draw) -
-				_vte_draw_get_text_ascent(terminal->pvt->draw));
+	if (terminal->pvt->draw != NULL) {
+		/* Load default fonts, if no fonts have been loaded. */
+		if (!terminal->pvt->has_fonts) {
+			vte_terminal_set_font_full (terminal,
+					terminal->pvt->fontdesc,
+					terminal->pvt->fontantialias);
+		}
+		if (terminal->pvt->fontdirty) {
+			terminal->pvt->fontdirty = FALSE;
+			_vte_draw_set_text_font (terminal->pvt->draw,
+					terminal->pvt->fontdesc,
+					terminal->pvt->fontantialias);
+			vte_terminal_apply_metrics(terminal,
+					_vte_draw_get_text_width (terminal->pvt->draw),
+					_vte_draw_get_text_height (terminal->pvt->draw),
+					_vte_draw_get_text_ascent (terminal->pvt->draw),
+					_vte_draw_get_text_height (terminal->pvt->draw) -
+					_vte_draw_get_text_ascent (terminal->pvt->draw));
+		}
 	}
 }
 
@@ -7381,7 +7424,8 @@ vte_terminal_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 		/* Ensure the cursor is valid */
 		screen->cursor_current.row = CLAMP (screen->cursor_current.row,
 				_vte_ring_delta (screen->row_data),
-				_vte_ring_next (screen->row_data) - 1);
+				MAX (_vte_ring_delta (screen->row_data),
+					_vte_ring_next (screen->row_data) - 1));
 		/* Notify viewers that the contents have changed. */
 		_vte_terminal_queue_contents_changed(terminal);
 	}
@@ -7805,11 +7849,6 @@ vte_terminal_realize(GtkWidget *widget)
 
 	widget->style = gtk_style_attach(widget->style, widget->window);
 
-	/* Load default fonts, if no fonts have been loaded. */
-	if (!terminal->pvt->has_fonts) {
-		vte_terminal_set_font_full(terminal, terminal->pvt->fontdesc,
-					   terminal->pvt->fontantialias);
-	}
 	vte_terminal_ensure_font (terminal);
 
 	/* Set up the background, *now*. */
@@ -8818,7 +8857,7 @@ vte_terminal_draw_cells(VteTerminal *terminal,
 		if (clear && (draw_default_bg || bg != defbg)) {
 			_vte_draw_fill_rectangle(terminal->pvt->draw,
 					x + VTE_PAD_WIDTH, y + VTE_PAD_WIDTH,
-					columns * column_width,
+					columns * column_width + bold,
 					row_height,
 					&color, VTE_DRAW_OPAQUE);
 		}
@@ -9213,6 +9252,7 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 						FALSE,
 						&fore, &back);
 
+				bold = cell && cell->bold;
 				j = i + (cell ? cell->columns : 1);
 
 				while (j < end_column){
@@ -9237,6 +9277,7 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 					if (nback != back) {
 						break;
 					}
+					bold = cell && cell->bold;
 					j += cell ? cell->columns : 1;
 				}
 				if (back != VTE_DEF_BG) {
@@ -9247,7 +9288,7 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 					color.green = bg->green;
 					_vte_draw_fill_rectangle(terminal->pvt->draw,
 							x + i * column_width, y,
-							(j - i) * column_width,
+							(j - i) * column_width + bold,
 							row_height,
 							&color, VTE_DRAW_OPAQUE);
 				}
@@ -9748,6 +9789,7 @@ vte_terminal_paint(GtkWidget *widget, GdkRegion *region)
 					   _vte_draw_get_char_width(terminal->pvt->draw,
 								    cell->c,
 								    cell->columns));
+			cursor_width += cell->bold; /* pseudo-bolding */
 		}
 		_vte_draw_clear(terminal->pvt->draw,
 				col * width + VTE_PAD_WIDTH,
@@ -11104,7 +11146,6 @@ vte_terminal_set_scrollback_lines(VteTerminal *terminal, glong lines)
 	/* Adjust the scrollbars to the new locations. */
 	vte_terminal_queue_adjustment_value_changed (terminal, scroll_delta);
 	_vte_terminal_adjust_adjustments_full (terminal);
-
 }
 
 /**
@@ -11747,14 +11788,15 @@ add_update_timeout (VteTerminal *terminal)
 	}
 	if (update_timeout_tag == VTE_INVALID_SOURCE) {
 		_vte_debug_print(VTE_DEBUG_TIMEOUT,
-				"Adding update timeout\n");
+				"Starting update timeout\n");
 		update_timeout_tag =
 			g_timeout_add_full (GDK_PRIORITY_REDRAW,
 					VTE_UPDATE_TIMEOUT,
 					update_timeout, NULL,
 					NULL);
 	}
-	if (process_timeout_tag != VTE_INVALID_SOURCE) {
+	if (in_process_timeout == FALSE &&
+			process_timeout_tag != VTE_INVALID_SOURCE) {
 		_vte_debug_print(VTE_DEBUG_TIMEOUT,
 				"Removing process timeout\n");
 		g_source_remove (process_timeout_tag);
@@ -11789,13 +11831,15 @@ remove_from_active_list (VteTerminal *terminal)
 		terminal->pvt->active = NULL;
 
 		if (active_terminals == NULL) {
-			if (process_timeout_tag != VTE_INVALID_SOURCE) {
+			if (in_process_timeout == FALSE &&
+					process_timeout_tag != VTE_INVALID_SOURCE) {
 				_vte_debug_print(VTE_DEBUG_TIMEOUT,
 						"Removing process timeout\n");
 				g_source_remove (process_timeout_tag);
 				process_timeout_tag = VTE_INVALID_SOURCE;
 			}
-			if (update_timeout_tag != VTE_INVALID_SOURCE) {
+			if (in_update_timeout == FALSE &&
+					update_timeout_tag != VTE_INVALID_SOURCE) {
 				_vte_debug_print(VTE_DEBUG_TIMEOUT,
 						"Removing update timeout\n");
 				g_source_remove (update_timeout_tag);
@@ -11816,7 +11860,7 @@ static void
 vte_terminal_add_process_timeout (VteTerminal *terminal)
 {
 	_vte_debug_print(VTE_DEBUG_TIMEOUT,
-			"Adding to terminal to active list\n");
+			"Adding terminal to active list\n");
 	terminal->pvt->active = active_terminals =
 		g_list_prepend (active_terminals, terminal);
 	if (update_timeout_tag == VTE_INVALID_SOURCE &&
@@ -11850,7 +11894,7 @@ vte_terminal_stop_processing (VteTerminal *terminal)
 static inline gboolean
 need_processing (VteTerminal *terminal)
 {
-	return terminal->pvt->incoming != NULL;
+	return _vte_incoming_chunks_length (terminal->pvt->incoming) != 0;
 }
 
 /* Emit an "icon-title-changed" signal. */
@@ -11937,6 +11981,8 @@ process_timeout (gpointer data)
 
 	GDK_THREADS_ENTER();
 
+	in_process_timeout = TRUE;
+
 	_vte_debug_print (VTE_DEBUG_WORK, "<");
 	_vte_debug_print (VTE_DEBUG_TIMEOUT,
 			"Process timeout:  %d active\n",
@@ -11945,6 +11991,7 @@ process_timeout (gpointer data)
 	multiple_active = active_terminals->next != NULL;
 	for (l = active_terminals; l != NULL; l = next) {
 		VteTerminal *terminal = l->data;
+		gboolean active = FALSE;
 
 		next = g_list_next (l);
 
@@ -11960,8 +12007,8 @@ process_timeout (gpointer data)
 			}
 			_vte_terminal_enable_input_source (terminal);
 		}
-		again = FALSE;
 		if (need_processing (terminal)) {
+			active = TRUE;
 			if (VTE_MAX_PROCESS_TIME && !multiple_active) {
 				time_process_incoming (terminal);
 			} else do {
@@ -11970,8 +12017,10 @@ process_timeout (gpointer data)
 			terminal->pvt->input_bytes = 0;
 		}
 		vte_terminal_emit_pending_signals (terminal);
-		if (!again && terminal->pvt->update_regions == NULL) {
+		if (!active && terminal->pvt->update_regions == NULL) {
 			if (terminal->pvt->active != NULL) {
+				_vte_debug_print(VTE_DEBUG_TIMEOUT,
+						"Removing terminal from active list [process]\n");
 				active_terminals = g_list_delete_link (
 						active_terminals,
 						terminal->pvt->active);
@@ -11985,9 +12034,13 @@ process_timeout (gpointer data)
 	if (active_terminals && update_timeout_tag == VTE_INVALID_SOURCE) {
 		again = TRUE;
 	} else {
+		_vte_debug_print(VTE_DEBUG_TIMEOUT,
+				"Stoping process timeout\n");
 		process_timeout_tag = VTE_INVALID_SOURCE;
 		again = FALSE;
 	}
+
+	in_process_timeout = FALSE;
 
 	GDK_THREADS_LEAVE();
 
@@ -12051,6 +12104,8 @@ update_repeat_timeout (gpointer data)
 
 	GDK_THREADS_ENTER();
 
+	in_update_timeout = TRUE;
+
 	_vte_debug_print (VTE_DEBUG_WORK, "[");
 	_vte_debug_print (VTE_DEBUG_TIMEOUT,
 			"Repeat timeout:  %d active\n",
@@ -12090,6 +12145,8 @@ update_repeat_timeout (gpointer data)
 		again = update_regions (terminal);
 		if (!again) {
 			if (terminal->pvt->active != NULL) {
+				_vte_debug_print(VTE_DEBUG_TIMEOUT,
+						"Removing terminal from active list [update]\n");
 				active_terminals = g_list_delete_link (
 						active_terminals,
 						terminal->pvt->active);
@@ -12110,9 +12167,13 @@ update_repeat_timeout (gpointer data)
 	 */
 	again = TRUE;
 	if (active_terminals == NULL) {
+		_vte_debug_print(VTE_DEBUG_TIMEOUT,
+				"Stoping update timeout\n");
 		update_timeout_tag = VTE_INVALID_SOURCE;
 		again = FALSE;
 	}
+
+	in_update_timeout = FALSE;
 
 	GDK_THREADS_LEAVE();
 
@@ -12135,12 +12196,16 @@ update_timeout (gpointer data)
 
 	GDK_THREADS_ENTER();
 
+	in_update_timeout = TRUE;
+
 	_vte_debug_print (VTE_DEBUG_WORK, "{");
 	_vte_debug_print (VTE_DEBUG_TIMEOUT,
 			"Update timeout:  %d active\n",
 			g_list_length (active_terminals));
 
 	if (process_timeout_tag != VTE_INVALID_SOURCE) {
+		_vte_debug_print(VTE_DEBUG_TIMEOUT,
+				"Removing process timeout\n");
 		g_source_remove (process_timeout_tag);
 		process_timeout_tag = VTE_INVALID_SOURCE;
 	}
@@ -12193,6 +12258,8 @@ update_timeout (gpointer data)
 				    VTE_UPDATE_REPEAT_TIMEOUT,
 				    update_repeat_timeout, NULL,
 				    NULL);
+	in_update_timeout = FALSE;
+
 	GDK_THREADS_LEAVE();
 
 	return FALSE;
