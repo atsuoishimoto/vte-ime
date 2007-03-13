@@ -1,3 +1,18 @@
+vte (1:0.16.0-0ubuntu1) feisty; urgency=low
+
+  * New upstream version:
+    - Fix some minor bugs.  More regressions to be fixed later.
+    - Bugs fixed in this release:
+      Bug 414716 - gnome-terminal-2.17.92: terminal window dies...
+      Bug 414586 - Terminal screen blinks when menu is opened for the first time
+      Bug 413068 - new line added to tab when opened
+  * debian/patches/80_changes_for_python_vte_dbg.patch:
+    - updated
+  * debian/rules:
+    - updated shlibs version
+
+ -- Sebastien Bacher <seb128@canonical.com>  Tue, 13 Mar 2007 09:58:03 +0100
+
 vte (1:0.15.6-0ubuntu1) feisty; urgency=low
 
   * New upstream version:

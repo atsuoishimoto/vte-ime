@@ -1,3 +1,156 @@
+2007-03-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.16.0.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.16.0.
+
+	* src/Makefile.am: Bumped libtool version to 11:4:2.
+
+2007-03-06  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vteseq.c (vte_sequence_handler_cm), (vte_sequence_handler_sf):
+		More work to match mutt's behaviour under xterm.
+
+2007-03-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_io_read):
+		Use the process estimate to load balance between multiple
+		active terminals.
+
+2007-03-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vteseq.c (vte_sequence_handler_cm),
+	(vte_sequence_handler_dc), (vte_sequence_handler_sf),
+	(vte_sequence_handler_cursor_character_absolute):
+		Tweak the fill of painted cells to match mutt's behaviour
+		under xterm.
+
+2007-03-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 414716 – gnome-terminal-2.17.92: terminal window dies...
+
+	* src/vte.c (vte_terminal_map_toplevel),
+	(vte_terminal_hierarchy_changed):
+		Force the visibility state to unobscured after the toplevel is
+		remapped.
+
+2007-03-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_size_allocate):
+		Note to self: Never try to optimize away the redraw.
+
+2007-03-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (_vte_terminal_insert_char):
+	* src/vtedraw.c (_vte_draw_text), (_vte_draw_char),
+	(_vte_draw_fill_rectangle), (_vte_draw_draw_rectangle):
+		Touch up whitespace in debug output.
+
+2007-03-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (_vte_invalidate_cells), (vte_terminal_set_visibility),
+	(vte_terminal_paint_area), (vte_terminal_expose):
+		Make sure the invalidated_all flag is cleared in the expose
+		event if we handle it immediately.
+
+2007-03-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vteseq.c (vte_sequence_handler_ce),
+	(vte_sequence_handler_clear_current_line):
+		Fixup invalidation to end-of-line.
+
+2007-03-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	cf Bug 414586 – Terminal screen blinks when menu is opened for the first time
+
+	* src/vte.c (vte_terminal_draw_rows), (vte_terminal_expand_region):
+		Include the window padding when painting the cell backgrounds.
+
+2007-03-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 414586 – Terminal screen blinks when menu is opened for the first time
+
+	Avoid resetting the window background colour when the style is reset.
+	Avoid clearing the window if we are using a simple color and double
+	bufferring (i.e when we know we are using a pre-cleared pixmap).
+
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_init), (vte_terminal_size_allocate),
+	(vte_terminal_unrealize), (vte_terminal_realize),
+	(vte_terminal_paint_area), (vte_terminal_expose),
+	(vte_terminal_class_init), (vte_terminal_background_update):
+	* src/vtedraw.c (_vte_draw_has_background_image):
+	* src/vtedraw.h:
+	* src/vteft2.c (_vte_ft2_set_background_image):
+	* src/vtegl.c (_vte_gl_set_background_image):
+	* src/vtepango.c (_vte_pango_set_background_image):
+	* src/vtepangox.c (_vte_pango_x_set_background_image):
+	* src/vtexft.c (_vte_xft_set_background_image):
+
+2007-03-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 414586 – Terminal screen blinks when menu is opened for the first time
+
+	* src/vte.c (_vte_invalidate_cells), (_vte_invalidate_all),
+	(vte_terminal_expose), (add_update_timeout):
+		Juggle the handling of external exposes/invalidates to avoid
+		delays in refreshing the display when we are idle.
+
+2007-03-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	cf Bug 414586 – Terminal screen blinks when menu is opened for the first time
+
+	* src/vte.c (_vte_invalidate_cells), (vte_terminal_init),
+	(vte_terminal_expand_region), (vte_terminal_paint_area):
+		After enlarging the expand region make sure the dirty area
+		includes the border for edge cells.
+
+2007-03-04  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	cf Bug 414586 – Terminal screen blinks when menu is opened for the first time
+
+	Distinguish between internal update requests and external. If we
+	need to update due to a user action (such as adjusting the background
+	or color palette) do not impose a futher delay.
+
+	Tidy the color palette modification code to not trigger invalidates if
+	we do not actually modify the palette.
+
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_set_color_internal),
+	(vte_terminal_set_color_bold), (vte_terminal_set_color_dim),
+	(vte_terminal_set_color_foreground),
+	(vte_terminal_set_color_background),
+	(vte_terminal_set_color_cursor),
+	(vte_terminal_set_color_highlight), (vte_terminal_set_colors),
+	(root_pixmap_changed_cb), (vte_terminal_set_background_saturation),
+	(vte_terminal_set_background_tint_color), (add_update_timeout):
+	* src/vteseq.c (vte_sequence_handler_ce),
+	(vte_sequence_handler_clear_current_line),
+	(vte_sequence_handler_clear_above_current):
+
+2007-03-02  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 413068 – new line added to tab when opened
+
+	* src/vte.c (vte_terminal_size_allocate):
+		Replace the ill-conceived attempt (delta could not be
+		negative, so insert_delta or scroll_delta would not become
+		negative either) by only considering changes wrt to the number
+		of visible lines.
+
+2007-03-02  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 413068 – new line added to tab when opened
+
+	* src/vte.c (_vte_terminal_insert_char):
+		Improve debug output.
+	* src/vte.c (vte_terminal_size_allocate):
+		Be careful that we don't force insert_delta or scroll_delta
+		to become negative.
+
 2007-03-01  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.15.6.
