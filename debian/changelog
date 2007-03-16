@@ -1,3 +1,10 @@
+vte (1:0.16.0-0ubuntu3) feisty; urgency=low
+
+  * debian/patches/91_keep_fds.patch:
+    - fixed bug in keep_fd detection code
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Fri, 16 Mar 2007 10:16:43 +0100
+
 vte (1:0.16.0-0ubuntu2) feisty; urgency=low
 
   * debian/patches/70_fix_transparency_bug.patch:

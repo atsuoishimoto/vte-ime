@@ -1,7 +1,7 @@
-diff -Nur vte-0.15.3/src/pty.c vte-0.15.3.new/src/pty.c
---- vte-0.15.3/src/pty.c	2007-02-13 08:26:18.000000000 +0100
-+++ vte-0.15.3.new/src/pty.c	2007-02-13 10:31:24.000000000 +0100
-@@ -158,7 +158,27 @@
+diff -Nur vte-0.16.0/src/pty.c vte-0.16.0.new/src/pty.c
+--- vte-0.16.0/src/pty.c	2007-02-26 22:05:14.000000000 +0100
++++ vte-0.16.0.new/src/pty.c	2007-03-16 10:15:20.000000000 +0100
+@@ -160,7 +160,27 @@
  		const char *name;
  		int fd;
  	} tty;
@@ -29,7 +29,7 @@ diff -Nur vte-0.15.3/src/pty.c vte-0.15.3.new/src/pty.c
  static void
  vte_pty_child_setup (gpointer arg)
  {
-@@ -183,7 +203,6 @@
+@@ -185,7 +205,6 @@
  			"Setting up child pty: name = %s, fd = %d\n",
  				tty ? tty : "(none)", fd);
  
@@ -37,7 +37,7 @@ diff -Nur vte-0.15.3/src/pty.c vte-0.15.3.new/src/pty.c
  	/* Start a new session and become process-group leader. */
  #if defined(HAVE_SETSID) && defined(HAVE_SETPGID)
  	_vte_debug_print (VTE_DEBUG_PTY, "Starting new session\n");
-@@ -251,6 +270,20 @@
+@@ -253,6 +272,20 @@
  		close(fd);
  	}
  
@@ -58,7 +58,7 @@ diff -Nur vte-0.15.3/src/pty.c vte-0.15.3.new/src/pty.c
  
  	/* Reset our signals -- our parent may have done any number of
  	 * weird things to them. */
-@@ -310,13 +343,16 @@
+@@ -345,13 +378,16 @@
  			g_printerr ("    directory: %s\n",
  					directory ? directory : "(none)");
  		}
@@ -81,7 +81,7 @@ diff -Nur vte-0.15.3/src/pty.c vte-0.15.3.new/src/pty.c
  				vte_pty_child_setup, data,
  				pid,
  				NULL, NULL, NULL,
-@@ -372,6 +408,10 @@
+@@ -407,6 +443,10 @@
  	return ret;
  }
  
@@ -92,3 +92,19 @@ diff -Nur vte-0.15.3/src/pty.c vte-0.15.3.new/src/pty.c
  /* Open the named PTY slave, fork off a child (storing its PID in child),
   * and exec the named command in its own session as a process group leader */
  static gboolean
+@@ -419,6 +459,7 @@
+ 
+ 	data.mode = TTY_OPEN_BY_NAME;
+ 	data.tty.name = path;
++	data.keep_fd = _vte_pty_keep_fd(envp);
+ 
+ 	if (!_vte_pty_run_on_pty(&data,
+ 			command, argv, envp, directory,
+@@ -443,6 +484,7 @@
+ 
+ 	data.mode = TTY_OPEN_BY_FD;
+ 	data.tty.fd = fd;
++	data.keep_fd = _vte_pty_keep_fd(envp);
+ 
+ 	if (!_vte_pty_run_on_pty(&data,
+ 				command, argv, envp, directory,
