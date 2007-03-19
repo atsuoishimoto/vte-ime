@@ -1,3 +1,19 @@
+vte (1:0.16.0-0ubuntu4) feisty; urgency=low
+
+  * debian/patches/71_from_bugzilla_fix_refresh_on_workspace_change.patch:
+    - patch from bugzilla, fix refresh bug when changing workspace
+      (Ubuntu: #92405)
+  * debian/patches/90_from_svn_fix_double_text_rendering.patch:
+    - patch from SVN, fix double text rendering (Ubuntu: #93481)
+
+  [ Johan Kiviniemi ]
+  * debian/patches/95_segfault_with_unicode_input.patch:
+    - Fix segfault when typing a Unicode character with Ctrl-Shift-Unnnn.
+      Thanks to Chris Wilson for the patch, which was downloaded from
+      http://bugzilla.gnome.org/show_bug.cgi?id=418588 (LP: #89524)
+
+ -- Sebastien Bacher <seb128@canonical.com>  Mon, 19 Mar 2007 12:17:20 +0100
+
 vte (1:0.16.0-0ubuntu3) feisty; urgency=low
 
   * debian/patches/91_keep_fds.patch:

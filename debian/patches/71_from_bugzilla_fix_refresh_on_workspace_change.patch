@@ -1,0 +1,20 @@
+Index: src/vte.c
+===================================================================
+--- src/vte.c	(revision 1852)
++++ src/vte.c	(working copy)
+@@ -4024,6 +4024,7 @@
+ 		g_signal_connect_swapped (toplevel, "configure-event",
+ 				 G_CALLBACK (vte_terminal_configure_toplevel),
+ 				 widget);
++#if 0
+ 		g_signal_connect_swapped (toplevel, "unmap-event",
+ 				 G_CALLBACK (vte_terminal_unmap_toplevel),
+ 				 widget);
+@@ -4031,6 +4032,7 @@
+ 				 G_CALLBACK (vte_terminal_map_toplevel),
+ 				 widget, NULL,
+ 				 G_CONNECT_AFTER | G_CONNECT_SWAPPED);
++#endif
+ 	}
+ }
+ 
