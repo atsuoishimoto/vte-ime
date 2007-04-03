@@ -1,3 +1,15 @@
+vte (1:0.16.0svn20070403-0ubuntu1) feisty; urgency=low
+
+  * Update with SVN snapshot
+  * debian/patches/70_fix_transparency_bug.patch,
+    debian/patches/90_from_svn_fix_double_text_rendering.patch,
+    debian/patches/95_segfault_with_unicode_input.patch:
+    - dropped, fixed with the new version
+  * debian/patches/80_changes_for_python_vte_dbg.patch:
+    - updated
+
+ -- Sebastien Bacher <seb128@canonical.com>  Tue,  3 Apr 2007 12:41:31 +0200
+
 vte (1:0.16.0-0ubuntu4) feisty; urgency=low
 
   * debian/patches/71_from_bugzilla_fix_refresh_on_workspace_change.patch:

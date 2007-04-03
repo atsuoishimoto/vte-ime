@@ -1,3 +1,177 @@
+2007-04-03  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 425767 – vte_terminal_set_color_highlight should test for
+	NULL before _vte_debug_print
+
+	* src/vte.c (vte_terminal_set_color_cursor),
+	(vte_terminal_set_color_highlight):
+		Differentiate between set/unset paths.
+
+2007-03-25  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 422385 – vte appears at the top of the root window even when
+	packed at the bottom of it
+
+	Patch by Dodji Seketeli.
+
+	* src/vte.c (vte_terminal_size_allocate), (vte_terminal_realize):
+		Honour the allocated position when realizing the widget.
+
+2007-03-22  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vtexft.c (_vte_xft_draw_text):
+		Insert spaces into the Xft glyph stream to avoid the
+		overhead of restarting a glyph sequence for every word.
+
+2007-03-21  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 420935 – glyph can be cropped with not fitting in a cell
+
+	* src/vte.c (vte_terminal_paint):
+		Don't redraw the invisible cursor 
+		- avoids nasty artifacts like clipping extra wide glyphs.
+
+2007-03-19  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_scroll_pages):
+		Leave 'contents-change' to the scroll handler.
+
+2007-03-19  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_extend_selection),
+	(vte_terminal_draw_rows):
+		Accidentally inverted an is-empty? check during the 
+		elimination of the empty bitfield.
+
+2007-03-19  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 420067 – Does not handle expose events whilst processing
+	unseen incoming data
+
+	* src/vte.c (vte_terminal_expose):
+		Handle the expose immediately if we are only processing
+		incoming data (ie no redraws pending).
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vteseq.c (vte_sequence_handler_cursor_character_absolute):
+		Remove a chunk of code that was tried as a mutt band-aid
+		long ago and was completely wrong.
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 415381 – Improve performance of vte_terminal_insert_char()
+
+	The bulk of the work to remove redundant reads and conditionals
+	from the code. In particular, gcc was emitting bit-by-bit copies
+	for transferring the bitfield since we modified a member immediately
+	afterwards - overcome this by using an explicit memcpy of the
+	bitfields.
+
+	* src/vte-private.h:
+	* src/vte.c (vte_g_array_fill), (vte_terminal_ensure_cursor),
+	(_vte_terminal_insert_char), (vte_terminal_process_incoming),
+	(vte_terminal_send):
+	* src/vteseq.c (vte_sequence_handler_ic):
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	cf Bug 415381 – Improve performance of vte_terminal_insert_char()
+
+	* src/vte-private.h: Use a simple boolean rather than counter for
+	text changed style flags.
+	* src/vte.c: And update users.
+	* src/vteseq.c:
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	cf Bug 415381 – Improve performance of vte_terminal_insert_char()
+
+	* src/vte-private.h: Embed bitfield into struct
+	* src/vte.c:  And update users.
+	* src/vteseq.c:
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Need to trigger update timeout rather than process timeout
+	otherwise the background is not updated.
+
+	* src/vte.c (vte_terminal_queue_adjustment_changed),
+	(vte_terminal_queue_adjustment_value_changed):
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vtexft.c (_vte_xft_create), (_vte_xft_destroy),
+	(_vte_xft_start), (_vte_xft_end), (_vte_xft_clip),
+	(_vte_xft_clear): Avoid some allocations.
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 418073 – Opacity ignored for vtexft
+
+	* src/vte.c:
+	* src/vtedraw.c (_vte_draw_requires_clear):
+	* src/vtedraw.h:
+	* src/vteft2.c (_vte_ft2_set_background_image):
+	* src/vtegl.c (_vte_gl_create), (_vte_gl_set_background_image):
+	* src/vtepango.c (_vte_pango_set_background_image):
+	* src/vtepangox.c (_vte_pango_x_set_background_image):
+	* src/vtexft.c (_vte_xft_set_background_color),
+	(_vte_xft_set_background_image):
+		Flood fill the backing pixmap if we need to change it's
+		opacity as well.
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 418910 – Asymmetric scrolling with mouse wheel
+
+	* configure.in:
+	* src/vte.c: Round-up the delta before applying to ensure consistency
+	between up and down.
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_catch_child_exited), (vte_terminal_eof),
+	(vte_terminal_process_incoming): Refactor some common code.
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 416634 – Rendering glitch as autowrapped chars are outside invalidated bbox
+
+	* src/vte.c (_vte_terminal_insert_char),
+	(vte_terminal_process_incoming): Correctly update bbox after
+	autowrapping.
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 416635 – Rendering glitch: double draw of line below exposed region
+
+	* src/vte.c (vte_terminal_expand_region),
+	(vte_terminal_paint_area): Kill a couple of off-by-ones.
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 418588 – Invalid read when drawing preedit cursor
+
+	* src/vte.c (vte_terminal_paint):
+		No need to read what is drawn and furthermore isn't allocated.
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 417652 – Scrolling bug exposed by nvi
+
+	* src/vte.c (vte_terminal_insert_rows), (_vte_terminal_ensure_row),
+	(vte_terminal_ensure_cursor), (_vte_terminal_update_insert_delta):
+		Ensure the rows before updating the insert delta and refactor
+		the common code.
+
+2007-03-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 417301 – Terminal widgets don't respond to DPI changes
+
+	* src/vte.c (vte_terminal_fc_settings_changed): Force a font reload
+	after XFT settings have changed.
+
 2007-03-12  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.16.0.
