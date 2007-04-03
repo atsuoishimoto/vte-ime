@@ -119,7 +119,6 @@ _vte_gl_create(struct _vte_draw *draw, GtkWidget *widget)
 	Display *display;
 	GdkScreen *gscreen;
 	int screen;
-	gboolean direct;
 
 	draw->impl_data = g_slice_new(struct _vte_gl_data);
 	data = (struct _vte_gl_data*) draw->impl_data;
@@ -152,6 +151,7 @@ _vte_gl_create(struct _vte_draw *draw, GtkWidget *widget)
 	data->buffer = _vte_buffer_new();
 
 	gtk_widget_set_double_buffered(widget, FALSE);
+	draw->requires_clear = TRUE;
 }
 
 static void
@@ -263,7 +263,6 @@ _vte_gl_set_background_image(struct _vte_draw *draw,
 		g_object_unref(data->bgpixbuf);
 	}
 	data->bgpixbuf = bgpixbuf;
-	draw->has_background_image = bgpixbuf != NULL;
 }
 
 static void

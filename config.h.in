@@ -27,6 +27,9 @@
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
 
+/* Define to 1 if you have the `ceil' function. */
+#undef HAVE_CEIL
+
 /* Define to 1 if you have the `cfmakeraw' function. */
 #undef HAVE_CFMAKERAW
 
@@ -90,6 +93,9 @@
 
 /* Define to 1 if you have the `FcStrFree' function. */
 #undef HAVE_FCSTRFREE
+
+/* Define to 1 if you have the `floor' function. */
+#undef HAVE_FLOOR
 
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
