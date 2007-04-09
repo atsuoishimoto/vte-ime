@@ -19,9 +19,9 @@ GObject-style &quot;child-exited&quot; signals.</refpurpose>
 
 
 
-                    <link linkend="VteReaper-struct">VteReaper</link>;
-<link linkend="VteReaper">VteReaper</link>*          <link linkend="vte-reaper-get">vte_reaper_get</link>                      (void);
-<link linkend="int">int</link>                 <link linkend="vte-reaper-add-child">vte_reaper_add_child</link>                (<link linkend="GPid">GPid</link> pid);
+            <link linkend="VteReaper-struct">VteReaper</link>;
+<link linkend="VteReaper">VteReaper</link>*  <link linkend="vte-reaper-get">vte_reaper_get</link>                  (void);
+<link linkend="int">int</link>         <link linkend="vte-reaper-add-child">vte_reaper_add_child</link>            (<link linkend="GPid">GPid</link> pid);
 
 </synopsis>
 </refsynopsisdiv>
@@ -45,7 +45,11 @@ GObject-style &quot;child-exited&quot; signals.</refpurpose>
 <title role="signal_proto.title">Signals</title>
 <synopsis>
 
-  &quot;<link linkend="VteReaper-child-exited">child-exited</link>&quot;                                   : Run Last
+&quot;<link linkend="VteReaper-child-exited">child-exited</link>&quot;
+            <link linkend="void">void</link>        user_function      (<link linkend="VteReaper">VteReaper</link> *vtereaper,
+                                            <link linkend="gint">gint</link>       arg1,
+                                            <link linkend="gint">gint</link>       arg2,
+                                            <link linkend="gpointer">gpointer</link>   user_data)      : Run last
 </synopsis>
 </refsect1>
 
@@ -72,7 +76,7 @@ This should not be accessed directly.
 </para></refsect2>
 <refsect2>
 <title><anchor id="vte-reaper-get" role="function"/>vte_reaper_get ()</title>
-<indexterm><primary>vte_reaper_get</primary></indexterm><programlisting><link linkend="VteReaper">VteReaper</link>*          vte_reaper_get                      (void);</programlisting>
+<indexterm><primary>vte_reaper_get</primary></indexterm><programlisting><link linkend="VteReaper">VteReaper</link>*  vte_reaper_get                  (void);</programlisting>
 <para>
 Finds the address of the global <link linkend="VteReaper"><type>VteReaper</type></link> object, creating the object if
 necessary.</para>
@@ -84,7 +88,7 @@ necessary.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="vte-reaper-add-child" role="function"/>vte_reaper_add_child ()</title>
-<indexterm><primary>vte_reaper_add_child</primary></indexterm><programlisting><link linkend="int">int</link>                 vte_reaper_add_child                (<link linkend="GPid">GPid</link> pid);</programlisting>
+<indexterm><primary>vte_reaper_add_child</primary></indexterm><programlisting><link linkend="int">int</link>         vte_reaper_add_child            (<link linkend="GPid">GPid</link> pid);</programlisting>
 <para>
 Ensures that child-exited signals will be emitted when <parameter>pid</parameter> exits.  This is
 necessary for correct operation when running with glib versions &gt;= 2.4.</para>
@@ -105,10 +109,10 @@ Since 0.11.11
 <refsect1 role="signals">
 <title role="signals.title">Signal Details</title>
 <refsect2><title><anchor id="VteReaper-child-exited"/>The &quot;child-exited&quot; signal</title>
-<indexterm><primary>VteReaper::child-exited</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteReaper">VteReaper</link> *vtereaper,
-                                                        <link linkend="gint">gint</link>       arg1,
-                                                        <link linkend="gint">gint</link>       arg2,
-                                                        <link linkend="gpointer">gpointer</link>   user_data)      : Run Last</programlisting>
+<indexterm><primary>VteReaper::child-exited</primary></indexterm><programlisting><link linkend="void">void</link>        user_function                  (<link linkend="VteReaper">VteReaper</link> *vtereaper,
+                                            <link linkend="gint">gint</link>       arg1,
+                                            <link linkend="gint">gint</link>       arg2,
+                                            <link linkend="gpointer">gpointer</link>   user_data)      : Run last</programlisting>
 <para>
 Emitted when the <link linkend="VteReaper"><type>VteReaper</type></link> object detects that a child of the current process has exited.
 </para><variablelist role="params">

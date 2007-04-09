@@ -616,7 +616,9 @@ _vte_invalidate_cell(VteTerminal *terminal, glong col, glong row)
 				cell = _vte_row_data_find_charcell(row_data, --col);
 			}
 			columns = cell->attr.columns;
-			if (_vte_draw_get_char_width(terminal->pvt->draw,
+			if (cell->c != 0 &&
+					_vte_draw_get_char_width (
+						terminal->pvt->draw,
 						cell->c,
 						cell->attr.columns) >
 					terminal->char_width * columns) {
@@ -672,9 +674,11 @@ _vte_invalidate_cursor_once(VteTerminal *terminal, gboolean periodic)
 		}
 		if (cell != NULL) {
 			columns = cell->attr.columns;
-			if (_vte_draw_get_char_width(terminal->pvt->draw,
-						     cell->c,
-						     cell->attr.columns) >
+			if (cell->c != 0 &&
+					_vte_draw_get_char_width (
+						terminal->pvt->draw,
+						cell->c,
+						cell->attr.columns) >
 			    terminal->char_width * columns) {
 				columns++;
 			}
@@ -1909,7 +1913,7 @@ _vte_terminal_ensure_row (VteTerminal *terminal)
 }
 
 static VteRowData *
-vte_terminal_ensure_cursor(VteTerminal *terminal, gint columns)
+vte_terminal_ensure_cursor(VteTerminal *terminal)
 {
 	VteRowData *row;
 	VteScreen *screen;
@@ -1943,11 +1947,6 @@ vte_terminal_ensure_cursor(VteTerminal *terminal, gint columns)
 	if (G_UNLIKELY (row->cells->len < v)) { /* pad */
 		vte_g_array_fill (row->cells, &screen->basic_defaults, v);
 	}
-	v += columns;
-	if (G_LIKELY (row->cells->len < v)) { /* expand for character */
-		g_array_set_size (row->cells, v);
-	}
-	screen->cursor_current.col = v;
 
 	return row;
 }
@@ -2507,10 +2506,6 @@ _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 		line_wrapped = TRUE;
 	}
 
-	/* Make sure we have enough rows to hold this data. */
-	row = vte_terminal_ensure_cursor(terminal, columns);
-	g_assert(row != NULL);
-
 	_vte_debug_print(VTE_DEBUG_IO|VTE_DEBUG_PARSE,
 			"Inserting %ld '%c' (%d/%d) (%ld+%d, %ld), delta = %ld; ",
 			(long)c, c < 256 ? c : ' ',
@@ -2519,10 +2514,18 @@ _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 			col, columns, (long)screen->cursor_current.row,
 			(long)screen->insert_delta);
 
+	/* Make sure we have enough rows to hold this data. */
+	row = vte_terminal_ensure_cursor (terminal);
+	g_assert(row != NULL);
 	if (insert) {
 		g_array_insert_val(row->cells, col,
 				screen->color_defaults);
+	} else {
+		if (G_LIKELY (row->cells->len < col + columns)) {
+			g_array_set_size (row->cells, col + columns);
+		}
 	}
+
 	memcpy (&attr, &screen->defaults.attr, sizeof (attr));
 	attr.columns = columns;
 
@@ -2568,6 +2571,7 @@ _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 
 
 	/* If we're autowrapping *here*, do it. */
+	screen->cursor_current.col = col;
 	if (G_UNLIKELY (col >= terminal->column_count)) {
 		if (terminal->pvt->flags.am && !terminal->pvt->flags.xn) {
 			/* Wrap. */
@@ -9348,6 +9352,8 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 				j = i + (cell ? cell->attr.columns : 1);
 
 				while (j < end_column){
+					/* Retrieve the cell. */
+					cell = _vte_row_data_find_charcell(row_data, j);
 					/* Don't render fragments of multicolumn characters
 					 * which have the same attributes as the initial
 					 * portions. */
@@ -9355,8 +9361,6 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 						j++;
 						continue;
 					}
-					/* Retrieve the cell. */
-					cell = _vte_row_data_find_charcell(row_data, j);
 					/* Resolve attributes to colors where possible and
 					 * compare visual attributes to the first character
 					 * in this chunk. */
@@ -9904,12 +9908,12 @@ vte_terminal_paint(GtkWidget *widget, GdkRegion *region)
 		}
 
 		/* Draw the cursor. */
-		item.c = cell ? (cell->c ? cell->c : ' ') : ' ';
+		item.c = (cell && cell->c) ? cell->c : ' ';
 		item.columns = cell ? cell->attr.columns : 1;
 		item.x = col * width;
 		item.y = row * height;
 		cursor_width = item.columns * width;
-		if (cell) {
+		if (cell && cell->c != 0) {
 			gint cw = _vte_draw_get_char_width (terminal->pvt->draw,
 					cell->c, cell->attr.columns);
 			cursor_width = MAX(cursor_width, cw);
@@ -10202,7 +10206,6 @@ vte_terminal_scroll(GtkWidget *widget, GdkEventScroll *event)
 		return TRUE;
 	}
 
-	/* Perform a history scroll. */
 	adj = terminal->adjustment;
 	v = MAX (1., ceil (adj->page_increment / 10.));
 	switch (event->direction) {
@@ -10214,10 +10217,45 @@ vte_terminal_scroll(GtkWidget *widget, GdkEventScroll *event)
 	default:
 		return FALSE;
 	}
-	v += terminal->pvt->screen->scroll_delta;
-	new_value = floor (CLAMP (v, adj->lower,
-				MAX (adj->lower, adj->upper - adj->page_size)));
-	vte_terminal_queue_adjustment_value_changed (terminal, new_value);
+
+	if (terminal->pvt->screen == &terminal->pvt->alternate_screen) {
+		char *normal;
+		gssize normal_length;
+		const gchar *special;
+		gint i, cnt = v;
+
+		/* In the alternate screen there is no scrolling,
+		 * so fake a few cursor keystrokes. */
+
+		_vte_keymap_map (
+				cnt > 0 ? GDK_Down : GDK_Up,
+				terminal->pvt->modifiers,
+				terminal->pvt->sun_fkey_mode,
+				terminal->pvt->hp_fkey_mode,
+				terminal->pvt->legacy_fkey_mode,
+				terminal->pvt->vt220_fkey_mode,
+				terminal->pvt->cursor_mode == VTE_KEYMODE_APPLICATION,
+				terminal->pvt->keypad_mode == VTE_KEYMODE_APPLICATION,
+				terminal->pvt->termcap,
+				terminal->pvt->emulation ?
+				terminal->pvt->emulation : vte_terminal_get_default_emulation(terminal),
+				&normal,
+				&normal_length,
+				&special);
+		if (cnt < 0)
+			cnt = -cnt;
+		for (i = 0; i < cnt; i++) {
+			vte_terminal_feed_child_using_modes (terminal,
+					normal, normal_length);
+		}
+		g_free (normal);
+	} else {
+		/* Perform a history scroll. */
+		v += terminal->pvt->screen->scroll_delta;
+		new_value = floor (CLAMP (v, adj->lower,
+					MAX (adj->lower, adj->upper - adj->page_size)));
+		vte_terminal_queue_adjustment_value_changed (terminal, new_value);
+	}
 
 	return TRUE;
 }

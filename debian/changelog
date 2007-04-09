@@ -1,3 +1,37 @@
+vte (1:0.16.1-0ubuntu1) feisty; urgency=low
+
+  * New upstream version:
+    - Lots of bug fixes by Chris Wilson
+    - New feature: mouse scroll-wheel now feeds three arrow-up/down keys to the
+      terminal if in the "alternate" mode.  The alternate mode is used by apps
+      like vim, less, emacs, screen, etc.  This makes the scroll-wheel usable
+      in a state that it was of no use before.
+    - Bugs fixed in this release:
+      - vte often passes NUL to functions requiring valid unichar
+      - Links do not get highlighted anymore
+      - URL matching doesn't work with PCRE
+      - crash on IRM escape code (Ubuntu: #103095)
+      - Make scroll wheel send Page Up/Down when it makes sense
+      - vte_terminal_set_color_highlight should test for 
+        NULL before _vte_debug_print
+      - vte appears at the top of the root window even when
+        packed at the bottom of it
+      - glyph can be cropped with not fitting in a cell
+      - Does not handle expose events whilst processing unseen incoming data
+      - Improve performance of vte_terminal_insert_char()
+      - Opacity ignored for vtexft
+      - Asymmetric scrolling with mouse wheel
+      - Rendering glitch as autowrapped chars are outside invalidated bbox
+      - Rendering glitch: double draw of line below exposed region
+      - Invalid read when drawing preedit cursor
+      - Scrolling bug exposed by nvi
+  * debian/patches/80_changes_for_python_vte_dbg.patch:
+    - updated
+  * debian/rules:
+    - update translations template
+
+ -- Sebastien Bacher <seb128@canonical.com>  Mon,  9 Apr 2007 23:39:55 +0200
+
 vte (1:0.16.0svn20070403-0ubuntu1) feisty; urgency=low
 
   * Update with SVN snapshot
