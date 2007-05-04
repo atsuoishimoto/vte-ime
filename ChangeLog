@@ -1,3 +1,70 @@
+2007-04-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.16.3.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.16.3.
+
+	* src/Makefile.am: Bumped libtool version to 11:7:2.
+
+2007-04-24  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 429189 – Vte-WARNING's
+
+	* src/vtexft.c (_vte_xft_open_font_for_char):
+		Convert the warning into a DEBUG.
+
+2007-04-24  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 415044 – Use --enable-debug rather than --enable-debugging
+
+	As noted on Bug 414716, the convention is to use --enable-debug
+	to enable extra debugging code.
+
+	* configure.in:
+		s/debugging/debug/
+
+2007-04-24  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 414716 – Refresh issue after changing workspaces
+
+	* src/vte.c (vte_terminal_hierarchy_changed):
+		Do not respond to toplevel mapping events.
+
+2007-04-23  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.16.2.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.16.2.
+
+	* src/Makefile.am: Bumped libtool version to 11:6:2.
+
+2007-04-23  Chris Wilson <chris@chris-wilson.co.uk>
+
+	Bug 431799 – Regex highlighting is broken
+
+	* src/vte.c (vte_terminal_emit_contents_changed),
+	(vte_terminal_match_hilite_update), (process_timeout),
+	(update_repeat_timeout), (update_timeout):
+		Always emit any pending updates before redrawing. This
+		ensures for example that the match contents are updated
+		after a simple scroll event.
+
+2007-04-20  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vtexft.c (_vte_xft_start), (_vte_xft_clip):
+		Optimise away the use of a clip mask for the common case
+		of redrawing the whole terminal.
+
+2007-04-17  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/iso2022.c (_vte_iso2022_ambiguous_width): Consider
+	ambiguous-width chars if VTE_CJK_WIDTH env var is set and we are
+	under a CJK locale.
+
 2007-03-12  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.16.1.

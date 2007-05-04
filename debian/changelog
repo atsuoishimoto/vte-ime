@@ -1,3 +1,27 @@
+vte (1:0.16.3-0ubuntu1) gutsy; urgency=low
+
+  * New upstream release:
+    - Remove false warnings about missing glyphs in the Xft backend.
+    - Rename --enable-debugging configure option to --enable-debug to
+      match other modules.
+    - Fix some of refresh issue where terminals stopped updating after
+      changing workspaces.
+    - Bugs fixed in this release:
+        Bug 429189 – Vte-WARNING's
+        Bug 415044 – Use --enable-debug rather than --enable-debugging
+        Bug 414716 – Refresh issue after changing workspaces
+    - Consider ambiguous-width chars if VTE_CJK_WIDTH env var is set and we
+      are under a CJK locale.
+    - Minor optimization
+    - Bugs fixed in this release:
+        Bug 431799 – Regex highlighting is broken
+  * debian/patches/71_from_bugzilla_fix_refresh_on_workspace_change.patch:
+    - removed
+  * debian/patches/80_changes_for_python_vte_dbg.patch:
+    - updated  (re-run autoconf)
+  
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Fri,  4 May 2007 10:56:19 +0200
+
 vte (1:0.16.1-0ubuntu1) feisty; urgency=low
 
   * New upstream version:
