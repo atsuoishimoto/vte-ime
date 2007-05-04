@@ -828,8 +828,13 @@ static void
 vte_terminal_emit_contents_changed(VteTerminal *terminal)
 {
 	if (terminal->pvt->contents_changed_pending) {
-		/* Clear dingus match set. */
+		/* Update dingus match set. */
 		vte_terminal_match_contents_clear(terminal);
+		if (terminal->pvt->mouse_cursor_visible) {
+			vte_terminal_match_hilite_update(terminal,
+					terminal->pvt->mouse_last_x,
+					terminal->pvt->mouse_last_y);
+		}
 
 		_vte_debug_print(VTE_DEBUG_SIGNALS,
 				"Emitting `contents-changed'.\n");
@@ -3979,32 +3984,6 @@ vte_terminal_configure_toplevel(VteTerminal *terminal)
 	return FALSE;
 }
 
-static gboolean
-vte_terminal_unmap_toplevel (VteTerminal *terminal)
-{
-	_vte_debug_print(VTE_DEBUG_EVENTS, "Top level parent unmapped.\n");
-
-	vte_terminal_set_visibility (terminal, GDK_VISIBILITY_FULLY_OBSCURED);
-
-	return FALSE;
-}
-static gboolean
-vte_terminal_map_toplevel (VteTerminal *terminal)
-{
-	_vte_debug_print(VTE_DEBUG_EVENTS, "Top level parent mapped.\n");
-
-	/* See bug 414716, we don't always receive a visibility notify after
-	 * the remap when switching desktops
-	 */
-	if (terminal->widget.window != NULL &&
-			gdk_window_is_viewable (terminal->widget.window)) {
-		vte_terminal_set_visibility (terminal,
-				GDK_VISIBILITY_UNOBSCURED);
-	}
-
-	return FALSE;
-}
-
 /* Handle a hierarchy-changed signal. */
 static void
 vte_terminal_hierarchy_changed(GtkWidget *widget, GtkWidget *old_toplevel,
@@ -4017,12 +3996,6 @@ vte_terminal_hierarchy_changed(GtkWidget *widget, GtkWidget *old_toplevel,
 		g_signal_handlers_disconnect_by_func(old_toplevel,
 						     vte_terminal_configure_toplevel,
 						     widget);
-		g_signal_handlers_disconnect_by_func(old_toplevel,
-						     vte_terminal_unmap_toplevel,
-						     widget);
-		g_signal_handlers_disconnect_by_func(old_toplevel,
-						     vte_terminal_map_toplevel,
-						     widget);
 	}
 
 	toplevel = gtk_widget_get_toplevel(widget);
@@ -4030,13 +4003,6 @@ vte_terminal_hierarchy_changed(GtkWidget *widget, GtkWidget *old_toplevel,
 		g_signal_connect_swapped (toplevel, "configure-event",
 				 G_CALLBACK (vte_terminal_configure_toplevel),
 				 widget);
-		g_signal_connect_swapped (toplevel, "unmap-event",
-				 G_CALLBACK (vte_terminal_unmap_toplevel),
-				 widget);
-		g_signal_connect_data (toplevel, "map-event",
-				 G_CALLBACK (vte_terminal_map_toplevel),
-				 widget, NULL,
-				 G_CONNECT_AFTER | G_CONNECT_SWAPPED);
 	}
 }
 
@@ -4959,10 +4925,16 @@ vte_terminal_match_hilite_update(VteTerminal *terminal, double x, double y)
 	width = terminal->char_width;
 	height = terminal->char_height;
 
-
 	/* Check for matches. */
 	screen = terminal->pvt->screen;
 	delta = screen->scroll_delta;
+
+	_vte_debug_print(VTE_DEBUG_EVENTS,
+			"Match hilite update (%.0f, %.0f) -> %.0f, %.0f\n",
+			x, y,
+			floor(x) / width,
+			floor(y) / height + delta);
+
 	match = vte_terminal_match_check_internal(terminal,
 						  floor(x) / width,
 						  floor(y) / height + delta,
@@ -12199,7 +12171,8 @@ process_timeout (gpointer data)
 				vte_terminal_process_incoming(terminal);
 			}
 			terminal->pvt->input_bytes = 0;
-		}
+		} else
+			vte_terminal_emit_pending_signals (terminal);
 		if (!active && terminal->pvt->update_regions == NULL) {
 			if (terminal->pvt->active != NULL) {
 				_vte_debug_print(VTE_DEBUG_TIMEOUT,
@@ -12323,7 +12296,8 @@ update_repeat_timeout (gpointer data)
 				vte_terminal_process_incoming (terminal);
 			}
 			terminal->pvt->input_bytes = 0;
-		}
+		} else
+			vte_terminal_emit_pending_signals (terminal);
 
 		again = update_regions (terminal);
 		if (!again) {
@@ -12422,7 +12396,8 @@ update_timeout (gpointer data)
 				vte_terminal_process_incoming (terminal);
 			}
 			terminal->pvt->input_bytes = 0;
-		}
+		} else
+			vte_terminal_emit_pending_signals (terminal);
 
 		redraw |= update_regions (terminal);
 	}
