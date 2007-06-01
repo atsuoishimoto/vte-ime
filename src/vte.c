@@ -63,6 +63,10 @@ typedef gunichar wint_t;
 #define howmany(x, y) (((x) + ((y) - 1)) / (y))
 #endif
 
+#if !GTK_CHECK_VERSION(2,2,0)
+#define gdk_keymap_get_for_display(dpy) gdk_keymap_get_default()
+#endif
+
 static void vte_terminal_set_visibility (VteTerminal *terminal, GdkVisibilityState state);
 static void vte_terminal_set_termcap(VteTerminal *terminal, const char *path,
 				     gboolean reset);
@@ -627,13 +631,12 @@ _vte_invalidate_cell(VteTerminal *terminal, glong col, glong row)
 		}
 	}
 
-	_vte_invalidate_cells(terminal,
-			col, columns,
-			row, 1);
-
 	_vte_debug_print(VTE_DEBUG_UPDATES,
 			"Invalidating cell at (%ld,%ld-%ld).\n",
 			row, col, col + columns);
+	_vte_invalidate_cells(terminal,
+			col, columns,
+			row, 1);
 }
 
 /* Cause the cursor to be redrawn. */
@@ -4058,6 +4061,31 @@ remove_cursor_timeout (VteTerminal *terminal)
 	terminal->pvt->cursor_blink_tag = VTE_INVALID_SOURCE;
 }
 
+/*
+ * Translate national keys with Crtl|Alt modifier
+ * Refactored from http://bugzilla.gnome.org/show_bug.cgi?id=375112
+ */
+static guint
+vte_translate_national_ctrlkeys (GdkEventKey *event)
+{
+	guint keyval;
+	GdkModifierType consumed_modifiers;
+	GdkKeymap *keymap;
+
+	keymap = gdk_keymap_get_for_display (
+			gdk_drawable_get_display (event->window));
+
+	gdk_keymap_translate_keyboard_state (keymap,
+			event->hardware_keycode, event->state,
+			0, /* Force 0 group (English) */
+			&keyval, NULL, NULL, &consumed_modifiers);
+
+	_vte_debug_print (VTE_DEBUG_EVENTS,
+			"ctrl+Key, group=%d de-grouped into keyval=0x%x\n",
+			event->group, keyval);
+
+	return keyval;
+}
 
 /* Read and handle a keypress event. */
 static gint
@@ -4349,6 +4377,10 @@ vte_terminal_key_press(GtkWidget *widget, GdkEventKey *event)
 		/* If we didn't manage to do anything, try to salvage a
 		 * printable string. */
 		if (handled == FALSE && normal == NULL && special == NULL) {
+			if (event->group &&
+					(terminal->pvt->modifiers & GDK_CONTROL_MASK))
+				keyval = vte_translate_national_ctrlkeys(event);
+
 			/* Convert the keyval to a gunichar. */
 			keychar = gdk_keyval_to_unicode(keyval);
 			normal_length = 0;
@@ -7426,7 +7458,7 @@ vte_terminal_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 {
 	VteTerminal *terminal;
 	glong width, height;
-	gboolean repaint;
+	gboolean repaint, update_scrollback;
 
 	_vte_debug_print(VTE_DEBUG_LIFECYCLE,
 			"vte_terminal_size_allocate()\n");
@@ -7444,12 +7476,14 @@ vte_terminal_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 			width, height);
 	repaint = widget->allocation.width != allocation->width ||
 		widget->allocation.height != allocation->height;
+	update_scrollback = widget->allocation.height != allocation->height;
 
 	/* Set our allocation to match the structure. */
 	widget->allocation = *allocation;
 
 	if (width != terminal->column_count
-			|| height != terminal->row_count) {
+			|| height != terminal->row_count
+			|| update_scrollback) {
 		VteScreen *screen = terminal->pvt->screen;
 		glong visible_rows = MIN (terminal->row_count,
 				_vte_ring_length (screen->row_data));
@@ -9426,7 +9460,7 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 	y = start_y;
 	row = start_row;
 	rows = row_count;
-	item_count = 1; /* we will always submit at least one item */
+	item_count = 1;
 	do {
 		row_data = _vte_terminal_find_row_data(terminal, row);
 		if (row_data == NULL) {
@@ -9454,11 +9488,11 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 					cell->c == ' ' ||
 					cell->attr.fragment) {
 				if (++i >= end_column) {
-					goto fg_next_row;
+					goto fg_skip_row;
 				}
 				cell = _vte_row_data_find_charcell(row_data, i);
 				if (cell == NULL) {
-					goto fg_next_row;
+					goto fg_skip_row;
 				}
 			}
 			/* Find the colors for this cell. */
@@ -9511,7 +9545,14 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 					/* Retrieve the cell. */
 					cell = _vte_row_data_find_charcell(row_data, j);
 					if (cell == NULL) {
-						break;
+						goto fg_next_row;
+					}
+					/* Don't render blank cells or fragments of multicolumn characters
+					 * which have the same attributes as the initial
+					 * portions. */
+					if (cell->attr.fragment) {
+						j++;
+						continue;
 					}
 					if (cell->c == 0 || cell->c == ' '){
 						/* only break the run if we
@@ -9525,13 +9566,6 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 							j++;
 							continue;
 						}
-					}
-					/* Don't render blank cells or fragments of multicolumn characters
-					 * which have the same attributes as the initial
-					 * portions. */
-					if (cell->attr.fragment) {
-						j++;
-						continue;
 					}
 					/* Resolve attributes to colors where possible and
 					 * compare visual attributes to the first character
@@ -9599,6 +9633,7 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 				if (j < end_column) {
 					break;
 				}
+fg_next_row:
 				/* is this the last column, on the last row? */
 				do {
 					do {
@@ -9639,7 +9674,7 @@ fg_draw:
 				goto fg_out;
 			}
 		} while (i < end_column);
-fg_next_row:
+fg_skip_row:
 		row++;
 		y += row_height;
 	} while (--rows);
@@ -9648,10 +9683,10 @@ fg_out:
 }
 
 static void
-vte_terminal_expand_region (VteTerminal *terminal, GdkRegion *region, GdkRectangle *area)
+vte_terminal_expand_region (VteTerminal *terminal, GdkRegion *region, const GdkRectangle *area)
 {
 	VteScreen *screen;
-	int width, height, delta;
+	int width, height;
 	int row, col, row_stop, col_stop;
 	GdkRectangle rect;
 
@@ -9659,7 +9694,6 @@ vte_terminal_expand_region (VteTerminal *terminal, GdkRegion *region, GdkRectang
 
 	width = terminal->char_width;
 	height = terminal->char_height;
-	delta = screen->scroll_delta;
 
 	/* increase the paint by one pixel on all sides to force the
 	 * inclusion of neighbouring cells */
@@ -9676,24 +9710,13 @@ vte_terminal_expand_region (VteTerminal *terminal, GdkRegion *region, GdkRectang
 		return;
 	}
 
-	if (col == 0)
-		rect.x = 0;
-	else
-		rect.x = col*width + VTE_PAD_WIDTH;
-	if (col_stop == terminal->column_count)
-		rect.width = terminal->widget.allocation.width;
-	else
-		rect.width = (col_stop + 1)*width;
-	rect.width -= rect.x;
-	if (row == 0)
-		rect.y = 0;
-	else
-		rect.y = row*height + VTE_PAD_WIDTH;
-	if (row_stop == terminal->row_count)
-		rect.height = terminal->widget.allocation.height;
-	else
-		rect.height = (row_stop + 1)*height;
-	rect.height -= rect.y;
+	rect.x = col*width + VTE_PAD_WIDTH;
+	rect.width = (col_stop - col) * width;
+
+	rect.y = row*height + VTE_PAD_WIDTH;
+	rect.height = (row_stop - row)*height;
+
+	/* the rect must be cell aligned to avoid overlapping XY bands */
 	gdk_region_union_with_rect(region, &rect);
 
 	_vte_debug_print (VTE_DEBUG_UPDATES,
@@ -9707,7 +9730,7 @@ vte_terminal_expand_region (VteTerminal *terminal, GdkRegion *region, GdkRectang
 }
 
 static void
-vte_terminal_paint_area (VteTerminal *terminal, GdkRectangle *area)
+vte_terminal_paint_area (VteTerminal *terminal, const GdkRectangle *area)
 {
 	VteScreen *screen;
 	int width, height, delta;
@@ -9717,7 +9740,6 @@ vte_terminal_paint_area (VteTerminal *terminal, GdkRectangle *area)
 
 	width = terminal->char_width;
 	height = terminal->char_height;
-	delta = screen->scroll_delta;
 
 	row = MAX(0, (area->y - VTE_PAD_WIDTH) / height);
 	row_stop = MIN((area->height + area->y - VTE_PAD_WIDTH) / height,
@@ -9744,13 +9766,35 @@ vte_terminal_paint_area (VteTerminal *terminal, GdkRectangle *area)
 			(row_stop - row) * height);
 	if (!GTK_WIDGET_DOUBLE_BUFFERED (terminal) ||
 			_vte_draw_requires_clear (terminal->pvt->draw)) {
+		GdkRectangle rect;
+
+		/* expand clear area to cover borders */
+		if (col == 0)
+			rect.x = 0;
+		else
+			rect.x = area->x;
+		if (col_stop == terminal->column_count)
+			rect.width = terminal->widget.allocation.width;
+		else
+			rect.width = area->x + area->width;
+		rect.width -= rect.x;
+		if (row == 0)
+			rect.y = 0;
+		else
+			rect.y = area->y;
+		if (row_stop == terminal->row_count)
+			rect.height = terminal->widget.allocation.height;
+		else
+			rect.height = area->y + area->height;
+		rect.height -= rect.y;
+
 		_vte_draw_clear (terminal->pvt->draw,
-				area->x, area->y,
-				area->width, area->height);
+				rect.x, rect.y, rect.width, rect.height);
 	}
 
 	/* Now we're ready to draw the text.  Iterate over the rows we
 	 * need to draw. */
+	delta = screen->scroll_delta;
 	vte_terminal_draw_rows(terminal,
 			      screen,
 			      row + delta, row_stop - row,
@@ -9768,10 +9812,8 @@ vte_terminal_paint(GtkWidget *widget, GdkRegion *region)
 	VteTerminal *terminal;
 	VteScreen *screen;
 	struct vte_charcell *cell;
-	struct _vte_draw_text_request item, *items;
+	struct _vte_draw_text_request item;
 	int row, drow, col, columns;
-	char *preedit;
-	int preedit_cursor;
 	long width, height, ascent, descent, delta, cursor_width;
 	int i, len, fore, back, x, y;
 	gboolean blink, selected;
@@ -10017,8 +10059,6 @@ draw_cursor_outline:
 		row = screen->cursor_current.row - delta;
 
 		/* Find out how many columns the pre-edit string takes up. */
-		preedit = terminal->pvt->im_preedit;
-		preedit_cursor = -1;
 		columns = vte_terminal_preedit_width(terminal, FALSE);
 		len = vte_terminal_preedit_length(terminal, FALSE);
 
@@ -10031,23 +10071,18 @@ draw_cursor_outline:
 
 		/* Draw the preedit string, boxed. */
 		if (len > 0) {
+			struct _vte_draw_text_request *items;
+			const char *preedit = terminal->pvt->im_preedit;
+			int preedit_cursor;
+
 			items = g_new(struct _vte_draw_text_request, len);
-			preedit = terminal->pvt->im_preedit;
 			for (i = columns = 0; i < len; i++) {
-				if ((preedit - terminal->pvt->im_preedit) ==
-				    terminal->pvt->im_preedit_cursor) {
-					preedit_cursor = i;
-				}
 				items[i].c = g_utf8_get_char(preedit);
 				items[i].columns = _vte_iso2022_unichar_width(items[i].c);
 				items[i].x = (col + columns) * width;
 				items[i].y = row * height;
 				columns += items[i].columns;
 				preedit = g_utf8_next_char(preedit);
-			}
-			if ((preedit - terminal->pvt->im_preedit) ==
-			    terminal->pvt->im_preedit_cursor) {
-				preedit_cursor = i;
 			}
 			_vte_draw_clear(terminal->pvt->draw,
 					col * width + VTE_PAD_WIDTH,
@@ -10061,10 +10096,11 @@ draw_cursor_outline:
 								terminal->pvt->im_preedit_attrs,
 								TRUE,
 								width, height);
-			if ((preedit_cursor >= 0) && (preedit_cursor < len)) {
+			preedit_cursor = terminal->pvt->im_preedit_cursor;
+			if (preedit_cursor >= 0 && preedit_cursor < len) {
 				/* Cursored letter in reverse. */
 				vte_terminal_draw_cells(terminal,
-							&items[terminal->pvt->im_preedit_cursor], 1,
+							&items[preedit_cursor], 1,
 							back, fore, TRUE, TRUE,
 							FALSE,
 							FALSE,
@@ -10190,7 +10226,8 @@ vte_terminal_scroll(GtkWidget *widget, GdkEventScroll *event)
 		return FALSE;
 	}
 
-	if (terminal->pvt->screen == &terminal->pvt->alternate_screen) {
+	if (terminal->pvt->screen == &terminal->pvt->alternate_screen ||
+		terminal->pvt->normal_screen.scrolling_restricted) {
 		char *normal;
 		gssize normal_length;
 		const gchar *special;

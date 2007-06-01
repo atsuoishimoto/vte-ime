@@ -1,3 +1,22 @@
+vte (1:0.16.4-0ubuntu1) gutsy; urgency=low
+
+  * New upstream release:
+    - Misc bug fixes.
+    - Bugs fixed in this release:
+        Bug 429278 – Cursor drawn strangely in joe
+        Bug 439247 – Vim scrolling issues
+        Bug 440475 – Display glitch with transparent background (Fixes LP: #113878)
+        Bug 375112 – ctrl-key combinations yeilding just key
+        Bug 440377 – refresh gnome-terminal when accessibility enabled
+        Bug 433776 – crash when opening preedit area
+  * debian/patches/81_from_upstream_fix_nvi_scrolling.patch:
+    - removed; fixed in this release.
+  * debian/patches/80_changes_for_python_vte_dbg.patch:
+    - updated and split autoconf regeneration into:
+        debian/patches/90_autoconf.patch
+
+ -- Martin Peeks <martinp23@googlemail.com>  Fri,  1 Jun 2007 17:22:01 +0100
+
 vte (1:0.16.3-0ubuntu1) gutsy; urgency=low
 
   * New upstream release:

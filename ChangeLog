@@ -1,3 +1,101 @@
+2007-05-28  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.16.4.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.16.4.
+
+	* src/Makefile.am: Bumped libtool version to 11:8:2.
+
+2007-05-28  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	uws noted on IRC that 'vte trunk does strange thingies with colors'
+
+	* src/vte.c (vte_terminal_draw_rows):
+	    When reaching the end-of-row be careful not to reset the
+	    current text attributes (color, underlining, etc).
+
+2007-05-25  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_expand_region),
+	(vte_terminal_paint_area):
+	    Only add the borders to the clear area.
+
+2007-05-23  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 429278 – Cursor drawn strangely in joe
+
+	* src/vte.c (vte_terminal_expand_region),
+	(vte_terminal_paint_area):
+	    Ensure the expanded regions are cell aligned.
+
+2007-05-23  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	cf Bug 439247 – scrolling vim in full screen is painfully slow and takes up 100% of the cpu
+
+	* src/vte.c (vte_terminal_draw_rows):
+	    Fix up the unwanted break of Glyph runs at the end-of-lines.
+
+2007-05-23  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 440475 – Display glitch with transparent backgroud
+
+	* src/vte.c (vte_terminal_paint_area):
+	    Apply the band-aid fix to clear the area that's about to be
+	    repainted. The full solution will to be ensure that the regions
+	    after expansion are cell-aligned.
+
+2007-05-22  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 375112 – ctrl-key combinations yielding just key
+	Original patch by <samo@altern.org> and refactored by Loïc Minier.
+
+	* src/vte.c (vte_translate_national_ctrlkeys),
+	(vte_terminal_key_press):
+	    When cooking a string to pass through to the client obtain the
+	    "raw" keyval.
+
+2007-05-22  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 440377 – gnome-terminal cannot refresh terminal when accessibility enabled
+	Original patch by Li Yuan.
+
+	* src/vteaccess.c (vte_terminal_accessible_focus_in),
+	(vte_terminal_accessible_focus_out),
+	(vte_terminal_accessible_visibility_notify):
+	    Return FALSE rather than void...
+
+2007-05-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* perf/scroll.vim:
+	* perf/vim.sh:
+	    Measure full screen scrolling performance.
+
+2007-05-15  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	kmaraas reported an issue on IRC where the scrollback was not being
+	updated correctly in the first tab when the terminal was resized via
+	a second tab.
+
+	* src/vte.c (vte_terminal_size_allocate): Check whether we need to
+	recompute the visible lines due to a change in layout geometry.
+
+2007-04-27  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 433776 – gnome-terminal crashes when open preedit area
+	Take 2.
+
+	* src/vte.c (vte_terminal_paint): The preedit_cursor is returned by
+	the input modules in characters not in bytes as assumed by the
+	validation.
+
+2007-04-27  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 433776 – gnome-terminal crashes when open preedit area
+
+	* src/vte.c (vte_terminal_paint): Use the validated cursor index.
+
 2007-04-27  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.16.3.
