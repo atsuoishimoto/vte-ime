@@ -36,10 +36,6 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-
-# we do this to suport building with -Wl,-z,defs which errors on 
-# vtemodule.so as we cannot include $(PYTHON_LIBS) due to bug 410986.
-@BUILD_PYTHON_MODULES_TRUE@am__append_1 = $(PYTHON_LDFLAGS)
 subdir = python
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -181,7 +177,7 @@ INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XGETTEXT = @INTLTOOL_XGETTEXT@
 INTLTOOL_XML_NOMERGE_RULE = @INTLTOOL_XML_NOMERGE_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
-LDFLAGS = @LDFLAGS@ $(am__append_1)
+LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
@@ -300,6 +296,10 @@ PYTHON_MODULES = vtemodule.la
 @BUILD_PYTHON_MODULES_TRUE@pythonsiteexecdir = $(pyexecdir)/gtk-2.0
 @BUILD_PYTHON_MODULES_TRUE@pythonsiteexec_LTLIBRARIES = $(PYTHON_MODULES)
 @BUILD_PYTHON_MODULES_TRUE@CLEANFILES = vte.c
+
+# we do this to suport building with -Wl,-z,defs which errors on 
+# vtemodule.so as we cannot include $(PYTHON_LIBS) due to bug 410986.
+@BUILD_PYTHON_MODULES_TRUE@AM_LDFLAGS = $(PYTHON_LDFLAGS)
 @BUILD_PYTHON_MODULES_TRUE@vtemodule_la_CFLAGS = $(VTE_CFLAGS) $(X_CFLAGS) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS)
 @BUILD_PYTHON_MODULES_TRUE@vtemodule_la_SOURCES = vtemodule.c
 @BUILD_PYTHON_MODULES_TRUE@vtemodule_la_LIBADD = $(top_builddir)/src/libvte.la $(LIBS) $(PYGTK_LIBS) $(VTE_LIBS) $(X_LIBS)
