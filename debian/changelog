@@ -1,3 +1,19 @@
+vte (1:0.16.7-0ubuntu1) gutsy; urgency=low
+
+  * New upstream release:
+    - Misc bug fixes.
+    - Bugs fixed in this release:
+      - Bug 337252 – ALT + Arrow keys don't work in irssi through gnome-terminal
+      - Bug 448259 – Mapping for Ctrl-_
+      - Bug 449809 – use python-config to get python includes
+      - Bug 450745 – VTE's response to CSI 2 1 t incorrectly formatted
+  * debian/patches/80_changes_for_python_vte_dbg.patch
+    - Dropped, got fixed upstream
+  * debian/patches/90_autoconf.patch:
+    - Dropped for being empty after running autoconf
+	
+ -- Aron Sisak <aron@ubuntu.hu>  Mon, 30 Jul 2007 12:20:38 +0200
+
 vte (1:0.16.6-0ubuntu2) gutsy; urgency=low
 
   * Patch to fix EOF emission issue (LP: #121689)

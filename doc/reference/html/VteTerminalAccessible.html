@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>VteTerminalAccessible</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.69.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
 <link rel="start" href="index.html" title="VTE Reference Manual">
 <link rel="up" href="ch01.html" title="VTE">
 <link rel="prev" href="VteTerminal.html" title="VteTerminal">
 <link rel="next" href="VteReaper.html" title="VteReaper">
-<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.8 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="VTE">
 </head>
@@ -21,20 +21,20 @@
 <th width="100%" align="center">VTE Reference Manual</th>
 <td><a accesskey="n" href="VteReaper.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3003725" class="shortcut">Top</a>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2634349" class="shortcut">Top</a>
                   &#160;|&#160;
-                  <a href="#id3003855" class="shortcut">Description</a>
+                  <a href="#id2634479" class="shortcut">Description</a>
                   &#160;|&#160;
-                  <a href="#id3003776" class="shortcut">Object Hierarchy</a>
+                  <a href="#id2634400" class="shortcut">Object Hierarchy</a>
                   &#160;|&#160;
-                  <a href="#id3003816" class="shortcut">Implemented Interfaces</a></nobr></td></tr>
+                  <a href="#id2634440" class="shortcut">Implemented Interfaces</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="VteTerminalAccessible"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2>
-<a name="id3003725"></a><span class="refentrytitle">VteTerminalAccessible</span>
+<a name="id2634349"></a><span class="refentrytitle">VteTerminalAccessible</span>
 </h2>
 <p>VteTerminalAccessible &#8212; Accessibility peer of <a href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>.</p>
 </td>
@@ -46,31 +46,29 @@
 
 
 
-            <a href="VteTerminalAccessible.html#VteTerminalAccessible-struct">VteTerminalAccessible</a>;
-AtkObject*  <a href="VteTerminalAccessible.html#vte-terminal-accessible-new">vte_terminal_accessible_new</a>     (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+                    <a href="VteTerminalAccessible.html#VteTerminalAccessible-struct">VteTerminalAccessible</a>;
+<GTKDOCLINK HREF="AtkObject">AtkObject</GTKDOCLINK>*          <a href="VteTerminalAccessible.html#vte-terminal-accessible-new">vte_terminal_accessible_new</a>         (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3003776"></a><h2>Object Hierarchy</h2>
+<a name="id2634400"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
 
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----AtkObject
-         +----GtkAccessible
+  <GTKDOCLINK HREF="GObject">GObject</GTKDOCLINK>
+   +----<GTKDOCLINK HREF="AtkObject">AtkObject</GTKDOCLINK>
+         +----<GTKDOCLINK HREF="GtkAccessible">GtkAccessible</GTKDOCLINK>
                +----VteTerminalAccessible
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3003816"></a><h2>Implemented Interfaces</h2>
+<a name="id2634440"></a><h2>Implemented Interfaces</h2>
 <p>
 VteTerminalAccessible implements
- AtkComponent,  AtkAction and  AtkText.</p>
+ <GTKDOCLINK HREF="AtkComponent">AtkComponent</GTKDOCLINK>,  <GTKDOCLINK HREF="AtkAction">AtkAction</GTKDOCLINK> and  <GTKDOCLINK HREF="AtkText">AtkText</GTKDOCLINK>.</p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3003855"></a><h2>Description</h2>
+<a name="id2634479"></a><h2>Description</h2>
 <p>
 The accessibility peer of a <a href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>, implementing GNOME's accessibility
 framework.
@@ -78,22 +76,22 @@ framework.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3003879"></a><h2>Details</h2>
+<a name="id2634503"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id3003889"></a><h3>
+<a name="id2634513"></a><h3>
 <a name="VteTerminalAccessible-struct"></a>VteTerminalAccessible</h3>
-<a class="indexterm" name="id3003903"></a><pre class="programlisting">typedef struct {
+<a class="indexterm" name="id2634527"></a><pre class="programlisting">typedef struct {
 	GtkAccessible parent;
 } VteTerminalAccessible;
 </pre>
 <p>
-This should not be accessed directly.  Use the <span class="type">AtkText</span> interface instead.
+This should not be accessed directly.  Use the <GTKDOCLINK HREF="AtkText"><span class="type">AtkText</span></GTKDOCLINK> interface instead.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
-<td><span class="term">GtkAccessible&#160;<em class="structfield"><code>parent</code></em>;</span></td>
-<td>The parent <span class="type">GtkAccessible</span> object.
+<td><span class="term"><GTKDOCLINK HREF="GtkAccessible">GtkAccessible</GTKDOCLINK>&#160;<em class="structfield"><code>parent</code></em>;</span></td>
+<td>The parent <GTKDOCLINK HREF="GtkAccessible"><span class="type">GtkAccessible</span></GTKDOCLINK> object.
 
 </td>
 </tr></tbody>
@@ -101,9 +99,9 @@ This should not be accessed directly.  Use the <span class="type">AtkText</span>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id3003962"></a><h3>
+<a name="id2634586"></a><h3>
 <a name="vte-terminal-accessible-new"></a>vte_terminal_accessible_new ()</h3>
-<a class="indexterm" name="id3003974"></a><pre class="programlisting">AtkObject*  vte_terminal_accessible_new     (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<a class="indexterm" name="id2634598"></a><pre class="programlisting"><GTKDOCLINK HREF="AtkObject">AtkObject</GTKDOCLINK>*          vte_terminal_accessible_new         (<a href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Creates a new accessibility peer for the terminal widget.</p>
 <p>
@@ -119,7 +117,7 @@ Creates a new accessibility peer for the terminal widget.</p>
 </tr>
 <tr>
 <td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
-<td> the new <span class="type">AtkObject</span>
+<td> the new <GTKDOCLINK HREF="AtkObject"><span class="type">AtkObject</span></GTKDOCLINK>
 </td>
 </tr>
 </tbody>
