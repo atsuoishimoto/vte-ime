@@ -1,3 +1,11 @@
+vte (1:0.16.8-0ubuntu1) gutsy; urgency=low
+
+  * New upstream release:
+    - Quick followup release with no code changes, to fix missing
+      documentation index in the tarball.
+
+ -- Aron Sisak <aron@ubuntu.hu>  Mon, 30 Jul 2007 19:51:56 +0200
+
 vte (1:0.16.7-0ubuntu1) gutsy; urgency=low
 
   * New upstream release:

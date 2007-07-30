@@ -20,22 +20,22 @@
 <th width="100%" align="center">VTE Reference Manual</th>
 <td>&#160;</td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2634183" class="shortcut">Top</a>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3004530" class="shortcut">Top</a>
                   &#160;|&#160;
-                  <a href="#id2635199" class="shortcut">Description</a>
+                  <a href="#id3005545" class="shortcut">Description</a>
                   &#160;|&#160;
-                  <a href="#id2635147" class="shortcut">Object Hierarchy</a>
+                  <a href="#id3005493" class="shortcut">Object Hierarchy</a>
                   &#160;|&#160;
-                  <a href="#id2635171" class="shortcut">Signals</a></nobr></td></tr>
+                  <a href="#id3005518" class="shortcut">Signals</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="VteReaper"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2>
-<a name="id2634183"></a><span class="refentrytitle">VteReaper</span>
+<a name="id3004530"></a><span class="refentrytitle">VteReaper</span>
 </h2>
-<p>VteReaper &#8212; A singleton object which catches <GTKDOCLINK HREF="SIGCHLD:CAPS"><code class="literal">SIGCHLD</code></GTKDOCLINK> signals and converts them into
+<p>VteReaper &#8212; A singleton object which catches <code class="literal">SIGCHLD</code> signals and converts them into
 GObject-style "child-exited" signals.</p>
 </td>
 <td valign="top" align="right"></td>
@@ -48,51 +48,55 @@ GObject-style "child-exited" signals.</p>
 
                     <a href="VteReaper.html#VteReaper-struct">VteReaper</a>;
 <a href="VteReaper.html" title="VteReaper">VteReaper</a>*          <a href="VteReaper.html#vte-reaper-get">vte_reaper_get</a>                      (void);
-<GTKDOCLINK HREF="int">int</GTKDOCLINK>                 <a href="VteReaper.html#vte-reaper-add-child">vte_reaper_add_child</a>                (<GTKDOCLINK HREF="GPid">GPid</GTKDOCLINK> pid);
+int                 <a href="VteReaper.html#vte-reaper-add-child">vte_reaper_add_child</a>                (<a
+href="../glib/glib-The-Main-Event-Loop.html#GPid"
+>GPid</a> pid);
 
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2635147"></a><h2>Object Hierarchy</h2>
+<a name="id3005493"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
 
-  <GTKDOCLINK HREF="GObject">GObject</GTKDOCLINK>
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----VteReaper
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2635171"></a><h2>Signals</h2>
+<a name="id3005518"></a><h2>Signals</h2>
 <pre class="synopsis">
 
   "<a href="VteReaper.html#VteReaper-child-exited">child-exited</a>"                                   : Run Last
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2635199"></a><h2>Description</h2>
+<a name="id3005545"></a><h2>Description</h2>
 <p>
 Because an application may need to be notified when child processes
-exit, and because there is only one <GTKDOCLINK HREF="SIGCHLD:CAPS"><code class="literal">SIGCHLD</code></GTKDOCLINK> handler, the <a href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>
-widget relies on a <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> to watch for <GTKDOCLINK HREF="SIGCHLD:CAPS"><code class="literal">SIGCHLD</code></GTKDOCLINK> notifications and
+exit, and because there is only one <code class="literal">SIGCHLD</code> handler, the <a href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>
+widget relies on a <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> to watch for <code class="literal">SIGCHLD</code> notifications and
 retrieve the exit status of child processes which have exited.  When
 glib provides child_watch functionality, the <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> merely acts as
 a proxy for glib's own functionality.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2635263"></a><h2>Details</h2>
+<a name="id3005610"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2635273"></a><h3>
+<a name="id3005620"></a><h3>
 <a name="VteReaper-struct"></a>VteReaper</h3>
-<a class="indexterm" name="id2635286"></a><pre class="programlisting">typedef struct _VteReaper VteReaper;</pre>
+<a class="indexterm" name="id3005632"></a><pre class="programlisting">typedef struct _VteReaper VteReaper;</pre>
 <p>
 This should not be accessed directly.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2635302"></a><h3>
+<a name="id3005648"></a><h3>
 <a name="vte-reaper-get"></a>vte_reaper_get ()</h3>
-<a class="indexterm" name="id2635314"></a><pre class="programlisting"><a href="VteReaper.html" title="VteReaper">VteReaper</a>*          vte_reaper_get                      (void);</pre>
+<a class="indexterm" name="id3005661"></a><pre class="programlisting"><a href="VteReaper.html" title="VteReaper">VteReaper</a>*          vte_reaper_get                      (void);</pre>
 <p>
 Finds the address of the global <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> object, creating the object if
 necessary.</p>
@@ -110,9 +114,11 @@ necessary.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id2635372"></a><h3>
+<a name="id3005718"></a><h3>
 <a name="vte-reaper-add-child"></a>vte_reaper_add_child ()</h3>
-<a class="indexterm" name="id2635384"></a><pre class="programlisting"><GTKDOCLINK HREF="int">int</GTKDOCLINK>                 vte_reaper_add_child                (<GTKDOCLINK HREF="GPid">GPid</GTKDOCLINK> pid);</pre>
+<a class="indexterm" name="id3005731"></a><pre class="programlisting">int                 vte_reaper_add_child                (<a
+href="../glib/glib-The-Main-Event-Loop.html#GPid"
+>GPid</a> pid);</pre>
 <p>
 Ensures that child-exited signals will be emitted when <em class="parameter"><code>pid</code></em> exits.  This is
 necessary for correct operation when running with glib versions &gt;= 2.4.</p>
@@ -139,14 +145,20 @@ Since 0.11.11
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id2635456"></a><h2>Signal Details</h2>
+<a name="id3005802"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
-<a name="id2635466"></a><h3>
+<a name="id3005813"></a><h3>
 <a name="VteReaper-child-exited"></a>The "child-exited" signal</h3>
-<a class="indexterm" name="id2635477"></a><pre class="programlisting"><GTKDOCLINK HREF="void">void</GTKDOCLINK>                user_function                      (<a href="VteReaper.html" title="VteReaper">VteReaper</a> *vtereaper,
-                                                        <GTKDOCLINK HREF="gint">gint</GTKDOCLINK>       arg1,
-                                                        <GTKDOCLINK HREF="gint">gint</GTKDOCLINK>       arg2,
-                                                        <GTKDOCLINK HREF="gpointer">gpointer</GTKDOCLINK>   user_data)      : Run Last</pre>
+<a class="indexterm" name="id3005823"></a><pre class="programlisting">void                user_function                      (<a href="VteReaper.html" title="VteReaper">VteReaper</a> *vtereaper,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>       arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>       arg2,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>   user_data)      : Run Last</pre>
 <p>
 Emitted when the <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> object detects that a child of the current process has exited.
 </p>
@@ -165,7 +177,7 @@ Emitted when the <a href="VteReaper.html" title="VteReaper"><span class="type">V
 </tr>
 <tr>
 <td><span class="term"><em class="parameter"><code>arg2</code></em>&#160;:</span></td>
-<td>the status of the exited child, as returned by <GTKDOCLINK HREF="waitpid"><code class="function">waitpid()</code></GTKDOCLINK>.
+<td>the status of the exited child, as returned by <code class="function">waitpid()</code>.
 
 </td>
 </tr>
