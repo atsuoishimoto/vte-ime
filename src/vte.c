@@ -71,6 +71,8 @@ static void vte_terminal_set_visibility (VteTerminal *terminal, GdkVisibilitySta
 static void vte_terminal_set_termcap(VteTerminal *terminal, const char *path,
 				     gboolean reset);
 static void vte_terminal_paste(VteTerminal *terminal, GdkAtom board);
+static void vte_terminal_real_copy_clipboard(VteTerminal *terminal);
+static void vte_terminal_real_paste_clipboard(VteTerminal *terminal);
 static gboolean vte_terminal_io_read(GIOChannel *channel,
 				     GIOCondition condition,
 				     VteTerminal *terminal);
@@ -123,6 +125,13 @@ static void reset_update_regions (VteTerminal *terminal);
 
 static gboolean process_timeout (gpointer data);
 static gboolean update_timeout (gpointer data);
+
+enum {
+    COPY_CLIPBOARD,
+    PASTE_CLIPBOARD,
+    LAST_SIGNAL
+};
+static guint signals[LAST_SIGNAL];
 
 /* these static variables are guarded by the GDK mutex */
 static guint process_timeout_tag = VTE_INVALID_SOURCE;
@@ -399,13 +408,27 @@ _vte_invalidate_cells(VteTerminal *terminal,
 
 	/* Convert the column and row start and end to pixel values
 	 * by multiplying by the size of a character cell.
-	 * Always include the extra pixel border.
+	 * Always include the extra pixel border and overlap pixel.
 	 */
-	rect.x = column_start * terminal->char_width - 2*VTE_PAD_WIDTH;
-	rect.width = column_count * terminal->char_width + 5*VTE_PAD_WIDTH;
+	rect.x = column_start * terminal->char_width - 1;
+	if (column_start != 0) {
+		rect.x += VTE_PAD_WIDTH;
+	}
+	rect.width = (column_start + column_count) * terminal->char_width + 3 + VTE_PAD_WIDTH;
+	if (column_start + column_count == terminal->column_count) {
+		rect.width += VTE_PAD_WIDTH;
+	}
+	rect.width -= rect.x;
 
-	rect.y = row_start * terminal->char_height - 2*VTE_PAD_WIDTH;
-	rect.height = row_count * terminal->char_height + 4*VTE_PAD_WIDTH;
+	rect.y = row_start * terminal->char_height - 1;
+	if (row_start != 0) {
+		rect.y += VTE_PAD_WIDTH;
+	}
+	rect.height = (row_start + row_count) * terminal->char_height + 2 + VTE_PAD_WIDTH;
+	if (row_start + row_count == terminal->row_count) {
+		rect.height += VTE_PAD_WIDTH;
+	}
+	rect.height -= rect.y;
 
 	_vte_debug_print (VTE_DEBUG_UPDATES,
 			"Invalidating pixels at (%d,%d)x(%d,%d).\n",
@@ -872,13 +895,27 @@ vte_terminal_queue_cursor_moved(VteTerminal *terminal)
 	terminal->pvt->cursor_moved_pending = TRUE;
 }
 
-/* Emit a "eof" signal. */
-static void
+static gboolean
 vte_terminal_emit_eof(VteTerminal *terminal)
 {
 	_vte_debug_print(VTE_DEBUG_SIGNALS,
 			"Emitting `eof'.\n");
+	GDK_THREADS_ENTER ();
 	g_signal_emit_by_name(terminal, "eof");
+	GDK_THREADS_LEAVE ();
+
+	return FALSE;
+}
+/* Emit a "eof" signal. */
+static void
+vte_terminal_queue_eof(VteTerminal *terminal)
+{
+	_vte_debug_print(VTE_DEBUG_SIGNALS,
+			"Queueing `eof'.\n");
+	g_idle_add_full (G_PRIORITY_HIGH,
+		(GSourceFunc) vte_terminal_emit_eof,
+		g_object_ref (terminal),
+		g_object_unref);
 }
 
 /* Emit a "char-size-changed" signal. */
@@ -1361,11 +1398,14 @@ vte_terminal_match_check_internal(VteTerminal *terminal,
 		}
 	}
 	/* Scan backwards to find the start of this line */
-	while (sattr > 0 && terminal->pvt->match_contents[sattr] != '\n') {
+	while (sattr > 0 &&
+		! (terminal->pvt->match_contents[sattr] == '\n' ||
+		    terminal->pvt->match_contents[sattr] == '\0')) {
 		sattr--;
 	}
 	/* and skip any initial newlines. */
-	while (terminal->pvt->match_contents[sattr] == '\n') {
+	while (terminal->pvt->match_contents[sattr] == '\n' ||
+		terminal->pvt->match_contents[sattr] == '\0') {
 		sattr++;
 	}
 	if (eattr <= sattr) { /* blank line */
@@ -3036,7 +3076,7 @@ vte_terminal_eof(GIOChannel *channel, VteTerminal *terminal)
 	_vte_buffer_clear(terminal->pvt->outgoing);
 
 	/* Emit a signal that we read an EOF. */
-	vte_terminal_emit_eof(terminal);
+	vte_terminal_queue_eof(terminal);
 }
 
 /* Reset the input method context. */
@@ -5275,6 +5315,7 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 		 * not soft-wrapped, append a newline. */
 		else if (is_selected(terminal, terminal->column_count - 1, row, data)) {
 			/* If we didn't softwrap, add a newline. */
+			/* XXX need to clear row->soft_wrap on deletion! */
 			if (!vte_line_is_wrappable(terminal, row)) {
 				string = g_string_append_c(string, '\n');
 			}
@@ -9330,20 +9371,6 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 	row = start_row;
 	rows = row_count;
 	do {
-		gint y0, h;
-
-		if (row == delta) {
-			y0 = 0;
-		} else {
-			y0 = y;
-		}
-		if (row == delta + terminal->row_count - 1) {
-			h = terminal->widget.allocation.height;
-		} else {
-			h = y + row_height;
-		}
-		h -= y0;
-
 		row_data = _vte_terminal_find_row_data(terminal, row);
 		/* Back up in case this is a multicolumn character,
 		 * making the drawing area a little wider. */
@@ -9398,24 +9425,15 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 				if (back != VTE_DEF_BG) {
 					GdkColor color;
 					const struct vte_palette_entry *bg = &terminal->pvt->palette[back];
-					gint x0, w;
 					color.red = bg->red;
 					color.blue = bg->blue;
 					color.green = bg->green;
-					if (i == 0) {
-						x0 = 0;
-					} else {
-						x0 = x + i * column_width;
-					}
-					if (j == terminal->column_count) {
-						w = terminal->widget.allocation.width;
-					} else {
-						w = 1 + j * column_width + bold;
-					}
-					w -= x0;
 					_vte_draw_fill_rectangle (
 							terminal->pvt->draw,
-							x0, y0, w, h,
+							x + i * column_width,
+							y,
+							(j - i) * column_width + bold,
+							row_height,
 							&color, VTE_DRAW_OPAQUE);
 				}
 				/* We'll need to continue at the first cell which didn't
@@ -9441,24 +9459,15 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 				if (back != VTE_DEF_BG) {
 					GdkColor color;
 					const struct vte_palette_entry *bg = &terminal->pvt->palette[back];
-					gint x0, w;
 					color.red = bg->red;
 					color.blue = bg->blue;
 					color.green = bg->green;
-					if (i == 0) {
-						x0 = 0;
-					} else {
-						x0 = x + i * column_width;
-					}
-					if (j == terminal->column_count) {
-						w = terminal->widget.allocation.width;
-					} else {
-						w = 1 + j * column_width;
-					}
-					w -= x0;
 					_vte_draw_fill_rectangle (
 							terminal->pvt->draw,
-							x0, y0, w, h,
+							x + i *column_width,
+							y,
+							(j - i)  * column_width,
+							row_height,
 							&color, VTE_DRAW_OPAQUE);
 				}
 				i = j;
@@ -9498,7 +9507,9 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 				goto fg_skip_row;
 			}
 			while (cell->c == 0 ||
-					cell->c == ' ' ||
+					(cell->c == ' ' &&
+					 !cell->attr.underline &&
+					 !cell->attr.strikethrough) ||
 					cell->attr.fragment) {
 				if (++i >= end_column) {
 					goto fg_skip_row;
@@ -10057,10 +10068,10 @@ draw_cursor_outline:
 			color.green = terminal->pvt->palette[back].green;
 			color.blue = terminal->pvt->palette[back].blue;
 			_vte_draw_draw_rectangle(terminal->pvt->draw,
-						 item.x,
-						 item.y,
-						 cursor_width + 2*VTE_PAD_WIDTH,
-						 height + 2*VTE_PAD_WIDTH,
+						 item.x + VTE_PAD_WIDTH - VTE_CURSOR_OUTLINE,
+						 item.y + VTE_PAD_WIDTH - VTE_CURSOR_OUTLINE,
+						 cursor_width + 2*VTE_CURSOR_OUTLINE,
+						 height + 2*VTE_CURSOR_OUTLINE,
 						 &color,
 						 VTE_DRAW_OPAQUE);
 		}
@@ -10327,6 +10338,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 {
 	GObjectClass *gobject_class;
 	GtkWidgetClass *widget_class;
+	GtkBindingSet  *binding_set;
 
 #ifdef VTE_DEBUG
 	{
@@ -10419,6 +10431,10 @@ vte_terminal_class_init(VteTerminalClass *klass)
 	klass->text_inserted = NULL;
 	klass->text_deleted = NULL;
 	klass->text_scrolled = NULL;
+
+	klass->copy_clipboard = vte_terminal_real_copy_clipboard;
+	klass->paste_clipboard = vte_terminal_real_paste_clipboard;
+
 
 	/* Register some signals of our own. */
 	klass->eof_signal =
@@ -10664,6 +10680,31 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     NULL,
 			     _vte_marshal_VOID__INT,
 			     G_TYPE_NONE, 1, G_TYPE_INT);
+	signals[COPY_CLIPBOARD] =
+		g_signal_new("copy-clipboard",
+			     G_OBJECT_CLASS_TYPE(klass),
+			     G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+			     G_STRUCT_OFFSET(VteTerminalClass, copy_clipboard),
+			     NULL,
+			     NULL,
+			     _vte_marshal_VOID__VOID,
+			     G_TYPE_NONE, 0);
+
+	signals[PASTE_CLIPBOARD] =
+		g_signal_new("paste-clipboard",
+			     G_OBJECT_CLASS_TYPE(klass),
+			     G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+			     G_STRUCT_OFFSET(VteTerminalClass, paste_clipboard),
+			     NULL,
+			     NULL,
+			     _vte_marshal_VOID__VOID,
+			     G_TYPE_NONE, 0);
+
+	/* Bind Copy, Paste, Cut keys */
+	binding_set = gtk_binding_set_by_class(klass);
+	gtk_binding_entry_add_signal(binding_set, GDK_F16, 0, "copy-clipboard",0);
+	gtk_binding_entry_add_signal(binding_set, GDK_F18, 0, "paste-clipboard", 0);
+	gtk_binding_entry_add_signal(binding_set, GDK_F20, 0, "copy-clipboard",0);
 
 	process_timer = g_timer_new ();
 }
@@ -10856,6 +10897,18 @@ vte_terminal_set_scroll_on_keystroke(VteTerminal *terminal, gboolean scroll)
 	terminal->pvt->scroll_on_keystroke = scroll;
 }
 
+static void
+vte_terminal_real_copy_clipboard(VteTerminal *terminal)
+{
+	_vte_debug_print(VTE_DEBUG_SELECTION, "Copying to CLIPBOARD.\n");
+	if (terminal->pvt->selection != NULL) {
+		GtkClipboard *clipboard;
+		clipboard = vte_terminal_clipboard_get(terminal,
+						       GDK_SELECTION_CLIPBOARD);
+		gtk_clipboard_set_text(clipboard, terminal->pvt->selection, -1);
+	}
+}
+
 /**
  * vte_terminal_copy_clipboard:
  * @terminal: a #VteTerminal
@@ -10868,13 +10921,14 @@ void
 vte_terminal_copy_clipboard(VteTerminal *terminal)
 {
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
-	_vte_debug_print(VTE_DEBUG_SELECTION, "Copying to CLIPBOARD.\n");
-	if (terminal->pvt->selection != NULL) {
-		GtkClipboard *clipboard;
-		clipboard = vte_terminal_clipboard_get(terminal,
-						       GDK_SELECTION_CLIPBOARD);
-		gtk_clipboard_set_text(clipboard, terminal->pvt->selection, -1);
-	}
+	g_signal_emit (terminal, signals[COPY_CLIPBOARD], 0);
+}
+
+static void
+vte_terminal_real_paste_clipboard(VteTerminal *terminal)
+{
+	_vte_debug_print(VTE_DEBUG_SELECTION, "Pasting CLIPBOARD.\n");
+	vte_terminal_paste(terminal, GDK_SELECTION_CLIPBOARD);
 }
 
 /**
@@ -10890,8 +10944,7 @@ void
 vte_terminal_paste_clipboard(VteTerminal *terminal)
 {
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
-	_vte_debug_print(VTE_DEBUG_SELECTION, "Pasting CLIPBOARD.\n");
-	vte_terminal_paste(terminal, GDK_SELECTION_CLIPBOARD);
+	g_signal_emit (terminal, signals[PASTE_CLIPBOARD], 0);
 }
 
 /**

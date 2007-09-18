@@ -20,20 +20,20 @@
 <th width="100%" align="center">VTE Reference Manual</th>
 <td>&#160;</td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3004530" class="shortcut">Top</a>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2741918" class="shortcut">Top</a>
                   &#160;|&#160;
-                  <a href="#id3005545" class="shortcut">Description</a>
+                  <a href="#id2742934" class="shortcut">Description</a>
                   &#160;|&#160;
-                  <a href="#id3005493" class="shortcut">Object Hierarchy</a>
+                  <a href="#id2742882" class="shortcut">Object Hierarchy</a>
                   &#160;|&#160;
-                  <a href="#id3005518" class="shortcut">Signals</a></nobr></td></tr>
+                  <a href="#id2742906" class="shortcut">Signals</a></nobr></td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="VteReaper"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2>
-<a name="id3004530"></a><span class="refentrytitle">VteReaper</span>
+<a name="id2741918"></a><span class="refentrytitle">VteReaper</span>
 </h2>
 <p>VteReaper &#8212; A singleton object which catches <code class="literal">SIGCHLD</code> signals and converts them into
 GObject-style "child-exited" signals.</p>
@@ -55,7 +55,7 @@ href="../glib/glib-The-Main-Event-Loop.html#GPid"
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3005493"></a><h2>Object Hierarchy</h2>
+<a name="id2742882"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
 
   <a
@@ -65,14 +65,14 @@ href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3005518"></a><h2>Signals</h2>
+<a name="id2742906"></a><h2>Signals</h2>
 <pre class="synopsis">
 
   "<a href="VteReaper.html#VteReaper-child-exited">child-exited</a>"                                   : Run Last
 </pre>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3005545"></a><h2>Description</h2>
+<a name="id2742934"></a><h2>Description</h2>
 <p>
 Because an application may need to be notified when child processes
 exit, and because there is only one <code class="literal">SIGCHLD</code> handler, the <a href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>
@@ -83,20 +83,20 @@ a proxy for glib's own functionality.
 </p>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3005610"></a><h2>Details</h2>
+<a name="id2742998"></a><h2>Details</h2>
 <div class="refsect2" lang="en">
-<a name="id3005620"></a><h3>
+<a name="id2743008"></a><h3>
 <a name="VteReaper-struct"></a>VteReaper</h3>
-<a class="indexterm" name="id3005632"></a><pre class="programlisting">typedef struct _VteReaper VteReaper;</pre>
+<a class="indexterm" name="id2743021"></a><pre class="programlisting">typedef struct _VteReaper VteReaper;</pre>
 <p>
 This should not be accessed directly.
 </p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id3005648"></a><h3>
+<a name="id2743036"></a><h3>
 <a name="vte-reaper-get"></a>vte_reaper_get ()</h3>
-<a class="indexterm" name="id3005661"></a><pre class="programlisting"><a href="VteReaper.html" title="VteReaper">VteReaper</a>*          vte_reaper_get                      (void);</pre>
+<a class="indexterm" name="id2743049"></a><pre class="programlisting"><a href="VteReaper.html" title="VteReaper">VteReaper</a>*          vte_reaper_get                      (void);</pre>
 <p>
 Finds the address of the global <a href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> object, creating the object if
 necessary.</p>
@@ -114,9 +114,9 @@ necessary.</p>
 </div>
 <hr>
 <div class="refsect2" lang="en">
-<a name="id3005718"></a><h3>
+<a name="id2743107"></a><h3>
 <a name="vte-reaper-add-child"></a>vte_reaper_add_child ()</h3>
-<a class="indexterm" name="id3005731"></a><pre class="programlisting">int                 vte_reaper_add_child                (<a
+<a class="indexterm" name="id2743119"></a><pre class="programlisting">int                 vte_reaper_add_child                (<a
 href="../glib/glib-The-Main-Event-Loop.html#GPid"
 >GPid</a> pid);</pre>
 <p>
@@ -145,11 +145,11 @@ Since 0.11.11
 </div>
 </div>
 <div class="refsect1" lang="en">
-<a name="id3005802"></a><h2>Signal Details</h2>
+<a name="id2743191"></a><h2>Signal Details</h2>
 <div class="refsect2" lang="en">
-<a name="id3005813"></a><h3>
+<a name="id2743201"></a><h3>
 <a name="VteReaper-child-exited"></a>The "child-exited" signal</h3>
-<a class="indexterm" name="id3005823"></a><pre class="programlisting">void                user_function                      (<a href="VteReaper.html" title="VteReaper">VteReaper</a> *vtereaper,
+<a class="indexterm" name="id2743212"></a><pre class="programlisting">void                user_function                      (<a href="VteReaper.html" title="VteReaper">VteReaper</a> *vtereaper,
                                                         <a
 href="../glib/glib-Basic-Types.html#gint"
 >gint</a>       arg1,

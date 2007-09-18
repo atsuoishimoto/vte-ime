@@ -93,6 +93,7 @@
     <keyword type="" name="The &quot;child-exited&quot; signal" link="VteTerminal.html#VteTerminal-child-exited"/>
     <keyword type="" name="The &quot;commit&quot; signal" link="VteTerminal.html#VteTerminal-commit"/>
     <keyword type="" name="The &quot;contents-changed&quot; signal" link="VteTerminal.html#VteTerminal-contents-changed"/>
+    <keyword type="" name="The &quot;copy-clipboard&quot; signal" link="VteTerminal.html#VteTerminal-copy-clipboard"/>
     <keyword type="" name="The &quot;cursor-moved&quot; signal" link="VteTerminal.html#VteTerminal-cursor-moved"/>
     <keyword type="" name="The &quot;decrease-font-size&quot; signal" link="VteTerminal.html#VteTerminal-decrease-font-size"/>
     <keyword type="" name="The &quot;deiconify-window&quot; signal" link="VteTerminal.html#VteTerminal-deiconify-window"/>
@@ -105,6 +106,7 @@
     <keyword type="" name="The &quot;lower-window&quot; signal" link="VteTerminal.html#VteTerminal-lower-window"/>
     <keyword type="" name="The &quot;maximize-window&quot; signal" link="VteTerminal.html#VteTerminal-maximize-window"/>
     <keyword type="" name="The &quot;move-window&quot; signal" link="VteTerminal.html#VteTerminal-move-window"/>
+    <keyword type="" name="The &quot;paste-clipboard&quot; signal" link="VteTerminal.html#VteTerminal-paste-clipboard"/>
     <keyword type="" name="The &quot;raise-window&quot; signal" link="VteTerminal.html#VteTerminal-raise-window"/>
     <keyword type="" name="The &quot;refresh-window&quot; signal" link="VteTerminal.html#VteTerminal-refresh-window"/>
     <keyword type="" name="The &quot;resize-window&quot; signal" link="VteTerminal.html#VteTerminal-resize-window"/>

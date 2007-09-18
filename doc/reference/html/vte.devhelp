@@ -93,6 +93,7 @@
     <function name="The &quot;child-exited&quot; signal" link="VteTerminal.html#VteTerminal-child-exited"/>
     <function name="The &quot;commit&quot; signal" link="VteTerminal.html#VteTerminal-commit"/>
     <function name="The &quot;contents-changed&quot; signal" link="VteTerminal.html#VteTerminal-contents-changed"/>
+    <function name="The &quot;copy-clipboard&quot; signal" link="VteTerminal.html#VteTerminal-copy-clipboard"/>
     <function name="The &quot;cursor-moved&quot; signal" link="VteTerminal.html#VteTerminal-cursor-moved"/>
     <function name="The &quot;decrease-font-size&quot; signal" link="VteTerminal.html#VteTerminal-decrease-font-size"/>
     <function name="The &quot;deiconify-window&quot; signal" link="VteTerminal.html#VteTerminal-deiconify-window"/>
@@ -105,6 +106,7 @@
     <function name="The &quot;lower-window&quot; signal" link="VteTerminal.html#VteTerminal-lower-window"/>
     <function name="The &quot;maximize-window&quot; signal" link="VteTerminal.html#VteTerminal-maximize-window"/>
     <function name="The &quot;move-window&quot; signal" link="VteTerminal.html#VteTerminal-move-window"/>
+    <function name="The &quot;paste-clipboard&quot; signal" link="VteTerminal.html#VteTerminal-paste-clipboard"/>
     <function name="The &quot;raise-window&quot; signal" link="VteTerminal.html#VteTerminal-raise-window"/>
     <function name="The &quot;refresh-window&quot; signal" link="VteTerminal.html#VteTerminal-refresh-window"/>
     <function name="The &quot;resize-window&quot; signal" link="VteTerminal.html#VteTerminal-resize-window"/>

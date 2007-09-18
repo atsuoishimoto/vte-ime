@@ -1,3 +1,19 @@
+vte (1:0.16.9-0ubuntu1) gutsy; urgency=low
+
+  * New upstream release:
+    - Slightly improved pango backend
+    - Misc bug fixes.
+    - Fixed Bug "Handling of wrapped links in gnome-terminal is broken"
+    - Fixed Bug "troubles with pad"
+    - Fixed Bug "Handle Sun Cut, Copy, Paste keys"
+    - Fixed Bug "vteapp resize weirdness"
+    - Fixed Bug "Spaces are not underlined"
+    - Fixed Bug "vte crash on removing a terminal tab"
+  * debian/rules: bumped shlibs.
+  * debian/patches/93_eof_emission.patch: dropped, fixed upstream.
+
+ -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue, 18 Sep 2007 10:53:12 +0200
+
 vte (1:0.16.8-0ubuntu1) gutsy; urgency=low
 
   * New upstream release:

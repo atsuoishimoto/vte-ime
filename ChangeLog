@@ -1,3 +1,116 @@
+2007-09-17  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.16.9.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.16.9.
+	Bumped libtool version to 11:13:2.
+
+2007-09-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	* perf/vim.sh: Wait for keypress when done, so one can do
+	"vte -c ./vim.sh" and not lose the final numbers.
+
+	* src/vtepango.c (_vte_pango_destroy), (_vte_pango_start),
+	(_vte_pango_end), (_vte_pango_set_background_color),
+	(_vte_pango_set_background_image), (_vte_pango_clear),
+	(_vte_pango_set_text_font), (_vte_pango_get_using_fontconfig),
+	(_vte_pango_draw_text), (_vte_pango_draw_has_char),
+	(_vte_pango_draw_rectangle), (_vte_pango_fill_rectangle),
+	(_vte_pango_set_scroll):  General cleanup.  Also implement
+	_vte_pango_draw_has_char() using
+	pango_layout_get_unknown_glyphs_count() when available.
+
+2007-09-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 469862 – Handling of wrapped links in gnome-terminal is broken
+
+	* src/vteseq.c (vte_sequence_handler_ce): Reset soft_wrapped.
+
+2007-09-01  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	cf Bug 469862 – Handling of wrapped links in gnome-terminal is broken
+
+	* src/vte.c (vte_terminal_get_text_range_maybe_wrapped):
+	    Revert the last character is in last column check as that
+	    behaviour is required to handle terminal resizing where the
+	    screen contents are not reconstructed (e.g. bash).
+
+2007-08-30  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 471901 – troubles with pad
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_invalidate_cells), (vte_terminal_draw_rows),
+	(vte_terminal_paint): Don't abuse VTE_PAD_WIDTH.
+
+2007-08-30  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 469862 – Handling of wrapped links in gnome-terminal is broken
+
+	* src/vte.c (vte_terminal_get_text_range_maybe_wrapped):
+	    Check that the last character is in the last column before
+	    adding a newline for autowrapped lines.
+
+2007-08-30  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* MAINTAINERS: Add myself to the list, as Behdad had suggested some
+	time ago.
+
+2007-08-30  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 153265 – Handle Sun Cut, Copy, Paste keys
+	Patch by Brian Cameron.
+
+	* doc/reference/tmpl/vte.sgml:
+	* src/vte.c (vte_terminal_class_init),
+	(vte_terminal_real_copy_clipboard), (vte_terminal_copy_clipboard),
+	(vte_terminal_real_paste_clipboard),
+	(vte_terminal_paste_clipboard):
+	* src/vte.h:
+	    Add key bindings for the special function keys.
+
+2007-08-30  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_draw_rows): Bad manipulation of patches
+	whilst attempting to apply the fix for Bug 434230 - net result was
+	that the correct code was being circumvented.
+
+2007-08-29  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 471484 – vteapp resize weirdness
+
+	* src/vteapp.c (main): Distinguish between setting the geometry and
+	disabling the use of geometry hints. A regression when converting to
+	GOption based arguments.
+
+2007-08-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 470690 – Typo at src/vtexft.c "appropiate" should be "appropriate"
+
+	* src/vtexft.c (_vte_xft_open_font_for_char): Fix typo.
+
+2007-08-07  Behdad Esfahbod  <behdad@gnome.org>
+
+	* MAINTAINERS: Add Userid field, remove Guilherme.
+
+2007-08-03  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 434230 – Spaces are not underlined
+	Original patch by Santtu Lakkala.
+
+	* src/vte.c (vte_terminal_draw_rows): Only skip cells if we do not
+	need to draw on top.
+
+2007-08-03  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 450069 – vte crash on removing a terminal tab
+
+	* src/vte.c (vte_terminal_emit_eof), (vte_terminal_queue_eof),
+	(vte_terminal_eof): Move the EOF emission to an idle handler so that
+	the source is inactive whilst the VteTerminal is finalized.
+
 2007-07-30  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.16.8.
