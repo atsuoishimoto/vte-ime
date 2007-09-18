@@ -87,6 +87,7 @@
 <ANCHOR id="VteTerminal-child-exited" href="vte/VteTerminal.html#VteTerminal-child-exited">
 <ANCHOR id="VteTerminal-commit" href="vte/VteTerminal.html#VteTerminal-commit">
 <ANCHOR id="VteTerminal-contents-changed" href="vte/VteTerminal.html#VteTerminal-contents-changed">
+<ANCHOR id="VteTerminal-copy-clipboard" href="vte/VteTerminal.html#VteTerminal-copy-clipboard">
 <ANCHOR id="VteTerminal-cursor-moved" href="vte/VteTerminal.html#VteTerminal-cursor-moved">
 <ANCHOR id="VteTerminal-decrease-font-size" href="vte/VteTerminal.html#VteTerminal-decrease-font-size">
 <ANCHOR id="VteTerminal-deiconify-window" href="vte/VteTerminal.html#VteTerminal-deiconify-window">
@@ -99,6 +100,7 @@
 <ANCHOR id="VteTerminal-lower-window" href="vte/VteTerminal.html#VteTerminal-lower-window">
 <ANCHOR id="VteTerminal-maximize-window" href="vte/VteTerminal.html#VteTerminal-maximize-window">
 <ANCHOR id="VteTerminal-move-window" href="vte/VteTerminal.html#VteTerminal-move-window">
+<ANCHOR id="VteTerminal-paste-clipboard" href="vte/VteTerminal.html#VteTerminal-paste-clipboard">
 <ANCHOR id="VteTerminal-raise-window" href="vte/VteTerminal.html#VteTerminal-raise-window">
 <ANCHOR id="VteTerminal-refresh-window" href="vte/VteTerminal.html#VteTerminal-refresh-window">
 <ANCHOR id="VteTerminal-resize-window" href="vte/VteTerminal.html#VteTerminal-resize-window">

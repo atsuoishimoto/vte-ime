@@ -216,7 +216,7 @@ const <link linkend="char">char</link>*         <link linkend="vte-terminal-get-
 <title role="impl_interfaces.title">Implemented Interfaces</title>
 <para>
 VteTerminal implements
- <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link> and  <link linkend="GtkBuildable">GtkBuildable</link>.</para>
 
 </refsect1>
 
@@ -230,6 +230,7 @@ VteTerminal implements
   &quot;<link linkend="VteTerminal-child-exited">child-exited</link>&quot;                                   : Run Last
   &quot;<link linkend="VteTerminal-commit">commit</link>&quot;                                         : Run Last
   &quot;<link linkend="VteTerminal-contents-changed">contents-changed</link>&quot;                               : Run Last
+  &quot;<link linkend="VteTerminal-copy-clipboard">copy-clipboard</link>&quot;                                 : Run Last / Action
   &quot;<link linkend="VteTerminal-cursor-moved">cursor-moved</link>&quot;                                   : Run Last
   &quot;<link linkend="VteTerminal-decrease-font-size">decrease-font-size</link>&quot;                             : Run Last
   &quot;<link linkend="VteTerminal-deiconify-window">deiconify-window</link>&quot;                               : Run Last
@@ -242,6 +243,7 @@ VteTerminal implements
   &quot;<link linkend="VteTerminal-lower-window">lower-window</link>&quot;                                   : Run Last
   &quot;<link linkend="VteTerminal-maximize-window">maximize-window</link>&quot;                                : Run Last
   &quot;<link linkend="VteTerminal-move-window">move-window</link>&quot;                                    : Run Last
+  &quot;<link linkend="VteTerminal-paste-clipboard">paste-clipboard</link>&quot;                                : Run Last / Action
   &quot;<link linkend="VteTerminal-raise-window">raise-window</link>&quot;                                   : Run Last
   &quot;<link linkend="VteTerminal-refresh-window">refresh-window</link>&quot;                                 : Run Last
   &quot;<link linkend="VteTerminal-resize-window">resize-window</link>&quot;                                  : Run Last
@@ -1997,6 +1999,18 @@ primarily by <link linkend="VteTerminalAccessible"><type>VteTerminalAccessible</
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-copy-clipboard"/>The &quot;copy-clipboard&quot; signal</title>
+<indexterm><primary>VteTerminal::copy-clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+                                                        <link linkend="gpointer">gpointer</link>     user_data)        : Run Last / Action</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>vteterminal</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="VteTerminal-cursor-moved"/>The &quot;cursor-moved&quot; signal</title>
 <indexterm><primary>VteTerminal::cursor-moved</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
@@ -2151,6 +2165,18 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
 <listitem><simpara>the terminal's desired location, Y coordinate.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-paste-clipboard"/>The &quot;paste-clipboard&quot; signal</title>
+<indexterm><primary>VteTerminal::paste-clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+                                                        <link linkend="gpointer">gpointer</link>     user_data)        : Run Last / Action</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>vteterminal</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
