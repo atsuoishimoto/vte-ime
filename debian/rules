@@ -92,3 +92,15 @@ clean::
 	-rm -rf $(addprefix configure-stamp-, $(PY_VERSIONS))
 	-rm -rf $(addprefix build-stamp-, $(PY_VERSIONS))
 	rm -rf dbg-build* dbg-*-stamp-*
+
+common-binary-predeb-arch::
+	t=libvte-common; \
+	for p in $$(dh_listpackages -a -N$$t); do \
+	  rm -rf debian/$$p/usr/share/doc/$$p; \
+	  ln -s $$t debian/$$p/usr/share/doc/$$p; \
+	  if [ -f debian/$$p.docs ]; then \
+	    mkdir -p debian/$$p/usr/share/doc/$$t; \
+	    cp -p $$(eval echo $$(cat debian/$$p.docs)) debian/$$p/usr/share/doc/$$t/; \
+	    dh_compress -p$$p; \
+	  fi; \
+	done
