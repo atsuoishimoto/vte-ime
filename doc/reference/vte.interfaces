@@ -1,0 +1,5 @@
+GtkWidget AtkImplementorIface GtkBuildable
+VteTerminal AtkImplementorIface GtkBuildable
+GtkContainer AtkImplementorIface GtkBuildable
+AtkNoOpObject AtkComponent AtkAction AtkEditableText AtkImage AtkSelection AtkTable AtkHypertext AtkText AtkValue AtkDocument
+VteTerminalAccessible AtkComponent AtkAction AtkText

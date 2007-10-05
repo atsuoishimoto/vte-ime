@@ -1,0 +1,2 @@
+vte_terminal_select_all
+vte_terminal_select_none

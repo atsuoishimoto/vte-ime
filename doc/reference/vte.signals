@@ -1,0 +1,221 @@
+<SIGNAL>
+<NAME>VteTerminal::char-size-changed</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+guint  arg1
+guint  arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::child-exited</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::commit</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+gchar *arg1
+guint  arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::contents-changed</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::copy-clipboard</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::cursor-moved</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::decrease-font-size</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::deiconify-window</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::emulation-changed</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::encoding-changed</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::eof</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::icon-title-changed</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::iconify-window</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::increase-font-size</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::lower-window</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::maximize-window</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::move-window</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+guint  arg1
+guint  arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::paste-clipboard</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::raise-window</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::refresh-window</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::resize-window</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+guint  arg1
+guint  arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::restore-window</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::selection-changed</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::status-line-changed</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::text-deleted</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::text-inserted</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::text-modified</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::text-scrolled</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+gint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteTerminal::window-title-changed</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteTerminal *vteterminal
+</SIGNAL>
+
+<SIGNAL>
+<NAME>VteReaper::child-exited</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+VteReaper *vtereaper
+gint  arg1
+gint  arg2
+</SIGNAL>
+

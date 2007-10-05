@@ -1,0 +1,22 @@
+<informaltable pgwide="1" frame="none">
+<tgroup cols="3">
+<colspec colwidth="1*"/>
+<colspec colwidth="1*"/>
+<colspec colwidth="1*"/>
+<tbody>
+<row>
+<entry><link linkend="AtkObject">AtkObject</link></entry>
+<entry><link linkend="GInitiallyUnowned">GInitiallyUnowned</link></entry>
+<entry><link linkend="GObject">GObject</link></entry>
+</row>
+<row>
+<entry><link linkend="GtkAccessible">GtkAccessible</link></entry>
+<entry><link linkend="GtkObject">GtkObject</link></entry>
+<entry><link linkend="GtkWidget">GtkWidget</link></entry>
+</row>
+<row>
+<entry><link linkend="VteReaper">VteReaper</link></entry>
+<entry><link linkend="VteTerminal">VteTerminal</link></entry>
+<entry><link linkend="VteTerminalAccessible">VteTerminalAccessible</link></entry>
+</row>
+</tbody></tgroup></informaltable>

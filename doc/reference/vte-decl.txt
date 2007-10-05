@@ -1,0 +1,815 @@
+<STRUCT>
+<NAME>VteReaper</NAME>
+struct _VteReaper {
+	GObject object;
+	GIOChannel *channel;
+	int iopipe[2];
+};
+</STRUCT>
+<STRUCT>
+<NAME>VteReaper</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>VteReaperClass</NAME>
+struct _VteReaperClass {
+	GObjectClass parent_class;
+	guint child_exited_signal;
+};
+</STRUCT>
+<STRUCT>
+<NAME>VteReaperClass</NAME>
+</STRUCT>
+<FUNCTION>
+<NAME>vte_reaper_get_type</NAME>
+<RETURNS>GType </RETURNS>
+void
+</FUNCTION>
+<MACRO>
+<NAME>VTE_TYPE_REAPER</NAME>
+#define VTE_TYPE_REAPER			(vte_reaper_get_type())
+</MACRO>
+<MACRO>
+<NAME>VTE_REAPER</NAME>
+#define VTE_REAPER(obj)			(GTK_CHECK_CAST((obj), \
+							VTE_TYPE_REAPER, \
+							VteReaper))
+</MACRO>
+<MACRO>
+<NAME>VTE_REAPER_CLASS</NAME>
+#define VTE_REAPER_CLASS(klass)		GTK_CHECK_CLASS_CAST((klass), \
+							     VTE_TYPE_REAPER, \
+							     VteReaperClass)
+</MACRO>
+<MACRO>
+<NAME>VTE_IS_REAPER</NAME>
+#define VTE_IS_REAPER(obj)		GTK_CHECK_TYPE((obj), VTE_TYPE_REAPER)
+</MACRO>
+<MACRO>
+<NAME>VTE_IS_REAPER_CLASS</NAME>
+#define VTE_IS_REAPER_CLASS(klass)	GTK_CHECK_CLASS_TYPE((klass), \
+							     VTE_TYPE_REAPER)
+</MACRO>
+<MACRO>
+<NAME>VTE_REAPER_GET_CLASS</NAME>
+#define VTE_REAPER_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS((obj), \
+								   VTE_TYPE_REAPER, \
+								   VteReaperClass))
+</MACRO>
+<FUNCTION>
+<NAME>vte_reaper_get</NAME>
+<RETURNS>VteReaper *</RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_reaper_add_child</NAME>
+<RETURNS>int </RETURNS>
+GPid pid
+</FUNCTION>
+<STRUCT>
+<NAME>VteTerminalAccessible</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>VteTerminalAccessible</NAME>
+struct _VteTerminalAccessible {
+	/*< public > */
+	GtkAccessible parent;
+	/*< private > */
+	/* Unknown GailWidget implementation stuffs, exact size of which is
+	 * worked out at run-time. */
+};
+</STRUCT>
+<STRUCT>
+<NAME>VteTerminalAccessibleClass</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>VteTerminalAccessibleClass</NAME>
+struct _VteTerminalAccessibleClass {
+	/*< public > */
+	/* Inherited parent class. */
+	GtkAccessibleClass parent_class;
+	/*< private > */
+	/* Unknown GailWidgetClass implementation stuffs, exact size of which
+	 * is worked out at run-time. */
+};
+</STRUCT>
+<FUNCTION>
+<NAME>vte_terminal_accessible_get_type</NAME>
+<RETURNS>GtkType </RETURNS>
+void
+</FUNCTION>
+<MACRO>
+<NAME>VTE_TYPE_TERMINAL_ACCESSIBLE</NAME>
+#define VTE_TYPE_TERMINAL_ACCESSIBLE	(vte_terminal_accessible_get_type())
+</MACRO>
+<MACRO>
+<NAME>VTE_TERMINAL_ACCESSIBLE</NAME>
+#define VTE_TERMINAL_ACCESSIBLE(obj)	(GTK_CHECK_CAST((obj),\
+							VTE_TYPE_TERMINAL_ACCESSIBLE,\
+							VteTerminalAccessible))
+</MACRO>
+<MACRO>
+<NAME>VTE_TERMINAL_ACCESSIBLE_CLASS</NAME>
+#define VTE_TERMINAL_ACCESSIBLE_CLASS(klass)	GTK_CHECK_CLASS_CAST((klass),\
+								     VTE_TYPE_TERMINAL_ACCESSIBLE,\
+								     VteTerminalAccessibleClass)
+</MACRO>
+<MACRO>
+<NAME>VTE_IS_TERMINAL_ACCESSIBLE</NAME>
+#define VTE_IS_TERMINAL_ACCESSIBLE(obj)		GTK_CHECK_TYPE((obj),\
+							       VTE_TYPE_TERMINAL_ACCESSIBLE)
+</MACRO>
+<MACRO>
+<NAME>VTE_IS_TERMINAL_ACCESSIBLE_CLASS</NAME>
+#define VTE_IS_TERMINAL_ACCESSIBLE_CLASS(klass)	GTK_CHECK_CLASS_TYPE((klass),\
+								     VTE_TYPE_TERMINAL_ACCESSIBLE)
+</MACRO>
+<MACRO>
+<NAME>VTE_TERMINAL_ACCESSIBLE_GET_CLASS</NAME>
+#define VTE_TERMINAL_ACCESSIBLE_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), VTE_TYPE_TERMINAL_ACCESSIBLE, VteTerminalAccessibleClass))
+</MACRO>
+<FUNCTION>
+<NAME>vte_terminal_accessible_new</NAME>
+<RETURNS>AtkObject *</RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<STRUCT>
+<NAME>VteTerminalAccessibleFactory</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>VteTerminalAccessibleFactory</NAME>
+struct _VteTerminalAccessibleFactory {
+	/*< public > */
+	AtkObjectFactory parent;
+	/*< private > */
+};
+</STRUCT>
+<STRUCT>
+<NAME>VteTerminalAccessibleFactoryClass</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>VteTerminalAccessibleFactoryClass</NAME>
+struct _VteTerminalAccessibleFactoryClass {
+	/*< public > */
+	AtkObjectFactoryClass parent;
+	/*< private > */
+};
+</STRUCT>
+<FUNCTION>
+<NAME>vte_terminal_accessible_factory_get_type</NAME>
+<RETURNS>GtkType </RETURNS>
+void
+</FUNCTION>
+<MACRO>
+<NAME>VTE_TYPE_TERMINAL_ACCESSIBLE_FACTORY</NAME>
+#define VTE_TYPE_TERMINAL_ACCESSIBLE_FACTORY	(vte_terminal_accessible_factory_get_type())
+</MACRO>
+<MACRO>
+<NAME>VTE_TERMINAL_ACCESSIBLE_FACTORY</NAME>
+#define VTE_TERMINAL_ACCESSIBLE_FACTORY(obj)	(GTK_CHECK_CAST((obj),\
+								VTE_TYPE_TERMINAL_ACCESSIBLE_FACTORY,\
+								VteTerminalAccessibleFactory))
+</MACRO>
+<MACRO>
+<NAME>VTE_TERMINAL_ACCESSIBLE_FACTORY_CLASS</NAME>
+#define VTE_TERMINAL_ACCESSIBLE_FACTORY_CLASS(klass)	GTK_CHECK_CLASS_CAST((klass),\
+									     VTE_TYPE_TERMINAL_ACCESSIBLE_FACTORY,\
+									     VteTerminalAccessibleFactoryClass)
+</MACRO>
+<MACRO>
+<NAME>VTE_IS_TERMINAL_ACCESSIBLE_FACTORY</NAME>
+#define VTE_IS_TERMINAL_ACCESSIBLE_FACTORY(obj)		GTK_CHECK_TYPE((obj),\
+								       VTE_TYPE_TERMINAL_ACCESSIBLE_FACTORY)
+</MACRO>
+<MACRO>
+<NAME>VTE_IS_TERMINAL_ACCESSIBLE_FACTORY_CLASS</NAME>
+#define VTE_IS_TERMINAL_ACCESSIBLE_FACTORY_CLASS(klass)	GTK_CHECK_CLASS_TYPE((klass),\
+									     VTE_TYPE_TERMINAL_ACCESSIBLE_FACTORY)
+</MACRO>
+<MACRO>
+<NAME>VTE_TERMINAL_ACCESSIBLE_FACTORY_GET_CLASS</NAME>
+#define VTE_TERMINAL_ACCESSIBLE_FACTORY_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), VTE_TYPE_TERMINAL_ACCESSIBLE_FACTORY, VteTerminalAccessibleFactoryClass))
+</MACRO>
+<FUNCTION>
+<NAME>vte_terminal_accessible_factory_new</NAME>
+<RETURNS>AtkObjectFactory *</RETURNS>
+void
+</FUNCTION>
+<STRUCT>
+<NAME>VteTerminalPrivate</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>VteTerminal</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>VteTerminal</NAME>
+struct _VteTerminal {
+	/*< public >*/
+
+	/* Widget implementation stuffs. */
+	GtkWidget widget;
+	GtkAdjustment *adjustment;	/* Scrolling adjustment. */
+
+	/* Metric and sizing data. */
+	glong char_width, char_height;	/* dimensions of character cells */
+	glong char_ascent, char_descent; /* important font metrics */
+	glong row_count, column_count;	/* dimensions of the window */
+
+	/* Titles. */
+	char *window_title;
+	char *icon_title;
+
+	/*< private >*/
+	VteTerminalPrivate *pvt;
+};
+</STRUCT>
+<STRUCT>
+<NAME>VteTerminalClass</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>VteTerminalClass</NAME>
+struct _VteTerminalClass {
+	/*< public > */
+	/* Inherited parent class. */
+	GtkWidgetClass parent_class;
+
+	/*< protected > */
+	/* Default signal handlers. */
+	void (*eof)(VteTerminal* terminal);
+	void (*child_exited)(VteTerminal* terminal);
+	void (*emulation_changed)(VteTerminal* terminal);
+	void (*encoding_changed)(VteTerminal* terminal);
+	void (*char_size_changed)(VteTerminal* terminal, guint char_width, guint char_height);
+	void (*window_title_changed)(VteTerminal* terminal);
+	void (*icon_title_changed)(VteTerminal* terminal);
+	void (*selection_changed)(VteTerminal* terminal);
+	void (*contents_changed)(VteTerminal* terminal);
+	void (*cursor_moved)(VteTerminal* terminal);
+	void (*status_line_changed)(VteTerminal* terminal);
+	void (*commit)(VteTerminal* terminal, gchar *text, guint size);
+
+	void (*deiconify_window)(VteTerminal* terminal);
+	void (*iconify_window)(VteTerminal* terminal);
+	void (*raise_window)(VteTerminal* terminal);
+	void (*lower_window)(VteTerminal* terminal);
+	void (*refresh_window)(VteTerminal* terminal);
+	void (*restore_window)(VteTerminal* terminal);
+	void (*maximize_window)(VteTerminal* terminal);
+	void (*resize_window)(VteTerminal* terminal, guint width, guint height);
+	void (*move_window)(VteTerminal* terminal, guint x, guint y);
+
+	void (*increase_font_size)(VteTerminal* terminal);
+	void (*decrease_font_size)(VteTerminal* terminal);
+
+	void (*text_modified)(VteTerminal* terminal);
+	void (*text_inserted)(VteTerminal* terminal);
+	void (*text_deleted)(VteTerminal* terminal);
+	void (*text_scrolled)(VteTerminal* terminal, gint delta);
+	void (*copy_clipboard)(VteTerminal* terminal);
+	void (*paste_clipboard)(VteTerminal* terminal);
+
+	/* Padding for future expansion. */
+	void (*vte_reserved1)(void);
+	void (*vte_reserved2)(void);
+	void (*vte_reserved3)(void);
+	void (*vte_reserved4)(void);
+
+	/*< private > */
+	/* Signals we might emit. */
+	guint eof_signal;
+	guint child_exited_signal;
+	guint emulation_changed_signal;
+	guint encoding_changed_signal;
+	guint char_size_changed_signal;
+	guint window_title_changed_signal;
+	guint icon_title_changed_signal;
+	guint selection_changed_signal;
+	guint contents_changed_signal;
+	guint cursor_moved_signal;
+	guint status_line_changed_signal;
+	guint commit_signal;
+
+	guint deiconify_window_signal;
+	guint iconify_window_signal;
+	guint raise_window_signal;
+	guint lower_window_signal;
+	guint refresh_window_signal;
+	guint restore_window_signal;
+	guint maximize_window_signal;
+	guint resize_window_signal;
+	guint move_window_signal;
+
+	guint increase_font_size_signal;
+	guint decrease_font_size_signal;
+
+	guint text_modified_signal;
+	guint text_inserted_signal;
+	guint text_deleted_signal;
+	guint text_scrolled_signal;
+
+	guint reserved1;
+	guint reserved2;
+	guint reserved3;
+	guint reserved4;
+	guint reserved5;
+	guint reserved6;
+};
+</STRUCT>
+<ENUM>
+<NAME>VteTerminalEraseBinding</NAME>
+typedef enum {
+	VTE_ERASE_AUTO,
+	VTE_ERASE_ASCII_BACKSPACE,
+	VTE_ERASE_ASCII_DELETE,
+	VTE_ERASE_DELETE_SEQUENCE
+} VteTerminalEraseBinding;
+</ENUM>
+<ENUM>
+<NAME>VteTerminalAntiAlias</NAME>
+typedef enum {
+	VTE_ANTI_ALIAS_USE_DEFAULT,
+	VTE_ANTI_ALIAS_FORCE_ENABLE,
+	VTE_ANTI_ALIAS_FORCE_DISABLE
+} VteTerminalAntiAlias;
+</ENUM>
+<STRUCT>
+<NAME>VteCharAttributes</NAME>
+struct _VteCharAttributes {
+	long row, column;
+	GdkColor fore, back;
+	guint underline:1, strikethrough:1;
+};
+</STRUCT>
+<STRUCT>
+<NAME>VteCharAttributes</NAME>
+</STRUCT>
+<STRUCT>
+<NAME>vte_char_attributes</NAME>
+struct vte_char_attributes {
+	long row, column;
+	GdkColor fore, back;
+	guint underline:1, strikethrough:1;
+};
+</STRUCT>
+<FUNCTION>
+<NAME>vte_terminal_get_type</NAME>
+<RETURNS>GtkType </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_erase_binding_get_type</NAME>
+<RETURNS>GtkType </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_anti_alias_get_type</NAME>
+<RETURNS>GtkType </RETURNS>
+void
+</FUNCTION>
+<MACRO>
+<NAME>VTE_TYPE_TERMINAL</NAME>
+#define VTE_TYPE_TERMINAL		(vte_terminal_get_type())
+</MACRO>
+<MACRO>
+<NAME>VTE_TERMINAL</NAME>
+#define VTE_TERMINAL(obj)		(GTK_CHECK_CAST((obj),\
+							VTE_TYPE_TERMINAL,\
+							VteTerminal))
+</MACRO>
+<MACRO>
+<NAME>VTE_TERMINAL_CLASS</NAME>
+#define VTE_TERMINAL_CLASS(klass)	GTK_CHECK_CLASS_CAST((klass),\
+							     VTE_TYPE_TERMINAL,\
+							     VteTerminalClass)
+</MACRO>
+<MACRO>
+<NAME>VTE_IS_TERMINAL</NAME>
+#define VTE_IS_TERMINAL(obj)		GTK_CHECK_TYPE((obj),\
+						       VTE_TYPE_TERMINAL)
+</MACRO>
+<MACRO>
+<NAME>VTE_IS_TERMINAL_CLASS</NAME>
+#define VTE_IS_TERMINAL_CLASS(klass)	GTK_CHECK_CLASS_TYPE((klass),\
+							     VTE_TYPE_TERMINAL)
+</MACRO>
+<MACRO>
+<NAME>VTE_TERMINAL_GET_CLASS</NAME>
+#define VTE_TERMINAL_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), VTE_TYPE_TERMINAL, VteTerminalClass))
+</MACRO>
+<MACRO>
+<NAME>VTE_TYPE_TERMINAL_ERASE_BINDING</NAME>
+#define VTE_TYPE_TERMINAL_ERASE_BINDING	(vte_terminal_erase_binding_get_type())
+</MACRO>
+<MACRO>
+<NAME>VTE_IS_TERMINAL_ERASE_BINDING</NAME>
+#define VTE_IS_TERMINAL_ERASE_BINDING(obj)	GTK_CHECK_TYPE((obj),\
+						VTE_TYPE_TERMINAL_ERASE_BINDING)
+</MACRO>
+<MACRO>
+<NAME>VTE_TYPE_TERMINAL_ANTI_ALIAS</NAME>
+#define VTE_TYPE_TERMINAL_ANTI_ALIAS	(vte_terminal_anti_alias_get_type())
+</MACRO>
+<MACRO>
+<NAME>VTE_IS_TERMINAL_ANTI_ALIAS</NAME>
+#define VTE_IS_TERMINAL_ANTI_ALIAS(obj)		GTK_CHECK_TYPE((obj),\
+						VTE_TYPE_TERMINAL_ANTI_ALIAS)
+</MACRO>
+<FUNCTION>
+<NAME>vte_terminal_new</NAME>
+<RETURNS>GtkWidget *</RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_fork_command</NAME>
+<RETURNS>pid_t </RETURNS>
+VteTerminal *terminal,const char *command, char **argv,char **envv, const char *directory,gboolean lastlog,gboolean utmp,gboolean wtmp
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_forkpty</NAME>
+<RETURNS>pid_t </RETURNS>
+VteTerminal *terminal,char **envv, const char *directory,gboolean lastlog,gboolean utmp,gboolean wtmp
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_feed</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, const char *data, glong length
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_feed_child</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, const char *text, glong length
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_feed_child_binary</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, const char *data, glong length
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_copy_clipboard</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_paste_clipboard</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_copy_primary</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_paste_primary</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_select_all</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_select_none</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_size</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,glong columns, glong rows
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_audible_bell</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, gboolean is_audible
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_audible_bell</NAME>
+<RETURNS>gboolean </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_visible_bell</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, gboolean is_visible
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_visible_bell</NAME>
+<RETURNS>gboolean </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_scroll_background</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, gboolean scroll
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_scroll_on_output</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, gboolean scroll
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_scroll_on_keystroke</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,gboolean scroll
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_color_dim</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const GdkColor *dim
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_color_bold</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const GdkColor *bold
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_color_foreground</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const GdkColor *foreground
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_color_background</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const GdkColor *background
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_color_cursor</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const GdkColor *cursor_background
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_color_highlight</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const GdkColor *highlight_background
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_colors</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const GdkColor *foreground,const GdkColor *background,const GdkColor *palette,glong palette_size
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_default_colors</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_background_image</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, GdkPixbuf *image
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_background_image_file</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const char *path
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_background_tint_color</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const GdkColor *color
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_background_saturation</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,double saturation
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_background_transparent</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,gboolean transparent
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_opacity</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, guint16 opacity
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_cursor_blinks</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, gboolean blink
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_scrollback_lines</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, glong lines
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_im_append_menuitems</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,GtkMenuShell *menushell
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_font</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const PangoFontDescription *font_desc
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_font_full</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const PangoFontDescription *font_desc,VteTerminalAntiAlias antialias
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_font_from_string</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, const char *name
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_font_from_string_full</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,const char *name,VteTerminalAntiAlias antialias
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_font</NAME>
+<RETURNS>const PangoFontDescription *</RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_using_xft</NAME>
+<RETURNS>gboolean </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_allow_bold</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, gboolean allow_bold
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_allow_bold</NAME>
+<RETURNS>gboolean </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_has_selection</NAME>
+<RETURNS>gboolean </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_word_chars</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, const char *spec
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_is_word_char</NAME>
+<RETURNS>gboolean </RETURNS>
+VteTerminal *terminal, gunichar c
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_backspace_binding</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,VteTerminalEraseBinding binding
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_delete_binding</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,VteTerminalEraseBinding binding
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_mouse_autohide</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, gboolean setting
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_mouse_autohide</NAME>
+<RETURNS>gboolean </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_reset</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, gboolean full,gboolean clear_history
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_text</NAME>
+<RETURNS>char *</RETURNS>
+VteTerminal *terminal,gboolean(*is_selected)(VteTerminal *terminal,glong column,glong row,gpointer data),gpointer data,GArray *attributes
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_text_include_trailing_spaces</NAME>
+<RETURNS>char *</RETURNS>
+VteTerminal *terminal,gboolean(*is_selected)(VteTerminal *terminal,glong column,glong row,gpointer data),gpointer data,GArray *attributes
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_text_range</NAME>
+<RETURNS>char *</RETURNS>
+VteTerminal *terminal,glong start_row, glong start_col,glong end_row, glong end_col,gboolean(*is_selected)(VteTerminal *terminal,glong column,glong row,gpointer data),gpointer data,GArray *attributes
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_cursor_position</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,glong *column, glong *row
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_match_clear_all</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_match_add</NAME>
+<RETURNS>int </RETURNS>
+VteTerminal *terminal, const char *match
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_match_set_cursor</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, int tag,GdkCursor *cursor
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_match_set_cursor_type</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal,int tag, GdkCursorType cursor_type
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_match_remove</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, int tag
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_match_check</NAME>
+<RETURNS>char *</RETURNS>
+VteTerminal *terminal,glong column, glong row,int *tag
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_emulation</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, const char *emulation
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_emulation</NAME>
+<RETURNS>const char *</RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_default_emulation</NAME>
+<RETURNS>const char *</RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_encoding</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, const char *codeset
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_encoding</NAME>
+<RETURNS>const char *</RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_status_line</NAME>
+<RETURNS>const char *</RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_padding</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, int *xpad, int *ypad
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_set_pty</NAME>
+<RETURNS>void </RETURNS>
+VteTerminal *terminal, int pty_master
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_adjustment</NAME>
+<RETURNS>GtkAdjustment *</RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_char_width</NAME>
+<RETURNS>glong </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_char_height</NAME>
+<RETURNS>glong </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_char_descent</NAME>
+<RETURNS>glong </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_char_ascent</NAME>
+<RETURNS>glong </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_row_count</NAME>
+<RETURNS>glong </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_column_count</NAME>
+<RETURNS>glong </RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_window_title</NAME>
+<RETURNS>const char *</RETURNS>
+VteTerminal *terminal
+</FUNCTION>
+<FUNCTION>
+<NAME>vte_terminal_get_icon_title</NAME>
+<RETURNS>const char *</RETURNS>
+VteTerminal *terminal
+</FUNCTION>

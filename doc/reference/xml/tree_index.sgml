@@ -1,0 +1,11 @@
+<screen>
+    <link linkend="GObject">GObject</link>
+        <link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+            <link linkend="GtkObject">GtkObject</link>
+                <link linkend="GtkWidget">GtkWidget</link>
+                    <link linkend="VteTerminal">VteTerminal</link>
+        <link linkend="AtkObject">AtkObject</link>
+            <link linkend="GtkAccessible">GtkAccessible</link>
+                <link linkend="VteTerminalAccessible">VteTerminalAccessible</link>
+        <link linkend="VteReaper">VteReaper</link>
+</screen>

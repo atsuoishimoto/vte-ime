@@ -1,0 +1,10 @@
+98% symbol docs coverage.
+121 symbols documented.
+0 symbols incomplete.
+2 not documented.
+
+
+VteTerminal::copy-clipboard
+VteTerminal::paste-clipboard
+
+
