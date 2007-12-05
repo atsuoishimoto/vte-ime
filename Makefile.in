@@ -37,9 +37,9 @@ subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(srcdir)/vte-uninstalled.pc.in $(srcdir)/vte.pc.in \
-	$(srcdir)/vte.spec.in $(top_srcdir)/configure AUTHORS COPYING \
-	ChangeLog INSTALL NEWS compile config.guess config.sub depcomp \
-	install-sh ltmain.sh missing mkinstalldirs
+	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
+	compile config.guess config.sub depcomp install-sh ltmain.sh \
+	missing mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.in
@@ -49,7 +49,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = vte.pc vte-uninstalled.pc vte.spec
+CONFIG_CLEAN_FILES = vte.pc vte-uninstalled.pc
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -140,14 +140,12 @@ INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
-INTLTOOL_ICONV = @INTLTOOL_ICONV@
 INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
-INTLTOOL_MSGFMT = @INTLTOOL_MSGFMT@
-INTLTOOL_MSGMERGE = @INTLTOOL_MSGMERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_POLICY_RULE = @INTLTOOL_POLICY_RULE@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
 INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
@@ -159,7 +157,6 @@ INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
-INTLTOOL_XGETTEXT = @INTLTOOL_XGETTEXT@
 INTLTOOL_XML_NOMERGE_RULE = @INTLTOOL_XML_NOMERGE_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 LDFLAGS = @LDFLAGS@
@@ -281,13 +278,12 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = src python termcaps po doc $(am__append_1)
-EXTRA_DIST = MAINTAINERS HACKING vte.spec vte.pc.in vte-uninstalled.pc.in \
+EXTRA_DIST = MAINTAINERS HACKING vte.pc.in vte-uninstalled.pc.in \
 	     intltool-extract.in intltool-merge.in intltool-update.in
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = vte.pc
-CVSTAG = $(shell echo $(PACKAGE)-$(VERSION) | sed 's,[\.\-],_,g')
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
 MAINTAINERCLEANFILES = \
 		$(srcdir)/INSTALL \
@@ -367,8 +363,6 @@ distclean-hdr:
 vte.pc: $(top_builddir)/config.status $(srcdir)/vte.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 vte-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/vte-uninstalled.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-vte.spec: $(top_builddir)/config.status $(srcdir)/vte.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
@@ -782,36 +776,6 @@ uninstall-am: uninstall-pkgconfigDATA
 	ps ps-am tags tags-recursive uninstall uninstall-am \
 	uninstall-pkgconfigDATA
 
-
-forcetag:
-	cvs tag -cFR $(CVSTAG) .
-
-reallytag:
-	cvs tag -cR $(CVSTAG) .
-
-up:
-	cvs up -dP
-
-tag:
-	$(top_srcdir)/autogen.sh
-	$(MAKE) reallytag
-
-archive:
-	root=`cat $(top_srcdir)/CVS/Root` ; \
-	repo=`cat $(top_srcdir)/CVS/Repository` ; \
-	tmpdir=`mktemp -d /tmp/$(PACKAGE)-cvsXXXXXX` ; \
-	dir=`pwd` ; \
-	cd $$tmpdir ; \
-	cvs -d $$root export -r $(CVSTAG) $$repo ; \
-	cd $$tmpdir/$$repo ; \
-	./autogen.sh ; \
-	make dist ; \
-	cp $(PACKAGE)-$(VERSION).tar.gz $$dir/ ; \
-	rpmbuild -tb $(PACKAGE)-$(VERSION).tar.gz || true ; \
-	rm -fr $$tmpdir
-
-srpm: $(top_srcdir)/$(PACKAGE)-$(VERSION).tar.gz
-	rpmbuild -ts $(top_srcdir)/$(PACKAGE)-$(VERSION).tar.gz
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

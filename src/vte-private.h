@@ -97,9 +97,11 @@ struct vte_charcell {
 	gunichar c;		/* The Unicode character. */
 
 	struct vte_charcell_attr {
-		guint32 columns: 2;	/* Number of visible columns
-					   (as determined
-					   by g_unicode_iswide(c)). */
+		guint32 columns: 4;	/* Number of visible columns
+					   (as determined by g_unicode_iswide(c)).
+					   Also abused for tabs; bug 353610
+					   Keep at least 4 for tabs to work
+					   */
 		guint32 fore: 9;	/* Index into color palette */
 		guint32 back: 9;	/* Index into color palette. */
 
@@ -114,8 +116,9 @@ struct vte_charcell {
 		guint32 bold: 1;
 
 		guint32 invisible: 1;
+		/* unused; bug 499893
 		guint32 protect: 1;
-		guint32 alternate: 1;
+		 */
 
 		/* 31 bits */
 	} attr;
@@ -239,6 +242,7 @@ struct _VteTerminalPrivate {
 							   fore/back with no
 							   character data */
 		struct vte_charcell basic_defaults;	/* original defaults */
+		gboolean alternate_charset;
 		gboolean status_line;
 		GString *status_line_contents;
 		gboolean status_line_changed;
@@ -379,7 +383,11 @@ struct _VteTerminalPrivate {
 	/* Obscured? state. */
 	GdkVisibilityState visibility_state;
 
+	/* Font stuff. */
 	gboolean has_fonts;
+	glong line_thickness;
+	glong underline_position;
+	glong strikethrough_position;
 };
 
 
@@ -394,6 +402,7 @@ void _vte_invalidate_cursor_once(VteTerminal *terminal, gboolean periodic);
 VteRowData * _vte_new_row_data(VteTerminal *terminal);
 VteRowData * _vte_new_row_data_sized(VteTerminal *terminal, gboolean fill);
 VteRowData * _vte_reset_row_data (VteTerminal *terminal, VteRowData *row, gboolean fill);
+void _vte_free_row_data(VteRowData *row);
 void _vte_terminal_adjust_adjustments(VteTerminal *terminal);
 void _vte_terminal_queue_contents_changed(VteTerminal *terminal);
 void _vte_terminal_emit_text_deleted(VteTerminal *terminal);

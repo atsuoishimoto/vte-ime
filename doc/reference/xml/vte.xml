@@ -48,6 +48,8 @@ enum                <link linkend="VteTerminalEraseBinding">VteTerminalEraseBind
 <link linkend="void">void</link>                <link linkend="vte-terminal-feed-child-binary">vte_terminal_feed_child_binary</link>      (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *data,
                                                          <link linkend="glong">glong</link> length);
+<link linkend="void">void</link>                <link linkend="vte-terminal-select-all">vte_terminal_select_all</link>             (<link linkend="VteTerminal">VteTerminal</link> *terminal);
+<link linkend="void">void</link>                <link linkend="vte-terminal-select-none">vte_terminal_select_none</link>            (<link linkend="VteTerminal">VteTerminal</link> *terminal);
 <link linkend="void">void</link>                <link linkend="vte-terminal-copy-clipboard">vte_terminal_copy_clipboard</link>         (<link linkend="VteTerminal">VteTerminal</link> *terminal);
 <link linkend="void">void</link>                <link linkend="vte-terminal-paste-clipboard">vte_terminal_paste_clipboard</link>        (<link linkend="VteTerminal">VteTerminal</link> *terminal);
 <link linkend="void">void</link>                <link linkend="vte-terminal-copy-primary">vte_terminal_copy_primary</link>           (<link linkend="VteTerminal">VteTerminal</link> *terminal);
@@ -573,6 +575,32 @@ Sends a block of binary data to the child.</para>
 <listitem><simpara> length of <parameter>data</parameter>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  0.12.1
+</para></refsect2>
+<refsect2>
+<title><anchor id="vte-terminal-select-all" role="function" condition="since:0.16"/>vte_terminal_select_all ()</title>
+<indexterm role="0.16"><primary>vte_terminal_select_all</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_select_all             (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<para>
+Selects all text within the terminal (including the scrollback buffer).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  0.16
+</para></refsect2>
+<refsect2>
+<title><anchor id="vte-terminal-select-none" role="function" condition="since:0.16"/>vte_terminal_select_none ()</title>
+<indexterm role="0.16"><primary>vte_terminal_select_none</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_select_none            (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<para>
+Clears the current selection.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  0.16
 </para></refsect2>
 <refsect2>
 <title><anchor id="vte-terminal-copy-clipboard" role="function"/>vte_terminal_copy_clipboard ()</title>
@@ -1432,8 +1460,8 @@ the character's position, colors, and other characteristics.</para>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="vte-terminal-get-text-include-trailing-spaces" role="function"/>vte_terminal_get_text_include_trailing_spaces ()</title>
-<indexterm><primary>vte_terminal_get_text_include_trailing_spaces</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_get_text_include_trailing_spaces
+<title><anchor id="vte-terminal-get-text-include-trailing-spaces" role="function" condition="since:0.11.11"/>vte_terminal_get_text_include_trailing_spaces ()</title>
+<indexterm role="0.11.11"><primary>vte_terminal_get_text_include_trailing_spaces</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_get_text_include_trailing_spaces
                                                         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> (*is_selected) (VteTerminal *terminal,glong column,glong row,gpointer data),
                                                          <link linkend="gpointer">gpointer</link> data,
@@ -1463,9 +1491,9 @@ lines are included.</para>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a text string which must be freed by the caller, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 
-Since 0.11.11
 </simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</variablelist><para role="since">Since  0.11.11
+</para></refsect2>
 <refsect2>
 <title><anchor id="vte-terminal-get-text-range" role="function"/>vte_terminal_get_text_range ()</title>
 <indexterm><primary>vte_terminal_get_text_range</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_get_text_range         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
@@ -1703,8 +1731,8 @@ Queries the terminal for its current emulation, as last set by a call to
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="vte-terminal-get-default-emulation" role="function"/>vte_terminal_get_default_emulation ()</title>
-<indexterm><primary>vte_terminal_get_default_emulation</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_default_emulation  (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<title><anchor id="vte-terminal-get-default-emulation" role="function" condition="since:0.11.11"/>vte_terminal_get_default_emulation ()</title>
+<indexterm role="0.11.11"><primary>vte_terminal_get_default_emulation</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_default_emulation  (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Queries the terminal for its default emulation, which is attempted if the
 terminal type passed to <link linkend="vte-terminal-set-emulation"><function>vte_terminal_set_emulation()</function></link> is <link linkend="NULL:CAPS"><literal>NULL</literal></link>.</para>
@@ -1716,9 +1744,9 @@ terminal type passed to <link linkend="vte-terminal-set-emulation"><function>vte
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the name of the default terminal type the widget attempts to emulate
 
-Since 0.11.11
 </simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</variablelist><para role="since">Since  0.11.11
+</para></refsect2>
 <refsect2>
 <title><anchor id="vte-terminal-set-encoding" role="function"/>vte_terminal_set_encoding ()</title>
 <indexterm><primary>vte_terminal_set_encoding</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_encoding           (<link linkend="VteTerminal">VteTerminal</link> *terminal,
@@ -2003,7 +2031,7 @@ primarily by <link linkend="VteTerminalAccessible"><type>VteTerminalAccessible</
 <indexterm><primary>VteTerminal::copy-clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last / Action</programlisting>
 <para>
-
+Emitted whenever <link linkend="vte-terminal-copy-clipboard"><function>vte_terminal_copy_clipboard()</function></link> is called.
 </para><variablelist role="params">
 <varlistentry><term><parameter>vteterminal</parameter>&nbsp;:</term>
 <listitem><simpara>the object which received the signal.
@@ -2173,7 +2201,7 @@ Emitted at the child application's request.
 <indexterm><primary>VteTerminal::paste-clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last / Action</programlisting>
 <para>
-
+Emitted whenever <link linkend="vte-terminal-paste-clipboard"><function>vte_terminal_paste_clipboard()</function></link> is called.
 </para><variablelist role="params">
 <varlistentry><term><parameter>vteterminal</parameter>&nbsp;:</term>
 <listitem><simpara>the object which received the signal.

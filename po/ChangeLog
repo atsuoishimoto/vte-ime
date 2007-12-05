@@ -1,3 +1,41 @@
+2007-11-27  Sunil Mohan Adapa  <sunil@atc.tcs.com>
+
+	* LINGUAS, te.po: Added Telugu translation done by
+	Matapathi Pramod <pramod@swecha.net>.
+
+2007-11-13  Matej Urbančič <mateju@svn.gnome.org>
+
+	* sl.po: Updated Slovenian Translation.
+
+2007-11-02  Kjartan Maraas,,23491770  <kmaraas@gnome.org>
+
+	* nb.po: Updated Norwegian bokmål translation.
+
+2007-10-28  Mohammad DAMT  <mdamt@mnots.eu>
+
+	* id.po: Update Indonesian translation by Huda Toriq <hudatoriq at
+	gmail.com>.
+
+2007-10-23  Djihed Afifi <djihed@gmail.com> 
+
+	* ar.po: Updated Arabic Translation by Djihed Afifi.
+
+2007-10-21  Djihed Afifi <djihed@gmail.com> 
+
+	* ar.po: Updated Arabic Translation by Djihed Afifi.
+
+2007-10-21  Djihed Afifi <djihed@gmail.com> 
+
+	* ar.po: Updated Arabic Translation by Djihed Afifi.
+
+2007-10-15  Urbančič Matej <mateju@svn.gnome.org>
+
+	* sl.po: Updates to Slovenian translation.
+
+2007-09-18  Khandakar Mujahidul Islam  <suzan@bengalinux.org>
+
+	* bn.po: Updated Bengali Translation.
+
 2007-09-13  Djihed Afifi <djihed@gmail.com> 
 
 	* ar.po: Updated Arabic Translation by Djihed Afifi.

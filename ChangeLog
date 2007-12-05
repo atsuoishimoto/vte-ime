@@ -1,5 +1,297 @@
 2007-09-17  Behdad Esfahbod  <behdad@gnome.org>
 
+	Released vte-0.16.10.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.16.10.
+	Bumped libtool version to 11:14:2.
+.
+2007-12-03  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 497246 – Kill vte_iso2022_fragment_input
+
+	* src/iso2022.c (process_block), (_vte_iso2022_process):
+	Avoid the temporary allocation of the GArray holding the fragments
+	by processing each fragment as it is decyphered. This array is
+	allocated and grown for every single input chunk and is currently the
+	most frequent allocation made by vte.
+
+2007-12-03  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/keymap.c: Make is_cursor_key static.
+
+2007-11-28  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 412435 – Invalid variable name in Makefile.am
+
+	* Makefile.am:
+	* configure.in:
+	* vte.spec.in:
+	Remove spec file and old convenience cvs make targets.
+
+2007-11-28  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 416561 – Rendering issue in VtePango
+
+	* src/vtepango.c (_vte_pango_draw_rectangle):
+	* src/vtepangox.c (_vte_pango_x_draw_rectangle):
+	gdk_draw_rectangle has slightly different semantics when
+	filling vs outlining.  Fix for that.
+
+2007-11-28  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 416558 – Rendering errors in VteFT2
+
+	* src/vteft2.c (_vte_ft2_create): Disable Gtk+ double-buffering.
+
+2007-11-28  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 403217 – Outdated README
+
+	* README: Rewrite.
+
+2007-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 118967 – single line scrolling with "Ctrl+Shift+ArrowUp/ArrowDown"
+	Patch from Mauricio and Mariano Suárez-Alvarez
+
+	* src/vte.c (vte_terminal_scroll_lines),
+	(vte_terminal_scroll_pages), (vte_terminal_key_press):
+	Implement single-line scroll.
+
+2007-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 353610 – Don't convert tab characters upon copying
+
+	* src/vte-private.h:
+	* src/vteseq.c (vte_sequence_handler_ta):
+	Smart tab handling to try to preserve tab character upong copying.
+	Also makes such smart tabs all-or-none selectable.
+
+2007-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 499892 – strikethrough line is too high
+
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_apply_metrics), (vte_terminal_init),
+	(vte_terminal_draw_cells): Adjust underline/strikethrough thickness
+	and position based on pangofc's heuristics.
+
+2007-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtedraw.c (_vte_draw_init_user): Make VTE_BACKEND=list list
+	available backends to stderr.
+
+2007-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 499891 – vte with opacity set, shows invisible chars
+
+	* src/vte.c (vte_terminal_draw_rows): Don't draw invisible chars.
+
+2007-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 499896 – Alternate charset isn't an attribute, though we treat it
+	as one.
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_terminal_set_default_attributes),
+	(_vte_terminal_insert_char), (vte_terminal_reset):
+	* src/vteseq.c (vte_sequence_handler_ae),
+	(vte_sequence_handler_as):
+	Move cell.attr.alternate to screen->alternate_charset.
+
+2007-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 499893 – cell.attr.protect is unused
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_terminal_set_default_attributes):
+	* src/vteseq.c (vte_sequence_handler_mp):
+	Comment out cell.attr.protect which is unused.
+
+2007-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (_vte_invalidate_cell), (_vte_invalidate_cursor_once):
+	Minor optimization, if one can call it that.
+
+2007-11-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c: Fix doc syntax.
+
+2007-11-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Revert previous change.  For reason, see bug.
+	Bug 491832 – vte_terminal_get_text_range_maybe_wrapped always includes
+	trailing spaces
+
+	* src/vte.c (vte_terminal_get_text_range_maybe_wrapped):
+	Don't trim space characters, just the empty space after lines,
+	like we used to.
+
+2007-11-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 491832 – vte_terminal_get_text_range_maybe_wrapped always includes
+	trailing spaces
+
+	* src/vte.c (vte_terminal_get_text_range_maybe_wrapped):
+	Trim trailing space characters if asked to.
+
+2007-11-23  Behdad Esfahbod  <behdad@gnome.org>
+
+	* doc/reference/Makefile.am:
+	* doc/reference/check.docs:
+	Add script to check doc coverage is 100% on "make check".
+
+2007-11-23  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 499287 – Fix doc coverage regression
+
+	* doc/reference/tmpl/vte.sgml:
+	* doc/reference/vte-sections.txt:
+	Document undocumented symbols.
+
+2007-11-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_io_read), (vte_terminal_init),
+	(process_timeout), (update_repeat_timeout), (update_timeout):
+	    Tweak to read across chunk boundaries whilst still maintaining
+	    fairness between multiple terminals and refresh rate targets.
+
+2007-11-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/ring.c (_vte_ring_insert_preserve):
+	    Use stack allocation to hold small numbers of temporary
+	    gpointers.
+
+2007-11-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_free_row_data), (vte_terminal_reset_rowdata),
+	(vte_terminal_finalize), (vte_terminal_reset):
+	    Export _vte_row_data_free.
+
+	* src/vteseq.c (vte_remove_line_internal):
+	    Cache the removed VteRowData - fixes the continual reallocation
+	    of row data during the vim scrolling benchmark.
+
+2007-11-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (release_chunk), (prune_chunks),
+	(remove_from_active_list), (process_timeout),
+	(update_repeat_timeout):
+	    Delay pruning the chunks freelist until we finished processing
+	    all the incoming data. We were discarding the freelist far too
+	    early and reduced the efficacy of the cache.
+
+2007-11-16  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vterdb.h:
+	* src/vterdb.c (_vte_rdb_get), (_vte_rdb_search), (_vte_rdb_quark),
+	(_vte_rdb_get_rgba), (_vte_rdb_get_hintstyle), (_vte_rdb_release):
+	    Remove redundant queries and cache the XRequest on the root
+	    window (saves a few round-trips during terminal construction).
+	    Add a new function to free the cache.
+
+	* src/vtefc.c (_vte_fc_defaults_from_rdb):
+	    Release the cache after retrieving settings.
+
+2007-11-15  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_focus_out):
+	    Similar for the leave notify, disable the match updating after
+	    hiding the cursor after the loss of focus.
+	    However, do we really want to disable the hilighting whilst the
+	    pointer may still be within the terminal?
+
+2007-11-15  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_enter):
+	    Don't automatically reshow the hilight on receiving an enter
+	    event, but wait for the motion notify to update the cursor
+	    co-ordinates, otherwise we may hilight something quite distant
+	    from the cursor.
+
+2007-11-15  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_leave):
+	    Mark the cursor as invisible on leaving the terminal as this
+	    stops the hilight matcher running whilst the cursor is absent.
+
+2007-11-06  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_set_font_from_string_full): Allow NULL
+	font argument.  Can be used to set antialias without setting font.
+
+	* src/vteapp.c (main): Fix antialias handling which was borked when
+	moving to GOption.
+
+2007-11-06  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 142640 – FcConfigSubstitute in place of _vte_fc_defaults_from_gtk
+	to get antialias and hinting value
+
+	* src/vtefc.c (_vte_fc_defaults_from_gtk),
+	(_vte_fc_defaults_from_rdb): Replace _vte_fc_defaults_from_gtk() with
+	gtk_default_substitute() from Gtk+-2.6.  It's essentially the same
+	thing, but not overriding elements of the pattern already present.
+	Also remove a couple redundant calls.
+
+2007-10-11  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 439384 – gnome-terminal on feisty crashes when giving wrong locale environment
+
+	* src/vte.c (vte_terminal_set_encoding):
+	    Fallback to using UTF-8 as the locale encoding. This prevents
+	    subsequent crashes but may display gibberish in the output.
+
+2007-10-05  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 483642 – vte_terminal_feed crash when 8190 characters passed
+
+	* src/vte.c (vte_terminal_feed):
+	    Break the feed data into chunks.
+
+2007-09-30  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vtexft.c (_vte_xft_set_background_image):
+		Skip retrieving the VteBg if the source is VTE_BG_SOURCE_NONE
+		as we neither need it to listen for changes to the background
+		nor require it to load the pixmap (which is a no-op).
+
+2007-09-30  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vtexft.c (_vte_xft_destroy):
+		Ensure the GdkPixmap is destroyed along with the VteXft
+		context.
+
+2007-09-26  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 480735 – Underlining whitespace not reliable
+
+	Original patch by Steven Skovran.
+
+	I really must remember to run vttest more often. (And to work within
+	git-svn.)
+
+	* src/vte.c (vte_terminal_draw_rows):
+	    Do not skip spaces.
+
+2007-09-26  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 480735 – Underlining whitespace not reliable
+
+	Original one-liner by Steven Skovran.
+
+	* src/vte.c (vte_terminal_draw_rows):
+	    Do not try to over zealously skip whitespace. The goal is
+	    to maintain the current run whilst avoiding adding spaces to
+	    the glyph sequence - so check the cell fully for attribute
+	    breaks and simply do not add it to the glyphs if it contains a
+	    space.
+
+2007-09-17  Behdad Esfahbod  <behdad@gnome.org>
+
 	Released vte-0.16.9.
 
 	* NEWS: Updated.

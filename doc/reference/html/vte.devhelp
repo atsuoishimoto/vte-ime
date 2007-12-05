@@ -19,6 +19,8 @@
     <function name="vte_terminal_feed ()" link="VteTerminal.html#vte-terminal-feed"/>
     <function name="vte_terminal_feed_child ()" link="VteTerminal.html#vte-terminal-feed-child"/>
     <function name="vte_terminal_feed_child_binary ()" link="VteTerminal.html#vte-terminal-feed-child-binary"/>
+    <function name="vte_terminal_select_all ()" link="VteTerminal.html#vte-terminal-select-all"/>
+    <function name="vte_terminal_select_none ()" link="VteTerminal.html#vte-terminal-select-none"/>
     <function name="vte_terminal_copy_clipboard ()" link="VteTerminal.html#vte-terminal-copy-clipboard"/>
     <function name="vte_terminal_paste_clipboard ()" link="VteTerminal.html#vte-terminal-paste-clipboard"/>
     <function name="vte_terminal_copy_primary ()" link="VteTerminal.html#vte-terminal-copy-primary"/>
