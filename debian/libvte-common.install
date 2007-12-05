@@ -1,2 +1,2 @@
-debian/tmp/usr/share/locale
-debian/tmp/usr/share/vte/termcap
+usr/share/locale
+usr/share/vte/termcap
