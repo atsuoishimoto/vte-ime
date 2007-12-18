@@ -1,4 +1,31 @@
-2007-09-17  Behdad Esfahbod  <behdad@gnome.org>
+2007-12-17  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.16.11.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.16.11.
+	Bumped libtool version to 11:15:2.
+.
+2007-12-17  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 503164 – Drawing problems for VTE with gtk+-quartz
+
+	* src/vte.c (vte_terminal_init):
+	GdkQuartz does not generate GdkVisibilityNotify events and
+	so the terminal was never marked as unobscured, causing all
+	redraws to be discarded. Resolve this by initially setting the
+	terminal to be unobscured.
+
+2007-12-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 319687 – Pasting of text containing characters not in the
+	terminal's encoding silently fails
+
+	* src/vteconv.c (_vte_conv_open): Try to open converter with
+	transliteration.  Supported by GNU iconv and GLibc.
+
+2007-12-03  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.16.10.
 
