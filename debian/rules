@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-libvteN := $(shell sed -n 's/Package: \(.*\)/\1/p' debian/control | head -n 1)
+libvteN := $(shell sed -rn 's/Package:[[:space:]]*(libvte[0-9]+)[[:space:]]*$$/\1/p' debian/control | head -n 1)
 udeb := $(libvteN)-udeb
 
 buildbasedir := $(CURDIR)/debian/build
