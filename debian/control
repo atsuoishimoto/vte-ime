@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Guilherme de S. Pastore <gpastore@debian.org>
 Uploaders: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>, Loic Minier <lool@dooz.org>, Sebastian Dröge <slomo@debian.org>
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
 XS-Python-Version: >= 2.4
 XS-Vcs-Bzr: http://code.launchpad.net/~ubuntu-desktop/vte/ubuntu
 Build-Depends: cdbs (>= 0.4.43),
@@ -123,7 +123,7 @@ Package: python-vte-dbg
 Priority: extra
 Architecture: any
 Section: python
-Depends: python-vte (= ${Source-Version}), python-dbg, python-gtk2-dbg, ${shlibs:Depends}
+Depends: python-vte (= ${binary:Version}), python-dbg, python-gtk2-dbg, ${shlibs:Depends}
 Description: Python bindings for the VTE widget set (debug extension)
  The VTE library inserts terminal capability strings into a trie, and then
  uses it to determine if data received from a pseudo-terminal is a control

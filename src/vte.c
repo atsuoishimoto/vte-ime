@@ -8055,9 +8055,6 @@ vte_terminal_realize(GtkWidget *widget)
 	/* Clear modifiers. */
 	terminal->pvt->modifiers = 0;
 
-	/* window is obscured until mapped */
-	terminal->pvt->visibility_state = GDK_VISIBILITY_FULLY_OBSCURED;
-
 	/* Create our invisible cursor. */
 	bitmap = gdk_bitmap_create_from_data(widget->window, "\0", 1, 1);
 	terminal->pvt->mouse_inviso_cursor = gdk_cursor_new_from_pixmap(bitmap,
@@ -10450,7 +10447,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 
 	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
 #ifdef HAVE_DECL_BIND_TEXTDOMAIN_CODESET
-	bind_textdomain_codeset(PACKAGE, "UTF-8");
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 #endif
 
 	g_type_class_add_private(klass, sizeof (VteTerminalPrivate));
