@@ -1,3 +1,38 @@
+2008-03-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.16.13.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.16.13.
+	Bumped libtool version to 11:17:2.
+
+2008-02-20  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 517709 – VTE's pty.c makes 4096 getrlimit calls when it only needs
+	one
+
+	* src/pty.c (_vte_pty_start_helper): Only close fds 0, 1, and 2.
+	gnome-pty-helper closes all fds anyway.
+
+2008-02-08  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c:
+	* src/vteapp.c:
+	* src/vtergb.c:
+	Remove unneeded #include <fontconfig/fontconfig.h>
+
+2008-01-09  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 449131 – Wrong gettext domain
+
+	* src/pty.c:
+	* src/reaper.c (vte_reaper_class_init):
+	* src/trie.c:
+	* src/vtebg.c (vte_bg_class_init):
+	* src/vteglyph.c:
+	Oops.  Fix all remaining ones too.
+
 2008-01-07  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.16.12.
