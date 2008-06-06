@@ -1,3 +1,25 @@
+vte (1:0.16.14-1ubuntu1) intrepid; urgency=low
+
+  * Merge from Debian unstable (LP: #237806), Ubuntu remaining changes:
+    - debian/control.in:
+      + maintainer field
+      + Vcs-Bzr header
+      + minimal python version is 2.4
+      + build-depend on python-all-dbg
+      + build python-vte-dbg
+    - debian/patches/91_keep_fds.patch:
+      + add support to keep file descriptors open on vte_fork_pty()
+    - debian/rules:
+      + python-dbg changes
+
+ -- Pedro Fragoso <emberez@gmail.com>  Fri, 06 Jun 2008 02:07:27 +0100
+
+vte (1:0.16.14-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 05 Jun 2008 12:21:06 +0200
+
 vte (1:0.16.13-1ubuntu1) hardy; urgency=low
 
   * new upstream release:
@@ -8,6 +30,29 @@ vte (1:0.16.13-1ubuntu1) hardy; urgency=low
        Bug 449131 – Wrong gettext domain
 
  -- Michael Vogt <michael.vogt@ubuntu.com>  Tue, 11 Mar 2008 19:00:27 +0100
+
+vte (1:0.16.13-1) unstable; urgency=low
+
+  [ Emilio Pozuelo Monfort ]
+  * debian/control.in:
+    - Fix libvte-doc short description, which was refering to
+      development files instead of documentation.
+
+  [ Loic Minier ]
+  * Drop head -n1 from libvteN computation.
+
+  [ Sebastian Dröge ]
+  * New upstream bugfix release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 10 Mar 2008 21:51:56 +0100
+
+vte (1:0.16.12-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+  * debian/control.in:
+    + Update Standards-Version to 3.7.3, no additional changes needed.
+
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 09 Jan 2008 19:42:18 +0100
 
 vte (1:0.16.12-0ubuntu1) hardy; urgency=low
 

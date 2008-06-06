@@ -137,7 +137,7 @@ Package: libvte-doc
 Architecture: all
 Section: doc
 Depends: ${misc:Depends}
-Description: Terminal emulator widget for GTK+ 2.0 - development files
+Description: Terminal emulator widget for GTK+ 2.0 - documentation
  The VTE library inserts terminal capability strings into a trie, and then
  uses it to determine if data received from a pseudo-terminal is a control
  sequence or just random data. The sample program "interpret" illustrates

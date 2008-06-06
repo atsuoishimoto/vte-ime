@@ -120,11 +120,13 @@
     <function name="The &quot;text-modified&quot; signal" link="VteTerminal.html#VteTerminal-text-modified"/>
     <function name="The &quot;text-scrolled&quot; signal" link="VteTerminal.html#VteTerminal-text-scrolled"/>
     <function name="The &quot;window-title-changed&quot; signal" link="VteTerminal.html#VteTerminal-window-title-changed"/>
+    <function name="" link="VteTerminal.html#id2690023"/>
+    <function name="" link="VteTerminal.html#id2690024"/>
     <function name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <function name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
-    <function name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
-    <function name="vte_reaper_get ()" link="VteReaper.html#vte-reaper-get"/>
-    <function name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child"/>
-    <function name="The &quot;child-exited&quot; signal" link="VteReaper.html#VteReaper-child-exited"/>
+    <function name="" link="VteTerminalAccessible.html#id2705498"/>
+    <function name="" link="VteTerminalAccessible.html#id2705500"/>
+    <function name="" link="VteReaper.html#id2706008"/>
+    <function name="" link="VteReaper.html#id2706009"/>
   </functions>
 </book>
