@@ -140,12 +140,12 @@ const <link linkend="PangoFontDescription">PangoFontDescription</link>* <link li
                                                          <link linkend="gboolean">gboolean</link> full,
                                                          <link linkend="gboolean">gboolean</link> clear_history);
 <link linkend="char">char</link>*               <link linkend="vte-terminal-get-text">vte_terminal_get_text</link>               (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-                                                         <link linkend="gboolean">gboolean</link> (*is_selected) (VteTerminal *terminal,glong column,glong row,gpointer data),
+                                                         <link linkend="gboolean">gboolean</link> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GArray">GArray</link> *attributes);
 <link linkend="char">char</link>*               <link linkend="vte-terminal-get-text-include-trailing-spaces">vte_terminal_get_text_include_trailing_spaces</link>
                                                         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-                                                         <link linkend="gboolean">gboolean</link> (*is_selected) (VteTerminal *terminal,glong column,glong row,gpointer data),
+                                                         <link linkend="gboolean">gboolean</link> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GArray">GArray</link> *attributes);
 <link linkend="char">char</link>*               <link linkend="vte-terminal-get-text-range">vte_terminal_get_text_range</link>         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
@@ -153,7 +153,7 @@ const <link linkend="PangoFontDescription">PangoFontDescription</link>* <link li
                                                          <link linkend="glong">glong</link> start_col,
                                                          <link linkend="glong">glong</link> end_row,
                                                          <link linkend="glong">glong</link> end_col,
-                                                         <link linkend="gboolean">gboolean</link> (*is_selected) (VteTerminal *terminal,glong column,glong row,gpointer data),
+                                                         <link linkend="gboolean">gboolean</link> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GArray">GArray</link> *attributes);
 <link linkend="void">void</link>                <link linkend="vte-terminal-get-cursor-position">vte_terminal_get_cursor_position</link>    (<link linkend="VteTerminal">VteTerminal</link> *terminal,
@@ -1432,7 +1432,7 @@ selection state, and encoding.</para>
 <refsect2>
 <title><anchor id="vte-terminal-get-text" role="function"/>vte_terminal_get_text ()</title>
 <indexterm><primary>vte_terminal_get_text</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_get_text               (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-                                                         <link linkend="gboolean">gboolean</link> (*is_selected) (VteTerminal *terminal,glong column,glong row,gpointer data),
+                                                         <link linkend="gboolean">gboolean</link> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GArray">GArray</link> *attributes);</programlisting>
 <para>
@@ -1463,7 +1463,7 @@ the character's position, colors, and other characteristics.</para>
 <title><anchor id="vte-terminal-get-text-include-trailing-spaces" role="function" condition="since:0.11.11"/>vte_terminal_get_text_include_trailing_spaces ()</title>
 <indexterm role="0.11.11"><primary>vte_terminal_get_text_include_trailing_spaces</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_get_text_include_trailing_spaces
                                                         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-                                                         <link linkend="gboolean">gboolean</link> (*is_selected) (VteTerminal *terminal,glong column,glong row,gpointer data),
+                                                         <link linkend="gboolean">gboolean</link> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GArray">GArray</link> *attributes);</programlisting>
 <para>
@@ -1501,7 +1501,7 @@ lines are included.</para>
                                                          <link linkend="glong">glong</link> start_col,
                                                          <link linkend="glong">glong</link> end_row,
                                                          <link linkend="glong">glong</link> end_col,
-                                                         <link linkend="gboolean">gboolean</link> (*is_selected) (VteTerminal *terminal,glong column,glong row,gpointer data),
+                                                         <link linkend="gboolean">gboolean</link> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GArray">GArray</link> *attributes);</programlisting>
 <para>
@@ -1958,7 +1958,7 @@ An accessor function provided for the benefit of language bindings.</para>
 
 <refsect1 role="signals">
 <title role="signals.title">Signal Details</title>
-<refsect2><title><anchor id="VteTerminal-char-size-changed"/>The &quot;char-size-changed&quot; signal</title>
+<refsect2><title><anchor id="VteTerminal-char-size-changed"/>The <literal>&quot;char-size-changed&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::char-size-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="guint">guint</link>        arg1,
                                                         <link linkend="guint">guint</link>        arg2,
@@ -1979,7 +1979,7 @@ Emitted whenever selection of a new font causes the values of the
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-child-exited"/>The &quot;child-exited&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-child-exited"/>The <literal>&quot;child-exited&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::child-exited</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -1992,7 +1992,7 @@ This signal is emitted when the terminal detects that a child started using
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-commit"/>The &quot;commit&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-commit"/>The <literal>&quot;commit&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::commit</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gchar">gchar</link>       *arg1,
                                                         <link linkend="guint">guint</link>        arg2,
@@ -2014,7 +2014,7 @@ process.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-contents-changed"/>The &quot;contents-changed&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-contents-changed"/>The <literal>&quot;contents-changed&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::contents-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2027,7 +2027,7 @@ primarily by <link linkend="VteTerminalAccessible"><type>VteTerminalAccessible</
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-copy-clipboard"/>The &quot;copy-clipboard&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-copy-clipboard"/>The <literal>&quot;copy-clipboard&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::copy-clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last / Action</programlisting>
 <para>
@@ -2039,7 +2039,7 @@ Emitted whenever <link linkend="vte-terminal-copy-clipboard"><function>vte_termi
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-cursor-moved"/>The &quot;cursor-moved&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-cursor-moved"/>The <literal>&quot;cursor-moved&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::cursor-moved</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2052,7 +2052,7 @@ by <link linkend="VteTerminalAccessible"><type>VteTerminalAccessible</type></lin
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-decrease-font-size"/>The &quot;decrease-font-size&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-decrease-font-size"/>The <literal>&quot;decrease-font-size&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::decrease-font-size</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2064,7 +2064,7 @@ Emitted when the user hits the '-' key while holding the Control key.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-deiconify-window"/>The &quot;deiconify-window&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-deiconify-window"/>The <literal>&quot;deiconify-window&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::deiconify-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2076,7 +2076,7 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-emulation-changed"/>The &quot;emulation-changed&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-emulation-changed"/>The <literal>&quot;emulation-changed&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::emulation-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2089,7 +2089,7 @@ parent application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-encoding-changed"/>The &quot;encoding-changed&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-encoding-changed"/>The <literal>&quot;encoding-changed&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::encoding-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2103,7 +2103,7 @@ UTF-8 encodings, or at the parent application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-eof"/>The &quot;eof&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-eof"/>The <literal>&quot;eof&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::eof</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2117,7 +2117,7 @@ in the terminal.  This signal is frequently (but not always) emitted with a
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-icon-title-changed"/>The &quot;icon-title-changed&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-icon-title-changed"/>The <literal>&quot;icon-title-changed&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::icon-title-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2129,7 +2129,7 @@ Emitted when the terminal's <parameter>icon_title</parameter> field is modified.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-iconify-window"/>The &quot;iconify-window&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-iconify-window"/>The <literal>&quot;iconify-window&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::iconify-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2141,7 +2141,7 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-increase-font-size"/>The &quot;increase-font-size&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-increase-font-size"/>The <literal>&quot;increase-font-size&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::increase-font-size</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2153,7 +2153,7 @@ Emitted when the user hits the '+' key while holding the Control key.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-lower-window"/>The &quot;lower-window&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-lower-window"/>The <literal>&quot;lower-window&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::lower-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2165,7 +2165,7 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-maximize-window"/>The &quot;maximize-window&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-maximize-window"/>The <literal>&quot;maximize-window&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::maximize-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2177,7 +2177,7 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-move-window"/>The &quot;move-window&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-move-window"/>The <literal>&quot;move-window&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::move-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="guint">guint</link>        arg1,
                                                         <link linkend="guint">guint</link>        arg2,
@@ -2197,7 +2197,7 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-paste-clipboard"/>The &quot;paste-clipboard&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-paste-clipboard"/>The <literal>&quot;paste-clipboard&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::paste-clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last / Action</programlisting>
 <para>
@@ -2209,7 +2209,7 @@ Emitted whenever <link linkend="vte-terminal-paste-clipboard"><function>vte_term
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-raise-window"/>The &quot;raise-window&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-raise-window"/>The <literal>&quot;raise-window&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::raise-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2221,7 +2221,7 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-refresh-window"/>The &quot;refresh-window&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-refresh-window"/>The <literal>&quot;refresh-window&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::refresh-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2233,7 +2233,7 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-resize-window"/>The &quot;resize-window&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-resize-window"/>The <literal>&quot;resize-window&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::resize-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="guint">guint</link>        arg1,
                                                         <link linkend="guint">guint</link>        arg2,
@@ -2253,7 +2253,7 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-restore-window"/>The &quot;restore-window&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-restore-window"/>The <literal>&quot;restore-window&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::restore-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2265,7 +2265,7 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-selection-changed"/>The &quot;selection-changed&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-selection-changed"/>The <literal>&quot;selection-changed&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::selection-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2277,7 +2277,7 @@ Emitted whenever the contents of terminal's selection changes.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-status-line-changed"/>The &quot;status-line-changed&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-status-line-changed"/>The <literal>&quot;status-line-changed&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::status-line-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2289,7 +2289,7 @@ Emitted whenever the contents of the status line are modified or cleared.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-deleted"/>The &quot;text-deleted&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-deleted"/>The <literal>&quot;text-deleted&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::text-deleted</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2302,7 +2302,7 @@ accessibility peer.  May not be emitted under certain circumstances.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-inserted"/>The &quot;text-inserted&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-inserted"/>The <literal>&quot;text-inserted&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::text-inserted</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2315,7 +2315,7 @@ accessibility peer.  May not be emitted under certain circumstances.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-modified"/>The &quot;text-modified&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-modified"/>The <literal>&quot;text-modified&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::text-modified</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2328,7 +2328,7 @@ accessibility peer.  May not be emitted under certain circumstances.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-scrolled"/>The &quot;text-scrolled&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-scrolled"/>The <literal>&quot;text-scrolled&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::text-scrolled</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gint">gint</link>         arg1,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
@@ -2345,7 +2345,7 @@ accessibility peer.  May not be emitted under certain circumstances.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-window-title-changed"/>The &quot;window-title-changed&quot; signal</title>
+</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-window-title-changed"/>The <literal>&quot;window-title-changed&quot;</literal> signal</title>
 <indexterm><primary>VteTerminal::window-title-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2362,4 +2362,6 @@ Emitted when the terminal's <parameter>window_title</parameter> field is modifie
 
 
 
+
+<refsect1><refsect2 /><refsect2 /></refsect1>
 </refentry>

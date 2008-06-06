@@ -64,8 +64,6 @@ static int _vte_pty_helper_tunnel = -1;
 static GTree *_vte_pty_helper_map = NULL;
 #endif
 
-extern char **environ;
-
 /* Reset the handlers for all known signals to their defaults.  The parent
  * (or one of the libraries it links to) may have changed one to be ignored. */
 static void
@@ -271,19 +269,20 @@ static gchar **
 merge_environ (char **envp)
 {
 	GHashTable *table;
+	gchar **parent_environ;
 	GPtrArray *array;
 	gint i;
 
 	table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-	for (i = 0; environ[i] != NULL; i++) {
-		gchar *name = g_strdup (environ[i]);
-		gchar *value = strchr (name, '=');
-		if (value) {
-			*value = '\0';
-			value = g_strdup (value + 1);
-		}
-		g_hash_table_replace (table, name, value);
+
+	parent_environ = g_listenv ();
+	for (i = 0; parent_environ[i] != NULL; i++) {
+		g_hash_table_replace (table,
+			              g_strdup (parent_environ[i]),
+				      g_strdup (g_getenv (parent_environ[i])));
 	}
+	g_strfreev (parent_environ);
+
 	if (envp != NULL) {
 		for (i = 0; envp[i] != NULL; i++) {
 			gchar *name = g_strdup (envp[i]);
