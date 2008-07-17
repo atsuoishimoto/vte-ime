@@ -1,0 +1,94 @@
+diff -Nurp vte-0.17.4/debian/patches/94_no_nul_backspace.patch working/debian/patches/94_no_nul_backspace.patch
+--- vte-0.17.4/debian/patches/94_no_nul_backspace.patch	2008-11-24 17:46:37.000000000 -0800
++++ working/debian/patches/94_no_nul_backspace.patch	2008-11-24 17:46:23.000000000 -0800
+@@ -0,0 +1,45 @@
++diff -Nurp working/src/vte-private.h vte-0.17.4/src/vte-private.h
++--- working/src/vte-private.h	2008-11-24 17:39:30.000000000 -0800
+++++ vte-0.17.4/src/vte-private.h	2008-09-08 12:48:31.000000000 -0700
++@@ -91,12 +91,6 @@ G_BEGIN_DECLS
++ #define VTE_MAX_PROCESS_TIME		100
++ #define VTE_CELL_BBOX_SLACK		1
++ 
++-#ifdef _POSIX_VDISABLE /* From unistd.h */
++-#define VTE_VDISABLE			_POSIX_VDISABLE
++-#else
++-#define VTE_VDISABLE			'\0'
++-#endif
++-
++ /* The structure we use to hold characters we're supposed to display -- this
++  * includes any supported visible attributes. */
++ struct vte_charcell {
++diff -Nurp working/src/vte.c vte-0.17.4/src/vte.c
++--- working/src/vte.c	2008-11-24 17:27:25.000000000 -0800
+++++ vte-0.17.4/src/vte.c	2008-09-08 12:48:31.000000000 -0700
++@@ -4636,7 +4636,6 @@ vte_terminal_key_press(GtkWidget *widget
++ 
++ 	/* Now figure out what to send to the child. */
++ 	if ((event->type == GDK_KEY_PRESS) && !modifier) {
++-		cc_t erase = VTE_VDISABLE;
++ 		handled = FALSE;
++ 		/* Map the key to a sequence name if we can. */
++ 		switch (keyval) {
++@@ -4662,15 +4661,11 @@ vte_terminal_key_press(GtkWidget *widget
++ 				if (terminal->pvt->pty_master != -1) {
++ 					if (tcgetattr(terminal->pvt->pty_master,
++ 						      &tio) != -1) {
+++						normal = g_strdup_printf("%c",
+++									 tio.c_cc[VERASE]);
++ 						normal_length = 1;
++-						erase = tio.c_cc[VERASE];
++ 					}
++ 				}
++-				if (erase == VTE_VDISABLE)
++-					normal = g_strdup(""); /* Fallback value. */
++-				else
++-					normal = g_strdup_printf("%c", erase);
++-				normal_length = 1;
++ 				suppress_meta_esc = FALSE;
++ 				break;
++ 			}
+diff -Nurp vte-0.17.4/src/vte-private.h working/src/vte-private.h
+--- vte-0.17.4/src/vte-private.h	2008-09-08 12:48:31.000000000 -0700
++++ working/src/vte-private.h	2008-11-24 17:39:30.000000000 -0800
+@@ -91,6 +91,12 @@ G_BEGIN_DECLS
+ #define VTE_MAX_PROCESS_TIME		100
+ #define VTE_CELL_BBOX_SLACK		1
+ 
++#ifdef _POSIX_VDISABLE /* From unistd.h */
++#define VTE_VDISABLE			_POSIX_VDISABLE
++#else
++#define VTE_VDISABLE			'\0'
++#endif
++
+ /* The structure we use to hold characters we're supposed to display -- this
+  * includes any supported visible attributes. */
+ struct vte_charcell {
+diff -Nurp vte-0.17.4/src/vte.c working/src/vte.c
+--- vte-0.17.4/src/vte.c	2008-09-08 12:48:31.000000000 -0700
++++ working/src/vte.c	2008-11-24 17:27:25.000000000 -0800
+@@ -4636,6 +4636,7 @@ vte_terminal_key_press(GtkWidget *widget
+ 
+ 	/* Now figure out what to send to the child. */
+ 	if ((event->type == GDK_KEY_PRESS) && !modifier) {
++		cc_t erase = VTE_VDISABLE;
+ 		handled = FALSE;
+ 		/* Map the key to a sequence name if we can. */
+ 		switch (keyval) {
+@@ -4661,11 +4662,15 @@ vte_terminal_key_press(GtkWidget *widget
+ 				if (terminal->pvt->pty_master != -1) {
+ 					if (tcgetattr(terminal->pvt->pty_master,
+ 						      &tio) != -1) {
+-						normal = g_strdup_printf("%c",
+-									 tio.c_cc[VERASE]);
+ 						normal_length = 1;
++						erase = tio.c_cc[VERASE];
+ 					}
+ 				}
++				if (erase == VTE_VDISABLE)
++					normal = g_strdup(""); /* Fallback value. */
++				else
++					normal = g_strdup_printf("%c", erase);
++				normal_length = 1;
+ 				suppress_meta_esc = FALSE;
+ 				break;
+ 			}
