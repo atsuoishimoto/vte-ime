@@ -1,3 +1,5 @@
+GNOME #112172; move VteReaper down the library stack
+
 diff -Nur vte-0.11.15/python/vte.defs vte-0.11.15.new/python/vte.defs
 --- vte-0.11.15/python/vte.defs	2004-04-29 22:41:55.000000000 -0400
 +++ vte-0.11.15.new/python/vte.defs	2005-10-28 15:59:50.000000000 -0400
@@ -28,7 +30,7 @@ diff -Nur vte-0.11.15/python/vte.defs vte-0.11.15.new/python/vte.defs
 +
 +(define-function reaper_get
 +  (c-name "vte_reaper_get")
-+  (return-type "VteReaper")
++  (return-type "VteReaper*")
 +)
 diff -Nur vte-0.11.15/python/vte.override vte-0.11.15.new/python/vte.override
 --- vte-0.11.15/python/vte.override	2005-10-28 15:59:45.000000000 -0400

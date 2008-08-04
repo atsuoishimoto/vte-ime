@@ -2,24 +2,77 @@ Source: vte
 Section: libs
 Priority: optional
 Maintainer: Guilherme de S. Pastore <gpastore@debian.org>
-Uploaders: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>, Andrew Lau <netsnipe@users.sourceforge.net>, Clément Stenac <zorglub@debian.org>, Dafydd Harries <daf@debian.org>, Gustavo Franco <stratus@debian.org>, Gustavo Noronha Silva <kov@debian.org>, J.H.M. Dassen (Ray) <jdassen@debian.org>, Jordi Mallach <jordi@debian.org>, Jose Carlos Garcia Sogo <jsogo@debian.org>, Josselin Mouette <joss@debian.org>, Kilian Krause <kilian@debian.org>, Loic Minier <lool@dooz.org>, Marc 'HE' Brockschmidt <he@debian.org>, Marco Cabizza <marco87@gmail.com>, Oystein Gisnas <oystein@gisnas.net>, Ondřej Surý <ondrej@debian.org>, Ross Burton <ross@debian.org>, Sebastien Bacher <seb128@debian.org>, Sjoerd Simons <sjoerd@debian.org>
-Standards-Version: 3.7.2
-Build-Depends: cdbs (>= 0.4.43), debhelper (>= 5.0.37.2), libglib2.0-dev (> 2.6.0), libgtk2.0-dev (>= 2.6.0), gettext, python-gtk2-dev, python-all-dev (>= 2.3.5-11), libncurses5-dev, libxrender-dev, gnome-pkg-tools, dpkg-dev (>= 1.13.19), gtk-doc-tools, libxt-dev, libfreetype6-dev (>= 2.0.2), python-support (>= 0.3)
+Uploaders: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>, Loic Minier <lool@dooz.org>, Sebastian Dröge <slomo@debian.org>
+Standards-Version: 3.7.3
+XS-Python-Version: >= 2.3
+Build-Depends: cdbs (>= 0.4.43),
+               debhelper (>= 5.0.37.2),
+               libglib2.0-dev (> 2.9.0),
+               libgtk2.0-dev (>= 2.6.0),
+               libgtk-directfb-2.0-dev (>= 2.6.0),
+               gettext,
+               python-gtk2-dev,
+               python-all-dev (>= 2.3.5-11),
+               libncurses5-dev,
+               libxrender-dev,
+               gnome-pkg-tools (>= 0.10),
+               dpkg-dev (>= 1.13.19),
+               gtk-doc-tools,
+               libxt-dev,
+               libfreetype6-dev (>= 2.0.2),
+               python-support (>= 0.3),
+               libpango1.0-dev,
+               libxft-dev
 
-Package: libvte4
+Package: libvte9
 Architecture: any
 Section: libs
-Depends: ${misc:Depends}, ${shlibs:Depends}, libvte-common (= ${source:Version})
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libvte-common
 Description: Terminal emulator widget for GTK+ 2.0 - runtime files
  The VTE library inserts terminal capability strings into a trie, and then
  uses it to determine if data received from a pseudo-terminal is a control
  sequence or just random data. The sample program "interpret" illustrates
  more or less what the widget sees after it filters incoming data.
 
+Package: libvte9-udeb
+XC-Package-Type: udeb
+Section: debian-installer
+Priority: extra
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Terminal emulator widget for GTK+ 2.0 - minimal runtime
+ This is a udeb, or a microdeb, for the debian-installer.
+ .
+ The VTE library inserts terminal capability strings into a trie, and then
+ uses it to determine if data received from a pseudo-terminal is a control
+ sequence or just random data. The sample program "interpret" illustrates
+ more or less what the widget sees after it filters incoming data.
+ .
+ This package contains the minimal runtime library needed by the Debian
+ installer.
+
 Package: libvte-dev
 Architecture: any
 Section: libdevel
-Depends: ${misc:Depends}, libvte4 (= ${binary:Version}), libgtk2.0-dev (>= 2.4.0), libncurses5-dev, libxrender-dev, libxft-dev, libfreetype6-dev, libatk1.0-dev, libpango1.0-dev, libglib2.0-dev, libsm-dev, libice-dev, zlib1g-dev, libncurses5-dev | libncurses-dev, libx11-dev, libfontconfig1-dev
+Depends: ${misc:Depends},
+         libvte9 (= ${binary:Version}),
+         libgtk2.0-dev (>= 2.4.0),
+         libncurses5-dev,
+         libxrender-dev,
+         libxft-dev,
+         libfreetype6-dev,
+         libatk1.0-dev,
+         libpango1.0-dev,
+         libglib2.0-dev,
+         libsm-dev,
+         libice-dev,
+         zlib1g-dev,
+         libncurses5-dev | libncurses-dev,
+         libx11-dev,
+         libfontconfig1-dev
 Description: Terminal emulator widget for GTK+ 2.0 - development files
  The VTE library inserts terminal capability strings into a trie, and then
  uses it to determine if data received from a pseudo-terminal is a control
@@ -44,10 +97,16 @@ Description: Terminal emulator widget for GTK+ 2.0 - common files
 Package: python-vte
 Architecture: any
 Section: python
-Depends: ${misc:Depends}, ${shlibs:Depends}, ${python:Depends}, python-gtk2
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ${python:Depends},
+         python-gtk2
 Provides: ${python:Provides}
-Conflicts: python2.3-vte, python2.4-vte
-Replaces: python2.3-vte, python2.4-vte
+XB-Python-Version: ${python:Versions}
+Conflicts: python2.3-vte,
+           python2.4-vte
+Replaces: python2.3-vte,
+          python2.4-vte
 Description: Python bindings for the VTE widget set
  The VTE library inserts terminal capability strings into a trie, and then
  uses it to determine if data received from a pseudo-terminal is a control
@@ -60,7 +119,7 @@ Package: libvte-doc
 Architecture: all
 Section: doc
 Depends: ${misc:Depends}
-Description: Terminal emulator widget for GTK+ 2.0 - development files
+Description: Terminal emulator widget for GTK+ 2.0 - documentation
  The VTE library inserts terminal capability strings into a trie, and then
  uses it to determine if data received from a pseudo-terminal is a control
  sequence or just random data. The sample program "interpret" illustrates

@@ -1,4 +1,4 @@
-debian/tmp/usr/include
-debian/tmp/usr/lib/pkgconfig
-debian/tmp/usr/lib/libvte.a
-debian/tmp/usr/lib/libvte.so
+usr/include
+usr/lib/pkgconfig
+usr/lib/libvte.a
+usr/lib/libvte.so

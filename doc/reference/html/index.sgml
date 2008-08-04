@@ -13,6 +13,8 @@
 <ANCHOR id="vte-terminal-feed" href="vte/VteTerminal.html#vte-terminal-feed">
 <ANCHOR id="vte-terminal-feed-child" href="vte/VteTerminal.html#vte-terminal-feed-child">
 <ANCHOR id="vte-terminal-feed-child-binary" href="vte/VteTerminal.html#vte-terminal-feed-child-binary">
+<ANCHOR id="vte-terminal-select-all" href="vte/VteTerminal.html#vte-terminal-select-all">
+<ANCHOR id="vte-terminal-select-none" href="vte/VteTerminal.html#vte-terminal-select-none">
 <ANCHOR id="vte-terminal-copy-clipboard" href="vte/VteTerminal.html#vte-terminal-copy-clipboard">
 <ANCHOR id="vte-terminal-paste-clipboard" href="vte/VteTerminal.html#vte-terminal-paste-clipboard">
 <ANCHOR id="vte-terminal-copy-primary" href="vte/VteTerminal.html#vte-terminal-copy-primary">
@@ -34,6 +36,7 @@
 <ANCHOR id="vte-terminal-set-color-highlight" href="vte/VteTerminal.html#vte-terminal-set-color-highlight">
 <ANCHOR id="vte-terminal-set-colors" href="vte/VteTerminal.html#vte-terminal-set-colors">
 <ANCHOR id="vte-terminal-set-default-colors" href="vte/VteTerminal.html#vte-terminal-set-default-colors">
+<ANCHOR id="vte-terminal-set-opacity" href="vte/VteTerminal.html#vte-terminal-set-opacity">
 <ANCHOR id="vte-terminal-set-background-image" href="vte/VteTerminal.html#vte-terminal-set-background-image">
 <ANCHOR id="vte-terminal-set-background-image-file" href="vte/VteTerminal.html#vte-terminal-set-background-image-file">
 <ANCHOR id="vte-terminal-set-background-saturation" href="vte/VteTerminal.html#vte-terminal-set-background-saturation">
@@ -57,6 +60,7 @@
 <ANCHOR id="vte-terminal-get-mouse-autohide" href="vte/VteTerminal.html#vte-terminal-get-mouse-autohide">
 <ANCHOR id="vte-terminal-reset" href="vte/VteTerminal.html#vte-terminal-reset">
 <ANCHOR id="vte-terminal-get-text" href="vte/VteTerminal.html#vte-terminal-get-text">
+<ANCHOR id="vte-terminal-get-text-include-trailing-spaces" href="vte/VteTerminal.html#vte-terminal-get-text-include-trailing-spaces">
 <ANCHOR id="vte-terminal-get-text-range" href="vte/VteTerminal.html#vte-terminal-get-text-range">
 <ANCHOR id="vte-terminal-get-cursor-position" href="vte/VteTerminal.html#vte-terminal-get-cursor-position">
 <ANCHOR id="vte-terminal-match-clear-all" href="vte/VteTerminal.html#vte-terminal-match-clear-all">
@@ -85,6 +89,7 @@
 <ANCHOR id="VteTerminal-child-exited" href="vte/VteTerminal.html#VteTerminal-child-exited">
 <ANCHOR id="VteTerminal-commit" href="vte/VteTerminal.html#VteTerminal-commit">
 <ANCHOR id="VteTerminal-contents-changed" href="vte/VteTerminal.html#VteTerminal-contents-changed">
+<ANCHOR id="VteTerminal-copy-clipboard" href="vte/VteTerminal.html#VteTerminal-copy-clipboard">
 <ANCHOR id="VteTerminal-cursor-moved" href="vte/VteTerminal.html#VteTerminal-cursor-moved">
 <ANCHOR id="VteTerminal-decrease-font-size" href="vte/VteTerminal.html#VteTerminal-decrease-font-size">
 <ANCHOR id="VteTerminal-deiconify-window" href="vte/VteTerminal.html#VteTerminal-deiconify-window">
@@ -97,6 +102,7 @@
 <ANCHOR id="VteTerminal-lower-window" href="vte/VteTerminal.html#VteTerminal-lower-window">
 <ANCHOR id="VteTerminal-maximize-window" href="vte/VteTerminal.html#VteTerminal-maximize-window">
 <ANCHOR id="VteTerminal-move-window" href="vte/VteTerminal.html#VteTerminal-move-window">
+<ANCHOR id="VteTerminal-paste-clipboard" href="vte/VteTerminal.html#VteTerminal-paste-clipboard">
 <ANCHOR id="VteTerminal-raise-window" href="vte/VteTerminal.html#VteTerminal-raise-window">
 <ANCHOR id="VteTerminal-refresh-window" href="vte/VteTerminal.html#VteTerminal-refresh-window">
 <ANCHOR id="VteTerminal-resize-window" href="vte/VteTerminal.html#VteTerminal-resize-window">
@@ -112,7 +118,3 @@
 <ANCHOR id="VteTerminalAccessible-struct" href="vte/VteTerminalAccessible.html#VteTerminalAccessible-struct">
 <ANCHOR id="vte-terminal-accessible-new" href="vte/VteTerminalAccessible.html#vte-terminal-accessible-new">
 <ANCHOR id="VteReaper" href="vte/VteReaper.html">
-<ANCHOR id="VteReaper-struct" href="vte/VteReaper.html#VteReaper-struct">
-<ANCHOR id="vte-reaper-get" href="vte/VteReaper.html#vte-reaper-get">
-<ANCHOR id="vte-reaper-add-child" href="vte/VteReaper.html#vte-reaper-add-child">
-<ANCHOR id="VteReaper-child-exited" href="vte/VteReaper.html#VteReaper-child-exited">

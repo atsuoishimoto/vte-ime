@@ -1,6 +1,11 @@
 #!/usr/bin/make -f
-# -*- mode: makefile; coding: utf-8 -*-
-#
+
+libvteN := $(shell sed -rn 's/^Package:[[:space:]]*(libvte[0-9]+)[[:space:]]*$$/\1/p' debian/control)
+udeb := $(libvteN)-udeb
+
+buildbasedir := $(CURDIR)/debian/build
+DEB_BUILDDIR := $(buildbasedir)/main
+DEB_BUILDDIR_$(udeb) := $(buildbasedir)/udeb
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
@@ -9,22 +14,66 @@ include /usr/share/cdbs/1/class/gnome.mk
 include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
 -include /usr/share/gnome-pkg-tools/1/rules/gnome-get-source.mk
 
-version := $(shell sed -n 's/Package: \(.*\)/\1/p' debian/control | head -n 1)
-
 PY_VERSIONS = $(shell pyversions --requested debian/control)
 
-DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/${version}
+DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/$(libvteN)
 DEB_FIXPERMS_EXCLUDE := gnome-pty-helper
-DEB_DH_MAKESHLIBS_ARGS_ALL = -V 'libvte4 (>= 1:0.12.1)'
+DEB_DH_MAKESHLIBS_ARGS_ALL = -V '$(libvteN) (>= 1:0.16.9)' --add-udeb=$(udeb)
 
-DEB_BUILDDIR := build
+UDEB_CONFIGURE_EXTRA_FLAGS += \
+	--disable-python \
+	--disable-gnome-pty-helper \
+	--disable-gtk-doc \
+	--without-x \
+	--without-xft2 \
+	--without-ft2 \
+	--without-pangox \
+	--without-glX \
+	--without-ncurses
 
+DEB_DESTDIR := $(CURDIR)/debian/tmp/main
+DEB_DESTDIR_$(udeb) := $(CURDIR)/debian/tmp/udeb
+
+CFLAGS_$(udeb) += $(CFLAGS) -Os
+
+DEB_DH_INSTALL_ARGS = --sourcedir=$(if $(findstring $(udeb),$(cdbs_curpkg)),$(DEB_DESTDIR_$(udeb)),$(DEB_DESTDIR))
+
+######
+# udeb rules
+configure/$(udeb):: $(DEB_BUILDDIR_$(udeb))/config.status
+$(DEB_BUILDDIR_$(udeb))/config.status:
+	# paint me ugly: Gtk 2.8 mixes the pkg-config files from both builds
+	# (x11/shared and directfb), so the gtk+2.0.pc from the directfb can't
+	# be used; we cheat and create a fake one higher in the PKG_CONFIG_PATH
+	# which is a symlink to the gtk+-directfb-2.0.pc
+	mkdir -p $(DEB_BUILDDIR_$(udeb))/pkg-config
+	cd $(DEB_BUILDDIR_$(udeb))/pkg-config && \
+		ln -sf /usr/lib/pkgconfig/gtk+-directfb-2.0.pc gtk+-2.0.pc
+	cd $(DEB_BUILDDIR_$(udeb)) && \
+		PKG_CONFIG_PATH=pkg-config \
+		$(DEB_CONFIGURE_SCRIPT_ENV) \
+		CFLAGS="$(CFLAGS_$(udeb))" \
+			$(DEB_CONFIGURE_SCRIPT) \
+				$(DEB_CONFIGURE_NORMAL_ARGS) \
+				$(cdbs_configure_flags) \
+				$(DEB_CONFIGURE_EXTRA_FLAGS) \
+				$(UDEB_CONFIGURE_EXTRA_FLAGS) \
+				$(DEB_CONFIGURE_USER_FLAGS)
+
+build/$(udeb)::
+	make -C $(DEB_BUILDDIR_$(udeb))
+
+install/$(udeb)::
+	make -C $(DEB_BUILDDIR_$(udeb)) install DESTDIR=$(DEB_DESTDIR_$(udeb))
+
+
+######
+# Python rules
 configure-stamp-%:
-	mkdir build-$*
-	cd build-$* && PYTHON=`which $*` $(DEB_CONFIGURE_SCRIPT_ENV) \
+	mkdir $(buildbasedir)/$*
+	cd $(buildbasedir)/$* && PYTHON=`which $*` $(DEB_CONFIGURE_SCRIPT_ENV) \
 	    $(DEB_CONFIGURE_SCRIPT) \
 		$(DEB_CONFIGURE_NORMAL_ARGS) \
-		--disable-maintainer-mode \
 		$(cdbs_configure_flags) \
 		$(DEB_CONFIGURE_EXTRA_FLAGS) \
 		$(DEB_CONFIGURE_USER_FLAGS)
@@ -33,17 +82,17 @@ configure-stamp-%:
 configure/python-vte:: $(addprefix configure-stamp-, $(PY_VERSIONS))
 
 build-stamp-%:
-	make -C build-$*
+	make -C $(buildbasedir)/$*
 	touch $@
 
 build/python-vte:: $(addprefix build-stamp-, $(PY_VERSIONS))
 
 install-stamp-%:
-	make -C build-$* install DESTDIR=$(CURDIR)/debian/tmp
+	make -C $(buildbasedir)/$* install DESTDIR=$(DEB_DESTDIR)
 	# stop shipping *.a and *.la files for the Python module;
 	# python-support moves them anyway (#412477)
-	find $(CURDIR)/debian/tmp/usr/lib/$* -name \*.a -exec rm -f '{}' \;
-	find $(CURDIR)/debian/tmp/usr/lib/$* -name \*.la -exec rm -f '{}' \;
+	find $(DEB_DESTDIR)/usr/lib/$* -name \*.a -exec rm -f '{}' \;
+	find $(DEB_DESTDIR)/usr/lib/$* -name \*.la -exec rm -f '{}' \;
 	touch $@
 
 install/python-vte:: $(addprefix install-stamp-, $(PY_VERSIONS))
@@ -51,9 +100,11 @@ install/python-vte:: $(addprefix install-stamp-, $(PY_VERSIONS))
 binary-install/python-vte::
 	dh_pysupport -d
 
+
+######
+# common cleanup
 clean::
-	-rm -rf $(DEB_BUILDDIR)
-	-rm -rf $(addprefix build-, $(PY_VERSIONS))
+	-rm -rf $(buildbasedir)
 	-rm -rf $(addprefix configure-stamp-, $(PY_VERSIONS))
 	-rm -rf $(addprefix build-stamp-, $(PY_VERSIONS))
 	-rm -rf $(addprefix install-stamp-, $(PY_VERSIONS))

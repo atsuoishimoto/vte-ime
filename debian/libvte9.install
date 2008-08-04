@@ -1,0 +1,3 @@
+usr/lib/libvte.so.*
+usr/lib/vte/* usr/lib/libvte9/
+usr/lib/libvte9/*

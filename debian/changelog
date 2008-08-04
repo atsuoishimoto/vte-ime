@@ -1,3 +1,264 @@
+vte (1:0.16.14-3) unstable; urgency=low
+
+  * Fix 1:0.16.14-2 changelog entry.
+  * Upload to unstable.
+
+ -- Loic Minier <lool@dooz.org>  Mon, 04 Aug 2008 12:21:58 +0200
+
+vte (1:0.16.14-2) experimental; urgency=low
+
+  [ Loic Minier ]
+  * Properly anchor libvteN regexp.
+  * Misc cleanups of the below changelog and patches.
+
+  [ Jérémy Bobbio ]
+  * New patch, 20_make_ft2_optional, make Freetype2 bdep/dep optional;
+    GNOME #542560.
+  * New patch, 29_add_am_prog_cc_c_o_for_buffer_c, add the AM_PROG_CC_C_O
+    macro which automake claim is required and was added in upstream SVN
+    already.
+  * New patch, 30_fix_build_no_pty_helper, fix missing header issue when
+    building without gnome-pty-helper; GNOME #542561.
+  * New patch, 25_optional_ncurses, allows not linking against ncurses but
+    using the builtin termcap support instead.
+  * New patch, 90_autoreconf, run autoreconf for 20_make_ft2_optional,
+    29_add_am_prog_cc_c_o_for_buffer_c, and 25_optional_ncurses.
+  * Re-enable libvte9-udeb build.
+     - Drop libvte-common dep in the udeb.
+     - Configure the udeb without pangox and ft2 and with a static ncurses.
+  * New patch, 60_termcap-home-end, defines home/end in the builtin termcap
+    support file.
+
+  [ Loic Minier ]
+  * Drop dup --disable-maintainer-mode flag.
+  * Override CFLAGS for udeb during configure.
+
+ -- Loic Minier <lool@dooz.org>  Thu, 26 Jun 2008 20:44:36 +0200
+
+vte (1:0.16.14-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 05 Jun 2008 12:21:06 +0200
+
+vte (1:0.16.13-1) unstable; urgency=low
+
+  [ Emilio Pozuelo Monfort ]
+  * debian/control.in:
+    - Fix libvte-doc short description, which was refering to
+      development files instead of documentation.
+
+  [ Loic Minier ]
+  * Drop head -n1 from libvteN computation.
+
+  [ Sebastian Dröge ]
+  * New upstream bugfix release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 10 Mar 2008 21:51:56 +0100
+
+vte (1:0.16.12-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+  * debian/control.in:
+    + Update Standards-Version to 3.7.3, no additional changes needed.
+
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 09 Jan 2008 19:42:18 +0100
+
+vte (1:0.16.11-1) unstable; urgency=low
+
+  [ Loic Minier ]
+  * Tighten libvte package name extraction.
+
+  [ Sebastian Dröge ]
+  * New upstream bugfix release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 17 Dec 2007 21:52:05 +0100
+
+vte (1:0.16.10-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 04 Dec 2007 12:13:11 +0100
+
+vte (1:0.16.9-1) unstable; urgency=low
+
+  * New upstream release, with API additions:
+    + debian/rules:
+      - Bump shlibs to >= 0.16.9 for the API additions.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 18 Sep 2007 10:28:08 +0200
+
+vte (1:0.16.8-1) unstable; urgency=low
+
+  [ Alan Baghumian ]
+  * New upstream release:
+    - Dropped 60_fix-ctrl-dash.patch and 62_alt-arrows.patch,
+      merged upstream
+    - Fixes rendering of line-drawing characters; closes: #418699.
+
+  [ Loic Minier ]
+  * New upstream stable release; no API change.
+
+ -- Loic Minier <lool@dooz.org>  Mon, 30 Jul 2007 20:25:31 +0200
+
+vte (1:0.16.6-3) unstable; urgency=low
+
+  * Cleanup changelog.
+  * Drop patch 61_ctrl-and-shift-arrows as it breaks up/down history;
+    closes: #434558, #434560, #434577, #434560.
+
+ -- Loic Minier <lool@dooz.org>  Wed, 25 Jul 2007 09:43:04 +0200
+
+vte (1:0.16.6-2) unstable; urgency=low
+
+  * Drop patch 41_from_upstream_fix_nvi_scrolling; fixed differently upstream
+    since 0.16.2; see GNOME #417652.
+  * Add xrefs to patches.
+  * New patches, 61_ctrl-and-shift-arrows and 62_alt-arrows, should fix
+    handling of Ctrl-, Shift-, and Alt- + arrow keys by using xterm's
+    sequences; GNOME #310305 and #337252; closes: #421734.
+
+ -- Loic Minier <lool@dooz.org>  Tue, 24 Jul 2007 09:06:47 +0200
+
+vte (1:0.16.6-1) unstable; urgency=low
+
+  * Pass proper configure flags to the udeb.
+  * Generate proper shlibs for the udeb.
+  * Build against the diretcfb Gtk flavor.
+  * Disable udeb for now since it's unlikely to get useful soon.
+  * New upstream stable release; no API change.
+    - Fixes 24 colors support; GNOME #332606, #372743; closes: #320114.
+  * New patch, 60_fix-ctrl-dash, fixes mapping for Ctrl + dash; thanks
+    Andrey Melnikov; GNOME #448259; closes: #429260.
+
+ -- Loic Minier <lool@dooz.org>  Tue, 19 Jun 2007 11:08:11 +0200
+
+vte (1:0.16.5-2) experimental; urgency=low
+
+  * Add a new libvte9-udeb package.
+
+ -- Loic Minier <lool@dooz.org>  Mon, 18 Jun 2007 23:10:47 +0200
+
+vte (1:0.16.5-1) unstable; urgency=low
+
+  * New upstream release
+  * Dropped 20_fix_strange_lines.patch, merged upstream
+
+ -- Alan Baghumian <alan@technotux.org>  Wed, 06 Jun 2007 11:05:11 +0330
+
+vte (1:0.16.4-1) unstable; urgency=low
+
+  * New upstream release
+    + fix ctrl-key combinations yielding just key.
+      Closes: #425879, #421734.
+    + fix scrollback corruption. Closes: #421092.
+  * Added 20_fix_strange_lines.patch, fixed strange lines above the screen;
+    from SVN r1904.
+
+ -- Alan Baghumian <alan@technotux.org>  Sun, 03 Jun 2007 17:25:27 +0330
+
+vte (1:0.16.3-1) unstable; urgency=low
+
+  * New upstream release; no API change.
+
+ -- Loic Minier <lool@dooz.org>  Fri, 27 Apr 2007 23:29:59 +0200
+
+vte (1:0.16.2-1) unstable; urgency=low
+
+  * Upload to unstable; drop check-dist include.
+  * Wrap build-deps and deps.
+  * New upstream stable release; no API change.
+
+ -- Loic Minier <lool@dooz.org>  Tue, 24 Apr 2007 14:55:49 +0200
+
+vte (1:0.16.1-1) experimental; urgency=low
+
+  * New upstream release; no API change.
+    - Fixes output of incorrect colours; closes: #416125.
+    - Drop patch 40_fix_transparency_bug, fixed differently upstream.
+    - Drop patch -and-delayed-redraws-race, merged upstream.
+  * Drop debian/pyversions and set XB and XS-Python-Version.
+
+ -- Loic Minier <lool@dooz.org>  Tue, 10 Apr 2007 17:31:28 +0200
+
+vte (1:0.16.0-2) experimental; urgency=low
+
+  * New patch, 50_expose-and-delayed-redraws-race, fixes a race between expose
+    and delayed redraws; GNOME #419116; closes: #415730.
+
+ -- Loic Minier <lool@dooz.org>  Wed, 21 Mar 2007 17:44:46 +0100
+
+vte (1:0.16.0-1) experimental; urgency=low
+
+  * New upstream major stable release; API additions.
+    - Build-depend on libpango1.0-dev and libxft-dev.
+    - Bump shlibs to >= 1:0.16.0.
+    - Drop patch 30_pkg-config-private-field-for-freetype, merged upstream.
+  * New patch, 40_fix_transparency_bug, workarounds a bug with transparency;
+    by Nicolas Bruguier and Chris Wilson; Launchpad #91985; found in the
+    Ubuntu package.
+  * New patch, 41_from_upstream_fix_nvi_scrolling, fixes scrolling in nvi;
+    patch from Chris Wilson; Launchpad: #91017; found in the Ubuntu package.
+
+ -- Loic Minier <lool@dooz.org>  Sun, 18 Mar 2007 11:08:13 +0100
+
+vte (1:0.14.2-1) experimental; urgency=low
+
+  * Add a get-orig-source target to retrieve the upstream tarball.
+  * Include the new check-dist Makefile to prevent accidental uploads to
+    unstable; bump build-dep on gnome-pkg-tools to >= 0.10.
+  * Drop version in the dependency on libvte-common to permit installing two
+    libvte shared library packages at the same time; the files in
+    libvte-common are translations and a termcap file which didn't change
+    since 2002 which is supposedly eternally backward compatible, hence this
+    should only result in some untranslated text.
+  * Merge 1:0.12.2-5 / SVN revs 7195:8677.
+  * New upstream release; no API change.
+    - Drop patch 20_gtk-style-attach-crash, merged upstream.
+
+ -- Loic Minier <lool@dooz.org>  Thu,  1 Mar 2007 11:30:40 +0100
+
+vte (1:0.14.1-1) experimental; urgency=low
+
+  * New upstream release.
+
+ -- Josselin Mouette <joss@debian.org>  Tue, 21 Nov 2006 20:37:02 +0100
+
+vte (1:0.14.0-1) experimental; urgency=low
+
+  * New upstream release; no API change.
+  * Preemptively fix the 12_python_reaper patch to work with newer codegen,
+    thanks Daniel Holbach and Michael Vogt for all the fish.
+  * Merge 1:0.12.2-4.
+
+ -- Loic Minier <lool@dooz.org>  Tue,  5 Sep 2006 16:43:37 +0200
+
+vte (1:0.13.7-1) experimental; urgency=low
+
+  * New upstream development release; no API change.
+
+ -- Loic Minier <lool@dooz.org>  Fri, 25 Aug 2006 20:20:03 +0200
+
+vte (1:0.13.6-1) experimental; urgency=low
+
+  * New upstream development release; no API change.
+  * Merge 1:0.12.2-3.
+
+ -- Loic Minier <lool@dooz.org>  Wed, 23 Aug 2006 15:56:50 +0200
+
+vte (1:0.13.5-1) experimental; urgency=low
+
+  * New upstream development releases, with API changes.
+    - Target at experimental.
+    - Rename livte4 to libvte9 for the new SONAME.
+    - Bump shlibs to >= 1:0.13.3.
+    - Drop 08_set_backspace_to_utf8 patch, merged upstream.
+    - Drop 09_multiscreen_safe, fixed upstream.
+    - Drop 70_relibtoolize, I'm too lazy to update it for dev releases.
+    - Bump up libglib2.0-dev build-dep to > 2.9.0.
+
+ -- Loic Minier <lool@dooz.org>  Wed,  9 Aug 2006 22:45:15 +0200
+
 vte (1:0.12.2-5) unstable; urgency=medium
 
   * Add a get-orig-source target to retrieve the upstream tarball.
@@ -281,13 +542,13 @@ vte (1:0.11.13-1) unstable; urgency=low
 vte (1:0.11.12-1) unstable; urgency=low
 
   * New upstream version. Lots of patches in Gnome's bugzilla have been
-    applied. 
-  * debian/patches : 
-    - Merged patches : 
+    applied.
+  * debian/patches :
+    - Merged patches :
         05_performance_boost.patch
-        10_redraw_vte_screen.patch  
+        10_redraw_vte_screen.patch 
         12_fix_display_corrption_in_utf8.patch
-    - Splitted 02_path_xtra.patch into to patches : 
+    - Splitted 02_path_xtra.patch into to patches :
         02_path_xtra.patch contains the configure.in patch
         03_path_xtra-2.patch contains the configure patch
     - Updated 07_remove_doublefree.patch as it's partially applied

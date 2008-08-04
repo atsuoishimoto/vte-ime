@@ -21,7 +21,6 @@
 #ifndef vte_table_h_included
 #define vte_table_h_included
 
-#ident "$Id: table.h,v 1.7 2003/05/05 23:23:46 nalin Exp $"
 
 #include <glib-object.h>
 
@@ -47,6 +46,8 @@ const char *_vte_table_match(struct _vte_table *table,
 			     GQuark *quark, GValueArray **array);
 /* Dump out the contents of a tree. */
 void _vte_table_print(struct _vte_table *table);
+
+extern const struct _vte_matcher_class _vte_matcher_table;
 
 G_END_DECLS
 

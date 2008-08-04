@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: dumpkeys.c,v 1.8 2005/02/15 08:49:23 kmaraas Exp $"
 #include "../config.h"
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>

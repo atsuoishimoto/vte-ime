@@ -1,3 +1,6 @@
+GNOME #142640; Debian #251355; fixed display of non-antialiased fonts at some
+point but is criticized upstream.
+
 diff -urN vte-0.11.11.orig/src/vtefc.c vte-0.11.11/src/vtefc.c
 --- vte-0.11.11.orig/src/vtefc.c	2004-05-11 09:03:59.000000000 +0000
 +++ vte-0.11.11/src/vtefc.c	2004-05-11 09:05:48.000000000 +0000

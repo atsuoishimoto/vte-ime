@@ -1,6 +1,6 @@
 <refentry id="vte-Internals">
 <refmeta>
-<refentrytitle id="top_of_page">Internals</refentrytitle>
+<refentrytitle role="top_of_page">Internals</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>VTE Library</refmiscinfo>
 </refmeta>
@@ -11,8 +11,8 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv id="synopsis">
-<title id="synopsis.title">Synopsis</title>
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
 
 <synopsis>
 
@@ -30,20 +30,22 @@
 
 
 
-<refsect1 id="desc">
-<title id="desc.title">Description</title>
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
 <para>
 You really shouldn't see this.
 
 </para>
 </refsect1>
 
-<refsect1 id="details">
-<title id="details.title">Details</title>
+<refsect1 role="details">
+<title role="details.title">Details</title>
 
 </refsect1>
 
 
 
 
+
+<refsect1><refsect2 /><refsect2 /></refsect1>
 </refentry>

@@ -1,0 +1,10 @@
+--- vte-0.16.14.orig/configure.in
++++ vte-0.16.14/configure.in
+@@ -26,6 +26,7 @@
+ AC_PROG_CC
+ AC_STDC_HEADERS
+ AM_PROG_CC_STDC
++AM_PROG_CC_C_O
+ AM_MAINTAINER_MODE
+ 
+ AM_PROG_LIBTOOL

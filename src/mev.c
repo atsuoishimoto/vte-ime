@@ -16,7 +16,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: mev.c,v 1.6 2004/04/30 01:16:53 nalin Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #ifdef HAVE_SYS_TERMIOS_H

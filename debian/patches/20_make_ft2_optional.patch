@@ -1,0 +1,229 @@
+GNOME #542560
+
+--- vte-0.16.14.orig/configure.in
++++ vte-0.16.14/configure.in
+@@ -365,6 +366,9 @@
+ if test "$have_x" = yes ; then
+ 	AC_ARG_WITH(glX,[AS_HELP_STRING(--with-glX,enable drawing using glX)],with_glx=$withval,with_glx=no)
+ 	if test $with_glx = yes ; then
++		if test $with_ft2 != yes ; then
++			AC_MSG_ERROR([freetype 2 must be enabled build glX drawing system])
++		fi
+ 		have_gl=0
+ 		have_libgl=0
+ 		AC_CHECK_HEADERS(GL/glx.h)
+@@ -402,113 +406,122 @@
+ LIBS="$save_LIBS"
+ CFLAGS="$save_CFLAGS"
+ 
+-# Require Freetype2. First see if there is suitable pkgconfig file...
+-PKG_CHECK_EXISTS(freetype2 >= 6.1.0,
+-		 [PKG_CHECK_MODULES(FT2, freetype2)], [
+-	# We use our local copy of the macro because packages of
+-	# freetype's development files don't always include the proper macro.
+-	VTE_CHECK_FT2(6.1.0,,
+-		      [AC_MSG_ERROR([You must have freetype 2.0.2 or later to build vte.])])])
+-
+-# Temporarily pull in the Freetype cflags and libs for checking what's
+-# available in this version.
+-savecflags="$CFLAGS"
+-CFLAGS="$CFLAGS $FT2_CFLAGS"
+-savecppflags="$CPPFLAGS"
+-CPPFLAGS="$CPPFLAGS $FT2_CFLAGS"
+-if test -d "$ac_x_includes" ; then
+-	CFLAGS="$CFLAGS -I$ac_x_includes"
+-	CPPFLAGS="$CPPFLAGS -I$ac_x_includes"
+-fi
+-AC_CHECK_HEADERS(ft2build.h)
+-if test x$ac_cv_header_ft2build_h != xyes ; then
+-	AC_MSG_ERROR([You must have freetype 2.0.2 or later to build vte.])
+-fi
++AC_ARG_WITH(ft2,
++	    [AS_HELP_STRING([--with-ft2],
++			    [enable drawing using freetype 2])
++	    ], with_ft2=$withval, with_ft2=yes)
++
++if test "x$with_ft2" = "xyes" ; then
++
++	# Require Freetype2. First see if there is suitable pkgconfig file...
++	PKG_CHECK_EXISTS(freetype2 >= 6.1.0,
++			 [PKG_CHECK_MODULES(FT2, freetype2)], [
++		# We use our local copy of the macro because packages of
++		# freetype's development files don't always include the proper macro.
++		VTE_CHECK_FT2(6.1.0,,
++			      [AC_MSG_ERROR([You must have freetype 2.0.2 or later to build vte.])])])
++
++	# Temporarily pull in the Freetype cflags and libs for checking what's
++	# available in this version.
++	savecflags="$CFLAGS"
++	CFLAGS="$CFLAGS $FT2_CFLAGS"
++	savecppflags="$CPPFLAGS"
++	CPPFLAGS="$CPPFLAGS $FT2_CFLAGS"
++	if test -d "$ac_x_includes" ; then
++		CFLAGS="$CFLAGS -I$ac_x_includes"
++		CPPFLAGS="$CPPFLAGS -I$ac_x_includes"
++	fi
++	AC_CHECK_HEADERS(ft2build.h)
++	if test x$ac_cv_header_ft2build_h != xyes ; then
++		AC_MSG_ERROR([You must have freetype 2.0.2 or later to build vte.])
++	fi
+ 
+-AC_CHECK_DECL(ft_render_mode_mono,[AC_DEFINE(HAVE_DECL_ft_render_mode_mono,1,Define if your freetype2 installation defines ft_render_mode_mono.)],,[
++	AC_CHECK_DECL(ft_render_mode_mono,[AC_DEFINE(HAVE_DECL_ft_render_mode_mono,1,Define if your freetype2 installation defines ft_render_mode_mono.)],,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+ 
+-AC_CHECK_DECL(FT_RENDER_MODE_MONO,[AC_DEFINE(HAVE_DECL_FT_RENDER_MODE_MONO,1,Define if your freetype2 installation defines FT_RENDER_MODE_MONO.)],,[
++	AC_CHECK_DECL(FT_RENDER_MODE_MONO,[AC_DEFINE(HAVE_DECL_FT_RENDER_MODE_MONO,1,Define if your freetype2 installation defines FT_RENDER_MODE_MONO.)],,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+ 
+-AC_CHECK_DECLS(FT_LOAD_NO_HINTING,,,[
++	AC_CHECK_DECLS(FT_LOAD_NO_HINTING,,,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+ 
+-AC_CHECK_DECLS(FT_RENDER_MODE_LIGHT,,,[
++	AC_CHECK_DECLS(FT_RENDER_MODE_LIGHT,,,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+ 
+-AC_CHECK_DECLS(FT_RENDER_MODE_NORMAL,,,[
++	AC_CHECK_DECLS(FT_RENDER_MODE_NORMAL,,,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+ 
+-AC_CHECK_DECL(FT_PIXEL_MODE_MONO,[AC_DEFINE(HAVE_DECL_FT_PIXEL_MODE_MONO,1,Define if your freetype2 build declares FT_PIXEL_MODE_MONO.)],,[
++	AC_CHECK_DECL(FT_PIXEL_MODE_MONO,[AC_DEFINE(HAVE_DECL_FT_PIXEL_MODE_MONO,1,Define if your freetype2 build declares FT_PIXEL_MODE_MONO.)],,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+-AC_CHECK_DECL(ft_pixel_mode_mono,[AC_DEFINE(HAVE_DECL_ft_pixel_mode_mono,1,Define if your freetype2 build declares ft_pixel_mode_mono.)],,[
++	AC_CHECK_DECL(ft_pixel_mode_mono,[AC_DEFINE(HAVE_DECL_ft_pixel_mode_mono,1,Define if your freetype2 build declares ft_pixel_mode_mono.)],,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+ 
+-AC_CHECK_DECLS(FT_PIXEL_MODE_GRAY2,,,[
++	AC_CHECK_DECLS(FT_PIXEL_MODE_GRAY2,,,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+-AC_CHECK_DECLS(FT_PIXEL_MODE_GRAY4,,,[
++	AC_CHECK_DECLS(FT_PIXEL_MODE_GRAY4,,,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+ 
+-AC_CHECK_DECL(FT_PIXEL_MODE_GRAY,[AC_DEFINE(HAVE_DECL_FT_PIXEL_MODE_GRAY,1,Define if your freetype2 build declares FT_PIXEL_MODE_GRAY.)],,[
++	AC_CHECK_DECL(FT_PIXEL_MODE_GRAY,[AC_DEFINE(HAVE_DECL_FT_PIXEL_MODE_GRAY,1,Define if your freetype2 build declares FT_PIXEL_MODE_GRAY.)],,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+-AC_CHECK_DECL(ft_pixel_mode_grays,[AC_DEFINE(HAVE_DECL_ft_pixel_mode_grays,1,Define if your freetype2 build declares ft_pixel_mode_grays.)],,[
++	AC_CHECK_DECL(ft_pixel_mode_grays,[AC_DEFINE(HAVE_DECL_ft_pixel_mode_grays,1,Define if your freetype2 build declares ft_pixel_mode_grays.)],,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+ 
+-AC_CHECK_DECLS(FT_PIXEL_MODE_LCD,,,[
++	AC_CHECK_DECLS(FT_PIXEL_MODE_LCD,,,[
+ #ifdef HAVE_FT2BUILD_H
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #endif
+ ])
+ 
+-CFLAGS="$savecflags"
+-CPPFLAGS="$savecppflags"
++	CFLAGS="$savecflags"
++	CPPFLAGS="$savecppflags"
++fi
+ 
++AM_CONDITIONAL(BUILD_FT2, test "x$with_ft2" = "xyes")
+ 
+ wcs_funcs_includes="
+ #ifdef HAVE_STRING_H
+--- vte-0.16.14.orig/src/Makefile.am
++++ vte-0.16.14/src/Makefile.am
+@@ -79,12 +79,8 @@
+ 	vtedraw.h \
+ 	vtefc.c \
+ 	vtefc.h \
+-	vteft2.c \
+-	vteft2.h \
+ 	vtegl.c \
+ 	vtegl.h \
+-	vteglyph.c \
+-	vteglyph.h \
+ 	vteint.h \
+ 	vtepango.c \
+ 	vtepango.h \
+@@ -104,6 +100,13 @@
+ 	vtetc.h \
+ 	vtetree.c \
+ 	vtetree.h
++if BUILD_FT2
++libvte_la_SOURCES += \
++	vteft2.c \
++	vteft2.h \
++	vteglyph.c \
++	vteglyph.h
++endif
+ if BUILD_XFT
+ libvte_la_SOURCES += \
+ 	vtexft.c \
+--- vte-0.16.14.orig/src/vtedraw.c
++++ vte-0.16.14/src/vtedraw.c
+@@ -42,7 +42,9 @@
+ 	&_vte_draw_xft,
+ #endif /* HAVE_XFT2 */
+ #endif /* !X_DISPLAY_MISSING */
++#ifdef HAVE_FT2BUILD_H
+ 	&_vte_draw_ft2,
++#endif /* HAVE_FT2BUILD_H */
+ #ifndef X_DISPLAY_MISSING
+ #ifdef HAVE_GL
+ 	&_vte_draw_gl,
+--- vte-0.16.14.orig/src/vteft2.h
++++ vte-0.16.14/src/vteft2.h
+@@ -26,8 +26,12 @@
+ 
+ G_BEGIN_DECLS
+ 
++#ifdef HAVE_FT2BUILD_H
++
+ extern const struct _vte_draw_impl _vte_draw_ft2;
+ 
++#endif
++
+ G_END_DECLS
+ 
+ #endif
