@@ -1,6 +1,6 @@
 <refentry id="VteTerminal">
 <refmeta>
-<refentrytitle role="top_of_page">VteTerminal</refentrytitle>
+<refentrytitle role="top_of_page" id="VteTerminal.top_of_page">VteTerminal</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>VTE Library</refmiscinfo>
 </refmeta>
@@ -11,13 +11,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="VteTerminal.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
                     <link linkend="VteTerminal-struct">VteTerminal</link>;
 enum                <link linkend="VteTerminalEraseBinding">VteTerminalEraseBinding</link>;
 <link linkend="GtkWidget">GtkWidget</link>*          <link linkend="vte-terminal-new">vte_terminal_new</link>                    (void);
@@ -109,6 +106,10 @@ enum                <link linkend="VteTerminalEraseBinding">VteTerminalEraseBind
                                                          <link linkend="gboolean">gboolean</link> scroll);
 <link linkend="void">void</link>                <link linkend="vte-terminal-set-cursor-blinks">vte_terminal_set_cursor_blinks</link>      (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> blink);
+<link linkend="VteTerminalCursorBlinkMode">VteTerminalCursorBlinkMode</link> <link linkend="vte-terminal-get-cursor-blink-mode">vte_terminal_get_cursor_blink_mode</link>
+                                                        (<link linkend="VteTerminal">VteTerminal</link> *terminal);
+<link linkend="void">void</link>                <link linkend="vte-terminal-set-cursor-blink-mode">vte_terminal_set_cursor_blink_mode</link>  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                                         <link linkend="VteTerminalCursorBlinkMode">VteTerminalCursorBlinkMode</link> mode);
 <link linkend="void">void</link>                <link linkend="vte-terminal-set-scrollback-lines">vte_terminal_set_scrollback_lines</link>   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="glong">glong</link> lines);
 <link linkend="void">void</link>                <link linkend="vte-terminal-set-font">vte_terminal_set_font</link>               (<link linkend="VteTerminal">VteTerminal</link> *terminal,
@@ -162,6 +163,9 @@ const <link linkend="PangoFontDescription">PangoFontDescription</link>* <link li
 <link linkend="void">void</link>                <link linkend="vte-terminal-match-clear-all">vte_terminal_match_clear_all</link>        (<link linkend="VteTerminal">VteTerminal</link> *terminal);
 <link linkend="int">int</link>                 <link linkend="vte-terminal-match-add">vte_terminal_match_add</link>              (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *match);
+<link linkend="int">int</link>                 <link linkend="vte-terminal-match-add-gregex">vte_terminal_match_add_gregex</link>       (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                                         <link linkend="GRegex">GRegex</link> *regex,
+                                                         <link linkend="GRegexMatchFlags">GRegexMatchFlags</link> flags);
 <link linkend="void">void</link>                <link linkend="vte-terminal-match-remove">vte_terminal_match_remove</link>           (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="int">int</link> tag);
 <link linkend="char">char</link>*               <link linkend="vte-terminal-match-check">vte_terminal_match_check</link>            (<link linkend="VteTerminal">VteTerminal</link> *terminal,
@@ -174,6 +178,9 @@ const <link linkend="PangoFontDescription">PangoFontDescription</link>* <link li
 <link linkend="void">void</link>                <link linkend="vte-terminal-match-set-cursor-type">vte_terminal_match_set_cursor_type</link>  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="int">int</link> tag,
                                                          <link linkend="GdkCursorType">GdkCursorType</link> cursor_type);
+<link linkend="void">void</link>                <link linkend="vte-terminal-match-set-cursor-name">vte_terminal_match_set_cursor_name</link>  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                                         <link linkend="int">int</link> tag,
+                                                         const <link linkend="char">char</link> *cursor_name);
 <link linkend="void">void</link>                <link linkend="vte-terminal-set-emulation">vte_terminal_set_emulation</link>          (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *emulation);
 const <link linkend="char">char</link>*         <link linkend="vte-terminal-get-emulation">vte_terminal_get_emulation</link>          (<link linkend="VteTerminal">VteTerminal</link> *terminal);
@@ -199,10 +206,9 @@ const <link linkend="char">char</link>*         <link linkend="vte-terminal-get-
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1 role="object_hierarchy">
+<refsect1 id="VteTerminal.object-hierarchy" role="object_hierarchy">
 <title role="object_hierarchy.title">Object Hierarchy</title>
 <synopsis>
-
   <link linkend="GObject">GObject</link>
    +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
          +----<link linkend="GtkObject">GtkObject</link>
@@ -214,7 +220,7 @@ const <link linkend="char">char</link>*         <link linkend="vte-terminal-get-
 
 
 
-<refsect1 role="impl_interfaces">
+<refsect1 id="VteTerminal.implemented-interfaces" role="impl_interfaces">
 <title role="impl_interfaces.title">Implemented Interfaces</title>
 <para>
 VteTerminal implements
@@ -224,10 +230,9 @@ VteTerminal implements
 
 
 
-<refsect1 role="signal_proto">
+<refsect1 id="VteTerminal.signals" role="signal_proto">
 <title role="signal_proto.title">Signals</title>
 <synopsis>
-
   &quot;<link linkend="VteTerminal-char-size-changed">char-size-changed</link>&quot;                              : Run Last
   &quot;<link linkend="VteTerminal-child-exited">child-exited</link>&quot;                                   : Run Last
   &quot;<link linkend="VteTerminal-commit">commit</link>&quot;                                         : Run Last
@@ -251,6 +256,7 @@ VteTerminal implements
   &quot;<link linkend="VteTerminal-resize-window">resize-window</link>&quot;                                  : Run Last
   &quot;<link linkend="VteTerminal-restore-window">restore-window</link>&quot;                                 : Run Last
   &quot;<link linkend="VteTerminal-selection-changed">selection-changed</link>&quot;                              : Run Last
+  &quot;<link linkend="VteTerminal-set-scroll-adjustments">set-scroll-adjustments</link>&quot;                         : Run Last
   &quot;<link linkend="VteTerminal-status-line-changed">status-line-changed</link>&quot;                            : Run Last
   &quot;<link linkend="VteTerminal-text-deleted">text-deleted</link>&quot;                                   : Run Last
   &quot;<link linkend="VteTerminal-text-inserted">text-inserted</link>&quot;                                  : Run Last
@@ -261,18 +267,18 @@ VteTerminal implements
 </refsect1>
 
 
-<refsect1 role="desc">
+<refsect1 id="VteTerminal.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 A VteTerminal is a terminal emulator implemented as a GTK2 widget.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="VteTerminal.details" role="details">
 <title role="details.title">Details</title>
-<refsect2>
-<title><anchor id="VteTerminal-struct" role="struct"/>VteTerminal</title>
-<indexterm><primary>VteTerminal</primary></indexterm><programlisting>typedef struct {
+<refsect2 id="VteTerminal-struct" role="struct">
+<title>VteTerminal</title>
+<indexterm zone="VteTerminal-struct"><primary>VteTerminal</primary></indexterm><programlisting>typedef struct {
 	/* Widget implementation stuffs. */
 	GtkWidget widget;
 	GtkAdjustment *adjustment;	/* Scrolling adjustment. */
@@ -342,9 +348,9 @@ All of these fields should be considered read-only.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="VteTerminalEraseBinding" role="enum"/>enum VteTerminalEraseBinding</title>
-<indexterm><primary>VteTerminalEraseBinding</primary></indexterm><programlisting>typedef enum {
+<refsect2 id="VteTerminalEraseBinding" role="enum">
+<title>enum VteTerminalEraseBinding</title>
+<indexterm zone="VteTerminalEraseBinding"><primary>VteTerminalEraseBinding</primary></indexterm><programlisting>typedef enum {
 	VTE_ERASE_AUTO,
 	VTE_ERASE_ASCII_BACKSPACE,
 	VTE_ERASE_ASCII_DELETE,
@@ -356,31 +362,31 @@ An enumerated type which can be used to indicate which string the terminal
 should send to an application when the user presses the Delete or Backspace
 keys.
 </para><variablelist role="enum">
-<varlistentry>
-<term><anchor id="VTE-ERASE-AUTO:CAPS" role="constant"/><literal>VTE_ERASE_AUTO</literal></term>
+<varlistentry id="VTE-ERASE-AUTO:CAPS" role="constant">
+<term><literal>VTE_ERASE_AUTO</literal></term>
 <listitem><simpara>For backspace, attempt to determine the right value from the terminal's IO settings.  For delete, use the control sequence.
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="VTE-ERASE-ASCII-BACKSPACE:CAPS" role="constant"/><literal>VTE_ERASE_ASCII_BACKSPACE</literal></term>
+<varlistentry id="VTE-ERASE-ASCII-BACKSPACE:CAPS" role="constant">
+<term><literal>VTE_ERASE_ASCII_BACKSPACE</literal></term>
 <listitem><simpara>Send an ASCII backspace character (0x08).
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="VTE-ERASE-ASCII-DELETE:CAPS" role="constant"/><literal>VTE_ERASE_ASCII_DELETE</literal></term>
+<varlistentry id="VTE-ERASE-ASCII-DELETE:CAPS" role="constant">
+<term><literal>VTE_ERASE_ASCII_DELETE</literal></term>
 <listitem><simpara>Send an ASCII delete character (0x7F).
 </simpara></listitem>
 </varlistentry>
-<varlistentry>
-<term><anchor id="VTE-ERASE-DELETE-SEQUENCE:CAPS" role="constant"/><literal>VTE_ERASE_DELETE_SEQUENCE</literal></term>
+<varlistentry id="VTE-ERASE-DELETE-SEQUENCE:CAPS" role="constant">
+<term><literal>VTE_ERASE_DELETE_SEQUENCE</literal></term>
 <listitem><simpara>Send the "@<parameter>7</parameter>" control sequence.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-new" role="function"/>vte_terminal_new ()</title>
-<indexterm><primary>vte_terminal_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          vte_terminal_new                    (void);</programlisting>
+<refsect2 id="vte-terminal-new" role="function">
+<title>vte_terminal_new ()</title>
+<indexterm zone="vte-terminal-new"><primary>vte_terminal_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          vte_terminal_new                    (void);</programlisting>
 <para>
 Create a new terminal widget.</para>
 <para>
@@ -388,9 +394,9 @@ Create a new terminal widget.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="VteTerminal"><type>VteTerminal</type></link> object
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-im-append-menuitems" role="function"/>vte_terminal_im_append_menuitems ()</title>
-<indexterm><primary>vte_terminal_im_append_menuitems</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_im_append_menuitems    (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-im-append-menuitems" role="function">
+<title>vte_terminal_im_append_menuitems ()</title>
+<indexterm zone="vte-terminal-im-append-menuitems"><primary>vte_terminal_im_append_menuitems</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_im_append_menuitems    (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="GtkMenuShell">GtkMenuShell</link> *menushell);</programlisting>
 <para>
 Appends menu items for various input methods to the given menu.  The
@@ -405,9 +411,9 @@ the terminal.</para>
 <listitem><simpara> a GtkMenuShell
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-fork-command" role="function"/>vte_terminal_fork_command ()</title>
-<indexterm><primary>vte_terminal_fork_command</primary></indexterm><programlisting><link linkend="pid-t">pid_t</link>               vte_terminal_fork_command           (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-fork-command" role="function">
+<title>vte_terminal_fork_command ()</title>
+<indexterm zone="vte-terminal-fork-command"><primary>vte_terminal_fork_command</primary></indexterm><programlisting><link linkend="pid-t">pid_t</link>               vte_terminal_fork_command           (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *command,
                                                          <link linkend="char">char</link> **argv,
                                                          <link linkend="char">char</link> **envv,
@@ -452,9 +458,9 @@ starting <parameter>command</parameter>, or <link linkend="NULL:CAPS"><literal>N
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the ID of the new process
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-forkpty" role="function" condition="since:0.11.11"/>vte_terminal_forkpty ()</title>
-<indexterm role="0.11.11"><primary>vte_terminal_forkpty</primary></indexterm><programlisting><link linkend="pid-t">pid_t</link>               vte_terminal_forkpty                (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-forkpty" role="function" condition="since:0.11.11">
+<title>vte_terminal_forkpty ()</title>
+<indexterm zone="vte-terminal-forkpty" role="0.11.11"><primary>vte_terminal_forkpty</primary></indexterm><programlisting><link linkend="pid-t">pid_t</link>               vte_terminal_forkpty                (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="char">char</link> **envv,
                                                          const <link linkend="char">char</link> *directory,
                                                          <link linkend="gboolean">gboolean</link> lastlog,
@@ -494,9 +500,9 @@ there was an error
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  0.11.11
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-pty" role="function" condition="since:0.12.1"/>vte_terminal_set_pty ()</title>
-<indexterm role="0.12.1"><primary>vte_terminal_set_pty</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_pty                (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-pty" role="function" condition="since:0.12.1">
+<title>vte_terminal_set_pty ()</title>
+<indexterm zone="vte-terminal-set-pty" role="0.12.1"><primary>vte_terminal_set_pty</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_pty                (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="int">int</link> pty_master);</programlisting>
 <para>
 Attach an existing PTY master side to the terminal widget.  Use
@@ -512,9 +518,9 @@ instead of <link linkend="vte-terminal-fork-command"><function>vte_terminal_fork
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  0.12.1
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-feed" role="function"/>vte_terminal_feed ()</title>
-<indexterm><primary>vte_terminal_feed</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_feed                   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-feed" role="function">
+<title>vte_terminal_feed ()</title>
+<indexterm zone="vte-terminal-feed"><primary>vte_terminal_feed</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_feed                   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *data,
                                                          <link linkend="glong">glong</link> length);</programlisting>
 <para>
@@ -534,9 +540,9 @@ to mess with your users.</para>
 <listitem><simpara> the length of the string
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-feed-child" role="function"/>vte_terminal_feed_child ()</title>
-<indexterm><primary>vte_terminal_feed_child</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_feed_child             (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-feed-child" role="function">
+<title>vte_terminal_feed_child ()</title>
+<indexterm zone="vte-terminal-feed-child"><primary>vte_terminal_feed_child</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_feed_child             (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *text,
                                                          <link linkend="glong">glong</link> length);</programlisting>
 <para>
@@ -555,9 +561,9 @@ at the keyboard.</para>
 <listitem><simpara> length of <parameter>text</parameter> in bytes, or -1 if <parameter>text</parameter> is NUL-terminated
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-feed-child-binary" role="function" condition="since:0.12.1"/>vte_terminal_feed_child_binary ()</title>
-<indexterm role="0.12.1"><primary>vte_terminal_feed_child_binary</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_feed_child_binary      (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-feed-child-binary" role="function" condition="since:0.12.1">
+<title>vte_terminal_feed_child_binary ()</title>
+<indexterm zone="vte-terminal-feed-child-binary" role="0.12.1"><primary>vte_terminal_feed_child_binary</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_feed_child_binary      (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *data,
                                                          <link linkend="glong">glong</link> length);</programlisting>
 <para>
@@ -576,9 +582,9 @@ Sends a block of binary data to the child.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  0.12.1
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-select-all" role="function" condition="since:0.16"/>vte_terminal_select_all ()</title>
-<indexterm role="0.16"><primary>vte_terminal_select_all</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_select_all             (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-select-all" role="function" condition="since:0.16">
+<title>vte_terminal_select_all ()</title>
+<indexterm zone="vte-terminal-select-all" role="0.16"><primary>vte_terminal_select_all</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_select_all             (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Selects all text within the terminal (including the scrollback buffer).</para>
 <para>
@@ -589,9 +595,9 @@ Selects all text within the terminal (including the scrollback buffer).</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  0.16
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-select-none" role="function" condition="since:0.16"/>vte_terminal_select_none ()</title>
-<indexterm role="0.16"><primary>vte_terminal_select_none</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_select_none            (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-select-none" role="function" condition="since:0.16">
+<title>vte_terminal_select_none ()</title>
+<indexterm zone="vte-terminal-select-none" role="0.16"><primary>vte_terminal_select_none</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_select_none            (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Clears the current selection.</para>
 <para>
@@ -602,9 +608,9 @@ Clears the current selection.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  0.16
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-copy-clipboard" role="function"/>vte_terminal_copy_clipboard ()</title>
-<indexterm><primary>vte_terminal_copy_clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_copy_clipboard         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-copy-clipboard" role="function">
+<title>vte_terminal_copy_clipboard ()</title>
+<indexterm zone="vte-terminal-copy-clipboard"><primary>vte_terminal_copy_clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_copy_clipboard         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Places the selected text in the terminal in the <link linkend="GDK-SELECTION-CLIPBOARD:CAPS"><type>GDK_SELECTION_CLIPBOARD</type></link>
 selection.</para>
@@ -615,9 +621,9 @@ selection.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-paste-clipboard" role="function"/>vte_terminal_paste_clipboard ()</title>
-<indexterm><primary>vte_terminal_paste_clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_paste_clipboard        (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-paste-clipboard" role="function">
+<title>vte_terminal_paste_clipboard ()</title>
+<indexterm zone="vte-terminal-paste-clipboard"><primary>vte_terminal_paste_clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_paste_clipboard        (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Sends the contents of the <link linkend="GDK-SELECTION-CLIPBOARD:CAPS"><type>GDK_SELECTION_CLIPBOARD</type></link> selection to the
 terminal's child.  If necessary, the data is converted from UTF-8 to the
@@ -630,9 +636,9 @@ user presses Shift+Insert.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-copy-primary" role="function"/>vte_terminal_copy_primary ()</title>
-<indexterm><primary>vte_terminal_copy_primary</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_copy_primary           (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-copy-primary" role="function">
+<title>vte_terminal_copy_primary ()</title>
+<indexterm zone="vte-terminal-copy-primary"><primary>vte_terminal_copy_primary</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_copy_primary           (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Places the selected text in the terminal in the <link linkend="GDK-SELECTION-PRIMARY:CAPS"><type>GDK_SELECTION_PRIMARY</type></link>
 selection.</para>
@@ -643,9 +649,9 @@ selection.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-paste-primary" role="function"/>vte_terminal_paste_primary ()</title>
-<indexterm><primary>vte_terminal_paste_primary</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_paste_primary          (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-paste-primary" role="function">
+<title>vte_terminal_paste_primary ()</title>
+<indexterm zone="vte-terminal-paste-primary"><primary>vte_terminal_paste_primary</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_paste_primary          (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Sends the contents of the <link linkend="GDK-SELECTION-PRIMARY:CAPS"><type>GDK_SELECTION_PRIMARY</type></link> selection to the terminal's
 child.  If necessary, the data is converted from UTF-8 to the terminal's
@@ -659,9 +665,9 @@ mouse button.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-size" role="function"/>vte_terminal_set_size ()</title>
-<indexterm><primary>vte_terminal_set_size</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_size               (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-size" role="function">
+<title>vte_terminal_set_size ()</title>
+<indexterm zone="vte-terminal-set-size"><primary>vte_terminal_set_size</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_size               (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="glong">glong</link> columns,
                                                          <link linkend="glong">glong</link> rows);</programlisting>
 <para>
@@ -680,9 +686,9 @@ the attempt succeeds, the widget will resize itself to the proper size.</para>
 <listitem><simpara> the desired number of rows
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-audible-bell" role="function"/>vte_terminal_set_audible_bell ()</title>
-<indexterm><primary>vte_terminal_set_audible_bell</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_audible_bell       (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-audible-bell" role="function">
+<title>vte_terminal_set_audible_bell ()</title>
+<indexterm zone="vte-terminal-set-audible-bell"><primary>vte_terminal_set_audible_bell</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_audible_bell       (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> is_audible);</programlisting>
 <para>
 Controls whether or not the terminal will beep when the child outputs the
@@ -697,9 +703,9 @@ Controls whether or not the terminal will beep when the child outputs the
 <listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should beep
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-audible-bell" role="function"/>vte_terminal_get_audible_bell ()</title>
-<indexterm><primary>vte_terminal_get_audible_bell</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_audible_bell       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-audible-bell" role="function">
+<title>vte_terminal_get_audible_bell ()</title>
+<indexterm zone="vte-terminal-get-audible-bell"><primary>vte_terminal_get_audible_bell</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_audible_bell       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Checks whether or not the terminal will beep when the child outputs the
 "bl" sequence.</para>
@@ -712,9 +718,9 @@ Checks whether or not the terminal will beep when the child outputs the
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if audible bell is enabled, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if not
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-visible-bell" role="function"/>vte_terminal_set_visible_bell ()</title>
-<indexterm><primary>vte_terminal_set_visible_bell</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_visible_bell       (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-visible-bell" role="function">
+<title>vte_terminal_set_visible_bell ()</title>
+<indexterm zone="vte-terminal-set-visible-bell"><primary>vte_terminal_set_visible_bell</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_visible_bell       (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> is_visible);</programlisting>
 <para>
 Controls whether or not the terminal will present a visible bell to the
@@ -730,9 +736,9 @@ will clear itself to the default foreground color and then repaint itself.</para
 <listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should flash
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-visible-bell" role="function"/>vte_terminal_get_visible_bell ()</title>
-<indexterm><primary>vte_terminal_get_visible_bell</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_visible_bell       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-visible-bell" role="function">
+<title>vte_terminal_get_visible_bell ()</title>
+<indexterm zone="vte-terminal-get-visible-bell"><primary>vte_terminal_get_visible_bell</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_visible_bell       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Checks whether or not the terminal will present a visible bell to the
 user when the child outputs the "bl" sequence.  The terminal
@@ -746,9 +752,9 @@ will clear itself to the default foreground color and then repaint itself.</para
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if visible bell is enabled, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if not
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-allow-bold" role="function"/>vte_terminal_set_allow_bold ()</title>
-<indexterm><primary>vte_terminal_set_allow_bold</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_allow_bold         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-allow-bold" role="function">
+<title>vte_terminal_set_allow_bold ()</title>
+<indexterm zone="vte-terminal-set-allow-bold"><primary>vte_terminal_set_allow_bold</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_allow_bold         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> allow_bold);</programlisting>
 <para>
 Controls whether or not the terminal will attempt to draw bold text by
@@ -763,9 +769,9 @@ repainting text with a different offset.</para>
 <listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should attempt to draw bold text
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-allow-bold" role="function"/>vte_terminal_get_allow_bold ()</title>
-<indexterm><primary>vte_terminal_get_allow_bold</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_allow_bold         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-allow-bold" role="function">
+<title>vte_terminal_get_allow_bold ()</title>
+<indexterm zone="vte-terminal-get-allow-bold"><primary>vte_terminal_get_allow_bold</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_allow_bold         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Checks whether or not the terminal will attempt to draw bold text by
 repainting text with a one-pixel offset.</para>
@@ -778,9 +784,9 @@ repainting text with a one-pixel offset.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if bolding is enabled, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if not
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-scroll-on-output" role="function"/>vte_terminal_set_scroll_on_output ()</title>
-<indexterm><primary>vte_terminal_set_scroll_on_output</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_scroll_on_output   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-scroll-on-output" role="function">
+<title>vte_terminal_set_scroll_on_output ()</title>
+<indexterm zone="vte-terminal-set-scroll-on-output"><primary>vte_terminal_set_scroll_on_output</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_scroll_on_output   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> scroll);</programlisting>
 <para>
 Controls whether or not the terminal will forcibly scroll to the bottom of
@@ -795,9 +801,9 @@ the viewable history when the new data is received from the child.</para>
 <listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should scroll on output
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-scroll-on-keystroke" role="function"/>vte_terminal_set_scroll_on_keystroke ()</title>
-<indexterm><primary>vte_terminal_set_scroll_on_keystroke</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_scroll_on_keystroke
+<refsect2 id="vte-terminal-set-scroll-on-keystroke" role="function">
+<title>vte_terminal_set_scroll_on_keystroke ()</title>
+<indexterm zone="vte-terminal-set-scroll-on-keystroke"><primary>vte_terminal_set_scroll_on_keystroke</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_scroll_on_keystroke
                                                         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> scroll);</programlisting>
 <para>
@@ -814,9 +820,9 @@ trigger this behavior.</para>
 <listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should scroll on keystrokes
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-color-bold" role="function"/>vte_terminal_set_color_bold ()</title>
-<indexterm><primary>vte_terminal_set_color_bold</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_bold         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-color-bold" role="function">
+<title>vte_terminal_set_color_bold ()</title>
+<indexterm zone="vte-terminal-set-color-bold"><primary>vte_terminal_set_color_bold</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_bold         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="GdkColor">GdkColor</link> *bold);</programlisting>
 <para>
 Sets the color used to draw bold text in the default foreground color.</para>
@@ -830,9 +836,9 @@ Sets the color used to draw bold text in the default foreground color.</para>
 <listitem><simpara> the new bold color
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-color-foreground" role="function"/>vte_terminal_set_color_foreground ()</title>
-<indexterm><primary>vte_terminal_set_color_foreground</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_foreground   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-color-foreground" role="function">
+<title>vte_terminal_set_color_foreground ()</title>
+<indexterm zone="vte-terminal-set-color-foreground"><primary>vte_terminal_set_color_foreground</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_foreground   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="GdkColor">GdkColor</link> *foreground);</programlisting>
 <para>
 Sets the foreground color used to draw normal text</para>
@@ -846,9 +852,9 @@ Sets the foreground color used to draw normal text</para>
 <listitem><simpara> the new foreground color
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-color-background" role="function"/>vte_terminal_set_color_background ()</title>
-<indexterm><primary>vte_terminal_set_color_background</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_background   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-color-background" role="function">
+<title>vte_terminal_set_color_background ()</title>
+<indexterm zone="vte-terminal-set-color-background"><primary>vte_terminal_set_color_background</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_background   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="GdkColor">GdkColor</link> *background);</programlisting>
 <para>
 Sets the background color for text which does not have a specific background
@@ -864,9 +870,9 @@ the terminal is not transparent.</para>
 <listitem><simpara> the new background color
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-color-dim" role="function"/>vte_terminal_set_color_dim ()</title>
-<indexterm><primary>vte_terminal_set_color_dim</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_dim          (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-color-dim" role="function">
+<title>vte_terminal_set_color_dim ()</title>
+<indexterm zone="vte-terminal-set-color-dim"><primary>vte_terminal_set_color_dim</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_dim          (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="GdkColor">GdkColor</link> *dim);</programlisting>
 <para>
 Sets the color used to draw dim text in the default foreground color.</para>
@@ -880,9 +886,9 @@ Sets the color used to draw dim text in the default foreground color.</para>
 <listitem><simpara> the new dim color
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-color-cursor" role="function" condition="since:0.11.11"/>vte_terminal_set_color_cursor ()</title>
-<indexterm role="0.11.11"><primary>vte_terminal_set_color_cursor</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_cursor       (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-color-cursor" role="function" condition="since:0.11.11">
+<title>vte_terminal_set_color_cursor ()</title>
+<indexterm zone="vte-terminal-set-color-cursor" role="0.11.11"><primary>vte_terminal_set_color_cursor</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_cursor       (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="GdkColor">GdkColor</link> *cursor_background);</programlisting>
 <para>
 Sets the background color for text which is under the cursor.  If <link linkend="NULL:CAPS"><literal>NULL</literal></link>, text
@@ -900,9 +906,9 @@ reversed.</para>
 </variablelist><para role="since">Since  0.11.11
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-color-highlight" role="function" condition="since:0.11.11"/>vte_terminal_set_color_highlight ()</title>
-<indexterm role="0.11.11"><primary>vte_terminal_set_color_highlight</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_highlight    (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-color-highlight" role="function" condition="since:0.11.11">
+<title>vte_terminal_set_color_highlight ()</title>
+<indexterm zone="vte-terminal-set-color-highlight" role="0.11.11"><primary>vte_terminal_set_color_highlight</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_color_highlight    (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="GdkColor">GdkColor</link> *highlight_background);</programlisting>
 <para>
 Sets the background color for text which is highlighted.  If <link linkend="NULL:CAPS"><literal>NULL</literal></link>,
@@ -920,9 +926,9 @@ be drawn with foreground and background colors reversed.</para>
 </variablelist><para role="since">Since  0.11.11
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-colors" role="function"/>vte_terminal_set_colors ()</title>
-<indexterm><primary>vte_terminal_set_colors</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_colors             (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-colors" role="function">
+<title>vte_terminal_set_colors ()</title>
+<indexterm zone="vte-terminal-set-colors"><primary>vte_terminal_set_colors</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_colors             (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="GdkColor">GdkColor</link> *foreground,
                                                          const <link linkend="GdkColor">GdkColor</link> *background,
                                                          const <link linkend="GdkColor">GdkColor</link> *palette,
@@ -960,9 +966,9 @@ in <parameter>palette</parameter>.</para>
 <listitem><simpara> the number of entries in <parameter>palette</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-default-colors" role="function"/>vte_terminal_set_default_colors ()</title>
-<indexterm><primary>vte_terminal_set_default_colors</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_default_colors     (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-set-default-colors" role="function">
+<title>vte_terminal_set_default_colors ()</title>
+<indexterm zone="vte-terminal-set-default-colors"><primary>vte_terminal_set_default_colors</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_default_colors     (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Reset the terminal palette to reasonable compiled-in defaults.</para>
 <para>
@@ -972,9 +978,9 @@ Reset the terminal palette to reasonable compiled-in defaults.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-opacity" role="function"/>vte_terminal_set_opacity ()</title>
-<indexterm><primary>vte_terminal_set_opacity</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_opacity            (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-opacity" role="function">
+<title>vte_terminal_set_opacity ()</title>
+<indexterm zone="vte-terminal-set-opacity"><primary>vte_terminal_set_opacity</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_opacity            (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="guint16">guint16</link> opacity);</programlisting>
 <para>
 Sets the opacity of the terminal background, were 0 means completely
@@ -989,9 +995,9 @@ transparent and 65535 means completely opaque.</para>
 <listitem><simpara> the new opacity
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-background-image" role="function"/>vte_terminal_set_background_image ()</title>
-<indexterm><primary>vte_terminal_set_background_image</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_background_image   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-background-image" role="function">
+<title>vte_terminal_set_background_image ()</title>
+<indexterm zone="vte-terminal-set-background-image"><primary>vte_terminal_set_background_image</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_background_image   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="GdkPixbuf">GdkPixbuf</link> *image);</programlisting>
 <para>
 Sets a background image for the widget.  Text which would otherwise be
@@ -1010,9 +1016,9 @@ in-memory copy of the image before applying it to the terminal.</para>
 <listitem><simpara> a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link> to use, or <link linkend="NULL:CAPS"><literal>NULL</literal></link> to cancel
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-background-image-file" role="function"/>vte_terminal_set_background_image_file ()</title>
-<indexterm><primary>vte_terminal_set_background_image_file</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_background_image_file
+<refsect2 id="vte-terminal-set-background-image-file" role="function">
+<title>vte_terminal_set_background_image_file ()</title>
+<indexterm zone="vte-terminal-set-background-image-file"><primary>vte_terminal_set_background_image_file</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_background_image_file
                                                         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *path);</programlisting>
 <para>
@@ -1029,9 +1035,9 @@ in-memory copy of the image before applying it to the terminal.</para>
 <listitem><simpara> path to an image file
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-background-saturation" role="function"/>vte_terminal_set_background_saturation ()</title>
-<indexterm><primary>vte_terminal_set_background_saturation</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_background_saturation
+<refsect2 id="vte-terminal-set-background-saturation" role="function">
+<title>vte_terminal_set_background_saturation ()</title>
+<indexterm zone="vte-terminal-set-background-saturation"><primary>vte_terminal_set_background_saturation</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_background_saturation
                                                         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="double">double</link> saturation);</programlisting>
 <para>
@@ -1052,9 +1058,9 @@ image (or snapshot of the root window) and modify its pixel values.</para>
 <listitem><simpara> a floating point value between 0.0 and 1.0.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-background-transparent" role="function"/>vte_terminal_set_background_transparent ()</title>
-<indexterm><primary>vte_terminal_set_background_transparent</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_background_transparent
+<refsect2 id="vte-terminal-set-background-transparent" role="function">
+<title>vte_terminal_set_background_transparent ()</title>
+<indexterm zone="vte-terminal-set-background-transparent"><primary>vte_terminal_set_background_transparent</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_background_transparent
                                                         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> transparent);</programlisting>
 <para>
@@ -1071,9 +1077,9 @@ the widget will appear to be transparent.</para>
 <listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the terminal should fake transparency
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-background-tint-color" role="function" condition="since:0.11"/>vte_terminal_set_background_tint_color ()</title>
-<indexterm role="0.11"><primary>vte_terminal_set_background_tint_color</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_background_tint_color
+<refsect2 id="vte-terminal-set-background-tint-color" role="function" condition="since:0.11">
+<title>vte_terminal_set_background_tint_color ()</title>
+<indexterm zone="vte-terminal-set-background-tint-color" role="0.11"><primary>vte_terminal_set_background_tint_color</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_background_tint_color
                                                         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
@@ -1099,9 +1105,9 @@ saturation is not 1.0.
 </variablelist><para role="since">Since  0.11
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-scroll-background" role="function" condition="since:0.11"/>vte_terminal_set_scroll_background ()</title>
-<indexterm role="0.11"><primary>vte_terminal_set_scroll_background</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_scroll_background  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-scroll-background" role="function" condition="since:0.11">
+<title>vte_terminal_set_scroll_background ()</title>
+<indexterm zone="vte-terminal-set-scroll-background" role="0.11"><primary>vte_terminal_set_scroll_background</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_scroll_background  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> scroll);</programlisting>
 <para>
 Controls whether or not the terminal will scroll the background image (if
@@ -1119,13 +1125,13 @@ text.
 </variablelist><para role="since">Since  0.11
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-cursor-blinks" role="function"/>vte_terminal_set_cursor_blinks ()</title>
-<indexterm><primary>vte_terminal_set_cursor_blinks</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_cursor_blinks      (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-cursor-blinks" role="function" condition="deprecated:0.16.15 Use vte_terminal_set_cursor_blink_mode() instead.">
+<title>vte_terminal_set_cursor_blinks ()</title>
+<indexterm zone="vte-terminal-set-cursor-blinks" role="deprecated"><primary>vte_terminal_set_cursor_blinks</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_cursor_blinks      (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> blink);</programlisting>
+<warning><para><literal>vte_terminal_set_cursor_blinks</literal> is deprecated and should not be used in newly-written code. 0.16.15 Use <link linkend="vte-terminal-set-cursor-blink-mode"><function>vte_terminal_set_cursor_blink_mode()</function></link> instead.</para></warning>
 <para>
-Sets whether or not the cursor will blink.  The length of the blinking cycle
-is controlled by the "gtk-cursor-blink-time" GTK+ setting.</para>
+Sets whether or not the cursor will blink.</para>
 <para>
 
 </para><variablelist role="params">
@@ -1136,9 +1142,44 @@ is controlled by the "gtk-cursor-blink-time" GTK+ setting.</para>
 <listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the cursor should blink
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-scrollback-lines" role="function"/>vte_terminal_set_scrollback_lines ()</title>
-<indexterm><primary>vte_terminal_set_scrollback_lines</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_scrollback_lines   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-get-cursor-blink-mode" role="function" condition="since:0.16.15">
+<title>vte_terminal_get_cursor_blink_mode ()</title>
+<indexterm zone="vte-terminal-get-cursor-blink-mode" role="0.16.15"><primary>vte_terminal_get_cursor_blink_mode</primary></indexterm><programlisting><link linkend="VteTerminalCursorBlinkMode">VteTerminalCursorBlinkMode</link> vte_terminal_get_cursor_blink_mode
+                                                        (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the cursor blink mode.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  0.16.15
+</para></refsect2>
+<refsect2 id="vte-terminal-set-cursor-blink-mode" role="function" condition="since:0.16.15">
+<title>vte_terminal_set_cursor_blink_mode ()</title>
+<indexterm zone="vte-terminal-set-cursor-blink-mode" role="0.16.15"><primary>vte_terminal_set_cursor_blink_mode</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_cursor_blink_mode  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                                         <link linkend="VteTerminalCursorBlinkMode">VteTerminalCursorBlinkMode</link> mode);</programlisting>
+<para>
+Sets whether or not the cursor will blink. Using VTE_CURSOR_BLINK_SYSTEM
+will use the <link linkend="GtkSettings-gtk-cursor-blink"><type>"gtk-cursor-blink"</type></link> setting.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mode</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="VteTerminalCursorBlinkMode"><type>VteTerminalCursorBlinkMode</type></link> to use
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  0.16.15
+</para></refsect2>
+<refsect2 id="vte-terminal-set-scrollback-lines" role="function">
+<title>vte_terminal_set_scrollback_lines ()</title>
+<indexterm zone="vte-terminal-set-scrollback-lines"><primary>vte_terminal_set_scrollback_lines</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_scrollback_lines   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="glong">glong</link> lines);</programlisting>
 <para>
 Sets the length of the scrollback buffer used by the terminal.  The size of
@@ -1157,9 +1198,9 @@ allowed on the alternate screen buffer.</para>
 <listitem><simpara> the length of the history buffer
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-font" role="function"/>vte_terminal_set_font ()</title>
-<indexterm><primary>vte_terminal_set_font</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_font               (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-font" role="function">
+<title>vte_terminal_set_font ()</title>
+<indexterm zone="vte-terminal-set-font"><primary>vte_terminal_set_font</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_font               (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="PangoFontDescription">PangoFontDescription</link> *font_desc);</programlisting>
 <para>
 Sets the font used for rendering all text displayed by the terminal,
@@ -1177,9 +1218,9 @@ and columns.</para>
 <listitem><simpara> The <link linkend="PangoFontDescription"><type>PangoFontDescription</type></link> of the desired font.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-font-from-string" role="function"/>vte_terminal_set_font_from_string ()</title>
-<indexterm><primary>vte_terminal_set_font_from_string</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_font_from_string   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-font-from-string" role="function">
+<title>vte_terminal_set_font_from_string ()</title>
+<indexterm zone="vte-terminal-set-font-from-string"><primary>vte_terminal_set_font_from_string</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_font_from_string   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *name);</programlisting>
 <para>
 A convenience function which converts <parameter>name</parameter> into a <link linkend="PangoFontDescription"><type>PangoFontDescription</type></link> and
@@ -1194,9 +1235,9 @@ passes it to <link linkend="vte-terminal-set-font"><function>vte_terminal_set_fo
 <listitem><simpara> A string describing the font.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-font-from-string-full" role="function" condition="since:0.11.11"/>vte_terminal_set_font_from_string_full ()</title>
-<indexterm role="0.11.11"><primary>vte_terminal_set_font_from_string_full</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_font_from_string_full
+<refsect2 id="vte-terminal-set-font-from-string-full" role="function" condition="since:0.11.11">
+<title>vte_terminal_set_font_from_string_full ()</title>
+<indexterm zone="vte-terminal-set-font-from-string-full" role="0.11.11"><primary>vte_terminal_set_font_from_string_full</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_font_from_string_full
                                                         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *name,
                                                          <link linkend="VteTerminalAntiAlias">VteTerminalAntiAlias</link> antialias);</programlisting>
@@ -1217,9 +1258,9 @@ passes it to <link linkend="vte-terminal-set-font-full"><function>vte_terminal_s
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  0.11.11
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-font-full" role="function" condition="since:0.11.11"/>vte_terminal_set_font_full ()</title>
-<indexterm role="0.11.11"><primary>vte_terminal_set_font_full</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_font_full          (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-font-full" role="function" condition="since:0.11.11">
+<title>vte_terminal_set_font_full ()</title>
+<indexterm zone="vte-terminal-set-font-full" role="0.11.11"><primary>vte_terminal_set_font_full</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_font_full          (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="PangoFontDescription">PangoFontDescription</link> *font_desc,
                                                          <link linkend="VteTerminalAntiAlias">VteTerminalAntiAlias</link> antialias);</programlisting>
 <para>
@@ -1242,9 +1283,9 @@ and columns.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  0.11.11
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-font" role="function"/>vte_terminal_get_font ()</title>
-<indexterm><primary>vte_terminal_get_font</primary></indexterm><programlisting>const <link linkend="PangoFontDescription">PangoFontDescription</link>* vte_terminal_get_font       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-font" role="function">
+<title>vte_terminal_get_font ()</title>
+<indexterm zone="vte-terminal-get-font"><primary>vte_terminal_get_font</primary></indexterm><programlisting>const <link linkend="PangoFontDescription">PangoFontDescription</link>* vte_terminal_get_font       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Queries the terminal for information about the fonts which will be
 used to draw text in the terminal.</para>
@@ -1258,9 +1299,9 @@ used to draw text in the terminal.</para>
 currently using to render text.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-using-xft" role="function"/>vte_terminal_get_using_xft ()</title>
-<indexterm><primary>vte_terminal_get_using_xft</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_using_xft          (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-using-xft" role="function">
+<title>vte_terminal_get_using_xft ()</title>
+<indexterm zone="vte-terminal-get-using-xft"><primary>vte_terminal_get_using_xft</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_using_xft          (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 A <link linkend="VteTerminal"><type>VteTerminal</type></link> can use multiple methods to draw text.  This function
 allows an application to determine whether or not the current method uses
@@ -1276,9 +1317,9 @@ but in practice usually matches the behavior of GTK+ itself.</para>
 the terminal is using PangoX.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-has-selection" role="function"/>vte_terminal_get_has_selection ()</title>
-<indexterm><primary>vte_terminal_get_has_selection</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_has_selection      (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-has-selection" role="function">
+<title>vte_terminal_get_has_selection ()</title>
+<indexterm zone="vte-terminal-get-has-selection"><primary>vte_terminal_get_has_selection</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_has_selection      (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Checks if the terminal currently contains selected text.  Note that this
 is different from determining if the terminal is the owner of any
@@ -1292,9 +1333,9 @@ is different from determining if the terminal is the owner of any
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if part of the text in the terminal is selected.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-word-chars" role="function"/>vte_terminal_set_word_chars ()</title>
-<indexterm><primary>vte_terminal_set_word_chars</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_word_chars         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-word-chars" role="function">
+<title>vte_terminal_set_word_chars ()</title>
+<indexterm zone="vte-terminal-set-word-chars"><primary>vte_terminal_set_word_chars</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_word_chars         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *spec);</programlisting>
 <para>
 When the user double-clicks to start selection, the terminal will extend
@@ -1315,9 +1356,9 @@ treat all graphic non-punctuation non-space characters as word characters.</para
 <listitem><simpara> a specification
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-is-word-char" role="function"/>vte_terminal_is_word_char ()</title>
-<indexterm><primary>vte_terminal_is_word_char</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_is_word_char           (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-is-word-char" role="function">
+<title>vte_terminal_is_word_char ()</title>
+<indexterm zone="vte-terminal-is-word-char"><primary>vte_terminal_is_word_char</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_is_word_char           (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gunichar">gunichar</link> c);</programlisting>
 <para>
 Checks if a particular character is considered to be part of a word or not,
@@ -1334,9 +1375,9 @@ based on the values last passed to <link linkend="vte-terminal-set-word-chars"><
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the character is considered to be part of a word
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-backspace-binding" role="function"/>vte_terminal_set_backspace_binding ()</title>
-<indexterm><primary>vte_terminal_set_backspace_binding</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_backspace_binding  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-backspace-binding" role="function">
+<title>vte_terminal_set_backspace_binding ()</title>
+<indexterm zone="vte-terminal-set-backspace-binding"><primary>vte_terminal_set_backspace_binding</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_backspace_binding  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="VteTerminalEraseBinding">VteTerminalEraseBinding</link> binding);</programlisting>
 <para>
 Modifies the terminal's backspace key binding, which controls what
@@ -1352,9 +1393,9 @@ presses the backspace key.</para>
 <listitem><simpara> a <link linkend="VteTerminalEraseBinding"><type>VteTerminalEraseBinding</type></link> for the backspace key
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-delete-binding" role="function"/>vte_terminal_set_delete_binding ()</title>
-<indexterm><primary>vte_terminal_set_delete_binding</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_delete_binding     (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-delete-binding" role="function">
+<title>vte_terminal_set_delete_binding ()</title>
+<indexterm zone="vte-terminal-set-delete-binding"><primary>vte_terminal_set_delete_binding</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_delete_binding     (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="VteTerminalEraseBinding">VteTerminalEraseBinding</link> binding);</programlisting>
 <para>
 Modifies the terminal's delete key binding, which controls what
@@ -1370,9 +1411,9 @@ presses the delete key.</para>
 <listitem><simpara> a <link linkend="VteTerminalEraseBinding"><type>VteTerminalEraseBinding</type></link> for the delete key
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-mouse-autohide" role="function"/>vte_terminal_set_mouse_autohide ()</title>
-<indexterm><primary>vte_terminal_set_mouse_autohide</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_mouse_autohide     (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-mouse-autohide" role="function">
+<title>vte_terminal_set_mouse_autohide ()</title>
+<indexterm zone="vte-terminal-set-mouse-autohide"><primary>vte_terminal_set_mouse_autohide</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_mouse_autohide     (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> setting);</programlisting>
 <para>
 Changes the value of the terminal's mouse autohide setting.  When autohiding
@@ -1389,9 +1430,9 @@ shown when the user moves the mouse.  This setting can be read using
 <listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the autohide should be enabled
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-mouse-autohide" role="function"/>vte_terminal_get_mouse_autohide ()</title>
-<indexterm><primary>vte_terminal_get_mouse_autohide</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_mouse_autohide     (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-mouse-autohide" role="function">
+<title>vte_terminal_get_mouse_autohide ()</title>
+<indexterm zone="vte-terminal-get-mouse-autohide"><primary>vte_terminal_get_mouse_autohide</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_get_mouse_autohide     (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Determines the value of the terminal's mouse autohide setting.  When
 autohiding is enabled, the mouse cursor will be hidden when the user presses
@@ -1406,9 +1447,9 @@ using <link linkend="vte-terminal-set-mouse-autohide"><function>vte_terminal_set
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if autohiding is enabled, <link linkend="FALSE:CAPS"><literal>FALSE</literal></link> if not.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-reset" role="function"/>vte_terminal_reset ()</title>
-<indexterm><primary>vte_terminal_reset</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_reset                  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-reset" role="function">
+<title>vte_terminal_reset ()</title>
+<indexterm zone="vte-terminal-reset"><primary>vte_terminal_reset</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_reset                  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> full,
                                                          <link linkend="gboolean">gboolean</link> clear_history);</programlisting>
 <para>
@@ -1429,9 +1470,9 @@ selection state, and encoding.</para>
 <listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> to empty the terminal's scrollback buffer
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-text" role="function"/>vte_terminal_get_text ()</title>
-<indexterm><primary>vte_terminal_get_text</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_get_text               (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-get-text" role="function">
+<title>vte_terminal_get_text ()</title>
+<indexterm zone="vte-terminal-get-text"><primary>vte_terminal_get_text</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_get_text               (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GArray">GArray</link> *attributes);</programlisting>
@@ -1459,9 +1500,9 @@ the character's position, colors, and other characteristics.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a text string which must be freed by the caller, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-text-include-trailing-spaces" role="function" condition="since:0.11.11"/>vte_terminal_get_text_include_trailing_spaces ()</title>
-<indexterm role="0.11.11"><primary>vte_terminal_get_text_include_trailing_spaces</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_get_text_include_trailing_spaces
+<refsect2 id="vte-terminal-get-text-include-trailing-spaces" role="function" condition="since:0.11.11">
+<title>vte_terminal_get_text_include_trailing_spaces ()</title>
+<indexterm zone="vte-terminal-get-text-include-trailing-spaces" role="0.11.11"><primary>vte_terminal_get_text_include_trailing_spaces</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_get_text_include_trailing_spaces
                                                         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="gboolean">gboolean</link> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
                                                          <link linkend="gpointer">gpointer</link> data,
@@ -1494,9 +1535,9 @@ lines are included.</para>
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  0.11.11
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-text-range" role="function"/>vte_terminal_get_text_range ()</title>
-<indexterm><primary>vte_terminal_get_text_range</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_get_text_range         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-get-text-range" role="function">
+<title>vte_terminal_get_text_range ()</title>
+<indexterm zone="vte-terminal-get-text-range"><primary>vte_terminal_get_text_range</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_get_text_range         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="glong">glong</link> start_row,
                                                          <link linkend="glong">glong</link> start_col,
                                                          <link linkend="glong">glong</link> end_row,
@@ -1542,9 +1583,9 @@ contents of the buffer using this function.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a text string which must be freed by the caller, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-cursor-position" role="function"/>vte_terminal_get_cursor_position ()</title>
-<indexterm><primary>vte_terminal_get_cursor_position</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_get_cursor_position    (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-get-cursor-position" role="function">
+<title>vte_terminal_get_cursor_position ()</title>
+<indexterm zone="vte-terminal-get-cursor-position"><primary>vte_terminal_get_cursor_position</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_get_cursor_position    (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="glong">glong</link> *column,
                                                          <link linkend="glong">glong</link> *row);</programlisting>
 <para>
@@ -1563,9 +1604,9 @@ coordinate is absolute.</para>
 <listitem><simpara> long which will hold the row
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-match-clear-all" role="function"/>vte_terminal_match_clear_all ()</title>
-<indexterm><primary>vte_terminal_match_clear_all</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_match_clear_all        (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-match-clear-all" role="function">
+<title>vte_terminal_match_clear_all ()</title>
+<indexterm zone="vte-terminal-match-clear-all"><primary>vte_terminal_match_clear_all</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_match_clear_all        (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Clears the list of regular expressions the terminal uses to highlight text
 when the user moves the mouse cursor.</para>
@@ -1576,9 +1617,9 @@ when the user moves the mouse cursor.</para>
 <listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-match-add" role="function"/>vte_terminal_match_add ()</title>
-<indexterm><primary>vte_terminal_match_add</primary></indexterm><programlisting><link linkend="int">int</link>                 vte_terminal_match_add              (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-match-add" role="function">
+<title>vte_terminal_match_add ()</title>
+<indexterm zone="vte-terminal-match-add"><primary>vte_terminal_match_add</primary></indexterm><programlisting><link linkend="int">int</link>                 vte_terminal_match_add              (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *match);</programlisting>
 <para>
 Adds a regular expression to the list of matching expressions.  When the
@@ -1594,11 +1635,39 @@ this expression, the text will be highlighted.</para>
 <listitem><simpara> a regular expression
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> an integer associated with this expression
+
+<parameter>Deprecated</parameter>: 0.16.15
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-match-remove" role="function"/>vte_terminal_match_remove ()</title>
-<indexterm><primary>vte_terminal_match_remove</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_match_remove           (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-match-add-gregex" role="function" condition="since:0.16.15">
+<title>vte_terminal_match_add_gregex ()</title>
+<indexterm zone="vte-terminal-match-add-gregex" role="0.16.15"><primary>vte_terminal_match_add_gregex</primary></indexterm><programlisting><link linkend="int">int</link>                 vte_terminal_match_add_gregex       (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                                         <link linkend="GRegex">GRegex</link> *regex,
+                                                         <link linkend="GRegexMatchFlags">GRegexMatchFlags</link> flags);</programlisting>
+<para>
+Adds the regular expression <parameter>regex</parameter> to the list of matching expressions.  When the
+user moves the mouse cursor over a section of displayed text which matches
+this expression, the text will be highlighted.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>regex</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GRegex"><type>GRegex</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GRegexMatchFlags"><type>GRegexMatchFlags</type></link> to use when matching the regex
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> an integer associated with this expression
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  0.16.15
+</para></refsect2>
+<refsect2 id="vte-terminal-match-remove" role="function">
+<title>vte_terminal_match_remove ()</title>
+<indexterm zone="vte-terminal-match-remove"><primary>vte_terminal_match_remove</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_match_remove           (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="int">int</link> tag);</programlisting>
 <para>
 Removes the regular expression which is associated with the given <parameter>tag</parameter> from
@@ -1614,9 +1683,9 @@ moves the mouse cursor over matching text.</para>
 <listitem><simpara> the tag of the regex to remove
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-match-check" role="function"/>vte_terminal_match_check ()</title>
-<indexterm><primary>vte_terminal_match_check</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_match_check            (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-match-check" role="function">
+<title>vte_terminal_match_check ()</title>
+<indexterm zone="vte-terminal-match-check"><primary>vte_terminal_match_check</primary></indexterm><programlisting><link linkend="char">char</link>*               vte_terminal_match_check            (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="glong">glong</link> column,
                                                          <link linkend="glong">glong</link> row,
                                                          <link linkend="int">int</link> *tag);</programlisting>
@@ -1649,9 +1718,9 @@ which they were added.</para>
 expressions, and which must be freed by the caller.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-match-set-cursor" role="function" condition="since:0.11"/>vte_terminal_match_set_cursor ()</title>
-<indexterm role="0.11"><primary>vte_terminal_match_set_cursor</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_match_set_cursor       (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-match-set-cursor" role="function" condition="since:0.11">
+<title>vte_terminal_match_set_cursor ()</title>
+<indexterm zone="vte-terminal-match-set-cursor" role="0.11"><primary>vte_terminal_match_set_cursor</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_match_set_cursor       (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="int">int</link> tag,
                                                          <link linkend="GdkCursor">GdkCursor</link> *cursor);</programlisting>
 <para>
@@ -1673,15 +1742,14 @@ highlighted
 </variablelist><para role="since">Since  0.11
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-match-set-cursor-type" role="function" condition="since:0.11.9"/>vte_terminal_match_set_cursor_type ()</title>
-<indexterm role="0.11.9"><primary>vte_terminal_match_set_cursor_type</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_match_set_cursor_type  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-match-set-cursor-type" role="function" condition="since:0.11.9">
+<title>vte_terminal_match_set_cursor_type ()</title>
+<indexterm zone="vte-terminal-match-set-cursor-type" role="0.11.9"><primary>vte_terminal_match_set_cursor_type</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_match_set_cursor_type  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="int">int</link> tag,
                                                          <link linkend="GdkCursorType">GdkCursorType</link> cursor_type);</programlisting>
 <para>
 Sets which cursor the terminal will use if the pointer is over the pattern
-specified by <parameter>tag</parameter>.  A convenience wrapper for
-<link linkend="vte-terminal-match-set-cursor"><function>vte_terminal_match_set_cursor()</function></link>.</para>
+specified by <parameter>tag</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
@@ -1697,9 +1765,32 @@ specified by <parameter>tag</parameter>.  A convenience wrapper for
 </variablelist><para role="since">Since  0.11.9
 
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-emulation" role="function"/>vte_terminal_set_emulation ()</title>
-<indexterm><primary>vte_terminal_set_emulation</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_emulation          (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-match-set-cursor-name" role="function" condition="since:0.16.15">
+<title>vte_terminal_match_set_cursor_name ()</title>
+<indexterm zone="vte-terminal-match-set-cursor-name" role="0.16.15"><primary>vte_terminal_match_set_cursor_name</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_match_set_cursor_name  (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                                         <link linkend="int">int</link> tag,
+                                                         const <link linkend="char">char</link> *cursor_name);</programlisting>
+<para>
+Sets which cursor the terminal will use if the pointer is over the pattern
+specified by <parameter>tag</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>terminal</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>tag</parameter>&nbsp;:</term>
+<listitem><simpara> the tag of the regex which should use the specified cursor
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cursor_name</parameter>&nbsp;:</term>
+<listitem><simpara> the name of the cursor
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  0.16.15
+
+</para></refsect2>
+<refsect2 id="vte-terminal-set-emulation" role="function">
+<title>vte_terminal_set_emulation ()</title>
+<indexterm zone="vte-terminal-set-emulation"><primary>vte_terminal_set_emulation</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_emulation          (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *emulation);</programlisting>
 <para>
 Sets what type of terminal the widget attempts to emulate by scanning for
@@ -1715,9 +1806,9 @@ are interested in this feature, always use "xterm".</para>
 <listitem><simpara> the name of a terminal description
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-emulation" role="function"/>vte_terminal_get_emulation ()</title>
-<indexterm><primary>vte_terminal_get_emulation</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_emulation          (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-emulation" role="function">
+<title>vte_terminal_get_emulation ()</title>
+<indexterm zone="vte-terminal-get-emulation"><primary>vte_terminal_get_emulation</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_emulation          (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Queries the terminal for its current emulation, as last set by a call to
 <link linkend="vte-terminal-set-emulation"><function>vte_terminal_set_emulation()</function></link>.</para>
@@ -1730,9 +1821,9 @@ Queries the terminal for its current emulation, as last set by a call to
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the name of the terminal type the widget is attempting to emulate
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-default-emulation" role="function" condition="since:0.11.11"/>vte_terminal_get_default_emulation ()</title>
-<indexterm role="0.11.11"><primary>vte_terminal_get_default_emulation</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_default_emulation  (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-default-emulation" role="function" condition="since:0.11.11">
+<title>vte_terminal_get_default_emulation ()</title>
+<indexterm zone="vte-terminal-get-default-emulation" role="0.11.11"><primary>vte_terminal_get_default_emulation</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_default_emulation  (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Queries the terminal for its default emulation, which is attempted if the
 terminal type passed to <link linkend="vte-terminal-set-emulation"><function>vte_terminal_set_emulation()</function></link> is <link linkend="NULL:CAPS"><literal>NULL</literal></link>.</para>
@@ -1747,9 +1838,9 @@ terminal type passed to <link linkend="vte-terminal-set-emulation"><function>vte
 </simpara></listitem></varlistentry>
 </variablelist><para role="since">Since  0.11.11
 </para></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-set-encoding" role="function"/>vte_terminal_set_encoding ()</title>
-<indexterm><primary>vte_terminal_set_encoding</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_encoding           (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-set-encoding" role="function">
+<title>vte_terminal_set_encoding ()</title>
+<indexterm zone="vte-terminal-set-encoding"><primary>vte_terminal_set_encoding</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_set_encoding           (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          const <link linkend="char">char</link> *codeset);</programlisting>
 <para>
 Changes the encoding the terminal will expect data from the child to
@@ -1766,9 +1857,9 @@ application's locale settings.</para>
 <listitem><simpara> a valid <link linkend="g-iconv"><type>g_iconv</type></link> target
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-encoding" role="function"/>vte_terminal_get_encoding ()</title>
-<indexterm><primary>vte_terminal_get_encoding</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_encoding           (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-encoding" role="function">
+<title>vte_terminal_get_encoding ()</title>
+<indexterm zone="vte-terminal-get-encoding"><primary>vte_terminal_get_encoding</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_encoding           (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Determines the name of the encoding in which the terminal expects data to be
 encoded.</para>
@@ -1781,9 +1872,9 @@ encoded.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the current encoding for the terminal.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-status-line" role="function"/>vte_terminal_get_status_line ()</title>
-<indexterm><primary>vte_terminal_get_status_line</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_status_line        (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-status-line" role="function">
+<title>vte_terminal_get_status_line ()</title>
+<indexterm zone="vte-terminal-get-status-line"><primary>vte_terminal_get_status_line</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_status_line        (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Some terminal emulations specify a status line which is separate from the
 main display area, and define a means for applications to move the cursor
@@ -1799,9 +1890,9 @@ like "xterm", this will usually be the empty string.  The string must not
 be modified or freed by the caller.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-padding" role="function"/>vte_terminal_get_padding ()</title>
-<indexterm><primary>vte_terminal_get_padding</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_get_padding            (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+<refsect2 id="vte-terminal-get-padding" role="function">
+<title>vte_terminal_get_padding ()</title>
+<indexterm zone="vte-terminal-get-padding"><primary>vte_terminal_get_padding</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_get_padding            (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="int">int</link> *xpad,
                                                          <link linkend="int">int</link> *ypad);</programlisting>
 <para>
@@ -1827,9 +1918,9 @@ each direction, and do not need to be doubled.</para>
 <listitem><simpara> address in which to store top/bottom-edge ypadding
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-adjustment" role="function"/>vte_terminal_get_adjustment ()</title>
-<indexterm><primary>vte_terminal_get_adjustment</primary></indexterm><programlisting><link linkend="GtkAdjustment">GtkAdjustment</link>*      vte_terminal_get_adjustment         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-adjustment" role="function">
+<title>vte_terminal_get_adjustment ()</title>
+<indexterm zone="vte-terminal-get-adjustment"><primary>vte_terminal_get_adjustment</primary></indexterm><programlisting><link linkend="GtkAdjustment">GtkAdjustment</link>*      vte_terminal_get_adjustment         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 An accessor function provided for the benefit of language bindings.</para>
 <para>
@@ -1841,9 +1932,9 @@ An accessor function provided for the benefit of language bindings.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the contents of <parameter>terminal</parameter>'s adjustment field
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-char-ascent" role="function"/>vte_terminal_get_char_ascent ()</title>
-<indexterm><primary>vte_terminal_get_char_ascent</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_char_ascent        (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-char-ascent" role="function">
+<title>vte_terminal_get_char_ascent ()</title>
+<indexterm zone="vte-terminal-get-char-ascent"><primary>vte_terminal_get_char_ascent</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_char_ascent        (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 An accessor function provided for the benefit of language bindings.</para>
 <para>
@@ -1855,9 +1946,9 @@ An accessor function provided for the benefit of language bindings.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the contents of <parameter>terminal</parameter>'s char_ascent field
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-char-descent" role="function"/>vte_terminal_get_char_descent ()</title>
-<indexterm><primary>vte_terminal_get_char_descent</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_char_descent       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-char-descent" role="function">
+<title>vte_terminal_get_char_descent ()</title>
+<indexterm zone="vte-terminal-get-char-descent"><primary>vte_terminal_get_char_descent</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_char_descent       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 An accessor function provided for the benefit of language bindings.</para>
 <para>
@@ -1869,9 +1960,9 @@ An accessor function provided for the benefit of language bindings.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the contents of <parameter>terminal</parameter>'s char_descent field
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-char-height" role="function"/>vte_terminal_get_char_height ()</title>
-<indexterm><primary>vte_terminal_get_char_height</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_char_height        (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-char-height" role="function">
+<title>vte_terminal_get_char_height ()</title>
+<indexterm zone="vte-terminal-get-char-height"><primary>vte_terminal_get_char_height</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_char_height        (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 An accessor function provided for the benefit of language bindings.</para>
 <para>
@@ -1883,9 +1974,9 @@ An accessor function provided for the benefit of language bindings.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the contents of <parameter>terminal</parameter>'s char_height field
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-char-width" role="function"/>vte_terminal_get_char_width ()</title>
-<indexterm><primary>vte_terminal_get_char_width</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_char_width         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-char-width" role="function">
+<title>vte_terminal_get_char_width ()</title>
+<indexterm zone="vte-terminal-get-char-width"><primary>vte_terminal_get_char_width</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_char_width         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 An accessor function provided for the benefit of language bindings.</para>
 <para>
@@ -1897,9 +1988,9 @@ An accessor function provided for the benefit of language bindings.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the contents of <parameter>terminal</parameter>'s char_width field
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-column-count" role="function"/>vte_terminal_get_column_count ()</title>
-<indexterm><primary>vte_terminal_get_column_count</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_column_count       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-column-count" role="function">
+<title>vte_terminal_get_column_count ()</title>
+<indexterm zone="vte-terminal-get-column-count"><primary>vte_terminal_get_column_count</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_column_count       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 An accessor function provided for the benefit of language bindings.</para>
 <para>
@@ -1911,9 +2002,9 @@ An accessor function provided for the benefit of language bindings.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the contents of <parameter>terminal</parameter>'s column_count field
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-icon-title" role="function"/>vte_terminal_get_icon_title ()</title>
-<indexterm><primary>vte_terminal_get_icon_title</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_icon_title         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-icon-title" role="function">
+<title>vte_terminal_get_icon_title ()</title>
+<indexterm zone="vte-terminal-get-icon-title"><primary>vte_terminal_get_icon_title</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_icon_title         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 An accessor function provided for the benefit of language bindings.</para>
 <para>
@@ -1925,9 +2016,9 @@ An accessor function provided for the benefit of language bindings.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the contents of <parameter>terminal</parameter>'s icon_title field
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-row-count" role="function"/>vte_terminal_get_row_count ()</title>
-<indexterm><primary>vte_terminal_get_row_count</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_row_count          (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-row-count" role="function">
+<title>vte_terminal_get_row_count ()</title>
+<indexterm zone="vte-terminal-get-row-count"><primary>vte_terminal_get_row_count</primary></indexterm><programlisting><link linkend="glong">glong</link>               vte_terminal_get_row_count          (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 An accessor function provided for the benefit of language bindings.</para>
 <para>
@@ -1939,9 +2030,9 @@ An accessor function provided for the benefit of language bindings.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the contents of <parameter>terminal</parameter>'s row_count field
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2>
-<title><anchor id="vte-terminal-get-window-title" role="function"/>vte_terminal_get_window_title ()</title>
-<indexterm><primary>vte_terminal_get_window_title</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_window_title       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<refsect2 id="vte-terminal-get-window-title" role="function">
+<title>vte_terminal_get_window_title ()</title>
+<indexterm zone="vte-terminal-get-window-title"><primary>vte_terminal_get_window_title</primary></indexterm><programlisting>const <link linkend="char">char</link>*         vte_terminal_get_window_title       (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 An accessor function provided for the benefit of language bindings.</para>
 <para>
@@ -1956,10 +2047,10 @@ An accessor function provided for the benefit of language bindings.</para>
 
 </refsect1>
 
-<refsect1 role="signals">
+<refsect1 id="VteTerminal.signal-details" role="signals">
 <title role="signals.title">Signal Details</title>
-<refsect2><title><anchor id="VteTerminal-char-size-changed"/>The <literal>&quot;char-size-changed&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::char-size-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+<refsect2 id="VteTerminal-char-size-changed"><title>The <literal>&quot;char-size-changed&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-char-size-changed"><primary>VteTerminal::char-size-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="guint">guint</link>        arg1,
                                                         <link linkend="guint">guint</link>        arg2,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
@@ -1979,8 +2070,8 @@ Emitted whenever selection of a new font causes the values of the
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-child-exited"/>The <literal>&quot;child-exited&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::child-exited</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-child-exited"><title>The <literal>&quot;child-exited&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-child-exited"><primary>VteTerminal::child-exited</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 This signal is emitted when the terminal detects that a child started using
@@ -1992,8 +2083,8 @@ This signal is emitted when the terminal detects that a child started using
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-commit"/>The <literal>&quot;commit&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::commit</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-commit"><title>The <literal>&quot;commit&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-commit"><primary>VteTerminal::commit</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gchar">gchar</link>       *arg1,
                                                         <link linkend="guint">guint</link>        arg2,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
@@ -2014,8 +2105,8 @@ process.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-contents-changed"/>The <literal>&quot;contents-changed&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::contents-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-contents-changed"><title>The <literal>&quot;contents-changed&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-contents-changed"><primary>VteTerminal::contents-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted whenever the visible appearance of the terminal has changed.  Used
@@ -2027,8 +2118,8 @@ primarily by <link linkend="VteTerminalAccessible"><type>VteTerminalAccessible</
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-copy-clipboard"/>The <literal>&quot;copy-clipboard&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::copy-clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-copy-clipboard"><title>The <literal>&quot;copy-clipboard&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-copy-clipboard"><primary>VteTerminal::copy-clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last / Action</programlisting>
 <para>
 Emitted whenever <link linkend="vte-terminal-copy-clipboard"><function>vte_terminal_copy_clipboard()</function></link> is called.
@@ -2039,8 +2130,8 @@ Emitted whenever <link linkend="vte-terminal-copy-clipboard"><function>vte_termi
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-cursor-moved"/>The <literal>&quot;cursor-moved&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::cursor-moved</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-cursor-moved"><title>The <literal>&quot;cursor-moved&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-cursor-moved"><primary>VteTerminal::cursor-moved</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted whenever the cursor moves to a new character cell.  Used primarily
@@ -2052,8 +2143,8 @@ by <link linkend="VteTerminalAccessible"><type>VteTerminalAccessible</type></lin
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-decrease-font-size"/>The <literal>&quot;decrease-font-size&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::decrease-font-size</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-decrease-font-size"><title>The <literal>&quot;decrease-font-size&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-decrease-font-size"><primary>VteTerminal::decrease-font-size</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted when the user hits the '-' key while holding the Control key.
@@ -2064,8 +2155,8 @@ Emitted when the user hits the '-' key while holding the Control key.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-deiconify-window"/>The <literal>&quot;deiconify-window&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::deiconify-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-deiconify-window"><title>The <literal>&quot;deiconify-window&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-deiconify-window"><primary>VteTerminal::deiconify-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted at the child application's request.
@@ -2076,8 +2167,8 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-emulation-changed"/>The <literal>&quot;emulation-changed&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::emulation-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-emulation-changed"><title>The <literal>&quot;emulation-changed&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-emulation-changed"><primary>VteTerminal::emulation-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted whenever the terminal's emulation changes, only possible at the
@@ -2089,8 +2180,8 @@ parent application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-encoding-changed"/>The <literal>&quot;encoding-changed&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::encoding-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-encoding-changed"><title>The <literal>&quot;encoding-changed&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-encoding-changed"><primary>VteTerminal::encoding-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted whenever the terminal's current encoding has changed, either as a
@@ -2103,8 +2194,8 @@ UTF-8 encodings, or at the parent application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-eof"/>The <literal>&quot;eof&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::eof</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-eof"><title>The <literal>&quot;eof&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-eof"><primary>VteTerminal::eof</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted when the terminal receives an end-of-file from a child which is running
@@ -2117,8 +2208,8 @@ in the terminal.  This signal is frequently (but not always) emitted with a
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-icon-title-changed"/>The <literal>&quot;icon-title-changed&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::icon-title-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-icon-title-changed"><title>The <literal>&quot;icon-title-changed&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-icon-title-changed"><primary>VteTerminal::icon-title-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted when the terminal's <parameter>icon_title</parameter> field is modified.
@@ -2129,8 +2220,8 @@ Emitted when the terminal's <parameter>icon_title</parameter> field is modified.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-iconify-window"/>The <literal>&quot;iconify-window&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::iconify-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-iconify-window"><title>The <literal>&quot;iconify-window&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-iconify-window"><primary>VteTerminal::iconify-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted at the child application's request.
@@ -2141,8 +2232,8 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-increase-font-size"/>The <literal>&quot;increase-font-size&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::increase-font-size</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-increase-font-size"><title>The <literal>&quot;increase-font-size&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-increase-font-size"><primary>VteTerminal::increase-font-size</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted when the user hits the '+' key while holding the Control key.
@@ -2153,8 +2244,8 @@ Emitted when the user hits the '+' key while holding the Control key.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-lower-window"/>The <literal>&quot;lower-window&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::lower-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-lower-window"><title>The <literal>&quot;lower-window&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-lower-window"><primary>VteTerminal::lower-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted at the child application's request.
@@ -2165,8 +2256,8 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-maximize-window"/>The <literal>&quot;maximize-window&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::maximize-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-maximize-window"><title>The <literal>&quot;maximize-window&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-maximize-window"><primary>VteTerminal::maximize-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted at the child application's request.
@@ -2177,8 +2268,8 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-move-window"/>The <literal>&quot;move-window&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::move-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-move-window"><title>The <literal>&quot;move-window&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-move-window"><primary>VteTerminal::move-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="guint">guint</link>        arg1,
                                                         <link linkend="guint">guint</link>        arg2,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
@@ -2197,8 +2288,8 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-paste-clipboard"/>The <literal>&quot;paste-clipboard&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::paste-clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-paste-clipboard"><title>The <literal>&quot;paste-clipboard&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-paste-clipboard"><primary>VteTerminal::paste-clipboard</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last / Action</programlisting>
 <para>
 Emitted whenever <link linkend="vte-terminal-paste-clipboard"><function>vte_terminal_paste_clipboard()</function></link> is called.
@@ -2209,8 +2300,8 @@ Emitted whenever <link linkend="vte-terminal-paste-clipboard"><function>vte_term
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-raise-window"/>The <literal>&quot;raise-window&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::raise-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-raise-window"><title>The <literal>&quot;raise-window&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-raise-window"><primary>VteTerminal::raise-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted at the child application's request.
@@ -2221,8 +2312,8 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-refresh-window"/>The <literal>&quot;refresh-window&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::refresh-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-refresh-window"><title>The <literal>&quot;refresh-window&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-refresh-window"><primary>VteTerminal::refresh-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted at the child application's request.
@@ -2233,8 +2324,8 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-resize-window"/>The <literal>&quot;resize-window&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::resize-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-resize-window"><title>The <literal>&quot;resize-window&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-resize-window"><primary>VteTerminal::resize-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="guint">guint</link>        arg1,
                                                         <link linkend="guint">guint</link>        arg2,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
@@ -2253,8 +2344,8 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-restore-window"/>The <literal>&quot;restore-window&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::restore-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-restore-window"><title>The <literal>&quot;restore-window&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-restore-window"><primary>VteTerminal::restore-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted at the child application's request.
@@ -2265,8 +2356,8 @@ Emitted at the child application's request.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-selection-changed"/>The <literal>&quot;selection-changed&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::selection-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-selection-changed"><title>The <literal>&quot;selection-changed&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-selection-changed"><primary>VteTerminal::selection-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted whenever the contents of terminal's selection changes.
@@ -2277,8 +2368,28 @@ Emitted whenever the contents of terminal's selection changes.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-status-line-changed"/>The <literal>&quot;status-line-changed&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::status-line-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-set-scroll-adjustments"><title>The <literal>&quot;set-scroll-adjustments&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-set-scroll-adjustments"><primary>VteTerminal::set-scroll-adjustments</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link>   *vteterminal,
+                                                        <link linkend="GtkAdjustment">GtkAdjustment</link> *arg1,
+                                                        <link linkend="GtkAdjustment">GtkAdjustment</link> *arg2,
+                                                        <link linkend="gpointer">gpointer</link>       user_data)        : Run Last</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>vteterminal</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2 id="VteTerminal-status-line-changed"><title>The <literal>&quot;status-line-changed&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-status-line-changed"><primary>VteTerminal::status-line-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted whenever the contents of the status line are modified or cleared.
@@ -2289,8 +2400,8 @@ Emitted whenever the contents of the status line are modified or cleared.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-deleted"/>The <literal>&quot;text-deleted&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::text-deleted</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-text-deleted"><title>The <literal>&quot;text-deleted&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-text-deleted"><primary>VteTerminal::text-deleted</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 An internal signal used for communication between the terminal and its
@@ -2302,8 +2413,8 @@ accessibility peer.  May not be emitted under certain circumstances.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-inserted"/>The <literal>&quot;text-inserted&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::text-inserted</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-text-inserted"><title>The <literal>&quot;text-inserted&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-text-inserted"><primary>VteTerminal::text-inserted</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 An internal signal used for communication between the terminal and its
@@ -2315,8 +2426,8 @@ accessibility peer.  May not be emitted under certain circumstances.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-modified"/>The <literal>&quot;text-modified&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::text-modified</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-text-modified"><title>The <literal>&quot;text-modified&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-text-modified"><primary>VteTerminal::text-modified</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 An internal signal used for communication between the terminal and its
@@ -2328,8 +2439,8 @@ accessibility peer.  May not be emitted under certain circumstances.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-text-scrolled"/>The <literal>&quot;text-scrolled&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::text-scrolled</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-text-scrolled"><title>The <literal>&quot;text-scrolled&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-text-scrolled"><primary>VteTerminal::text-scrolled</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gint">gint</link>         arg1,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
@@ -2345,8 +2456,8 @@ accessibility peer.  May not be emitted under certain circumstances.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="VteTerminal-window-title-changed"/>The <literal>&quot;window-title-changed&quot;</literal> signal</title>
-<indexterm><primary>VteTerminal::window-title-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
+</variablelist></refsect2><refsect2 id="VteTerminal-window-title-changed"><title>The <literal>&quot;window-title-changed&quot;</literal> signal</title>
+<indexterm zone="VteTerminal-window-title-changed"><primary>VteTerminal::window-title-changed</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted when the terminal's <parameter>window_title</parameter> field is modified.
@@ -2362,6 +2473,4 @@ Emitted when the terminal's <parameter>window_title</parameter> field is modifie
 
 
 
-
-<refsect1><refsect2 /><refsect2 /></refsect1>
 </refentry>
