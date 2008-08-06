@@ -54,7 +54,7 @@ EXTRA_PROGRAMS = buffer$(EXEEXT) dumpkeys$(EXEEXT) iso2022$(EXEEXT) \
 
 subdir = src
 DIST_COMMON = $(pkginclude_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
+	$(srcdir)/Makefile.in $(srcdir)/vteversion.h.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.in
@@ -62,7 +62,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = vteversion.h
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -87,7 +87,8 @@ am__libvte_la_SOURCES_DIST = buffer.c buffer.h caps.c caps.h debug.c \
 	vteint.h vtepango.c vtepango.h vterdb.c vterdb.h vteregex.c \
 	vteregex.h vtergb.c vtergb.h vteseq.c vteseq.h vteseq-list.h \
 	vteseq-table.h vteskel.c vteskel.h vtetc.c vtetc.h vtetree.c \
-	vtetree.h vtexft.c vtexft.h vtepangox.c vtepangox.h
+	vtetree.h vtetypebuiltins.c vtetypebuiltins.h vteversion.h \
+	vtexft.c vtexft.h vtepangox.c vtepangox.h
 @BUILD_XFT_TRUE@am__objects_1 = vtexft.lo
 @BUILD_PANGOX_TRUE@am__objects_2 = vtepangox.lo
 am_libvte_la_OBJECTS = buffer.lo caps.lo debug.lo iso2022.lo keymap.lo \
@@ -95,7 +96,7 @@ am_libvte_la_OBJECTS = buffer.lo caps.lo debug.lo iso2022.lo keymap.lo \
 	trie.lo vte.lo vteaccess.lo vtebg.lo vteconv.lo vtedraw.lo \
 	vtefc.lo vteft2.lo vtegl.lo vteglyph.lo vtepango.lo vterdb.lo \
 	vteregex.lo vtergb.lo vteseq.lo vteskel.lo vtetc.lo vtetree.lo \
-	$(am__objects_1) $(am__objects_2)
+	vtetypebuiltins.lo $(am__objects_1) $(am__objects_2)
 libvte_la_OBJECTS = $(am_libvte_la_OBJECTS)
 libvte_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -323,6 +324,7 @@ CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DSYMUTIL = @DSYMUTIL@
 ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
@@ -336,7 +338,10 @@ FT2_CONFIG = @FT2_CONFIG@
 FT2_LIBS = @FT2_LIBS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_GENMARSHAL_INTERNAL = @GLIB_GENMARSHAL_INTERNAL@
 GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
@@ -393,6 +398,7 @@ MSGFMT = @MSGFMT@
 MSGFMT_OPTS = @MSGFMT_OPTS@
 MSGMERGE = @MSGMERGE@
 NEEDEDPACKAGES = @NEEDEDPACKAGES@
+NMEDIT = @NMEDIT@
 OBJEXT = @OBJEXT@
 OTHERCFLAGS = @OTHERCFLAGS@
 OTHERLIBS = @OTHERLIBS@
@@ -432,6 +438,9 @@ VERSION = @VERSION@
 VTE_CFLAGS = @VTE_CFLAGS@
 VTE_DEFAULT_EMULATION = @VTE_DEFAULT_EMULATION@
 VTE_LIBS = @VTE_LIBS@
+VTE_MAJOR_VERSION = @VTE_MAJOR_VERSION@
+VTE_MICRO_VERSION = @VTE_MICRO_VERSION@
+VTE_MINOR_VERSION = @VTE_MINOR_VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 XGETTEXT = @XGETTEXT@
 XMKMF = @XMKMF@
@@ -493,9 +502,10 @@ srcdir = @srcdir@
 subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
+top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-pkginclude_HEADERS = pty.h reaper.h vte.h vteaccess.h
+pkginclude_HEADERS = pty.h reaper.h vte.h vteaccess.h vtetypebuiltins.h vteversion.h
 lib_LTLIBRARIES = libvte.la
 pkglib_SCRIPTS = decset osc window
 EXTRA_DIST = \
@@ -505,6 +515,8 @@ EXTRA_DIST = \
 	vteseq-n.gperf \
 	vteseq-2.c \
 	vteseq-n.c \
+	vtetypebuiltins.c.template \
+	vtetypebuiltins.h.template \
 	genkeysyms.py \
 	iso2022.txt \
 	marshal.list \
@@ -530,7 +542,8 @@ AM_CFLAGS = $(VTE_CFLAGS) $(FT2_CFLAGS) $(X_CFLAGS) $(PCRE_CFLAGS) \
 
 AM_CPPFLAGS = -DDATADIR='"$(datadir)"' \
 	      -DLIBEXECDIR='"$(libexecdir)"' \
-	      -DLOCALEDIR='"$(localedir)"'
+	      -DLOCALEDIR='"$(localedir)"' \
+	      -DVTE_COMPILATION
 
 AM_LDFLAGS = $(LDFLAGS)
 EXTRA_libvte_la_SOURCES = keysyms.c
@@ -543,15 +556,17 @@ libvte_la_SOURCES = buffer.c buffer.h caps.c caps.h debug.c debug.h \
 	vtegl.h vteglyph.c vteglyph.h vteint.h vtepango.c vtepango.h \
 	vterdb.c vterdb.h vteregex.c vteregex.h vtergb.c vtergb.h \
 	vteseq.c vteseq.h vteseq-list.h vteseq-table.h vteskel.c \
-	vteskel.h vtetc.c vtetc.h vtetree.c vtetree.h $(am__append_1) \
-	$(am__append_2)
+	vteskel.h vtetc.c vtetc.h vtetree.c vtetree.h \
+	vtetypebuiltins.c vtetypebuiltins.h vteversion.h \
+	$(am__append_1) $(am__append_2)
 libvte_la_LDFLAGS = $(LDFLAGS) \
 	-version-info $(LIBVTE_LTVERSION) \
 	-export-symbols-regex "^vte_terminal_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
 	@LIBTOOL_EXPORT_OPTIONS@ @LIBTOOL_FLAGS@
 
 libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS) $(PCRE_LIBS) $(FT2_LIBS)
-CLEANFILES = marshal.c marshal.h
+BUILT_SOURCES = marshal.c marshal.h vtetypebuiltins.c vtetypebuiltins.h
+CLEANFILES = marshal.c marshal.h vtetypebuiltins.c vtetypebuiltins.h stamp-vtetypebuiltins.h
 vte_SOURCES = \
 	vteapp.c
 
@@ -740,7 +755,8 @@ ssfe_LDADD = $(LDFLAGS) $(OTHERLIBS)
 xticker_CFLAGS = $(GLIB_CFLAGS)
 xticker_SOURCES = xticker.c
 xticker_LDADD = $(LDFLAGS) $(LIBS) $(GLIB_LIBS)
-all: all-am
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
@@ -773,6 +789,8 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+vteversion.h: $(top_builddir)/config.status $(srcdir)/vteversion.h.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
@@ -1054,6 +1072,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vtetc-vtetc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vtetc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vtetree.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vtetypebuiltins.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vtexft.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xticker-xticker.Po@am__quote@
 
@@ -2071,7 +2090,8 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(HEADERS)
 install-binPROGRAMS: install-libLTLIBRARIES
 
@@ -2079,7 +2099,8 @@ installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkglibdir)" "$(DESTDIR)$(pkglibdir)" "$(DESTDIR)$(pkgincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
-install: install-am
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -2104,6 +2125,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
@@ -2188,8 +2210,21 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 
 
 marshal.c marshal.h: marshal.list
-	glib-genmarshal --prefix=_vte_marshal --body $^ > marshal.c
-	glib-genmarshal --prefix=_vte_marshal --header $^ > marshal.h
+	$(GLIB_GENMARSHAL) --prefix=_vte_marshal --body $(GLIB_GENMARSHAL_INTERNAL) $^ > marshal.c
+	$(GLIB_GENMARSHAL) --prefix=_vte_marshal --header $(GLIB_GENMARSHAL_INTERNAL) $^ > marshal.h
+
+vtetypebuiltins.h: stamp-vtetypebuiltins.h
+	@true
+stamp-vtetypebuiltins.h: vtetypebuiltins.h.template vte.h
+	$(GLIB_MKENUMS) --template $< $(filter-out $<,$^) > xgen-vtbh \
+	&& (cmp -s xgen-vtbh vtetypebuiltins.h || cp xgen-vtbh vtetypebuiltins.h ) \
+	&& rm -f xgen-vtbh \
+	&& echo timestamp > $(@F)
+
+vtetypebuiltins.c: vtetypebuiltins.c.template vte.h
+	$(GLIB_MKENUMS) --template $< $(filter-out $<,$^) > xgen-vtbc \
+	&& (cmp -s xgen-vtbc vtetypebuiltins.c || cp xgen-vtbc vtetypebuiltins.c ) \
+	&& rm -f xgen-vtbc
 
 vteseq-table.h: vteseq-gen.c vteseq-list.h
 	$(MAKE) vteseq-gen

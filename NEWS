@@ -1,107 +1,41 @@
+0.17.1
+======
+- New API to:
+  * Make the cursor blinking follow the gtk setting by default, with a
+    possible override.
+  * Set named cursors on matches.
+  * Do GRegex matching, to be used alternatively to the old vteregex matching.
+  * Add set-scroll-adjustments signal, needed to allow adding a VteTerminal
+    into a GtkScrolledWindow.
+  * Add version check macro.
+- Misc bug fixes.
+- Bugs fixed in this release:
+	Bug 546366 – hard to select last tab char on a line
+	Bug 545924 – tab characters not handled correctly after ncurses clear	
+		Patch from Patryk Zawadzki
+	Bug 542795 – VTE_CJK_WIDTH don't work
+        Bug 399744 – Hide more font-aa implementation details
+        Bug 510903 – use gtk-cursor-blink setting
+        Bug 539130 – building g-t fails due to GtkType etc. deprecation
+	Bug 540182 – crash in geany with vte trunk
+	Bug 535552 – vte_terminal_set_allow_bold doesn't queue redraw
+        Bug 535469 – support named cursors on matches
+        Bug 418918 – Switch to GRegex
+        Bug 535467 – implement set-scroll-adjustments signal
+        Bug 535468 – need version check macros
+	Bug 515972 – Bold black is black in vte's default palette
+
 0.16.14
 =======
 - Bugs fixed in this release:
 	Bug 536632 – vte build failure in ring.c:210: error: expected
-	expression before 'do'
-
-	* src/debug.h:
-	* src/ring.c:
-	* src/ring.h:
-	With latest glib (after bug #519026), g_error is expanding to
-	"do {...} while(0)" instead of "{...}".  This breaks build in
-	debugging mode.  Use g_critical instead.  Also add some
-	G_STMT_START/END to some macros.
-
-2008-05-29  Chris Wilson  <chris@chris-wilson.co.uk>
-
-	* src/pty.c (merge_environ): Replace previous commit with the
-	better patch by Christian Persch.
-
-2008-05-29  Chris Wilson  <chris@chris-wilson.co.uk>
-
-	* src/pty.c (merge_environ): Fix bug in patch to use g_listenv()
-	as it only returns the variable name and we need to use g_getenv()
-	to retrieve its value.
-
-2008-05-27  Behdad Esfahbod  <behdad@gnome.org>
-
-	* src/iso2022.c (_vte_iso2022_ambiguous_width): Oops.  Fix thinko
-	in last commit.
-
-2008-05-27  Behdad Esfahbod  <behdad@gnome.org>
-
+		expression before 'do'
 	Bug 535022 – ambiguous width in utf8 locale
-
-	* src/iso2022.c (_vte_iso2022_ambiguous_width): Recognize
-	env var settings VTE_CJK_WIDTH=narrow and VTE_CJK_WIDTH=wide.
-	Any other value means "auto" based on locale, as it was doing
-	previously.
-
-2008-05-21  Chris Wilson  <chris@chris-wilson.co.uk>
-
-	* src/pty.c (merge_environ): Silence compiler warning about using
-	environ as a local variable name.
-
-2008-05-21  Richard Hult  <richard@imendio.com>
-
 	Bug 534148 – Use g_listenv() instead of environ
-
-	* src/pty.c: (merge_environ): Use g_listenv() instead of
-	non-portable environ extern.
-
-2008-05-19  Kjartan Maraas  <kmaraas@gnome.org>
-
-	* configure.in: automake doesn't like to substitute more
-	than one variable at a time.
-	* src/vtedraw.c: (_vte_draw_get_using_fontconfig):
-	* src/vtetc.c: (_vte_termcap_find_boolean):
-	Fix two compiler warnings.
-
-2008-05-09  Chris Wilson  <chris@chris-wilson.co.uk>
-
-	* src/vtedraw.c (_vte_draw_text):
-	    Add the text to draw to the debug output.
-
-2008-05-09  Chris Wilson  <chris@chris-wilson.co.uk>
-
+	Bug 516869 – vte displays nothing on GTK+/DirectFB
+		Original patch by Jérémy Bobbio.
 	Fix "GLib-CRITICAL **: g_io_add_watch_full: assertion
 	                       `channel != NULL' failed"
-
-	* src/debug.c (_vte_debug_parse_string):
-	* src/debug.h:
-	* src/vte-private.h:
-	* src/vte.c (vte_terminal_emit_adjustment_changed),
-	(_vte_terminal_adjust_adjustments_full),
-	(vte_terminal_scroll_lines), (vte_terminal_maybe_scroll_to_bottom),
-	(_vte_terminal_insert_char), (vte_terminal_catch_child_exited),
-	(mark_input_source_invalid), (_vte_terminal_connect_pty_read),
-	(mark_output_source_invalid), (_vte_terminal_connect_pty_write),
-	(_vte_terminal_disconnect_pty_read),
-	(_vte_terminal_disconnect_pty_write), (_vte_terminal_fork_basic),
-	(vte_terminal_eof), (_vte_terminal_enable_input_source),
-	(vte_terminal_io_read), (vte_terminal_handle_scroll),
-	(vte_terminal_finalize), (vte_terminal_class_init),
-	(vte_terminal_set_pty), (process_timeout), (update_repeat_timeout),
-	(update_timeout):
-	It was possible for _vte_terminal_enable_input_source() to be called
-	after the input closed with G_IO_HUP. The minimal change would just
-	have been to add a guard to check the pty_master was still valid
-	before reattaching the source. Instead I removed the redundant
-	duplication of the input and output channels and added lots of
-	debugging.
-
-2008-05-08  Chris Wilson  <chris@chris-wilson.co.uk>
-
-	Bug 516869 – vte displays nothing on GTK+/DirectFB
-
-	Original patch by Jérémy Bobbio.
-
-	* src/vte.c (vte_terminal_class_init), (update_regions),
-	(update_repeat_timeout), (update_timeout):
-	gdk_window_process_all_updates() is ineffective on the gtk+-directfb
-	and gtk+-quartz backends, so in order to process updates immediately
-	one must call gdk_window_process_updates() on the desired GdkWindows
-	instead.
 
 0.16.13
 =======

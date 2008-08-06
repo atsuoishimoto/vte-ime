@@ -226,6 +226,9 @@
 /* Whether we have Xft2 */
 #undef HAVE_XFT2
 
+/* Define to 1 if your C compiler doesn't accept -c and -o together. */
+#undef NO_MINUS_C_MINUS_O
+
 /* Package name. */
 #undef PACKAGE
 

@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "../config.h"
+#include <config.h>
 
 #include <math.h>
 
@@ -121,6 +121,7 @@ static void vte_terminal_add_process_timeout (VteTerminal *terminal);
 static void add_update_timeout (VteTerminal *terminal);
 static void remove_update_timeout (VteTerminal *terminal);
 static void reset_update_regions (VteTerminal *terminal);
+static void vte_terminal_set_cursor_blinks_internal(VteTerminal *terminal, gboolean blink);
 
 static gboolean process_timeout (gpointer data);
 static gboolean update_timeout (gpointer data);
@@ -731,64 +732,27 @@ _vte_invalidate_cursor_once(VteTerminal *terminal, gboolean periodic)
 static gboolean
 vte_invalidate_cursor_periodic (VteTerminal *terminal)
 {
-	GtkSettings *settings;
-	int blink_cycle = 1000;
-	int timeout = INT_MAX;
-	static gboolean have_timeout;
-	static gboolean have_queried_timeout;
+        VteTerminalPrivate *pvt = terminal->pvt;
 
-	settings = gtk_widget_get_settings (&terminal->widget);
-
-	terminal->pvt->cursor_blink_state = !terminal->pvt->cursor_blink_state;
-	terminal->pvt->cursor_blink_time += terminal->pvt->cursor_blink_timeout;
+	pvt->cursor_blink_state = !pvt->cursor_blink_state;
+	pvt->cursor_blink_time += pvt->cursor_blink_cycle;
 
 	_vte_invalidate_cursor_once(terminal, TRUE);
-
-	if (settings == NULL)
-		return TRUE;
-
-	/* Temporary hack to prevent GObject complaining about missing
-	 * properties on the GtkSettings object.  This hack should be
-	 * removed once VTE depends on a version of GTK which includes
-	 * gtk-cursor-blink-timeout.
-	 */
-	if (!have_queried_timeout)
-	{
-		GObjectClass *oclass;
-		GParamSpec *param;
-
-		oclass = G_OBJECT_GET_CLASS (settings);
-		param = g_object_class_find_property (oclass,
-					      "gtk-cursor-blink-timeout");
-
-		have_timeout = (param != NULL);
-		have_queried_timeout = TRUE;
-	}
-
-	if (have_timeout)
-		g_object_get (G_OBJECT (settings), "gtk-cursor-blink-timeout",
-			      &timeout, NULL);
 
 	/* only disable the blink if the cursor is currently shown.
 	 * else, wait until next time.
 	 */
-	if (terminal->pvt->cursor_blink_time / 1000 >= timeout &&
-	    terminal->pvt->cursor_blink_state)
+	if (pvt->cursor_blink_time / 1000 >= pvt->cursor_blink_timeout &&
+	    pvt->cursor_blink_state) {
+                pvt->cursor_blink_tag = 0;
 		return FALSE;
+        }
 
-	g_object_get (G_OBJECT (settings), "gtk-cursor-blink-time",
-		      &blink_cycle, NULL);
-	blink_cycle /= 2;
-
-	if (terminal->pvt->cursor_blink_timeout == blink_cycle)
-		return TRUE;
-
-	terminal->pvt->cursor_blink_timeout = blink_cycle;
-	terminal->pvt->cursor_blink_tag = g_timeout_add_full(G_PRIORITY_LOW,
-							     terminal->pvt->cursor_blink_timeout,
-							     (GSourceFunc)vte_invalidate_cursor_periodic,
-							     terminal,
-							     NULL);
+	pvt->cursor_blink_tag = g_timeout_add_full(G_PRIORITY_LOW,
+						   terminal->pvt->cursor_blink_cycle,
+						   (GSourceFunc)vte_invalidate_cursor_periodic,
+						   terminal,
+						   NULL);
 	return FALSE;
 }
 
@@ -1126,6 +1090,67 @@ vte_terminal_match_contents_refresh(VteTerminal *terminal)
 	terminal->pvt->match_attributes = array;
 }
 
+static void
+regex_match_clear_cursor (struct vte_match_regex *regex)
+{
+        switch (regex->cursor_mode) {
+                case VTE_REGEX_CURSOR_GDKCURSOR:
+                        if (regex->cursor.cursor != NULL) {
+                                gdk_cursor_unref(regex->cursor.cursor);
+                                regex->cursor.cursor = NULL;
+                        }
+                        break;
+                case VTE_REGEX_CURSOR_GDKCURSORTYPE:
+                        break;
+                case VTE_REGEX_CURSOR_NAME:
+                        g_free (regex->cursor.cursor_name);
+                        regex->cursor.cursor_name = NULL;
+                        break;
+        }
+}
+
+static void
+regex_match_clear (struct vte_match_regex *regex)
+{
+        regex_match_clear_cursor(regex);
+
+        if (regex->mode == VTE_REGEX_GREGEX) {
+                g_regex_unref(regex->regex.gregex.regex);
+                regex->regex.gregex.regex = NULL;
+        } else if (regex->mode == VTE_REGEX_VTE) {
+                _vte_regex_free(regex->regex.reg);
+                regex->regex.reg = NULL;
+        }
+
+        regex->tag = -1;
+}
+
+static void
+vte_terminal_set_cursor_from_regex_match(VteTerminal *terminal, struct vte_match_regex *regex)
+{
+        GdkCursor *cursor;
+
+        if (!GTK_WIDGET_REALIZED(terminal))
+                return;
+        switch (regex->cursor_mode) {
+                case VTE_REGEX_CURSOR_GDKCURSOR:
+                        if (regex->cursor.cursor != NULL) {
+                                cursor = gdk_cursor_ref(regex->cursor.cursor);
+                        }
+                        break;
+                case VTE_REGEX_CURSOR_GDKCURSORTYPE:
+                        cursor = gdk_cursor_new_for_display(gtk_widget_get_display(GTK_WIDGET(terminal)), regex->cursor.cursor_type);
+                        break;
+                case VTE_REGEX_CURSOR_NAME:
+                        cursor = gdk_cursor_new_from_name(gtk_widget_get_display(GTK_WIDGET(terminal)), regex->cursor.cursor_name);
+                        break;
+        }
+
+        gdk_window_set_cursor(GTK_WIDGET(terminal)->window, cursor);
+        if (cursor)
+                gdk_cursor_unref(cursor);
+}
+
 /**
  * vte_terminal_match_clear_all:
  * @terminal: a #VteTerminal
@@ -1146,13 +1171,7 @@ vte_terminal_match_clear_all(VteTerminal *terminal)
 				       i);
 		/* Unless this is a hole, clean it up. */
 		if (regex->tag >= 0) {
-			if (regex->cursor != NULL) {
-				gdk_cursor_unref(regex->cursor);
-				regex->cursor = NULL;
-			}
-			_vte_regex_free(regex->reg);
-			regex->reg = NULL;
-			regex->tag = -1;
+                        regex_match_clear (regex);
 		}
 	}
 	g_array_set_size(terminal->pvt->match_regexes, 0);
@@ -1184,13 +1203,7 @@ vte_terminal_match_remove(VteTerminal *terminal, int tag)
 			return;
 		}
 		/* Remove this item and leave a hole in its place. */
-		if (regex->cursor != NULL) {
-			gdk_cursor_unref(regex->cursor);
-			regex->cursor = NULL;
-		}
-		_vte_regex_free(regex->reg);
-		regex->reg = NULL;
-		regex->tag = -1;
+                regex_match_clear (regex);
 	}
 	vte_terminal_match_hilite_clear(terminal);
 }
@@ -1216,6 +1229,8 @@ vte_terminal_cursor_new(VteTerminal *terminal, GdkCursorType cursor_type)
  * this expression, the text will be highlighted.
  *
  * Returns: an integer associated with this expression
+ *
+ * @Deprecated: 0.16.15
  */
 int
 vte_terminal_match_add(VteTerminal *terminal, const char *match)
@@ -1223,11 +1238,16 @@ vte_terminal_match_add(VteTerminal *terminal, const char *match)
 	struct vte_match_regex new_regex, *regex;
 	guint ret;
 	g_return_val_if_fail(VTE_IS_TERMINAL(terminal), -1);
+        g_return_val_if_fail(terminal->pvt->match_regex_mode != VTE_REGEX_GREGEX, -1);
 	g_return_val_if_fail(match != NULL, -1);
 	g_return_val_if_fail(strlen(match) > 0, -1);
+
+        terminal->pvt->match_regex_mode = VTE_REGEX_VTE;
+
 	memset(&new_regex, 0, sizeof(new_regex));
-	new_regex.reg = _vte_regex_compile(match);
-	if (new_regex.reg == NULL) {
+        new_regex.mode = VTE_REGEX_VTE;
+	new_regex.regex.reg = _vte_regex_compile(match);
+	if (new_regex.regex.reg == NULL) {
 		g_warning(_("Error compiling regular expression \"%s\"."),
 			  match);
 		return -1;
@@ -1244,8 +1264,8 @@ vte_terminal_match_add(VteTerminal *terminal, const char *match)
 	}
 	/* Set the tag to the insertion point. */
 	new_regex.tag = ret;
-	new_regex.cursor = vte_terminal_cursor_new(terminal,
-						   VTE_DEFAULT_CURSOR);
+        new_regex.cursor_mode = VTE_REGEX_CURSOR_GDKCURSORTYPE;
+        new_regex.cursor.cursor_type = VTE_DEFAULT_CURSOR;
 	if (ret < terminal->pvt->match_regexes->len) {
 		/* Overwrite. */
 		g_array_index(terminal->pvt->match_regexes,
@@ -1256,6 +1276,65 @@ vte_terminal_match_add(VteTerminal *terminal, const char *match)
 		g_array_append_val(terminal->pvt->match_regexes, new_regex);
 	}
 	return new_regex.tag;
+}
+
+/**
+ * vte_terminal_match_add_gregex:
+ * @terminal: a #VteTerminal
+ * @regex: a #GRegex
+ * @flags: the #GRegexMatchFlags to use when matching the regex
+ *
+ * Adds the regular expression @regex to the list of matching expressions.  When the
+ * user moves the mouse cursor over a section of displayed text which matches
+ * this expression, the text will be highlighted.
+ *
+ * Returns: an integer associated with this expression
+ *
+ * Since: 0.16.15
+ */
+int
+vte_terminal_match_add_gregex(VteTerminal *terminal, GRegex *regex, GRegexMatchFlags flags)
+{
+	VteTerminalPrivate *pvt;
+	struct vte_match_regex new_regex_match, *regex_match;
+	guint ret, len;
+
+	g_return_val_if_fail(VTE_IS_TERMINAL(terminal), -1);
+        g_return_val_if_fail(terminal->pvt->match_regex_mode != VTE_REGEX_VTE, -1);
+	g_return_val_if_fail(regex != NULL, -1);
+
+        pvt = terminal->pvt;
+        pvt->match_regex_mode = VTE_REGEX_GREGEX;
+
+	/* Search for a hole. */
+        len = pvt->match_regexes->len;
+	for (ret = 0; ret < len; ret++) {
+		regex_match = &g_array_index(pvt->match_regexes,
+                                             struct vte_match_regex,
+                                             ret);
+		if (regex_match->tag == -1) {
+			break;
+		}
+	}
+
+	/* Set the tag to the insertion point. */
+        new_regex_match.mode = VTE_REGEX_GREGEX;
+        new_regex_match.regex.gregex.regex = g_regex_ref(regex);
+        new_regex_match.regex.gregex.flags = flags;
+	new_regex_match.tag = ret;
+        new_regex_match.cursor_mode = VTE_REGEX_CURSOR_GDKCURSORTYPE;
+        new_regex_match.cursor.cursor_type = VTE_DEFAULT_CURSOR;
+	if (ret < pvt->match_regexes->len) {
+		/* Overwrite. */
+		g_array_index(pvt->match_regexes,
+			      struct vte_match_regex,
+			      ret) = new_regex_match;
+	} else {
+		/* Append. */
+		g_array_append_val(pvt->match_regexes, new_regex_match);
+	}
+
+	return new_regex_match.tag;
 }
 
 /**
@@ -1280,10 +1359,9 @@ vte_terminal_match_set_cursor(VteTerminal *terminal, int tag, GdkCursor *cursor)
 	regex = &g_array_index(terminal->pvt->match_regexes,
 			       struct vte_match_regex,
 			       tag);
-	if (regex->cursor != NULL) {
-		gdk_cursor_unref(regex->cursor);
-	}
-	regex->cursor = gdk_cursor_ref(cursor);
+        regex_match_clear_cursor(regex);
+        regex->cursor_mode = VTE_REGEX_CURSOR_GDKCURSOR;
+	regex->cursor.cursor = cursor ? gdk_cursor_ref(cursor) : NULL;
 	vte_terminal_match_hilite_clear(terminal);
 }
 
@@ -1294,8 +1372,7 @@ vte_terminal_match_set_cursor(VteTerminal *terminal, int tag, GdkCursor *cursor)
  * @cursor_type: a #GdkCursorType
  *
  * Sets which cursor the terminal will use if the pointer is over the pattern
- * specified by @tag.  A convenience wrapper for
- * vte_terminal_match_set_cursor().
+ * specified by @tag.
  *
  * Since: 0.11.9
  *
@@ -1304,19 +1381,54 @@ void
 vte_terminal_match_set_cursor_type(VteTerminal *terminal,
 				   int tag, GdkCursorType cursor_type)
 {
-	GdkCursor *cursor;
-	cursor = vte_terminal_cursor_new(terminal, cursor_type);
-	vte_terminal_match_set_cursor(terminal, tag, cursor);
-	gdk_cursor_unref(cursor);
+	struct vte_match_regex *regex;
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+	g_return_if_fail((guint) tag < terminal->pvt->match_regexes->len);
+	regex = &g_array_index(terminal->pvt->match_regexes,
+			       struct vte_match_regex,
+			       tag);
+        regex_match_clear_cursor(regex);
+        regex->cursor_mode = VTE_REGEX_CURSOR_GDKCURSORTYPE;
+	regex->cursor.cursor_type = cursor_type;
+	vte_terminal_match_hilite_clear(terminal);
+}
+
+/**
+ * vte_terminal_match_set_cursor_name:
+ * @terminal: a #VteTerminal
+ * @tag: the tag of the regex which should use the specified cursor
+ * @cursor_name: the name of the cursor
+ *
+ * Sets which cursor the terminal will use if the pointer is over the pattern
+ * specified by @tag.
+ *
+ * Since: 0.16.15
+ *
+ */
+void
+vte_terminal_match_set_cursor_name(VteTerminal *terminal,
+				   int tag, const char *cursor_name)
+{
+	struct vte_match_regex *regex;
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+        g_return_if_fail(cursor_name != NULL);
+	g_return_if_fail((guint) tag < terminal->pvt->match_regexes->len);
+	regex = &g_array_index(terminal->pvt->match_regexes,
+			       struct vte_match_regex,
+			       tag);
+        regex_match_clear_cursor(regex);
+        regex->cursor_mode = VTE_REGEX_CURSOR_NAME;
+	regex->cursor.cursor_name = g_strdup (cursor_name);
+	vte_terminal_match_hilite_clear(terminal);
 }
 
 /* Check if a given cell on the screen contains part of a matched string.  If
  * it does, return the string, and store the match tag in the optional tag
  * argument. */
 static char *
-vte_terminal_match_check_internal(VteTerminal *terminal,
-				  long column, glong row,
-				  int *tag, int *start, int *end)
+vte_terminal_match_check_internal_vte(VteTerminal *terminal,
+                                      long column, glong row,
+                                      int *tag, int *start, int *end)
 {
 	struct _vte_regex_match matches[256];
 	gint i, j, k;
@@ -1335,9 +1447,6 @@ vte_terminal_match_check_internal(VteTerminal *terminal,
 	}
 	if (end != NULL) {
 		*end = 0;
-	}
-	if (terminal->pvt->match_contents == NULL) {
-		vte_terminal_match_contents_refresh(terminal);
 	}
 	/* Map the pointer position to a portion of the string. */
 	eattr = terminal->pvt->match_attributes->len;
@@ -1443,7 +1552,7 @@ vte_terminal_match_check_internal(VteTerminal *terminal,
 		 * matches, so we'll have to skip each match until we
 		 * stop getting matches. */
 		k = 0;
-		ret = _vte_regex_exec(regex->reg,
+		ret = _vte_regex_exec(regex->regex.reg,
 				      line + k,
 				      G_N_ELEMENTS(matches),
 				      matches);
@@ -1494,10 +1603,7 @@ vte_terminal_match_check_internal(VteTerminal *terminal,
 					if (end != NULL) {
 						*end = sattr + k + matches[j].rm_eo - 1;
 					}
-					if (GTK_WIDGET_REALIZED(terminal)) {
-						gdk_window_set_cursor(terminal->widget.window,
-								      regex->cursor);
-					}
+                                        vte_terminal_set_cursor_from_regex_match(terminal, regex);
 					result = g_strndup(line + k + matches[j].rm_so,
 							 matches[j].rm_eo - matches[j].rm_so);
 					line[eattr] = eol;
@@ -1524,7 +1630,7 @@ vte_terminal_match_check_internal(VteTerminal *terminal,
 			if (k > offset) {
 				break;
 			}
-			ret = _vte_regex_exec(regex->reg,
+			ret = _vte_regex_exec(regex->regex.reg,
 					      line + k,
 					      G_N_ELEMENTS(matches),
 					      matches);
@@ -1538,6 +1644,241 @@ vte_terminal_match_check_internal(VteTerminal *terminal,
 		*end = sattr + end_blank;
 	}
 	return NULL;
+}
+
+/* Check if a given cell on the screen contains part of a matched string.  If
+ * it does, return the string, and store the match tag in the optional tag
+ * argument. */
+static char *
+vte_terminal_match_check_internal_gregex(VteTerminal *terminal,
+                                         long column, glong row,
+                                         int *tag, int *start, int *end)
+{
+	gint start_blank, end_blank;
+        guint i;
+	int offset;
+	struct vte_match_regex *regex = NULL;
+	struct _VteCharAttributes *attr = NULL;
+	gssize sattr, eattr;
+	gchar *line, eol;
+        GMatchInfo *match_info;
+
+	_vte_debug_print(VTE_DEBUG_EVENTS,
+			"Checking for match at (%ld,%ld).\n", row, column);
+	*tag = -1;
+	if (start != NULL) {
+		*start = 0;
+	}
+	if (end != NULL) {
+		*end = 0;
+	}
+	/* Map the pointer position to a portion of the string. */
+	eattr = terminal->pvt->match_attributes->len;
+	for (offset = eattr; offset--; ) {
+		attr = &g_array_index(terminal->pvt->match_attributes,
+				      struct _VteCharAttributes,
+				      offset);
+		if (row < attr->row) {
+			eattr = offset;
+		}
+		if (row == attr->row &&
+		    column == attr->column &&
+		    terminal->pvt->match_contents[offset] != ' ') {
+			break;
+		}
+	}
+
+	_VTE_DEBUG_IF(VTE_DEBUG_EVENTS) {
+		if (offset < 0)
+			g_printerr("Cursor is not on a character.\n");
+		else
+			g_printerr("Cursor is on character '%c' at %d.\n",
+					g_utf8_get_char (terminal->pvt->match_contents + offset),
+					offset);
+	}
+
+	/* If the pointer isn't on a matchable character, bug out. */
+	if (offset < 0) {
+		return NULL;
+	}
+
+	/* If the pointer is on a newline, bug out. */
+	if ((g_ascii_isspace(terminal->pvt->match_contents[offset])) ||
+	    (terminal->pvt->match_contents[offset] == '\0')) {
+		_vte_debug_print(VTE_DEBUG_EVENTS,
+				"Cursor is on whitespace.\n");
+		return NULL;
+	}
+
+	/* Snip off any final newlines. */
+	while (terminal->pvt->match_contents[eattr] == '\n' ||
+			terminal->pvt->match_contents[eattr] == '\0') {
+		eattr--;
+	}
+	/* and scan forwards to find the end of this line */
+	while (!(terminal->pvt->match_contents[eattr] == '\n' ||
+			terminal->pvt->match_contents[eattr] == '\0')) {
+		eattr++;
+	}
+
+	/* find the start of row */
+	if (row == 0) {
+		sattr = 0;
+	} else {
+		for (sattr = offset; sattr > 0; sattr--) {
+			attr = &g_array_index(terminal->pvt->match_attributes,
+					      struct _VteCharAttributes,
+					      sattr);
+			if (row > attr->row) {
+				break;
+			}
+		}
+	}
+	/* Scan backwards to find the start of this line */
+	while (sattr > 0 &&
+		! (terminal->pvt->match_contents[sattr] == '\n' ||
+		    terminal->pvt->match_contents[sattr] == '\0')) {
+		sattr--;
+	}
+	/* and skip any initial newlines. */
+	while (terminal->pvt->match_contents[sattr] == '\n' ||
+		terminal->pvt->match_contents[sattr] == '\0') {
+		sattr++;
+	}
+	if (eattr <= sattr) { /* blank line */
+		return NULL;
+	}
+	if (eattr <= offset || sattr > offset) {
+		/* nothing to match on this line */
+		return NULL;
+	}
+	offset -= sattr;
+	eattr -= sattr;
+
+	/* temporarily shorten the contents to this row */
+	line = terminal->pvt->match_contents + sattr;
+	eol = line[eattr];
+	line[eattr] = '\0';
+
+	start_blank = 0;
+	end_blank = eattr;
+
+	/* Now iterate over each regex we need to match against. */
+	for (i = 0; i < terminal->pvt->match_regexes->len; i++) {
+		regex = &g_array_index(terminal->pvt->match_regexes,
+				       struct vte_match_regex,
+				       i);
+		/* Skip holes. */
+		if (regex->tag < 0) {
+			continue;
+		}
+		/* We'll only match the first item in the buffer which
+		 * matches, so we'll have to skip each match until we
+		 * stop getting matches. */
+                if (!g_regex_match_full(regex->regex.gregex.regex,
+                                        line, -1, 0,
+                                        regex->regex.gregex.flags,
+                                        &match_info,
+                                        NULL))
+                        continue;
+
+                while (g_match_info_matches(match_info)) {
+			gint ko = offset;
+			gint sblank=G_MININT, eblank=G_MAXINT;
+                        gint rm_so, rm_eo;
+
+                        if (g_match_info_fetch_pos (match_info, 0, &rm_so, &rm_eo)) {
+				/* The offsets should be "sane". */
+				g_assert(rm_so < eattr);
+				g_assert(rm_eo <= eattr);
+				_VTE_DEBUG_IF(VTE_DEBUG_MISC) {
+					gchar *match;
+					struct _VteCharAttributes *_sattr, *_eattr;
+					match = g_strndup(line + rm_so, rm_eo - rm_so);
+					_sattr = &g_array_index(terminal->pvt->match_attributes,
+							struct _VteCharAttributes,
+							rm_so);
+					_eattr = &g_array_index(terminal->pvt->match_attributes,
+							struct _VteCharAttributes,
+							rm_eo - 1);
+					g_printerr("Match `%s' from %d(%ld,%ld) to %d(%ld,%ld) (%d).\n",
+							match,
+							rm_so,
+							_sattr->column,
+							_sattr->row,
+							rm_eo - 1,
+							_eattr->column,
+							_eattr->row,
+							offset);
+					g_free(match);
+
+				}
+				/* If the pointer is in this substring,
+				 * then we're done. */
+				if (ko >= rm_so &&
+				    ko < rm_eo) {
+					gchar *result;
+					if (tag != NULL) {
+						*tag = regex->tag;
+					}
+					if (start != NULL) {
+						*start = sattr + rm_so;
+					}
+					if (end != NULL) {
+						*end = sattr + rm_eo - 1;
+					}
+                                        vte_terminal_set_cursor_from_regex_match(terminal, regex);
+                                        result = g_match_info_fetch(match_info, 0);
+					line[eattr] = eol;
+
+                                        g_match_info_free(match_info);
+					return result;
+				}
+				if (ko > rm_eo &&
+						rm_eo > sblank) {
+					sblank = rm_eo;
+				}
+				if (ko < rm_so &&
+						rm_so < eblank) {
+					eblank = rm_so;
+				}
+			}
+			if (sblank > start_blank) {
+				start_blank = sblank;
+			}
+			if (eblank < end_blank) {
+				end_blank = eblank;
+			}
+
+                        g_match_info_next(match_info, NULL);
+		}
+
+                g_match_info_free(match_info);
+	}
+	line[eattr] = eol;
+	if (start != NULL) {
+		*start = sattr + start_blank;
+	}
+	if (end != NULL) {
+		*end = sattr + end_blank;
+	}
+	return NULL;
+}
+
+static char *
+vte_terminal_match_check_internal(VteTerminal *terminal,
+                                  long column, glong row,
+                                  int *tag, int *start, int *end)
+{
+	if (terminal->pvt->match_contents == NULL) {
+		vte_terminal_match_contents_refresh(terminal);
+	}
+
+        if (terminal->pvt->match_regex_mode == VTE_REGEX_GREGEX)
+                return vte_terminal_match_check_internal_gregex(terminal, column, row, tag, start, end);
+        if (terminal->pvt->match_regex_mode == VTE_REGEX_VTE)
+                return vte_terminal_match_check_internal_vte(terminal, column, row, tag, start, end);
+        return NULL;
 }
 
 static gboolean
@@ -2050,8 +2391,12 @@ _vte_terminal_update_insert_delta(VteTerminal *terminal)
 void
 _vte_terminal_set_pointer_visible(VteTerminal *terminal, gboolean visible)
 {
-	GdkCursor *cursor = NULL;
 	struct vte_match_regex *regex = NULL;
+	terminal->pvt->mouse_cursor_visible = visible;
+
+        if (!GTK_WIDGET_REALIZED(terminal))
+                return;
+
 	if (visible || !terminal->pvt->mouse_autohide) {
 		if (terminal->pvt->mouse_send_xy_on_click ||
 		    terminal->pvt->mouse_send_xy_on_button ||
@@ -2060,29 +2405,23 @@ _vte_terminal_set_pointer_visible(VteTerminal *terminal, gboolean visible)
 		    terminal->pvt->mouse_all_motion_tracking) {
 			_vte_debug_print(VTE_DEBUG_CURSOR,
 					"Setting mousing cursor.\n");
-			cursor = terminal->pvt->mouse_mousing_cursor;
+			gdk_window_set_cursor(terminal->widget.window, terminal->pvt->mouse_mousing_cursor);
 		} else
 		if ( (guint)terminal->pvt->match_tag < terminal->pvt->match_regexes->len) {
 			regex = &g_array_index(terminal->pvt->match_regexes,
 					       struct vte_match_regex,
 					       terminal->pvt->match_tag);
-			cursor = regex->cursor;
+                        vte_terminal_set_cursor_from_regex_match(terminal, regex);
 		} else {
 			_vte_debug_print(VTE_DEBUG_CURSOR,
 					"Setting default mouse cursor.\n");
-			cursor = terminal->pvt->mouse_default_cursor;
+			gdk_window_set_cursor(terminal->widget.window, terminal->pvt->mouse_default_cursor);
 		}
 	} else {
 		_vte_debug_print(VTE_DEBUG_CURSOR,
 				"Setting to invisible cursor.\n");
-		cursor = terminal->pvt->mouse_inviso_cursor;
+		gdk_window_set_cursor(terminal->widget.window, terminal->pvt->mouse_inviso_cursor);
 	}
-	if (cursor) {
-		if (GTK_WIDGET_REALIZED(terminal)) {
-			gdk_window_set_cursor(terminal->widget.window, cursor);
-		}
-	}
-	terminal->pvt->mouse_cursor_visible = visible;
 }
 
 /**
@@ -2401,7 +2740,7 @@ vte_terminal_set_colors(VteTerminal *terminal,
 			color.blue = (i & 4) ? 0xc000 : 0;
 			color.green = (i & 2) ? 0xc000 : 0;
 			color.red = (i & 1) ? 0xc000 : 0;
-			if (i > 8) {
+			if (i > 7) {
 				color.blue += 0x3fff;
 				color.green += 0x3fff;
 				color.red += 0x3fff;
@@ -4110,20 +4449,9 @@ vte_terminal_style_changed(GtkWidget *widget, GtkStyle *style, gpointer data)
 static void
 add_cursor_timeout (VteTerminal *terminal)
 {
-	GtkSettings *settings;
-
-	/* Setup cursor blink */
-	settings = gtk_widget_get_settings(&terminal->widget);
-	if (settings != NULL) {
-		gint blink_cycle = 1000;
-		g_object_get(G_OBJECT(settings), "gtk-cursor-blink-time",
-			     &blink_cycle, NULL);
-		terminal->pvt->cursor_blink_timeout = blink_cycle / 2;
-	}
-
 	terminal->pvt->cursor_blink_time = 0;
 	terminal->pvt->cursor_blink_tag = g_timeout_add_full(G_PRIORITY_LOW,
-							     terminal->pvt->cursor_blink_timeout,
+							     terminal->pvt->cursor_blink_cycle,
 							     (GSourceFunc)vte_invalidate_cursor_periodic,
 							     terminal,
 							     NULL);
@@ -5813,15 +6141,12 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 		rowdata = _vte_terminal_find_row_data(terminal, sc->y);
 		if (rowdata != NULL) {
 			/* Find the last non-empty character on the first line. */
-			last_nonempty = -1;
-			for (i = 0; i < rowdata->cells->len; i++) {
+			for (i = rowdata->cells->len - 1; i >= 0; i--) {
 				cell = &g_array_index(rowdata->cells,
 						struct vte_charcell, i);
-				if (cell->c != 0)
-					last_nonempty = i;
+				if (cell->attr.fragment || cell->c != 0)
+					break;
 			}
-			/* Now find the first empty after it. */
-			i = last_nonempty + 1;
 			/* If the start point is to its right, then move the
 			 * startpoint up to the beginning of the next line
 			 * unless that would move the startpoint after the end
@@ -5832,7 +6157,7 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 					sc->x = 0;
 					sc->y++;
 				} else {
-					sc->x = i;
+					sc->x = i + 1;
 				}
 			}
 		} else {
@@ -5847,18 +6172,15 @@ vte_terminal_extend_selection(VteTerminal *terminal, double x, double y,
 		rowdata = _vte_terminal_find_row_data(terminal, ec->y);
 		if (rowdata != NULL) {
 			/* Find the last non-empty character on the last line. */
-			last_nonempty = -1;
-			for (i = 0; i < rowdata->cells->len; i++) {
+			for (i = rowdata->cells->len - 1; i >= 0; i--) {
 				cell = &g_array_index(rowdata->cells,
 						struct vte_charcell, i);
-				if (cell->c != 0)
-					last_nonempty = i;
+				if (cell->attr.fragment || cell->c != 0)
+					break;
 			}
-			/* Now find the first empty after it. */
-			i = last_nonempty + 1;
 			/* If the end point is to its right, then extend the
 			 * endpoint as far right as we can expect. */
-			if (ec->x >= i) {
+			if (ec->x > i) {
 				ec->x = MAX(ec->x,
 						MAX(terminal->column_count - 1,
 							rowdata->cells->len));
@@ -7089,29 +7411,41 @@ vte_terminal_handle_scroll(VteTerminal *terminal)
 
 /* Set the adjustment objects used by the terminal widget. */
 static void
-vte_terminal_set_scroll_adjustment(VteTerminal *terminal,
-				   GtkAdjustment *adjustment)
+vte_terminal_set_scroll_adjustments(GtkWidget *widget,
+				    GtkAdjustment *hadjustment G_GNUC_UNUSED,
+				    GtkAdjustment *adjustment)
 {
-	if (adjustment != NULL) {
-		/* Add a reference to the new adjustment object. */
-		g_object_ref(adjustment);
-		/* Get rid of the old adjustment object. */
-		if (terminal->adjustment != NULL) {
-			/* Disconnect our signal handlers from this object. */
-			g_signal_handlers_disconnect_by_func(terminal->adjustment,
-							     vte_terminal_handle_scroll,
-							     terminal);
-			g_object_unref(terminal->adjustment);
-		}
-		/* Set the new adjustment object. */
-		terminal->adjustment = adjustment;
+	VteTerminal *terminal = VTE_TERMINAL (widget);
 
-		/* We care about the offset, not the top or bottom. */
-		g_signal_connect_swapped(terminal->adjustment,
-					 "value-changed",
-					 G_CALLBACK(vte_terminal_handle_scroll),
-					 terminal);
+	if (adjustment != NULL && adjustment == terminal->adjustment)
+		return;
+	if (adjustment == NULL && terminal->adjustment != NULL)
+		return;
+
+	if (adjustment == NULL)
+		adjustment = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 0, 0, 0, 0));
+	else
+		g_return_if_fail(GTK_IS_ADJUSTMENT(adjustment));
+
+	/* Add a reference to the new adjustment object. */
+	g_object_ref_sink(adjustment);
+	/* Get rid of the old adjustment object. */
+	if (terminal->adjustment != NULL) {
+		/* Disconnect our signal handlers from this object. */
+		g_signal_handlers_disconnect_by_func(terminal->adjustment,
+						     vte_terminal_handle_scroll,
+						     terminal);
+		g_object_unref(terminal->adjustment);
 	}
+
+	/* Set the new adjustment object. */
+	terminal->adjustment = adjustment;
+
+	/* We care about the offset, not the top or bottom. */
+	g_signal_connect_swapped(terminal->adjustment,
+				 "value-changed",
+				 G_CALLBACK(vte_terminal_handle_scroll),
+				 terminal);
 }
 
 /**
@@ -7394,7 +7728,6 @@ static void
 vte_terminal_init(VteTerminal *terminal)
 {
 	VteTerminalPrivate *pvt;
-	GtkAdjustment *adjustment;
 
 	_vte_debug_print(VTE_DEBUG_LIFECYCLE, "vte_terminal_init()\n");
 
@@ -7408,8 +7741,7 @@ vte_terminal_init(VteTerminal *terminal)
 	gtk_widget_set_redraw_on_allocate (&terminal->widget, FALSE);
 
 	/* Set an adjustment for the application to use to control scrolling. */
-	adjustment = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 0, 0, 0, 0));
-	vte_terminal_set_scroll_adjustment(terminal, adjustment);
+	vte_terminal_set_scroll_adjustments(GTK_WIDGET(terminal), NULL, NULL);
 
 	/* Set up dummy metrics, value != 0 to avoid division by 0 */
 	terminal->char_width = 1;
@@ -7490,8 +7822,11 @@ vte_terminal_init(VteTerminal *terminal)
 	/* Cursor blinking. */
 	pvt->cursor_visible = TRUE;
 	pvt->cursor_blink_timeout = 500;
+        pvt->cursor_blinks = FALSE;
+        pvt->cursor_blink_mode = VTE_CURSOR_BLINK_SYSTEM;
 
 	/* Matching data. */
+        pvt->match_regex_mode = VTE_REGEX_UNDECIDED;
 	pvt->match_regexes = g_array_new(FALSE, FALSE,
 					 sizeof(struct vte_match_regex));
 	vte_terminal_match_hilite_clear(terminal);
@@ -7765,6 +8100,65 @@ vte_terminal_unrealize(GtkWidget *widget)
 	GTK_WIDGET_UNSET_FLAGS(widget, GTK_REALIZED);
 }
 
+static void
+vte_terminal_sync_settings (GtkSettings *settings,
+                            GParamSpec *pspec,
+                            VteTerminal *terminal)
+{
+        VteTerminalPrivate *pvt = terminal->pvt;
+        gboolean blink;
+        int blink_time = 1000;
+        int blink_timeout = G_MAXINT;
+
+        g_object_get(G_OBJECT (settings),
+                     "gtk-cursor-blink", &blink,
+#if GTK_CHECK_VERSION (2, 12, 0)
+                     "gtk-cursor-blink-time", &blink_time,
+                     "gtk-cursor-blink-timeout", &blink_timeout,
+#endif
+                     NULL);
+
+	pvt->cursor_blink_cycle = blink_time / 2;
+        pvt->cursor_blink_timeout = blink_timeout;
+
+        if (pvt->cursor_blink_mode == VTE_CURSOR_BLINK_SYSTEM)
+                vte_terminal_set_cursor_blinks_internal(terminal, blink);
+}
+
+static void
+vte_terminal_screen_changed (GtkWidget *widget, GdkScreen *previous_screen)
+{
+        GdkScreen *screen;
+        GtkSettings *settings;
+
+        screen = gtk_widget_get_screen (widget);
+        if (previous_screen != NULL &&
+            (screen != previous_screen || screen == NULL)) {
+                settings = gtk_settings_get_for_screen (previous_screen);
+                g_signal_handlers_disconnect_matched (settings, G_SIGNAL_MATCH_DATA,
+                                                      0, 0, NULL, NULL,
+                                                      widget);
+        }
+
+        if (GTK_WIDGET_CLASS (vte_terminal_parent_class)->screen_changed) {
+                GTK_WIDGET_CLASS (vte_terminal_parent_class)->screen_changed (widget, previous_screen);
+        }
+
+        if (screen == previous_screen)
+                return;
+
+        settings = gtk_widget_get_settings (widget);
+        vte_terminal_sync_settings (settings, NULL, VTE_TERMINAL (widget));
+        g_signal_connect (settings, "notify::gtk-cursor-blink",
+                          G_CALLBACK (vte_terminal_sync_settings), widget);
+#if GTK_CHECK_VERSION (2, 12, 0)
+        g_signal_connect (settings, "notify::gtk-cursor-blink-time",
+                          G_CALLBACK (vte_terminal_sync_settings), widget);
+        g_signal_connect (settings, "notify::gtk-cursor-blink-timeout",
+                          G_CALLBACK (vte_terminal_sync_settings), widget);
+#endif
+}
+
 /* Perform final cleanups for the widget before it's freed. */
 static void
 vte_terminal_finalize(GObject *object)
@@ -7772,6 +8166,7 @@ vte_terminal_finalize(GObject *object)
 	VteTerminal *terminal;
 	GtkWidget *toplevel;
 	GtkClipboard *clipboard;
+        GtkSettings *settings;
 	struct vte_match_regex *regex;
 	guint i;
 
@@ -7811,10 +8206,7 @@ vte_terminal_finalize(GObject *object)
 			if (regex->tag < 0) {
 				continue;
 			}
-			if (regex->cursor != NULL) {
-				gdk_cursor_unref(regex->cursor);
-			}
-			_vte_regex_free(regex->reg);
+                        regex_match_clear(regex);
 		}
 		g_array_free(terminal->pvt->match_regexes, TRUE);
 	}
@@ -7937,6 +8329,11 @@ vte_terminal_finalize(GObject *object)
 	if (terminal->adjustment != NULL) {
 		g_object_unref(terminal->adjustment);
 	}
+
+        settings = gtk_widget_get_settings (GTK_WIDGET (terminal));
+        g_signal_handlers_disconnect_matched (settings, G_SIGNAL_MATCH_DATA,
+                                              0, 0, NULL, NULL,
+                                              terminal);
 
 	/* Call the inherited finalize() method. */
 	G_OBJECT_CLASS(vte_terminal_parent_class)->finalize(object);
@@ -10466,6 +10863,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 	widget_class->size_request = vte_terminal_size_request;
 	widget_class->size_allocate = vte_terminal_size_allocate;
 	widget_class->get_accessible = vte_terminal_get_accessible;
+        widget_class->screen_changed = vte_terminal_screen_changed;
 
 	/* Initialize default handlers. */
 	klass->eof = NULL;
@@ -10502,6 +10900,17 @@ vte_terminal_class_init(VteTerminalClass *klass)
 	klass->copy_clipboard = vte_terminal_real_copy_clipboard;
 	klass->paste_clipboard = vte_terminal_real_paste_clipboard;
 
+	klass->set_scroll_adjustments = vte_terminal_set_scroll_adjustments;
+
+	widget_class->set_scroll_adjustments_signal =
+		g_signal_new("set-scroll-adjustments",
+			     G_TYPE_FROM_CLASS (klass),
+			     G_SIGNAL_RUN_LAST,
+			     G_STRUCT_OFFSET (VteTerminalClass, set_scroll_adjustments),
+			     NULL, NULL,
+			     _vte_marshal_VOID__OBJECT_OBJECT,
+			     G_TYPE_NONE, 2,
+			     GTK_TYPE_ADJUSTMENT, GTK_TYPE_ADJUSTMENT);
 
 	/* Register some signals of our own. */
 	klass->eof_signal =
@@ -10776,44 +11185,6 @@ vte_terminal_class_init(VteTerminalClass *klass)
 	process_timer = g_timer_new ();
 }
 
-GtkType
-vte_terminal_erase_binding_get_type(void)
-{
-	static GtkType terminal_erase_binding_type = 0;
-	static GEnumValue values[] = {
-		{VTE_ERASE_AUTO, "VTE_ERASE_AUTO", "auto"},
-		{VTE_ERASE_ASCII_BACKSPACE, "VTE_ERASE_ASCII_BACKSPACE",
-		 "ascii-backspace"},
-		{VTE_ERASE_ASCII_DELETE, "VTE_ERASE_ASCII_DELETE",
-		 "ascii-delete"},
-		{VTE_ERASE_DELETE_SEQUENCE, "VTE_ERASE_DELETE_SEQUENCE",
-		 "delete-sequence"},
-	};
-	if (terminal_erase_binding_type == 0) {
-		terminal_erase_binding_type =
-			g_enum_register_static("VteTerminalEraseBinding",
-					       values);
-	}
-	return terminal_erase_binding_type;
-}
-
-GtkType
-vte_terminal_anti_alias_get_type(void)
-{
-	static GtkType terminal_anti_alias_type = 0;
-	static GEnumValue values[] = {
-		{VTE_ANTI_ALIAS_USE_DEFAULT, "VTE_ANTI_ALIAS_USE_DEFAULT", "use-default"},
-		{VTE_ANTI_ALIAS_FORCE_ENABLE, "VTE_ANTI_ALIAS_FORCE_ENABLE", "force-enable"},
-		{VTE_ANTI_ALIAS_FORCE_DISABLE, "VTE_ANTI_ALIAS_FORCE_DISABLE", "force-disable"},
-	};
-	if (terminal_anti_alias_type == 0) {
-		terminal_anti_alias_type =
-			g_enum_register_static("VteTerminalAntiAlias",
-					       values);
-	}
-	return terminal_anti_alias_type;
-}
-
 /**
  * vte_terminal_set_audible_bell:
  * @terminal: a #VteTerminal
@@ -10893,7 +11264,13 @@ void
 vte_terminal_set_allow_bold(VteTerminal *terminal, gboolean allow_bold)
 {
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+
+        allow_bold = allow_bold != FALSE;
+        if (allow_bold == terminal->pvt->allow_bold)
+                return;
+
 	terminal->pvt->allow_bold = allow_bold;
+	_vte_invalidate_all (terminal);
 }
 
 /**
@@ -11388,25 +11765,16 @@ vte_terminal_get_using_xft(VteTerminal *terminal)
 	return _vte_draw_get_using_fontconfig(terminal->pvt->draw);
 }
 
-/**
- * vte_terminal_set_cursor_blinks:
- * @terminal: a #VteTerminal
- * @blink: %TRUE if the cursor should blink
- *
- * Sets whether or not the cursor will blink.  The length of the blinking cycle
- * is controlled by the "gtk-cursor-blink-time" GTK+ setting.
- *
- */
-void
-vte_terminal_set_cursor_blinks(VteTerminal *terminal, gboolean blink)
+static void
+vte_terminal_set_cursor_blinks_internal(VteTerminal *terminal, gboolean blink)
 {
-	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+        VteTerminalPrivate *pvt = terminal->pvt;
 
 	blink = !!blink;
-	if (terminal->pvt->cursor_blinks == blink)
+	if (pvt->cursor_blinks == blink)
 		return;
 
-	terminal->pvt->cursor_blinks = blink;
+	pvt->cursor_blinks = blink;
 
 	if (!GTK_WIDGET_REALIZED (terminal) ||
 	    !GTK_WIDGET_HAS_FOCUS (terminal))
@@ -11416,6 +11784,78 @@ vte_terminal_set_cursor_blinks(VteTerminal *terminal, gboolean blink)
 		add_cursor_timeout (terminal);
 	else
 		remove_cursor_timeout (terminal);
+}
+
+/**
+ * vte_terminal_set_cursor_blinks:
+ * @terminal: a #VteTerminal
+ * @blink: %TRUE if the cursor should blink
+ *
+ *  Sets whether or not the cursor will blink.
+ *
+ * Deprecated: 0.16.15 Use vte_terminal_set_cursor_blink_mode() instead.
+ */
+void
+vte_terminal_set_cursor_blinks(VteTerminal *terminal, gboolean blink)
+{
+        vte_terminal_set_cursor_blink_mode(terminal, blink ? VTE_CURSOR_BLINK_ON : VTE_CURSOR_BLINK_OFF);
+}
+
+/**
+ * vte_terminal_set_cursor_blink_mode:
+ * @terminal: a #VteTerminal
+ * @mode: the #VteTerminalCursorBlinkMode to use
+ *
+ * Sets whether or not the cursor will blink. Using VTE_CURSOR_BLINK_SYSTEM
+ * will use the #GtkSettings::gtk-cursor-blink setting.
+ *
+ * Since: 0.16.15
+ */
+void
+vte_terminal_set_cursor_blink_mode(VteTerminal *terminal, VteTerminalCursorBlinkMode mode)
+{
+        VteTerminalPrivate *pvt;
+        gboolean blinks;
+
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+        pvt = terminal->pvt;
+
+        if (pvt->cursor_blink_mode == mode)
+                return;
+
+        pvt->cursor_blink_mode = mode;
+
+        switch (mode) {
+          case VTE_CURSOR_BLINK_SYSTEM:
+            g_object_get(gtk_widget_get_settings(GTK_WIDGET(terminal)),
+                                                 "gtk-cursor-blink", &blinks,
+                                                 NULL);
+            break;
+          case VTE_CURSOR_BLINK_ON:
+            blinks = TRUE;
+            break;
+          case VTE_CURSOR_BLINK_OFF:
+            blinks = FALSE;
+            break;
+        }
+
+        vte_terminal_set_cursor_blinks_internal(terminal, blinks);
+}
+
+/**
+ * vte_terminal_get_cursor_blink_mode:
+ * @terminal: a #VteTerminal
+ *
+ * Returns the cursor blink mode.
+ *
+ * Since: 0.16.15
+ */
+VteTerminalCursorBlinkMode
+vte_terminal_get_cursor_blink_mode(VteTerminal *terminal)
+{
+        g_return_val_if_fail(VTE_IS_TERMINAL(terminal), VTE_CURSOR_BLINK_SYSTEM);
+
+        return terminal->pvt->cursor_blink_mode;
 }
 
 /**

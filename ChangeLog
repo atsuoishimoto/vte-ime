@@ -1,3 +1,148 @@
+2008-08-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.17.1.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.17.1.
+	Bumped libtool version to 12:0:3.
+
+2008-08-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 546366 – hard to select last tab char on a line
+
+	* src/vte.c (vte_terminal_extend_selection):
+	* src/vteseq.c (vte_sequence_handler_ta):
+	Handle fragment cells.
+
+2008-08-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 545924 – tab characters not handled correctly after ncurses clear	
+	Patch from Patryk Zawadzki
+
+	* src/vteseq.c (vte_sequence_handler_ta): Ignore empty cells at end of
+	line.
+
+2008-07-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 542795 – VTE_CJK_WIDTH don't work
+
+	* src/iso2022.c (_vte_iso2022_ambiguous_width): Fix VTE_CJK_WIDTH env
+	handling.
+
+2008-06-27  Christian Persch  <chpe@gnome.org>
+
+        Bug 399744 – Hide more font-aa implementation details
+
+        * src/vtexft.c: Disable antialiasing if using the default antialias
+        setting and the XRender extension is not available.
+
+2008-06-27  Christian Persch  <chpe@gnome.org>
+
+        Bug 510903 – use gtk-cursor-blink setting
+
+        * doc/reference/tmpl/vte.sgml:
+        * doc/reference/vte-sections.txt:
+        * src/vte-private.h:
+        * src/vte.c:
+        * src/vte.h: Make the cursor blinking follow the gtk setting by
+        default, with a possible override.
+
+2008-06-26  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.h: Remove the enum type declarations that are now in
+        vtetypebuiltins.h.
+
+2008-06-26  Christian Persch  <chpe@gnome.org>
+
+        * Makefile.am:
+        * autogen.sh: Fix the build from svn and make dist when using
+        intltool 0.40.0. Tarball builds still only require 0.35.0.
+
+2008-06-26  Christian Persch  <chpe@gnome.org>
+
+	* src/vteversion.h.in: Disallow direct inclusion of the new
+	vteversion.h file.
+
+2008-06-26  Christian Persch  <chpe@gnome.org>
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/vte.c:
+	* src/vte.h:
+	* src/vtetypebuiltins.c.template:
+	* src/vtetypebuiltins.h.template: Use glib-mkenums to generate the
+	enum types; makes it easier to add more enum types.
+
+2008-06-26  Christian Persch  <chpe@gnome.org>
+
+        Bug 539130 – building g-t fails due to GtkType etc. deprecation
+
+        * src/reaper.h:
+        * src/vte.c:
+        * src/vteaccess.[ch]: 
+        * src/vtebg.h: Also remove the deprecated GtkType macros from here.
+
+2008-06-25  Christian Persch  <chpe@gnome.org>
+
+	Bug 540182 – crash in geany with vte trunk
+
+	* src/vte.c: Make sure that match_attributes always exist even if
+	there haven't been any matches added.
+
+2008-06-23  Christian Persch  <chpe@gnome.org>
+
+	Bug 535552 – vte_terminal_set_allow_bold doesn't queue redraw
+
+	* src/vte.c: Invalidate all when changing the allow-bold property.
+
+2008-06-23  Christian Persch  <chpe@gnome.org>
+
+        Bug 535469 – support named cursors on matches
+
+        * src/vte-private.h
+        * src/vte.c
+        * src/vte.h: Implement named cursors on matches.
+
+2008-06-23  Christian Persch  <chpe@gnome.org>
+
+        Bug 418918 – Switch to GRegex
+
+        * src/vte-private.h
+        * src/vte.c
+        * src/vte.h: Implement GRegex matching, to be used alternatively
+        to the old vteregex matching.
+
+2008-06-23  Christian Persch  <chpe@gnome.org>
+
+        Bug 535467 – implement set-scroll-adjustments signal
+
+        * src/vte.c: Add set-scroll-adjustments signal, needed to allow
+        adding a VteTerminal into a GtkScrolledWindow.
+
+2008-06-23  Christian Persch  <chpe@gnome.org>
+
+        Bug 535468 – need version check macros
+
+        * configure.in
+        * doc/reference/tmpl/vteversion.sgml
+        * doc/reference/vte-sections.txt
+        * doc/reference/vte.types
+        * src/Makefile.am
+        * src/vte.h
+        A src/vteversion.h.in: Add version check macro.
+
+2008-06-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/vte.h: Don't use GTK_CHECK* macros.
+
+2008-06-04  Christian Persch  <chpe@gnome.org>
+
+	Bug 515972 – Bold black is black in vte's default palette
+
+	* src/vte.c: (vte_terminal_set_colors): Correctly set the value of
+	'bold black' in the palette. Patch by Santtu Lakkala.
+
 2008-06-04  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.16.14.

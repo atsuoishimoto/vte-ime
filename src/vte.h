@@ -25,6 +25,13 @@
 
 #include <sys/types.h> /* for pid_t */
 
+#define __VTE_VTE_H_INSIDE__ 1
+
+#include "vtetypebuiltins.h"
+#include "vteversion.h"
+
+#undef __VTE_VTE_H_INSIDE__
+
 G_BEGIN_DECLS
 
 /* Private implementation details. */
@@ -94,8 +101,11 @@ struct _VteTerminalClass {
 	void (*copy_clipboard)(VteTerminal* terminal);
 	void (*paste_clipboard)(VteTerminal* terminal);
 
+	void (* set_scroll_adjustments) (GtkWidget *widget,
+					 GtkAdjustment *hadjustment,
+					 GtkAdjustment *vadjustment);
+
 	/* Padding for future expansion. */
-	void (*vte_reserved1)(void);
 	void (*vte_reserved2)(void);
 	void (*vte_reserved3)(void);
 	void (*vte_reserved4)(void);
@@ -157,6 +167,13 @@ typedef enum {
 	VTE_ANTI_ALIAS_FORCE_DISABLE
 } VteTerminalAntiAlias;
 
+/* Values for the cursor blink setting */
+typedef enum {
+        VTE_CURSOR_BLINK_SYSTEM,
+        VTE_CURSOR_BLINK_ON,
+        VTE_CURSOR_BLINK_OFF
+} VteTerminalCursorBlinkMode;
+
 /* The structure we return as the supplemental attributes for strings. */
 struct _VteCharAttributes {
 	long row, column;
@@ -173,28 +190,24 @@ struct vte_char_attributes {
 };
 
 /* The widget's type. */
-GtkType vte_terminal_get_type(void);
-GtkType vte_terminal_erase_binding_get_type(void);
-GtkType vte_terminal_anti_alias_get_type(void);
+GType vte_terminal_get_type(void);
 
 #define VTE_TYPE_TERMINAL		(vte_terminal_get_type())
-#define VTE_TERMINAL(obj)		(GTK_CHECK_CAST((obj),\
+#define VTE_TERMINAL(obj)		(G_TYPE_CHECK_INSTANCE_CAST((obj),\
 							VTE_TYPE_TERMINAL,\
 							VteTerminal))
-#define VTE_TERMINAL_CLASS(klass)	GTK_CHECK_CLASS_CAST((klass),\
+#define VTE_TERMINAL_CLASS(klass)	G_TYPE_CHECK_CLASS_CAST((klass),\
 							     VTE_TYPE_TERMINAL,\
 							     VteTerminalClass)
-#define VTE_IS_TERMINAL(obj)		GTK_CHECK_TYPE((obj),\
+#define VTE_IS_TERMINAL(obj)		G_TYPE_CHECK_INSTANCE_TYPE((obj),\
 						       VTE_TYPE_TERMINAL)
-#define VTE_IS_TERMINAL_CLASS(klass)	GTK_CHECK_CLASS_TYPE((klass),\
+#define VTE_IS_TERMINAL_CLASS(klass)	G_TYPE_CHECK_CLASS_TYPE((klass),\
 							     VTE_TYPE_TERMINAL)
 #define VTE_TERMINAL_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), VTE_TYPE_TERMINAL, VteTerminalClass))
 
-#define VTE_TYPE_TERMINAL_ERASE_BINDING	(vte_terminal_erase_binding_get_type())
-#define VTE_IS_TERMINAL_ERASE_BINDING(obj)	GTK_CHECK_TYPE((obj),\
+#define VTE_IS_TERMINAL_ERASE_BINDING(obj)	G_TYPE_CHECK_INSTANCE_TYPE((obj),\
 						VTE_TYPE_TERMINAL_ERASE_BINDING)
-#define VTE_TYPE_TERMINAL_ANTI_ALIAS	(vte_terminal_anti_alias_get_type())
-#define VTE_IS_TERMINAL_ANTI_ALIAS(obj)		GTK_CHECK_TYPE((obj),\
+#define VTE_IS_TERMINAL_ANTI_ALIAS(obj)		G_TYPE_CHECK_INSTANCE_TYPE((obj),\
 						VTE_TYPE_TERMINAL_ANTI_ALIAS)
 
 /* You can get by with just these two functions. */
@@ -277,7 +290,11 @@ void vte_terminal_set_background_transparent(VteTerminal *terminal,
 void vte_terminal_set_opacity(VteTerminal *terminal, guint16 opacity);
 
 /* Set whether or not the cursor blinks. */
-void vte_terminal_set_cursor_blinks(VteTerminal *terminal, gboolean blink);
+#ifndef VTE_DISABLE_DEPRECATED
+void vte_terminal_set_cursor_blinks(VteTerminal *terminal, gboolean blink) G_GNUC_DEPRECATED;
+#endif
+void vte_terminal_set_cursor_blink_mode(VteTerminal *terminal, VteTerminalCursorBlinkMode mode);
+VteTerminalCursorBlinkMode vte_terminal_get_cursor_blink_mode(VteTerminal *terminal);
 
 /* Set the number of scrollback lines, above or at an internal minimum. */
 void vte_terminal_set_scrollback_lines(VteTerminal *terminal, glong lines);
@@ -360,12 +377,17 @@ void vte_terminal_match_clear_all(VteTerminal *terminal);
 
 /* Add a matching expression, returning the tag the widget assigns to that
  * expression. */
-int vte_terminal_match_add(VteTerminal *terminal, const char *match);
+#ifndef VTE_DISABLE_DEPRECATED
+int vte_terminal_match_add(VteTerminal *terminal, const char *match) G_GNUC_DEPRECATED;
+#endif /* VTE_DISABLE_DEPRECATED */
+int vte_terminal_match_add_gregex(VteTerminal *terminal, GRegex *regex, GRegexMatchFlags flags);
 /* Set the cursor to be used when the pointer is over a given match. */
 void vte_terminal_match_set_cursor(VteTerminal *terminal, int tag,
 				   GdkCursor *cursor);
 void vte_terminal_match_set_cursor_type(VteTerminal *terminal,
 					int tag, GdkCursorType cursor_type);
+void vte_terminal_match_set_cursor_name(VteTerminal *terminal,
+					int tag, const char *cursor_name);
 /* Remove a matching expression by tag. */
 void vte_terminal_match_remove(VteTerminal *terminal, int tag);
 

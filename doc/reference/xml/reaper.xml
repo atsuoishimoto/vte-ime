@@ -1,6 +1,6 @@
 <refentry id="VteReaper">
 <refmeta>
-<refentrytitle role="top_of_page">VteReaper</refentrytitle>
+<refentrytitle role="top_of_page" id="VteReaper.top_of_page">VteReaper</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>VTE Library</refmiscinfo>
 </refmeta>
@@ -12,14 +12,10 @@ GObject-style &quot;child-exited&quot; signals.</refpurpose>
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="VteReaper.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -31,7 +27,7 @@ GObject-style &quot;child-exited&quot; signals.</refpurpose>
 
 
 
-<refsect1 role="desc">
+<refsect1 id="VteReaper.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 Because an application may need to be notified when child processes
@@ -43,7 +39,7 @@ a proxy for glib's own functionality.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="VteReaper.details" role="details">
 <title role="details.title">Details</title>
 
 </refsect1>
@@ -51,6 +47,4 @@ a proxy for glib's own functionality.
 
 
 
-
-<refsect1><refsect2 /><refsect2 /></refsect1>
 </refentry>
