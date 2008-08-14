@@ -1,3 +1,13 @@
+vte (1:0.17.2-0ubuntu1) intrepid; urgency=low
+
+  * New upstream release:
+    - Fix crasher on 64bit systems
+    - Fix a bunch of warnings
+    - Bugs fixed in this release:
+      Bug 546940 – Crash when selecting text (LP: #256769)
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Thu, 14 Aug 2008 16:56:15 +0200
+
 vte (1:0.17.1-0ubuntu1) intrepid; urgency=low
 
   * New upstream release

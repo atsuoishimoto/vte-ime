@@ -1,3 +1,54 @@
+2008-08-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	Released vte-0.17.2.
+
+	* NEWS: Updated.
+
+	* configure.in: Bumped version to 0.17.2.
+	Bumped libtool version to 12:1:3.
+
+2008-08-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_match_check_internal_vte),
+	(vte_terminal_ensure_cursor), (vte_terminal_set_colors),
+	(_vte_terminal_insert_char), (vte_terminal_feed),
+	(vte_terminal_key_press), (vte_terminal_match_hilite_update),
+	(vte_terminal_extend_selection):
+	* src/vteseq.c (vte_terminal_find_charcell),
+	(vte_sequence_handler_set_title_internal),
+	(vte_sequence_handler_decset_internal), (vte_sequence_handler_cb),
+	(vte_sequence_handler_cd), (vte_sequence_handler_ce),
+	(vte_sequence_handler_ec), (vte_sequence_handler_ta),
+	(vte_sequence_handler_set_mode),
+	(vte_sequence_handler_window_manipulation):
+	Fix all "signed vs unsigned comparison" warnings.
+
+2008-08-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (regex_match_clear_cursor),
+	(vte_terminal_set_cursor_from_regex_match):
+	Fix uninitialized cursor warning.  Setting to NULL sounds
+	right to me.  ChPe?
+
+2008-08-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c: Remove useless "inline" decorators.  Gcc has been
+	rightfully complaining.
+
+2008-08-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 546940 – Crash when selecting text
+
+	* src/vte.c (vte_terminal_extend_selection): Fix crash with 64-bit
+	systems.  Note to self:
+
+		unsigned int len = 0;
+		long i = len - 1;
+		assert (i < 0);
+
+	fails on 64-bit systems.
+
 2008-08-05  Behdad Esfahbod  <behdad@gnome.org>
 
 	Released vte-0.17.1.
