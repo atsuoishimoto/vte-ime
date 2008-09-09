@@ -47,7 +47,7 @@ dnl in consequence this function is much more general than their
 dnl specific counterparts like ac_cxx_rtti.m4 that will test for
 dnl -fno-rtti -fno-exceptions
 dnl 
-dnl @version $Id: acinclude.m4 1917 2007-06-25 08:23:39Z cpwilson $
+dnl @version $Id$
 dml @author  Guido Draheim <guidod@gmx.de>
 
 AC_DEFUN([AC_CHECK_CC_OPT],

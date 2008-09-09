@@ -132,5 +132,12 @@
 <ANCHOR id="vte-terminal-accessible-new" href="vte/VteTerminalAccessible.html#vte-terminal-accessible-new">
 <ANCHOR id="VteReaper" href="vte/VteReaper.html">
 <ANCHOR id="VteReaper.synopsis" href="vte/VteReaper.html#VteReaper.synopsis">
+<ANCHOR id="VteReaper.object-hierarchy" href="vte/VteReaper.html#VteReaper.object-hierarchy">
+<ANCHOR id="VteReaper.signals" href="vte/VteReaper.html#VteReaper.signals">
 <ANCHOR id="VteReaper.description" href="vte/VteReaper.html#VteReaper.description">
 <ANCHOR id="VteReaper.details" href="vte/VteReaper.html#VteReaper.details">
+<ANCHOR id="VteReaper-struct" href="vte/VteReaper.html#VteReaper-struct">
+<ANCHOR id="vte-reaper-get" href="vte/VteReaper.html#vte-reaper-get">
+<ANCHOR id="vte-reaper-add-child" href="vte/VteReaper.html#vte-reaper-add-child">
+<ANCHOR id="VteReaper.signal-details" href="vte/VteReaper.html#VteReaper.signal-details">
+<ANCHOR id="VteReaper-child-exited" href="vte/VteReaper.html#VteReaper-child-exited">

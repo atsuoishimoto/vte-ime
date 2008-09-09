@@ -1786,8 +1786,10 @@ vte_terminal_match_check_internal_gregex(VteTerminal *terminal,
                                         line, -1, 0,
                                         regex->regex.gregex.flags,
                                         &match_info,
-                                        NULL))
+                                        NULL)) {
+                        g_match_info_free(match_info);
                         continue;
+                }
 
                 while (g_match_info_matches(match_info)) {
 			gint ko = offset;
@@ -3169,7 +3171,8 @@ static void
 _vte_terminal_connect_pty_write(VteTerminal *terminal)
 {
 	if (terminal->pvt->pty_channel == NULL) {
-		return;
+		terminal->pvt->pty_channel =
+			g_io_channel_unix_new(terminal->pvt->pty_master);
 	}
 
 	if (terminal->pvt->pty_output_source == VTE_INVALID_SOURCE) {
@@ -3236,10 +3239,12 @@ _vte_terminal_fork_basic(VteTerminal *terminal, const char *command,
 	/* Close any existing ptys. */
 	if (terminal->pvt->pty_channel != NULL) {
 		g_io_channel_unref (terminal->pvt->pty_channel);
+		terminal->pvt->pty_channel = NULL;
 	}
 	if (terminal->pvt->pty_master != -1) {
 		_vte_pty_close(terminal->pvt->pty_master);
 		close(terminal->pvt->pty_master);
+		terminal->pvt->pty_master = -1;
 	}
 
 	/* Open the new pty. */
@@ -12441,9 +12446,9 @@ vte_terminal_get_icon_title(VteTerminal *terminal)
 void
 vte_terminal_set_pty(VteTerminal *terminal, int pty_master)
 {
-       guint i;
+       long flags;
 
-       g_return_if_fail(VTE_IS_TERMINAL(terminal));
+       g_return_if_fail (VTE_IS_TERMINAL (terminal));
 
        if (pty_master == terminal->pvt->pty_master) {
 	       return;
@@ -12453,8 +12458,8 @@ vte_terminal_set_pty(VteTerminal *terminal, int pty_master)
 	       g_io_channel_unref (terminal->pvt->pty_channel);
        }
        if (terminal->pvt->pty_master != -1) {
-               _vte_pty_close(terminal->pvt->pty_master);
-               close(terminal->pvt->pty_master);
+               _vte_pty_close (terminal->pvt->pty_master);
+               close (terminal->pvt->pty_master);
        }
        terminal->pvt->pty_master = pty_master;
        terminal->pvt->pty_channel = g_io_channel_unix_new (pty_master);
@@ -12462,19 +12467,19 @@ vte_terminal_set_pty(VteTerminal *terminal, int pty_master)
 
 
        /* Set the pty to be non-blocking. */
-       i = fcntl(terminal->pvt->pty_master, F_GETFL);
-       if ((i & O_NONBLOCK) == 0) {
-	       fcntl(terminal->pvt->pty_master, F_SETFL, i | O_NONBLOCK);
+       flags = fcntl (terminal->pvt->pty_master, F_GETFL);
+       if ((flags & O_NONBLOCK) == 0) {
+	       fcntl (terminal->pvt->pty_master, F_SETFL, flags | O_NONBLOCK);
        }
 
-       vte_terminal_set_size(terminal,
-                             terminal->column_count,
-                             terminal->row_count);
+       vte_terminal_set_size (terminal,
+                              terminal->column_count,
+                              terminal->row_count);
 
-       _vte_terminal_setup_utf8(terminal);
+       _vte_terminal_setup_utf8 (terminal);
 
        /* Open channels to listen for input on. */
-       _vte_terminal_connect_pty_read(terminal);
+       _vte_terminal_connect_pty_read (terminal);
 }
 
 /* We need this bit of glue to ensure that accessible objects will always

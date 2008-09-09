@@ -1,3 +1,11 @@
+vte (1:0.17.3-0ubuntu1) intrepid; urgency=low
+
+  * New upstream release
+    - Update python bindings to bind new API from 0.17.1
+    - Bug 538344 – Anjuta hangs when program is executed in terminal
+
+ -- Pedro Fragoso <ember@ubuntu.com>  Tue, 09 Sep 2008 14:37:58 +0100
+
 vte (1:0.17.2-0ubuntu2) intrepid; urgency=low
 
   * Add 93_add_alt_screen_scroll_toggle.patch to solve scrolling-in-screen

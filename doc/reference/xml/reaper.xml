@@ -16,15 +16,32 @@ GObject-style &quot;child-exited&quot; signals.</refpurpose>
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
+                    <link linkend="VteReaper-struct">VteReaper</link>;
+<link linkend="VteReaper">VteReaper</link> *         <link linkend="vte-reaper-get">vte_reaper_get</link>                      (void);
+<link linkend="int">int</link>                 <link linkend="vte-reaper-add-child">vte_reaper_add_child</link>                (<link linkend="GPid">GPid</link> pid);
 </synopsis>
 </refsynopsisdiv>
 
+<refsect1 id="VteReaper.object-hierarchy" role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+  <link linkend="GObject">GObject</link>
+   +----VteReaper
+</synopsis>
+
+</refsect1>
 
 
 
 
 
 
+<refsect1 id="VteReaper.signals" role="signal_proto">
+<title role="signal_proto.title">Signals</title>
+<synopsis>
+  &quot;<link linkend="VteReaper-child-exited">child-exited</link>&quot;                                   : Run Last
+</synopsis>
+</refsect1>
 
 
 <refsect1 id="VteReaper.description" role="desc">
@@ -41,9 +58,68 @@ a proxy for glib's own functionality.
 
 <refsect1 id="VteReaper.details" role="details">
 <title role="details.title">Details</title>
+<refsect2 id="VteReaper-struct" role="struct">
+<title>VteReaper</title>
+<indexterm zone="VteReaper-struct"><primary>VteReaper</primary></indexterm><programlisting>typedef struct _VteReaper VteReaper;</programlisting>
+<para>
+This should not be accessed directly.
+</para></refsect2>
+<refsect2 id="vte-reaper-get" role="function">
+<title>vte_reaper_get ()</title>
+<indexterm zone="vte-reaper-get"><primary>vte_reaper_get</primary></indexterm><programlisting><link linkend="VteReaper">VteReaper</link> *         vte_reaper_get                      (void);</programlisting>
+<para>
+Finds the address of the global <link linkend="VteReaper"><type>VteReaper</type></link> object, creating the object if
+necessary.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the global <link linkend="VteReaper"><type>VteReaper</type></link> object, which should not be unreffed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="vte-reaper-add-child" role="function">
+<title>vte_reaper_add_child ()</title>
+<indexterm zone="vte-reaper-add-child"><primary>vte_reaper_add_child</primary></indexterm><programlisting><link linkend="int">int</link>                 vte_reaper_add_child                (<link linkend="GPid">GPid</link> pid);</programlisting>
+<para>
+Ensures that child-exited signals will be emitted when <parameter>pid</parameter> exits.  This is
+necessary for correct operation when running with glib versions &gt;= 2.4.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pid</parameter>&nbsp;:</term>
+<listitem><simpara> the ID of a child process which will be monitored
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the new source ID
+
+Since 0.11.11
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 
+<refsect1 id="VteReaper.signal-details" role="signals">
+<title role="signals.title">Signal Details</title>
+<refsect2 id="VteReaper-child-exited"><title>The <literal>&quot;child-exited&quot;</literal> signal</title>
+<indexterm zone="VteReaper-child-exited"><primary>VteReaper::child-exited</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteReaper">VteReaper</link> *vtereaper,
+                                                        <link linkend="gint">gint</link>       arg1,
+                                                        <link linkend="gint">gint</link>       arg2,
+                                                        <link linkend="gpointer">gpointer</link>   user_data)      : Run Last</programlisting>
+<para>
+Emitted when the <link linkend="VteReaper"><type>VteReaper</type></link> object detects that a child of the current process has exited.
+</para><variablelist role="params">
+<varlistentry><term><parameter>vtereaper</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>the process ID of the exited child.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>the status of the exited child, as returned by <link linkend="waitpid"><function>waitpid()</function></link>.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
 
 
 

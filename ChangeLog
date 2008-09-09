@@ -1,11 +1,29 @@
-2008-08-13  Behdad Esfahbod  <behdad@gnome.org>
+2008-09-08  Christian Persch  <chpe@gnome.org>
 
-	Released vte-0.17.2.
+        Release 0.17.3.
 
-	* NEWS: Updated.
+        * NEWS:
+	* configure.in: Updated.
 
-	* configure.in: Bumped version to 0.17.2.
-	Bumped libtool version to 12:1:3.
+2008-09-07  Christian Persch  <chpe@gnome.org>
+
+	* python/vte.defs: Update python bindings.
+
+2008-08-20  Sébastien Granjoux  <seb.sfo@free.fr>
+
+	Bug 538344 – Anjuta hangs when program is executed in terminal
+
+	* src/vte.c: Ensure the output channel exists when we need to write.
+
+2008-08-20  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: (vte_terminal_match_check_internal_gregex): Plug a mem
+	leak.
+
+2008-08-15  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/vte.c (vte_terminal_set_pty):
+	fcntl(2) specifies that the flags argument is a long. Make it so.
 
 2008-08-13  Behdad Esfahbod  <behdad@gnome.org>
 

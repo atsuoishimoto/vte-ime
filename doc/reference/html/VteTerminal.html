@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>VteTerminal</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.74.0">
-<link rel="home" href="index.html" title="VTE Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="VTE Reference Manual">
 <link rel="up" href="ch01.html" title="VTE">
 <link rel="prev" href="ch01.html" title="VTE">
 <link rel="next" href="VteTerminalAccessible.html" title="VteTerminalAccessible">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 <link rel="chapter" href="ch01.html" title="VTE">
 </head>
@@ -21,15 +21,17 @@
 <th width="100%" align="center">VTE Reference Manual</th>
 <td><a accesskey="n" href="VteTerminalAccessible.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
-<tr><td colspan="5" class="shortcuts"><nobr><a href="#VteTerminal.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#VteTerminal.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#VteTerminal.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#VteTerminal.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#VteTerminal.signals" class="shortcut">Signals</a></nobr></td></tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#VteTerminal.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#VteTerminal.description" class="shortcut">Description</a>
+                 | 
+                <a href="#VteTerminal.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#VteTerminal.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#VteTerminal.signals" class="shortcut">Signals</a>
+</td></tr>
 </table>
 <div class="refentry" lang="en">
 <a name="VteTerminal"></a><div class="titlepage"></div>
@@ -45,56 +47,34 @@
 <pre class="synopsis">
                     <a class="link" href="VteTerminal.html#VteTerminal-struct" title="VteTerminal">VteTerminal</a>;
 enum                <a class="link" href="VteTerminal.html#VteTerminalEraseBinding" title="enum VteTerminalEraseBinding">VteTerminalEraseBinding</a>;
-<a
-href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"
->GtkWidget</a>*          <a class="link" href="VteTerminal.html#vte-terminal-new" title="vte_terminal_new ()">vte_terminal_new</a>                    (void);
+GtkWidget *         <a class="link" href="VteTerminal.html#vte-terminal-new" title="vte_terminal_new ()">vte_terminal_new</a>                    (void);
 void                <a class="link" href="VteTerminal.html#vte-terminal-im-append-menuitems" title="vte_terminal_im_append_menuitems ()">vte_terminal_im_append_menuitems</a>    (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/gtk/GtkMenuShell.html"
->GtkMenuShell</a> *menushell);
+                                                         GtkMenuShell *menushell);
 pid_t               <a class="link" href="VteTerminal.html#vte-terminal-fork-command" title="vte_terminal_fork_command ()">vte_terminal_fork_command</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *command,
                                                          char **argv,
                                                          char **envv,
                                                          const char *directory,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> lastlog,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> utmp,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> wtmp);
+                                                         gboolean lastlog,
+                                                         gboolean utmp,
+                                                         gboolean wtmp);
 pid_t               <a class="link" href="VteTerminal.html#vte-terminal-forkpty" title="vte_terminal_forkpty ()">vte_terminal_forkpty</a>                (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          char **envv,
                                                          const char *directory,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> lastlog,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> utmp,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> wtmp);
+                                                         gboolean lastlog,
+                                                         gboolean utmp,
+                                                         gboolean wtmp);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-pty" title="vte_terminal_set_pty ()">vte_terminal_set_pty</a>                (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int pty_master);
 void                <a class="link" href="VteTerminal.html#vte-terminal-feed" title="vte_terminal_feed ()">vte_terminal_feed</a>                   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> length);
+                                                         glong length);
 void                <a class="link" href="VteTerminal.html#vte-terminal-feed-child" title="vte_terminal_feed_child ()">vte_terminal_feed_child</a>             (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *text,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> length);
+                                                         glong length);
 void                <a class="link" href="VteTerminal.html#vte-terminal-feed-child-binary" title="vte_terminal_feed_child_binary ()">vte_terminal_feed_child_binary</a>      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> length);
+                                                         glong length);
 void                <a class="link" href="VteTerminal.html#vte-terminal-select-all" title="vte_terminal_select_all ()">vte_terminal_select_all</a>             (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-select-none" title="vte_terminal_select_none ()">vte_terminal_select_none</a>            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-copy-clipboard" title="vte_terminal_copy_clipboard ()">vte_terminal_copy_clipboard</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
@@ -102,86 +82,44 @@ void                <a class="link" href="VteTerminal.html#vte-terminal-paste-cl
 void                <a class="link" href="VteTerminal.html#vte-terminal-copy-primary" title="vte_terminal_copy_primary ()">vte_terminal_copy_primary</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-paste-primary" title="vte_terminal_paste_primary ()">vte_terminal_paste_primary</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-size" title="vte_terminal_set_size ()">vte_terminal_set_size</a>               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> columns,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> rows);
+                                                         glong columns,
+                                                         glong rows);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-audible-bell" title="vte_terminal_set_audible_bell ()">vte_terminal_set_audible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> is_audible);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-audible-bell" title="vte_terminal_get_audible_bell ()">vte_terminal_get_audible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+                                                         gboolean is_audible);
+gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-audible-bell" title="vte_terminal_get_audible_bell ()">vte_terminal_get_audible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-visible-bell" title="vte_terminal_set_visible_bell ()">vte_terminal_set_visible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> is_visible);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-visible-bell" title="vte_terminal_get_visible_bell ()">vte_terminal_get_visible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+                                                         gboolean is_visible);
+gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-visible-bell" title="vte_terminal_get_visible_bell ()">vte_terminal_get_visible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-allow-bold" title="vte_terminal_set_allow_bold ()">vte_terminal_set_allow_bold</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> allow_bold);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-allow-bold" title="vte_terminal_get_allow_bold ()">vte_terminal_get_allow_bold</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+                                                         gboolean allow_bold);
+gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-allow-bold" title="vte_terminal_get_allow_bold ()">vte_terminal_get_allow_bold</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-scroll-on-output" title="vte_terminal_set_scroll_on_output ()">vte_terminal_set_scroll_on_output</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> scroll);
+                                                         gboolean scroll);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-scroll-on-keystroke" title="vte_terminal_set_scroll_on_keystroke ()">vte_terminal_set_scroll_on_keystroke</a>
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> scroll);
+                                                         gboolean scroll);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-color-bold" title="vte_terminal_set_color_bold ()">vte_terminal_set_color_bold</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *bold);
+                                                         const GdkColor *bold);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-color-foreground" title="vte_terminal_set_color_foreground ()">vte_terminal_set_color_foreground</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *foreground);
+                                                         const GdkColor *foreground);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-color-background" title="vte_terminal_set_color_background ()">vte_terminal_set_color_background</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *background);
+                                                         const GdkColor *background);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-color-dim" title="vte_terminal_set_color_dim ()">vte_terminal_set_color_dim</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *dim);
+                                                         const GdkColor *dim);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-color-cursor" title="vte_terminal_set_color_cursor ()">vte_terminal_set_color_cursor</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *cursor_background);
+                                                         const GdkColor *cursor_background);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-color-highlight" title="vte_terminal_set_color_highlight ()">vte_terminal_set_color_highlight</a>    (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *highlight_background);
+                                                         const GdkColor *highlight_background);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-colors" title="vte_terminal_set_colors ()">vte_terminal_set_colors</a>             (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *foreground,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *background,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *palette,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> palette_size);
+                                                         const GdkColor *foreground,
+                                                         const GdkColor *background,
+                                                         const GdkColor *palette,
+                                                         glong palette_size);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-default-colors" title="vte_terminal_set_default_colors ()">vte_terminal_set_default_colors</a>     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-opacity" title="vte_terminal_set_opacity ()">vte_terminal_set_opacity</a>            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          guint16 opacity);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-background-image" title="vte_terminal_set_background_image ()">vte_terminal_set_background_image</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
->GdkPixbuf</a> *image);
+                                                         GdkPixbuf *image);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-background-image-file" title="vte_terminal_set_background_image_file ()">vte_terminal_set_background_image_file</a>
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *path);
@@ -190,34 +128,22 @@ void                <a class="link" href="VteTerminal.html#vte-terminal-set-back
                                                          double saturation);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-background-transparent" title="vte_terminal_set_background_transparent ()">vte_terminal_set_background_transparent</a>
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> transparent);
+                                                         gboolean transparent);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-background-tint-color" title="vte_terminal_set_background_tint_color ()">vte_terminal_set_background_tint_color</a>
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *color);
+                                                         const GdkColor *color);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-scroll-background" title="vte_terminal_set_scroll_background ()">vte_terminal_set_scroll_background</a>  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> scroll);
+                                                         gboolean scroll);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-cursor-blinks" title="vte_terminal_set_cursor_blinks ()">vte_terminal_set_cursor_blinks</a>      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> blink);
-VteTerminalCursorBlinkMode <a class="link" href="VteTerminal.html#vte-terminal-get-cursor-blink-mode" title="vte_terminal_get_cursor_blink_mode ()">vte_terminal_get_cursor_blink_mode</a>
+                                                         gboolean blink);
+VteTerminalCursorBlinkMode  <a class="link" href="VteTerminal.html#vte-terminal-get-cursor-blink-mode" title="vte_terminal_get_cursor_blink_mode ()">vte_terminal_get_cursor_blink_mode</a>
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-cursor-blink-mode" title="vte_terminal_set_cursor_blink_mode ()">vte_terminal_set_cursor_blink_mode</a>  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          VteTerminalCursorBlinkMode mode);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-scrollback-lines" title="vte_terminal_set_scrollback_lines ()">vte_terminal_set_scrollback_lines</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> lines);
+                                                         glong lines);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-font" title="vte_terminal_set_font ()">vte_terminal_set_font</a>               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
->PangoFontDescription</a> *font_desc);
+                                                         const PangoFontDescription *font_desc);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-font-from-string" title="vte_terminal_set_font_from_string ()">vte_terminal_set_font_from_string</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *name);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-font-from-string-full" title="vte_terminal_set_font_from_string_full ()">vte_terminal_set_font_from_string_full</a>
@@ -225,181 +151,97 @@ void                <a class="link" href="VteTerminal.html#vte-terminal-set-font
                                                          const char *name,
                                                          VteTerminalAntiAlias antialias);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-font-full" title="vte_terminal_set_font_full ()">vte_terminal_set_font_full</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
->PangoFontDescription</a> *font_desc,
+                                                         const PangoFontDescription *font_desc,
                                                          VteTerminalAntiAlias antialias);
-const <a
-href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
->PangoFontDescription</a>* <a class="link" href="VteTerminal.html#vte-terminal-get-font" title="vte_terminal_get_font ()">vte_terminal_get_font</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-using-xft" title="vte_terminal_get_using_xft ()">vte_terminal_get_using_xft</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-has-selection" title="vte_terminal_get_has_selection ()">vte_terminal_get_has_selection</a>      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+const PangoFontDescription * <a class="link" href="VteTerminal.html#vte-terminal-get-font" title="vte_terminal_get_font ()">vte_terminal_get_font</a>      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-using-xft" title="vte_terminal_get_using_xft ()">vte_terminal_get_using_xft</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-has-selection" title="vte_terminal_get_has_selection ()">vte_terminal_get_has_selection</a>      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-word-chars" title="vte_terminal_set_word_chars ()">vte_terminal_set_word_chars</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *spec);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-is-word-char" title="vte_terminal_is_word_char ()">vte_terminal_is_word_char</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Unicode-Manipulation.html#gunichar"
->gunichar</a> c);
+gboolean            <a class="link" href="VteTerminal.html#vte-terminal-is-word-char" title="vte_terminal_is_word_char ()">vte_terminal_is_word_char</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         gunichar c);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-backspace-binding" title="vte_terminal_set_backspace_binding ()">vte_terminal_set_backspace_binding</a>  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          <a class="link" href="VteTerminal.html#VteTerminalEraseBinding" title="enum VteTerminalEraseBinding">VteTerminalEraseBinding</a> binding);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-delete-binding" title="vte_terminal_set_delete_binding ()">vte_terminal_set_delete_binding</a>     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          <a class="link" href="VteTerminal.html#VteTerminalEraseBinding" title="enum VteTerminalEraseBinding">VteTerminalEraseBinding</a> binding);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-mouse-autohide" title="vte_terminal_set_mouse_autohide ()">vte_terminal_set_mouse_autohide</a>     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> setting);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-mouse-autohide" title="vte_terminal_get_mouse_autohide ()">vte_terminal_get_mouse_autohide</a>     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+                                                         gboolean setting);
+gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-mouse-autohide" title="vte_terminal_get_mouse_autohide ()">vte_terminal_get_mouse_autohide</a>     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-reset" title="vte_terminal_reset ()">vte_terminal_reset</a>                  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> full,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> clear_history);
-char*               <a class="link" href="VteTerminal.html#vte-terminal-get-text" title="vte_terminal_get_text ()">vte_terminal_get_text</a>               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"
->GArray</a> *attributes);
-char*               <a class="link" href="VteTerminal.html#vte-terminal-get-text-include-trailing-spaces" title="vte_terminal_get_text_include_trailing_spaces ()">vte_terminal_get_text_include_trailing_spaces</a>
+                                                         gboolean full,
+                                                         gboolean clear_history);
+char *              <a class="link" href="VteTerminal.html#vte-terminal-get-text" title="vte_terminal_get_text ()">vte_terminal_get_text</a>               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         gpointer data,
+                                                         GArray *attributes);
+char *              <a class="link" href="VteTerminal.html#vte-terminal-get-text-include-trailing-spaces" title="vte_terminal_get_text_include_trailing_spaces ()">vte_terminal_get_text_include_trailing_spaces</a>
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"
->GArray</a> *attributes);
-char*               <a class="link" href="VteTerminal.html#vte-terminal-get-text-range" title="vte_terminal_get_text_range ()">vte_terminal_get_text_range</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> start_row,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> start_col,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> end_row,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> end_col,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"
->GArray</a> *attributes);
+                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         gpointer data,
+                                                         GArray *attributes);
+char *              <a class="link" href="VteTerminal.html#vte-terminal-get-text-range" title="vte_terminal_get_text_range ()">vte_terminal_get_text_range</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         glong start_row,
+                                                         glong start_col,
+                                                         glong end_row,
+                                                         glong end_col,
+                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         gpointer data,
+                                                         GArray *attributes);
 void                <a class="link" href="VteTerminal.html#vte-terminal-get-cursor-position" title="vte_terminal_get_cursor_position ()">vte_terminal_get_cursor_position</a>    (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> *column,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> *row);
+                                                         glong *column,
+                                                         glong *row);
 void                <a class="link" href="VteTerminal.html#vte-terminal-match-clear-all" title="vte_terminal_match_clear_all ()">vte_terminal_match_clear_all</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 int                 <a class="link" href="VteTerminal.html#vte-terminal-match-add" title="vte_terminal_match_add ()">vte_terminal_match_add</a>              (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *match);
 int                 <a class="link" href="VteTerminal.html#vte-terminal-match-add-gregex" title="vte_terminal_match_add_gregex ()">vte_terminal_match_add_gregex</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Perl-compatible-regular-expressions.html#GRegex"
->GRegex</a> *regex,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Perl-compatible-regular-expressions.html#GRegexMatchFlags"
->GRegexMatchFlags</a> flags);
+                                                         GRegex *regex,
+                                                         GRegexMatchFlags flags);
 void                <a class="link" href="VteTerminal.html#vte-terminal-match-remove" title="vte_terminal_match_remove ()">vte_terminal_match_remove</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int tag);
-char*               <a class="link" href="VteTerminal.html#vte-terminal-match-check" title="vte_terminal_match_check ()">vte_terminal_match_check</a>            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> column,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> row,
+char *              <a class="link" href="VteTerminal.html#vte-terminal-match-check" title="vte_terminal_match_check ()">vte_terminal_match_check</a>            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         glong column,
+                                                         glong row,
                                                          int *tag);
 void                <a class="link" href="VteTerminal.html#vte-terminal-match-set-cursor" title="vte_terminal_match_set_cursor ()">vte_terminal_match_set_cursor</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int tag,
-                                                         <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Cursors.html#GdkCursor"
->GdkCursor</a> *cursor);
+                                                         GdkCursor *cursor);
 void                <a class="link" href="VteTerminal.html#vte-terminal-match-set-cursor-type" title="vte_terminal_match_set_cursor_type ()">vte_terminal_match_set_cursor_type</a>  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int tag,
-                                                         <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Cursors.html#GdkCursorType"
->GdkCursorType</a> cursor_type);
+                                                         GdkCursorType cursor_type);
 void                <a class="link" href="VteTerminal.html#vte-terminal-match-set-cursor-name" title="vte_terminal_match_set_cursor_name ()">vte_terminal_match_set_cursor_name</a>  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int tag,
                                                          const char *cursor_name);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-emulation" title="vte_terminal_set_emulation ()">vte_terminal_set_emulation</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *emulation);
-const char*         <a class="link" href="VteTerminal.html#vte-terminal-get-emulation" title="vte_terminal_get_emulation ()">vte_terminal_get_emulation</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-const char*         <a class="link" href="VteTerminal.html#vte-terminal-get-default-emulation" title="vte_terminal_get_default_emulation ()">vte_terminal_get_default_emulation</a>  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+const char *        <a class="link" href="VteTerminal.html#vte-terminal-get-emulation" title="vte_terminal_get_emulation ()">vte_terminal_get_emulation</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+const char *        <a class="link" href="VteTerminal.html#vte-terminal-get-default-emulation" title="vte_terminal_get_default_emulation ()">vte_terminal_get_default_emulation</a>  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-encoding" title="vte_terminal_set_encoding ()">vte_terminal_set_encoding</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *codeset);
-const char*         <a class="link" href="VteTerminal.html#vte-terminal-get-encoding" title="vte_terminal_get_encoding ()">vte_terminal_get_encoding</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-const char*         <a class="link" href="VteTerminal.html#vte-terminal-get-status-line" title="vte_terminal_get_status_line ()">vte_terminal_get_status_line</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+const char *        <a class="link" href="VteTerminal.html#vte-terminal-get-encoding" title="vte_terminal_get_encoding ()">vte_terminal_get_encoding</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+const char *        <a class="link" href="VteTerminal.html#vte-terminal-get-status-line" title="vte_terminal_get_status_line ()">vte_terminal_get_status_line</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-get-padding" title="vte_terminal_get_padding ()">vte_terminal_get_padding</a>            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int *xpad,
                                                          int *ypad);
 
 
-<a
-href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"
->GtkAdjustment</a>*      <a class="link" href="VteTerminal.html#vte-terminal-get-adjustment" title="vte_terminal_get_adjustment ()">vte_terminal_get_adjustment</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-char-ascent" title="vte_terminal_get_char_ascent ()">vte_terminal_get_char_ascent</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-char-descent" title="vte_terminal_get_char_descent ()">vte_terminal_get_char_descent</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-char-height" title="vte_terminal_get_char_height ()">vte_terminal_get_char_height</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-char-width" title="vte_terminal_get_char_width ()">vte_terminal_get_char_width</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-column-count" title="vte_terminal_get_column_count ()">vte_terminal_get_column_count</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-const char*         <a class="link" href="VteTerminal.html#vte-terminal-get-icon-title" title="vte_terminal_get_icon_title ()">vte_terminal_get_icon_title</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-row-count" title="vte_terminal_get_row_count ()">vte_terminal_get_row_count</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-const char*         <a class="link" href="VteTerminal.html#vte-terminal-get-window-title" title="vte_terminal_get_window_title ()">vte_terminal_get_window_title</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+GtkAdjustment *     <a class="link" href="VteTerminal.html#vte-terminal-get-adjustment" title="vte_terminal_get_adjustment ()">vte_terminal_get_adjustment</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+glong               <a class="link" href="VteTerminal.html#vte-terminal-get-char-ascent" title="vte_terminal_get_char_ascent ()">vte_terminal_get_char_ascent</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+glong               <a class="link" href="VteTerminal.html#vte-terminal-get-char-descent" title="vte_terminal_get_char_descent ()">vte_terminal_get_char_descent</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+glong               <a class="link" href="VteTerminal.html#vte-terminal-get-char-height" title="vte_terminal_get_char_height ()">vte_terminal_get_char_height</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+glong               <a class="link" href="VteTerminal.html#vte-terminal-get-char-width" title="vte_terminal_get_char_width ()">vte_terminal_get_char_width</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+glong               <a class="link" href="VteTerminal.html#vte-terminal-get-column-count" title="vte_terminal_get_column_count ()">vte_terminal_get_column_count</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+const char *        <a class="link" href="VteTerminal.html#vte-terminal-get-icon-title" title="vte_terminal_get_icon_title ()">vte_terminal_get_icon_title</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+glong               <a class="link" href="VteTerminal.html#vte-terminal-get-row-count" title="vte_terminal_get_row_count ()">vte_terminal_get_row_count</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+const char *        <a class="link" href="VteTerminal.html#vte-terminal-get-window-title" title="vte_terminal_get_window_title ()">vte_terminal_get_window_title</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="VteTerminal.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned"
->GInitiallyUnowned</a>
-         +----<a
-href="/usr/share/gtk-doc/html/gtk/GtkObject.html"
->GtkObject</a>
-               +----<a
-href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"
->GtkWidget</a>
+  GObject
+   +----GInitiallyUnowned
+         +----GtkObject
+               +----GtkWidget
                      +----VteTerminal
 </pre>
 </div>
@@ -407,9 +249,7 @@ href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"
 <a name="VteTerminal.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 VteTerminal implements
- AtkImplementorIface and  <a
-href="/usr/share/gtk-doc/html/gtk/gtk-gtkbuildable.html#GtkBuildable"
->GtkBuildable</a>.</p>
+ AtkImplementorIface and  GtkBuildable.</p>
 </div>
 <div class="refsect1" lang="en">
 <a name="VteTerminal.signals"></a><h2>Signals</h2>
@@ -478,60 +318,42 @@ All of these fields should be considered read-only.
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"
->GtkWidget</a> <em class="structfield"><code>widget</code></em>;</span></p></td>
-<td>Base <a
-href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"
-><span class="type">GtkWidget</span></a> of the terminal widget.
+<td><p><span class="term">GtkWidget <em class="structfield"><code>widget</code></em>;</span></p></td>
+<td>Base <span class="type">GtkWidget</span> of the terminal widget.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"
->GtkAdjustment</a> *<em class="structfield"><code>adjustment</code></em>;</span></p></td>
+<td><p><span class="term">GtkAdjustment *<em class="structfield"><code>adjustment</code></em>;</span></p></td>
 <td>Scroll bar adjustments.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> <em class="structfield"><code>char_width</code></em>;</span></p></td>
+<td><p><span class="term">glong <em class="structfield"><code>char_width</code></em>;</span></p></td>
 <td>Width of a narrow character cell.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> <em class="structfield"><code>char_height</code></em>;</span></p></td>
+<td><p><span class="term">glong <em class="structfield"><code>char_height</code></em>;</span></p></td>
 <td>Height of a character cell.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> <em class="structfield"><code>char_ascent</code></em>;</span></p></td>
+<td><p><span class="term">glong <em class="structfield"><code>char_ascent</code></em>;</span></p></td>
 <td>The distance (in pixels) from the baseline of drawn text to the top of the character cell.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> <em class="structfield"><code>char_descent</code></em>;</span></p></td>
+<td><p><span class="term">glong <em class="structfield"><code>char_descent</code></em>;</span></p></td>
 <td>The distance (in pixels) from the baseline of drawn text to the bottom of the character cell.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> <em class="structfield"><code>row_count</code></em>;</span></p></td>
+<td><p><span class="term">glong <em class="structfield"><code>row_count</code></em>;</span></p></td>
 <td>Number of visible rows.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> <em class="structfield"><code>column_count</code></em>;</span></p></td>
+<td><p><span class="term">glong <em class="structfield"><code>column_count</code></em>;</span></p></td>
 <td>Number of visible columns.
 </td>
 </tr>
@@ -594,9 +416,7 @@ keys.
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-new"></a><h3>vte_terminal_new ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"
->GtkWidget</a>*          vte_terminal_new                    (void);</pre>
+<pre class="programlisting">GtkWidget *         vte_terminal_new                    (void);</pre>
 <p>
 Create a new terminal widget.</p>
 <p>
@@ -614,9 +434,7 @@ Create a new terminal widget.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-im-append-menuitems"></a><h3>vte_terminal_im_append_menuitems ()</h3>
 <pre class="programlisting">void                vte_terminal_im_append_menuitems    (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/gtk/GtkMenuShell.html"
->GtkMenuShell</a> *menushell);</pre>
+                                                         GtkMenuShell *menushell);</pre>
 <p>
 Appends menu items for various input methods to the given menu.  The
 user can select one of these items to modify the input method used by
@@ -647,25 +465,15 @@ the terminal.</p>
                                                          char **argv,
                                                          char **envv,
                                                          const char *directory,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> lastlog,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> utmp,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> wtmp);</pre>
+                                                         gboolean lastlog,
+                                                         gboolean utmp,
+                                                         gboolean wtmp);</pre>
 <p>
 Starts the specified command under a newly-allocated controlling
-pseudo-terminal.  The <em class="parameter"><code>argv</code></em> and <em class="parameter"><code>envv</code></em> lists should be <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>-terminated, and
+pseudo-terminal.  The <em class="parameter"><code>argv</code></em> and <em class="parameter"><code>envv</code></em> lists should be <code class="literal">NULL</code>-terminated, and
 argv[0] is expected to be the name of the file being run, as it would be if
 <code class="function">execve()</code> were being called.  TERM is automatically set to reflect the
-terminal widget's emulation setting.  If <em class="parameter"><code>lastlog</code></em>, <em class="parameter"><code>utmp</code></em>, or <em class="parameter"><code>wtmp</code></em> are <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a>,
+terminal widget's emulation setting.  If <em class="parameter"><code>lastlog</code></em>, <em class="parameter"><code>utmp</code></em>, or <em class="parameter"><code>wtmp</code></em> are <code class="literal">TRUE</code>,
 logs the session to the specified system log files.</p>
 <p>
 </p>
@@ -679,52 +487,38 @@ logs the session to the specified system log files.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>command</code></em> :</span></p></td>
-<td> the name of a binary to run, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a> to get user's shell
+<td> the name of a binary to run, or <code class="literal">NULL</code> to get user's shell
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>argv</code></em> :</span></p></td>
-<td> the argument list to be passed to <em class="parameter"><code>command</code></em>, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>
+<td> the argument list to be passed to <em class="parameter"><code>command</code></em>, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>envv</code></em> :</span></p></td>
 <td> a list of environment variables to be added to the environment before
-starting <em class="parameter"><code>command</code></em>, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>
+starting <em class="parameter"><code>command</code></em>, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directory</code></em> :</span></p></td>
-<td> the name of a directory the command should start in, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>
+<td> the name of a directory the command should start in, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lastlog</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the session should be logged to the lastlog
+<td> <code class="literal">TRUE</code> if the session should be logged to the lastlog
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utmp</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the session should be logged to the utmp/utmpx log
+<td> <code class="literal">TRUE</code> if the session should be logged to the utmp/utmpx log
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>wtmp</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the session should be logged to the wtmp/wtmpx log
+<td> <code class="literal">TRUE</code> if the session should be logged to the wtmp/wtmpx log
 </td>
 </tr>
 <tr>
@@ -741,21 +535,13 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <pre class="programlisting">pid_t               vte_terminal_forkpty                (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          char **envv,
                                                          const char *directory,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> lastlog,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> utmp,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> wtmp);</pre>
+                                                         gboolean lastlog,
+                                                         gboolean utmp,
+                                                         gboolean wtmp);</pre>
 <p>
 Starts a new child process under a newly-allocated controlling
 pseudo-terminal.  TERM is automatically set to reflect the terminal widget's
-emulation setting.  If <em class="parameter"><code>lastlog</code></em>, <em class="parameter"><code>utmp</code></em>, or <em class="parameter"><code>wtmp</code></em> are <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a>, logs the session
+emulation setting.  If <em class="parameter"><code>lastlog</code></em>, <em class="parameter"><code>utmp</code></em>, or <em class="parameter"><code>wtmp</code></em> are <code class="literal">TRUE</code>, logs the session
 to the specified system log files.</p>
 <p>
 
@@ -771,38 +557,28 @@ to the specified system log files.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>envv</code></em> :</span></p></td>
 <td> a list of environment variables to be added to the environment before
-starting returning in the child process, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>
+starting returning in the child process, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directory</code></em> :</span></p></td>
 <td> the name of a directory the child process should change to, or
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>
+<code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lastlog</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the session should be logged to the lastlog
+<td> <code class="literal">TRUE</code> if the session should be logged to the lastlog
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utmp</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the session should be logged to the utmp/utmpx log
+<td> <code class="literal">TRUE</code> if the session should be logged to the utmp/utmpx log
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>wtmp</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the session should be logged to the wtmp/wtmpx log
+<td> <code class="literal">TRUE</code> if the session should be logged to the wtmp/wtmpx log
 </td>
 </tr>
 <tr>
@@ -851,9 +627,7 @@ instead of <a class="link" href="VteTerminal.html#vte-terminal-fork-command" tit
 <a name="vte-terminal-feed"></a><h3>vte_terminal_feed ()</h3>
 <pre class="programlisting">void                vte_terminal_feed                   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> length);</pre>
+                                                         glong length);</pre>
 <p>
 Interprets <em class="parameter"><code>data</code></em> as if it were data received from a child process.  This
 can either be used to drive the terminal without a child process, or just
@@ -887,9 +661,7 @@ to mess with your users.</p>
 <a name="vte-terminal-feed-child"></a><h3>vte_terminal_feed_child ()</h3>
 <pre class="programlisting">void                vte_terminal_feed_child             (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *text,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> length);</pre>
+                                                         glong length);</pre>
 <p>
 Sends a block of UTF-8 text to the child as if it were entered by the user
 at the keyboard.</p>
@@ -922,9 +694,7 @@ at the keyboard.</p>
 <a name="vte-terminal-feed-child-binary"></a><h3>vte_terminal_feed_child_binary ()</h3>
 <pre class="programlisting">void                vte_terminal_feed_child_binary      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> length);</pre>
+                                                         glong length);</pre>
 <p>
 Sends a block of binary data to the child.</p>
 <p>
@@ -998,9 +768,7 @@ Clears the current selection.</p>
 <a name="vte-terminal-copy-clipboard"></a><h3>vte_terminal_copy_clipboard ()</h3>
 <pre class="programlisting">void                vte_terminal_copy_clipboard         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
-Places the selected text in the terminal in the <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Selections.html#GDK-SELECTION-CLIPBOARD:CAPS"
-><span class="type">GDK_SELECTION_CLIPBOARD</span></a>
+Places the selected text in the terminal in the <span class="type">GDK_SELECTION_CLIPBOARD</span>
 selection.</p>
 <p>
 
@@ -1019,9 +787,7 @@ selection.</p>
 <a name="vte-terminal-paste-clipboard"></a><h3>vte_terminal_paste_clipboard ()</h3>
 <pre class="programlisting">void                vte_terminal_paste_clipboard        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
-Sends the contents of the <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Selections.html#GDK-SELECTION-CLIPBOARD:CAPS"
-><span class="type">GDK_SELECTION_CLIPBOARD</span></a> selection to the
+Sends the contents of the <span class="type">GDK_SELECTION_CLIPBOARD</span> selection to the
 terminal's child.  If necessary, the data is converted from UTF-8 to the
 terminal's current encoding. It's called on paste menu item, or when
 user presses Shift+Insert.</p>
@@ -1042,9 +808,7 @@ user presses Shift+Insert.</p>
 <a name="vte-terminal-copy-primary"></a><h3>vte_terminal_copy_primary ()</h3>
 <pre class="programlisting">void                vte_terminal_copy_primary           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
-Places the selected text in the terminal in the <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Selections.html#GDK-SELECTION-PRIMARY:CAPS"
-><span class="type">GDK_SELECTION_PRIMARY</span></a>
+Places the selected text in the terminal in the <span class="type">GDK_SELECTION_PRIMARY</span>
 selection.</p>
 <p>
 
@@ -1063,14 +827,10 @@ selection.</p>
 <a name="vte-terminal-paste-primary"></a><h3>vte_terminal_paste_primary ()</h3>
 <pre class="programlisting">void                vte_terminal_paste_primary          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
-Sends the contents of the <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Selections.html#GDK-SELECTION-PRIMARY:CAPS"
-><span class="type">GDK_SELECTION_PRIMARY</span></a> selection to the terminal's
+Sends the contents of the <span class="type">GDK_SELECTION_PRIMARY</span> selection to the terminal's
 child.  If necessary, the data is converted from UTF-8 to the terminal's
 current encoding.  The terminal will call also paste the
-<a
-href="/usr/share/gtk-doc/html/gdk/gdk-Selections.html#GDK-SELECTION-PRIMARY:CAPS"
-><span class="type">GDK_SELECTION_PRIMARY</span></a> selection when the user clicks with the the second
+<span class="type">GDK_SELECTION_PRIMARY</span> selection when the user clicks with the the second
 mouse button.</p>
 <p>
 
@@ -1088,12 +848,8 @@ mouse button.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-size"></a><h3>vte_terminal_set_size ()</h3>
 <pre class="programlisting">void                vte_terminal_set_size               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> columns,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> rows);</pre>
+                                                         glong columns,
+                                                         glong rows);</pre>
 <p>
 Attempts to change the terminal's size in terms of rows and columns.  If
 the attempt succeeds, the widget will resize itself to the proper size.</p>
@@ -1125,9 +881,7 @@ the attempt succeeds, the widget will resize itself to the proper size.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-audible-bell"></a><h3>vte_terminal_set_audible_bell ()</h3>
 <pre class="programlisting">void                vte_terminal_set_audible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> is_audible);</pre>
+                                                         gboolean is_audible);</pre>
 <p>
 Controls whether or not the terminal will beep when the child outputs the
 "bl" sequence.</p>
@@ -1144,9 +898,7 @@ Controls whether or not the terminal will beep when the child outputs the
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>is_audible</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the terminal should beep
+<td> <code class="literal">TRUE</code> if the terminal should beep
 </td>
 </tr>
 </tbody>
@@ -1155,9 +907,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-audible-bell"></a><h3>vte_terminal_get_audible_bell ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            vte_terminal_get_audible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">gboolean            vte_terminal_get_audible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Checks whether or not the terminal will beep when the child outputs the
 "bl" sequence.</p>
@@ -1174,11 +924,7 @@ Checks whether or not the terminal will beep when the child outputs the
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if audible bell is enabled, <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
-><code class="literal">FALSE</code></a> if not
+<td> <code class="literal">TRUE</code> if audible bell is enabled, <code class="literal">FALSE</code> if not
 </td>
 </tr>
 </tbody>
@@ -1188,9 +934,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-visible-bell"></a><h3>vte_terminal_set_visible_bell ()</h3>
 <pre class="programlisting">void                vte_terminal_set_visible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> is_visible);</pre>
+                                                         gboolean is_visible);</pre>
 <p>
 Controls whether or not the terminal will present a visible bell to the
 user when the child outputs the "bl" sequence.  The terminal
@@ -1208,9 +952,7 @@ will clear itself to the default foreground color and then repaint itself.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>is_visible</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the terminal should flash
+<td> <code class="literal">TRUE</code> if the terminal should flash
 </td>
 </tr>
 </tbody>
@@ -1219,9 +961,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-visible-bell"></a><h3>vte_terminal_get_visible_bell ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            vte_terminal_get_visible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">gboolean            vte_terminal_get_visible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Checks whether or not the terminal will present a visible bell to the
 user when the child outputs the "bl" sequence.  The terminal
@@ -1239,11 +979,7 @@ will clear itself to the default foreground color and then repaint itself.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if visible bell is enabled, <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
-><code class="literal">FALSE</code></a> if not
+<td> <code class="literal">TRUE</code> if visible bell is enabled, <code class="literal">FALSE</code> if not
 </td>
 </tr>
 </tbody>
@@ -1253,9 +989,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-allow-bold"></a><h3>vte_terminal_set_allow_bold ()</h3>
 <pre class="programlisting">void                vte_terminal_set_allow_bold         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> allow_bold);</pre>
+                                                         gboolean allow_bold);</pre>
 <p>
 Controls whether or not the terminal will attempt to draw bold text by
 repainting text with a different offset.</p>
@@ -1272,9 +1006,7 @@ repainting text with a different offset.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>allow_bold</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the terminal should attempt to draw bold text
+<td> <code class="literal">TRUE</code> if the terminal should attempt to draw bold text
 </td>
 </tr>
 </tbody>
@@ -1283,9 +1015,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-allow-bold"></a><h3>vte_terminal_get_allow_bold ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            vte_terminal_get_allow_bold         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">gboolean            vte_terminal_get_allow_bold         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Checks whether or not the terminal will attempt to draw bold text by
 repainting text with a one-pixel offset.</p>
@@ -1302,11 +1032,7 @@ repainting text with a one-pixel offset.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if bolding is enabled, <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
-><code class="literal">FALSE</code></a> if not
+<td> <code class="literal">TRUE</code> if bolding is enabled, <code class="literal">FALSE</code> if not
 </td>
 </tr>
 </tbody>
@@ -1316,9 +1042,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-scroll-on-output"></a><h3>vte_terminal_set_scroll_on_output ()</h3>
 <pre class="programlisting">void                vte_terminal_set_scroll_on_output   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> scroll);</pre>
+                                                         gboolean scroll);</pre>
 <p>
 Controls whether or not the terminal will forcibly scroll to the bottom of
 the viewable history when the new data is received from the child.</p>
@@ -1335,9 +1059,7 @@ the viewable history when the new data is received from the child.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scroll</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the terminal should scroll on output
+<td> <code class="literal">TRUE</code> if the terminal should scroll on output
 </td>
 </tr>
 </tbody>
@@ -1348,9 +1070,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <a name="vte-terminal-set-scroll-on-keystroke"></a><h3>vte_terminal_set_scroll_on_keystroke ()</h3>
 <pre class="programlisting">void                vte_terminal_set_scroll_on_keystroke
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> scroll);</pre>
+                                                         gboolean scroll);</pre>
 <p>
 Controls whether or not the terminal will forcibly scroll to the bottom of
 the viewable history when the user presses a key.  Modifier keys do not
@@ -1368,9 +1088,7 @@ trigger this behavior.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scroll</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the terminal should scroll on keystrokes
+<td> <code class="literal">TRUE</code> if the terminal should scroll on keystrokes
 </td>
 </tr>
 </tbody>
@@ -1380,9 +1098,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-color-bold"></a><h3>vte_terminal_set_color_bold ()</h3>
 <pre class="programlisting">void                vte_terminal_set_color_bold         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *bold);</pre>
+                                                         const GdkColor *bold);</pre>
 <p>
 Sets the color used to draw bold text in the default foreground color.</p>
 <p>
@@ -1408,9 +1124,7 @@ Sets the color used to draw bold text in the default foreground color.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-color-foreground"></a><h3>vte_terminal_set_color_foreground ()</h3>
 <pre class="programlisting">void                vte_terminal_set_color_foreground   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *foreground);</pre>
+                                                         const GdkColor *foreground);</pre>
 <p>
 Sets the foreground color used to draw normal text</p>
 <p>
@@ -1436,9 +1150,7 @@ Sets the foreground color used to draw normal text</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-color-background"></a><h3>vte_terminal_set_color_background ()</h3>
 <pre class="programlisting">void                vte_terminal_set_color_background   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *background);</pre>
+                                                         const GdkColor *background);</pre>
 <p>
 Sets the background color for text which does not have a specific background
 color assigned.  Only has effect when no background image is set and when
@@ -1466,9 +1178,7 @@ the terminal is not transparent.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-color-dim"></a><h3>vte_terminal_set_color_dim ()</h3>
 <pre class="programlisting">void                vte_terminal_set_color_dim          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *dim);</pre>
+                                                         const GdkColor *dim);</pre>
 <p>
 Sets the color used to draw dim text in the default foreground color.</p>
 <p>
@@ -1494,13 +1204,9 @@ Sets the color used to draw dim text in the default foreground color.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-color-cursor"></a><h3>vte_terminal_set_color_cursor ()</h3>
 <pre class="programlisting">void                vte_terminal_set_color_cursor       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *cursor_background);</pre>
+                                                         const GdkColor *cursor_background);</pre>
 <p>
-Sets the background color for text which is under the cursor.  If <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>, text
+Sets the background color for text which is under the cursor.  If <code class="literal">NULL</code>, text
 under the cursor will be drawn with foreground and background colors
 reversed.</p>
 <p>
@@ -1529,13 +1235,9 @@ reversed.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-color-highlight"></a><h3>vte_terminal_set_color_highlight ()</h3>
 <pre class="programlisting">void                vte_terminal_set_color_highlight    (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *highlight_background);</pre>
+                                                         const GdkColor *highlight_background);</pre>
 <p>
-Sets the background color for text which is highlighted.  If <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>,
+Sets the background color for text which is highlighted.  If <code class="literal">NULL</code>,
 highlighted text (which is usually highlighted because it is selected) will
 be drawn with foreground and background colors reversed.</p>
 <p>
@@ -1564,18 +1266,10 @@ be drawn with foreground and background colors reversed.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-colors"></a><h3>vte_terminal_set_colors ()</h3>
 <pre class="programlisting">void                vte_terminal_set_colors             (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *foreground,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *background,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *palette,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> palette_size);</pre>
+                                                         const GdkColor *foreground,
+                                                         const GdkColor *background,
+                                                         const GdkColor *palette,
+                                                         glong palette_size);</pre>
 <p>
 The terminal widget uses a 28-color model comprised of the default foreground
 and background colors, the bold foreground color, the dim foreground
@@ -1583,13 +1277,9 @@ color, an eight color palette, bold versions of the eight color palette,
 and a dim version of the the eight color palette.
 </p>
 <p>
-<em class="parameter"><code>palette_size</code></em> must be either 0, 8, 16, or 24.  If <em class="parameter"><code>foreground</code></em> is <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a> and
+<em class="parameter"><code>palette_size</code></em> must be either 0, 8, 16, or 24.  If <em class="parameter"><code>foreground</code></em> is <code class="literal">NULL</code> and
 <em class="parameter"><code>palette_size</code></em> is greater than 0, the new foreground color is taken from
-<em class="parameter"><code>palette</code></em>[7].  If <em class="parameter"><code>background</code></em> is <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a> and <em class="parameter"><code>palette_size</code></em> is greater than 0,
+<em class="parameter"><code>palette</code></em>[7].  If <em class="parameter"><code>background</code></em> is <code class="literal">NULL</code> and <em class="parameter"><code>palette_size</code></em> is greater than 0,
 the new background color is taken from <em class="parameter"><code>palette</code></em>[0].  If
 <em class="parameter"><code>palette_size</code></em> is 8 or 16, the third (dim) and possibly the second (bold)
 8-color palettes are extrapolated from the new background color and the items
@@ -1607,16 +1297,12 @@ in <em class="parameter"><code>palette</code></em>.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>foreground</code></em> :</span></p></td>
-<td> the new foreground color, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>
+<td> the new foreground color, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>background</code></em> :</span></p></td>
-<td> the new background color, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>
+<td> the new background color, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
@@ -1681,9 +1367,7 @@ transparent and 65535 means completely opaque.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-background-image"></a><h3>vte_terminal_set_background_image ()</h3>
 <pre class="programlisting">void                vte_terminal_set_background_image   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
->GdkPixbuf</a> *image);</pre>
+                                                         GdkPixbuf *image);</pre>
 <p>
 Sets a background image for the widget.  Text which would otherwise be
 drawn using the default background color will instead be drawn over the
@@ -1704,11 +1388,7 @@ in-memory copy of the image before applying it to the terminal.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>image</code></em> :</span></p></td>
-<td> a <a
-href="/usr/share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
-><span class="type">GdkPixbuf</span></a> to use, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a> to cancel
+<td> a <span class="type">GdkPixbuf</span> to use, or <code class="literal">NULL</code> to cancel
 </td>
 </tr>
 </tbody>
@@ -1781,9 +1461,7 @@ image (or snapshot of the root window) and modify its pixel values.</p>
 <a name="vte-terminal-set-background-transparent"></a><h3>vte_terminal_set_background_transparent ()</h3>
 <pre class="programlisting">void                vte_terminal_set_background_transparent
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> transparent);</pre>
+                                                         gboolean transparent);</pre>
 <p>
 Sets the terminal's background image to the pixmap stored in the root
 window, adjusted so that if there are no windows below your application,
@@ -1801,9 +1479,7 @@ the widget will appear to be transparent.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>transparent</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the terminal should fake transparency
+<td> <code class="literal">TRUE</code> if the terminal should fake transparency
 </td>
 </tr>
 </tbody>
@@ -1814,9 +1490,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <a name="vte-terminal-set-background-tint-color"></a><h3>vte_terminal_set_background_tint_color ()</h3>
 <pre class="programlisting">void                vte_terminal_set_background_tint_color
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"
->GdkColor</a> *color);</pre>
+                                                         const GdkColor *color);</pre>
 <p>
 If a background image has been set using
 <a class="link" href="VteTerminal.html#vte-terminal-set-background-image" title="vte_terminal_set_background_image ()"><code class="function">vte_terminal_set_background_image()</code></a>,
@@ -1854,9 +1528,7 @@ saturation is not 1.0.
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-scroll-background"></a><h3>vte_terminal_set_scroll_background ()</h3>
 <pre class="programlisting">void                vte_terminal_set_scroll_background  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> scroll);</pre>
+                                                         gboolean scroll);</pre>
 <p>
 Controls whether or not the terminal will scroll the background image (if
 one is set) when the text in the window must be scrolled.</p>
@@ -1873,9 +1545,7 @@ one is set) when the text in the window must be scrolled.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scroll</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the terminal should scroll the background image along with
+<td> <code class="literal">TRUE</code> if the terminal should scroll the background image along with
 text.
 </td>
 </tr>
@@ -1889,9 +1559,7 @@ text.
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-cursor-blinks"></a><h3>vte_terminal_set_cursor_blinks ()</h3>
 <pre class="programlisting">void                vte_terminal_set_cursor_blinks      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> blink);</pre>
+                                                         gboolean blink);</pre>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
 <p><code class="literal">vte_terminal_set_cursor_blinks</code> is deprecated and should not be used in newly-written code. 0.16.15 Use <a class="link" href="VteTerminal.html#vte-terminal-set-cursor-blink-mode" title="vte_terminal_set_cursor_blink_mode ()"><code class="function">vte_terminal_set_cursor_blink_mode()</code></a> instead.</p>
@@ -1911,9 +1579,7 @@ Sets whether or not the cursor will blink.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>blink</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the cursor should blink
+<td> <code class="literal">TRUE</code> if the cursor should blink
 </td>
 </tr>
 </tbody>
@@ -1922,7 +1588,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-cursor-blink-mode"></a><h3>vte_terminal_get_cursor_blink_mode ()</h3>
-<pre class="programlisting">VteTerminalCursorBlinkMode vte_terminal_get_cursor_blink_mode
+<pre class="programlisting">VteTerminalCursorBlinkMode  vte_terminal_get_cursor_blink_mode
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 </p>
@@ -1981,9 +1647,7 @@ will use the <span class="type">"gtk-cursor-blink"</span> setting.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-scrollback-lines"></a><h3>vte_terminal_set_scrollback_lines ()</h3>
 <pre class="programlisting">void                vte_terminal_set_scrollback_lines   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> lines);</pre>
+                                                         glong lines);</pre>
 <p>
 Sets the length of the scrollback buffer used by the terminal.  The size of
 the scrollback buffer will be set to the larger of this value and the number
@@ -2014,14 +1678,10 @@ allowed on the alternate screen buffer.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-font"></a><h3>vte_terminal_set_font ()</h3>
 <pre class="programlisting">void                vte_terminal_set_font               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
->PangoFontDescription</a> *font_desc);</pre>
+                                                         const PangoFontDescription *font_desc);</pre>
 <p>
 Sets the font used for rendering all text displayed by the terminal,
-overriding any fonts set using <a
-href="/usr/share/gtk-doc/html/gtk/GtkWidget.html#gtk-widget-modify-font"
-><code class="function">gtk_widget_modify_font()</code></a>.  The terminal
+overriding any fonts set using <code class="function">gtk_widget_modify_font()</code>.  The terminal
 will immediately attempt to load the desired font, retrieve its
 metrics, and attempt to resize itself to keep the same number of rows
 and columns.</p>
@@ -2038,9 +1698,7 @@ and columns.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_desc</code></em> :</span></p></td>
-<td> The <a
-href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
-><span class="type">PangoFontDescription</span></a> of the desired font.
+<td> The <span class="type">PangoFontDescription</span> of the desired font.
 </td>
 </tr>
 </tbody>
@@ -2052,9 +1710,7 @@ href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
 <pre class="programlisting">void                vte_terminal_set_font_from_string   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *name);</pre>
 <p>
-A convenience function which converts <em class="parameter"><code>name</code></em> into a <a
-href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
-><span class="type">PangoFontDescription</span></a> and
+A convenience function which converts <em class="parameter"><code>name</code></em> into a <span class="type">PangoFontDescription</span> and
 passes it to <a class="link" href="VteTerminal.html#vte-terminal-set-font" title="vte_terminal_set_font ()"><code class="function">vte_terminal_set_font()</code></a>.</p>
 <p>
 
@@ -2083,9 +1739,7 @@ passes it to <a class="link" href="VteTerminal.html#vte-terminal-set-font" title
                                                          const char *name,
                                                          VteTerminalAntiAlias antialias);</pre>
 <p>
-A convenience function which converts <em class="parameter"><code>name</code></em> into a <a
-href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
-><span class="type">PangoFontDescription</span></a> and
+A convenience function which converts <em class="parameter"><code>name</code></em> into a <span class="type">PangoFontDescription</span> and
 passes it to <a class="link" href="VteTerminal.html#vte-terminal-set-font-full" title="vte_terminal_set_font_full ()"><code class="function">vte_terminal_set_font_full()</code></a>.</p>
 <p>
 
@@ -2117,15 +1771,11 @@ passes it to <a class="link" href="VteTerminal.html#vte-terminal-set-font-full" 
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-font-full"></a><h3>vte_terminal_set_font_full ()</h3>
 <pre class="programlisting">void                vte_terminal_set_font_full          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         const <a
-href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
->PangoFontDescription</a> *font_desc,
+                                                         const PangoFontDescription *font_desc,
                                                          VteTerminalAntiAlias antialias);</pre>
 <p>
 Sets the font used for rendering all text displayed by the terminal,
-overriding any fonts set using <a
-href="/usr/share/gtk-doc/html/gtk/GtkWidget.html#gtk-widget-modify-font"
-><code class="function">gtk_widget_modify_font()</code></a>.  The terminal
+overriding any fonts set using <code class="function">gtk_widget_modify_font()</code>.  The terminal
 will immediately attempt to load the desired font, retrieve its
 metrics, and attempt to resize itself to keep the same number of rows
 and columns.</p>
@@ -2142,9 +1792,7 @@ and columns.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>font_desc</code></em> :</span></p></td>
-<td> The <a
-href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
-><span class="type">PangoFontDescription</span></a> of the desired font.
+<td> The <span class="type">PangoFontDescription</span> of the desired font.
 </td>
 </tr>
 <tr>
@@ -2160,9 +1808,7 @@ href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-font"></a><h3>vte_terminal_get_font ()</h3>
-<pre class="programlisting">const <a
-href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
->PangoFontDescription</a>* vte_terminal_get_font       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">const PangoFontDescription * vte_terminal_get_font      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Queries the terminal for information about the fonts which will be
 used to draw text in the terminal.</p>
@@ -2179,9 +1825,7 @@ used to draw text in the terminal.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a <a
-href="/usr/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription"
-><span class="type">PangoFontDescription</span></a> describing the font the terminal is
+<td> a <span class="type">PangoFontDescription</span> describing the font the terminal is
 currently using to render text.
 </td>
 </tr>
@@ -2191,9 +1835,7 @@ currently using to render text.
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-using-xft"></a><h3>vte_terminal_get_using_xft ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            vte_terminal_get_using_xft          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">gboolean            vte_terminal_get_using_xft          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 A <a class="link" href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a> can use multiple methods to draw text.  This function
 allows an application to determine whether or not the current method uses
@@ -2212,11 +1854,7 @@ but in practice usually matches the behavior of GTK+ itself.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the terminal is using fontconfig to find fonts, <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
-><code class="literal">FALSE</code></a> if
+<td> <code class="literal">TRUE</code> if the terminal is using fontconfig to find fonts, <code class="literal">FALSE</code> if
 the terminal is using PangoX.
 </td>
 </tr>
@@ -2226,15 +1864,11 @@ the terminal is using PangoX.
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-has-selection"></a><h3>vte_terminal_get_has_selection ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            vte_terminal_get_has_selection      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">gboolean            vte_terminal_get_has_selection      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Checks if the terminal currently contains selected text.  Note that this
 is different from determining if the terminal is the owner of any
-<a
-href="/usr/share/gtk-doc/html/gtk/gtk-Clipboards.html#GtkClipboard"
-><span class="type">GtkClipboard</span></a> items.</p>
+<span class="type">GtkClipboard</span> items.</p>
 <p>
 
 </p>
@@ -2248,9 +1882,7 @@ href="/usr/share/gtk-doc/html/gtk/gtk-Clipboards.html#GtkClipboard"
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if part of the text in the terminal is selected.
+<td> <code class="literal">TRUE</code> if part of the text in the terminal is selected.
 </td>
 </tr>
 </tbody>
@@ -2268,9 +1900,7 @@ as parts of words, and all other characters as word separators.  Ranges of
 characters can be specified by separating them with a hyphen.
 </p>
 <p>
-As a special case, if <em class="parameter"><code>spec</code></em> is <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a> or the empty string, the terminal will
+As a special case, if <em class="parameter"><code>spec</code></em> is <code class="literal">NULL</code> or the empty string, the terminal will
 treat all graphic non-punctuation non-space characters as word characters.</p>
 <p>
 
@@ -2294,12 +1924,8 @@ treat all graphic non-punctuation non-space characters as word characters.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-is-word-char"></a><h3>vte_terminal_is_word_char ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            vte_terminal_is_word_char           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Unicode-Manipulation.html#gunichar"
->gunichar</a> c);</pre>
+<pre class="programlisting">gboolean            vte_terminal_is_word_char           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         gunichar c);</pre>
 <p>
 Checks if a particular character is considered to be part of a word or not,
 based on the values last passed to <a class="link" href="VteTerminal.html#vte-terminal-set-word-chars" title="vte_terminal_set_word_chars ()"><code class="function">vte_terminal_set_word_chars()</code></a>.</p>
@@ -2321,9 +1947,7 @@ based on the values last passed to <a class="link" href="VteTerminal.html#vte-te
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the character is considered to be part of a word
+<td> <code class="literal">TRUE</code> if the character is considered to be part of a word
 </td>
 </tr>
 </tbody>
@@ -2389,9 +2013,7 @@ presses the delete key.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-mouse-autohide"></a><h3>vte_terminal_set_mouse_autohide ()</h3>
 <pre class="programlisting">void                vte_terminal_set_mouse_autohide     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> setting);</pre>
+                                                         gboolean setting);</pre>
 <p>
 Changes the value of the terminal's mouse autohide setting.  When autohiding
 is enabled, the mouse cursor will be hidden when the user presses a key and
@@ -2410,9 +2032,7 @@ shown when the user moves the mouse.  This setting can be read using
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>setting</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if the autohide should be enabled
+<td> <code class="literal">TRUE</code> if the autohide should be enabled
 </td>
 </tr>
 </tbody>
@@ -2421,9 +2041,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-mouse-autohide"></a><h3>vte_terminal_get_mouse_autohide ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            vte_terminal_get_mouse_autohide     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">gboolean            vte_terminal_get_mouse_autohide     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Determines the value of the terminal's mouse autohide setting.  When
 autohiding is enabled, the mouse cursor will be hidden when the user presses
@@ -2442,11 +2060,7 @@ using <a class="link" href="VteTerminal.html#vte-terminal-set-mouse-autohide" ti
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> if autohiding is enabled, <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
-><code class="literal">FALSE</code></a> if not.
+<td> <code class="literal">TRUE</code> if autohiding is enabled, <code class="literal">FALSE</code> if not.
 </td>
 </tr>
 </tbody>
@@ -2456,12 +2070,8 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"
 <div class="refsect2" lang="en">
 <a name="vte-terminal-reset"></a><h3>vte_terminal_reset ()</h3>
 <pre class="programlisting">void                vte_terminal_reset                  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> full,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> clear_history);</pre>
+                                                         gboolean full,
+                                                         gboolean clear_history);</pre>
 <p>
 Resets as much of the terminal's internal state as possible, discarding any
 unprocessed input data, resetting character attributes, cursor state,
@@ -2480,16 +2090,12 @@ selection state, and encoding.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>full</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> to reset tabstops
+<td> <code class="literal">TRUE</code> to reset tabstops
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>clear_history</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> to empty the terminal's scrollback buffer
+<td> <code class="literal">TRUE</code> to empty the terminal's scrollback buffer
 </td>
 </tr>
 </tbody>
@@ -2498,23 +2104,13 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-text"></a><h3>vte_terminal_get_text ()</h3>
-<pre class="programlisting">char*               vte_terminal_get_text               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"
->GArray</a> *attributes);</pre>
+<pre class="programlisting">char *              vte_terminal_get_text               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         gpointer data,
+                                                         GArray *attributes);</pre>
 <p>
 Extracts a view of the visible part of the terminal.  If <em class="parameter"><code>is_selected</code></em> is not
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> after being
+<code class="literal">NULL</code>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <code class="literal">TRUE</code> after being
 passed the column and row, respectively.  A <span class="type">VteCharAttributes</span> structure
 is added to <em class="parameter"><code>attributes</code></em> for each byte added to the returned string detailing
 the character's position, colors, and other characteristics.</p>
@@ -2546,9 +2142,7 @@ the character's position, colors, and other characteristics.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a text string which must be freed by the caller, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>.
+<td> a text string which must be freed by the caller, or <code class="literal">NULL</code>.
 </td>
 </tr>
 </tbody>
@@ -2557,24 +2151,14 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-text-include-trailing-spaces"></a><h3>vte_terminal_get_text_include_trailing_spaces ()</h3>
-<pre class="programlisting">char*               vte_terminal_get_text_include_trailing_spaces
+<pre class="programlisting">char *              vte_terminal_get_text_include_trailing_spaces
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"
->GArray</a> *attributes);</pre>
+                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         gpointer data,
+                                                         GArray *attributes);</pre>
 <p>
 Extracts a view of the visible part of the terminal.  If <em class="parameter"><code>is_selected</code></em> is not
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> after being
+<code class="literal">NULL</code>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <code class="literal">TRUE</code> after being
 passed the column and row, respectively.  A <span class="type">VteCharAttributes</span> structure
 is added to <em class="parameter"><code>attributes</code></em> for each byte added to the returned string detailing
 the character's position, colors, and other characteristics. This function
@@ -2608,9 +2192,7 @@ lines are included.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a text string which must be freed by the caller, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>.
+<td> a text string which must be freed by the caller, or <code class="literal">NULL</code>.
 
 </td>
 </tr>
@@ -2622,35 +2204,17 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-text-range"></a><h3>vte_terminal_get_text_range ()</h3>
-<pre class="programlisting">char*               vte_terminal_get_text_range         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> start_row,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> start_col,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> end_row,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> end_col,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Arrays.html#GArray"
->GArray</a> *attributes);</pre>
+<pre class="programlisting">char *              vte_terminal_get_text_range         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         glong start_row,
+                                                         glong start_col,
+                                                         glong end_row,
+                                                         glong end_col,
+                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         gpointer data,
+                                                         GArray *attributes);</pre>
 <p>
 Extracts a view of the visible part of the terminal.  If <em class="parameter"><code>is_selected</code></em> is not
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"
-><code class="literal">TRUE</code></a> after being
+<code class="literal">NULL</code>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <code class="literal">TRUE</code> after being
 passed the column and row, respectively.  A <span class="type">VteCharAttributes</span> structure
 is added to <em class="parameter"><code>attributes</code></em> for each byte added to the returned string detailing
 the character's position, colors, and other characteristics.  The
@@ -2704,9 +2268,7 @@ contents of the buffer using this function.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a text string which must be freed by the caller, or <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>.
+<td> a text string which must be freed by the caller, or <code class="literal">NULL</code>.
 </td>
 </tr>
 </tbody>
@@ -2716,12 +2278,8 @@ href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-cursor-position"></a><h3>vte_terminal_get_cursor_position ()</h3>
 <pre class="programlisting">void                vte_terminal_get_cursor_position    (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> *column,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> *row);</pre>
+                                                         glong *column,
+                                                         glong *row);</pre>
 <p>
 Reads the location of the insertion cursor and returns it.  The row
 coordinate is absolute.</p>
@@ -2807,12 +2365,8 @@ this expression, the text will be highlighted.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-match-add-gregex"></a><h3>vte_terminal_match_add_gregex ()</h3>
 <pre class="programlisting">int                 vte_terminal_match_add_gregex       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Perl-compatible-regular-expressions.html#GRegex"
->GRegex</a> *regex,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Perl-compatible-regular-expressions.html#GRegexMatchFlags"
->GRegexMatchFlags</a> flags);</pre>
+                                                         GRegex *regex,
+                                                         GRegexMatchFlags flags);</pre>
 <p>
 Adds the regular expression <em class="parameter"><code>regex</code></em> to the list of matching expressions.  When the
 user moves the mouse cursor over a section of displayed text which matches
@@ -2830,16 +2384,12 @@ this expression, the text will be highlighted.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>regex</code></em> :</span></p></td>
-<td> a <a
-href="/usr/share/gtk-doc/html/glib/glib-Perl-compatible-regular-expressions.html#GRegex"
-><span class="type">GRegex</span></a>
+<td> a <span class="type">GRegex</span>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>flags</code></em> :</span></p></td>
-<td> the <a
-href="/usr/share/gtk-doc/html/glib/glib-Perl-compatible-regular-expressions.html#GRegexMatchFlags"
-><span class="type">GRegexMatchFlags</span></a> to use when matching the regex
+<td> the <span class="type">GRegexMatchFlags</span> to use when matching the regex
 </td>
 </tr>
 <tr>
@@ -2884,20 +2434,14 @@ moves the mouse cursor over matching text.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-match-check"></a><h3>vte_terminal_match_check ()</h3>
-<pre class="programlisting">char*               vte_terminal_match_check            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> column,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a> row,
+<pre class="programlisting">char *              vte_terminal_match_check            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         glong column,
+                                                         glong row,
                                                          int *tag);</pre>
 <p>
 Checks if the text in and around the specified position matches any of the
 regular expressions previously set using <a class="link" href="VteTerminal.html#vte-terminal-match-add" title="vte_terminal_match_add ()"><code class="function">vte_terminal_match_add()</code></a>.  If a
-match exists, the text string is returned and if <em class="parameter"><code>tag</code></em> is not <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>, the number
+match exists, the text string is returned and if <em class="parameter"><code>tag</code></em> is not <code class="literal">NULL</code>, the number
 associated with the matched regular expression will be stored in <em class="parameter"><code>tag</code></em>.
 </p>
 <p>
@@ -2944,9 +2488,7 @@ expressions, and which must be freed by the caller.
 <a name="vte-terminal-match-set-cursor"></a><h3>vte_terminal_match_set_cursor ()</h3>
 <pre class="programlisting">void                vte_terminal_match_set_cursor       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int tag,
-                                                         <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Cursors.html#GdkCursor"
->GdkCursor</a> *cursor);</pre>
+                                                         GdkCursor *cursor);</pre>
 <p>
 Sets which cursor the terminal will use if the pointer is over the pattern
 specified by <em class="parameter"><code>tag</code></em>.  The terminal keeps a reference to <em class="parameter"><code>cursor</code></em>.</p>
@@ -2968,9 +2510,7 @@ specified by <em class="parameter"><code>tag</code></em>.  The terminal keeps a 
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cursor</code></em> :</span></p></td>
-<td> the <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Cursors.html#GdkCursor"
-><span class="type">GdkCursor</span></a> which the terminal should use when the pattern is
+<td> the <span class="type">GdkCursor</span> which the terminal should use when the pattern is
 highlighted
 </td>
 </tr>
@@ -2985,9 +2525,7 @@ highlighted
 <a name="vte-terminal-match-set-cursor-type"></a><h3>vte_terminal_match_set_cursor_type ()</h3>
 <pre class="programlisting">void                vte_terminal_match_set_cursor_type  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int tag,
-                                                         <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Cursors.html#GdkCursorType"
->GdkCursorType</a> cursor_type);</pre>
+                                                         GdkCursorType cursor_type);</pre>
 <p>
 Sets which cursor the terminal will use if the pointer is over the pattern
 specified by <em class="parameter"><code>tag</code></em>.</p>
@@ -3009,9 +2547,7 @@ specified by <em class="parameter"><code>tag</code></em>.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cursor_type</code></em> :</span></p></td>
-<td> a <a
-href="/usr/share/gtk-doc/html/gdk/gdk-Cursors.html#GdkCursorType"
-><span class="type">GdkCursorType</span></a>
+<td> a <span class="type">GdkCursorType</span>
 </td>
 </tr>
 </tbody>
@@ -3087,7 +2623,7 @@ are interested in this feature, always use "xterm".</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-emulation"></a><h3>vte_terminal_get_emulation ()</h3>
-<pre class="programlisting">const char*         vte_terminal_get_emulation          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">const char *        vte_terminal_get_emulation          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Queries the terminal for its current emulation, as last set by a call to
 <a class="link" href="VteTerminal.html#vte-terminal-set-emulation" title="vte_terminal_set_emulation ()"><code class="function">vte_terminal_set_emulation()</code></a>.</p>
@@ -3113,12 +2649,10 @@ Queries the terminal for its current emulation, as last set by a call to
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-default-emulation"></a><h3>vte_terminal_get_default_emulation ()</h3>
-<pre class="programlisting">const char*         vte_terminal_get_default_emulation  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">const char *        vte_terminal_get_default_emulation  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Queries the terminal for its default emulation, which is attempted if the
-terminal type passed to <a class="link" href="VteTerminal.html#vte-terminal-set-emulation" title="vte_terminal_set_emulation ()"><code class="function">vte_terminal_set_emulation()</code></a> is <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
-><code class="literal">NULL</code></a>.</p>
+terminal type passed to <a class="link" href="VteTerminal.html#vte-terminal-set-emulation" title="vte_terminal_set_emulation ()"><code class="function">vte_terminal_set_emulation()</code></a> is <code class="literal">NULL</code>.</p>
 <p>
 
 </p>
@@ -3164,9 +2698,7 @@ application's locale settings.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>codeset</code></em> :</span></p></td>
-<td> a valid <a
-href="/usr/share/gtk-doc/html/glib/glib-Character-Set-Conversion.html#g-iconv"
-><span class="type">g_iconv</span></a> target
+<td> a valid <span class="type">g_iconv</span> target
 </td>
 </tr>
 </tbody>
@@ -3175,7 +2707,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Character-Set-Conversion.html#g-iconv"
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-encoding"></a><h3>vte_terminal_get_encoding ()</h3>
-<pre class="programlisting">const char*         vte_terminal_get_encoding           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">const char *        vte_terminal_get_encoding           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Determines the name of the encoding in which the terminal expects data to be
 encoded.</p>
@@ -3201,7 +2733,7 @@ encoded.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-status-line"></a><h3>vte_terminal_get_status_line ()</h3>
-<pre class="programlisting">const char*         vte_terminal_get_status_line        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">const char *        vte_terminal_get_status_line        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Some terminal emulations specify a status line which is separate from the
 main display area, and define a means for applications to move the cursor
@@ -3240,9 +2772,7 @@ the selected font don't themselves include a padding area and the text
 itself would otherwise be contiguous with the window border.  Applications
 which use the widget's <span class="type">row_count</span>, <span class="type">column_count</span>, <span class="type">char_height</span>, and
 <span class="type">char_width</span> fields to set geometry hints using
-<a
-href="/usr/share/gtk-doc/html/gtk/GtkWindow.html#gtk-window-set-geometry-hints"
-><code class="function">gtk_window_set_geometry_hints()</code></a> will need to add this value to the base
+<code class="function">gtk_window_set_geometry_hints()</code> will need to add this value to the base
 size.  The values returned in <em class="parameter"><code>xpad</code></em> and <em class="parameter"><code>ypad</code></em> are the total padding used in
 each direction, and do not need to be doubled.</p>
 <p>
@@ -3272,9 +2802,7 @@ each direction, and do not need to be doubled.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-adjustment"></a><h3>vte_terminal_get_adjustment ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"
->GtkAdjustment</a>*      vte_terminal_get_adjustment         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">GtkAdjustment *     vte_terminal_get_adjustment         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3299,9 +2827,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-char-ascent"></a><h3>vte_terminal_get_char_ascent ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               vte_terminal_get_char_ascent        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">glong               vte_terminal_get_char_ascent        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3326,9 +2852,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-char-descent"></a><h3>vte_terminal_get_char_descent ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               vte_terminal_get_char_descent       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">glong               vte_terminal_get_char_descent       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3353,9 +2877,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-char-height"></a><h3>vte_terminal_get_char_height ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               vte_terminal_get_char_height        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">glong               vte_terminal_get_char_height        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3380,9 +2902,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-char-width"></a><h3>vte_terminal_get_char_width ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               vte_terminal_get_char_width         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">glong               vte_terminal_get_char_width         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3407,9 +2927,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-column-count"></a><h3>vte_terminal_get_column_count ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               vte_terminal_get_column_count       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">glong               vte_terminal_get_column_count       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3434,7 +2952,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-icon-title"></a><h3>vte_terminal_get_icon_title ()</h3>
-<pre class="programlisting">const char*         vte_terminal_get_icon_title         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">const char *        vte_terminal_get_icon_title         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3459,9 +2977,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-row-count"></a><h3>vte_terminal_get_row_count ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#glong"
->glong</a>               vte_terminal_get_row_count          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">glong               vte_terminal_get_row_count          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3486,7 +3002,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-window-title"></a><h3>vte_terminal_get_window_title ()</h3>
-<pre class="programlisting">const char*         vte_terminal_get_window_title       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting">const char *        vte_terminal_get_window_title       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3514,15 +3030,9 @@ An accessor function provided for the benefit of language bindings.</p>
 <div class="refsect2" lang="en">
 <a name="VteTerminal-char-size-changed"></a><h3>The <code class="literal">"char-size-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>        arg1,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>        arg2,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        guint        arg1,
+                                                        guint        arg2,
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted whenever selection of a new font causes the values of the
 <em class="parameter"><code>char_width</code></em> or <em class="parameter"><code>char_height</code></em> fields to change.
@@ -3557,9 +3067,7 @@ Emitted whenever selection of a new font causes the values of the
 <div class="refsect2" lang="en">
 <a name="VteTerminal-child-exited"></a><h3>The <code class="literal">"child-exited"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 This signal is emitted when the terminal detects that a child started using
 <a class="link" href="VteTerminal.html#vte-terminal-fork-command" title="vte_terminal_fork_command ()"><code class="function">vte_terminal_fork_command()</code></a> has exited.
@@ -3584,15 +3092,9 @@ This signal is emitted when the terminal detects that a child started using
 <div class="refsect2" lang="en">
 <a name="VteTerminal-commit"></a><h3>The <code class="literal">"commit"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>       *arg1,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>        arg2,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gchar       *arg1,
+                                                        guint        arg2,
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the terminal receives input from the user and prepares to send
 it to the child process.  The signal is emitted even when there is no child
@@ -3628,9 +3130,7 @@ process.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-contents-changed"></a><h3>The <code class="literal">"contents-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the visible appearance of the terminal has changed.  Used
 primarily by <a class="link" href="VteTerminalAccessible.html" title="VteTerminalAccessible"><span class="type">VteTerminalAccessible</span></a>.
@@ -3655,9 +3155,7 @@ primarily by <a class="link" href="VteTerminalAccessible.html" title="VteTermina
 <div class="refsect2" lang="en">
 <a name="VteTerminal-copy-clipboard"></a><h3>The <code class="literal">"copy-clipboard"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last / Action</pre>
+                                                        gpointer     user_data)        : Run Last / Action</pre>
 <p>
 Emitted whenever <a class="link" href="VteTerminal.html#vte-terminal-copy-clipboard" title="vte_terminal_copy_clipboard ()"><code class="function">vte_terminal_copy_clipboard()</code></a> is called.
 </p>
@@ -3681,9 +3179,7 @@ Emitted whenever <a class="link" href="VteTerminal.html#vte-terminal-copy-clipbo
 <div class="refsect2" lang="en">
 <a name="VteTerminal-cursor-moved"></a><h3>The <code class="literal">"cursor-moved"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the cursor moves to a new character cell.  Used primarily
 by <a class="link" href="VteTerminalAccessible.html" title="VteTerminalAccessible"><span class="type">VteTerminalAccessible</span></a>.
@@ -3708,9 +3204,7 @@ by <a class="link" href="VteTerminalAccessible.html" title="VteTerminalAccessibl
 <div class="refsect2" lang="en">
 <a name="VteTerminal-decrease-font-size"></a><h3>The <code class="literal">"decrease-font-size"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted when the user hits the '-' key while holding the Control key.
 </p>
@@ -3734,9 +3228,7 @@ Emitted when the user hits the '-' key while holding the Control key.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-deiconify-window"></a><h3>The <code class="literal">"deiconify-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -3760,9 +3252,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-emulation-changed"></a><h3>The <code class="literal">"emulation-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the terminal's emulation changes, only possible at the
 parent application's request.
@@ -3787,9 +3277,7 @@ parent application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-encoding-changed"></a><h3>The <code class="literal">"encoding-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the terminal's current encoding has changed, either as a
 result of receiving a control sequence which toggled between the local and
@@ -3815,9 +3303,7 @@ UTF-8 encodings, or at the parent application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-eof"></a><h3>The <code class="literal">"eof"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted when the terminal receives an end-of-file from a child which is running
 in the terminal.  This signal is frequently (but not always) emitted with a
@@ -3843,9 +3329,7 @@ in the terminal.  This signal is frequently (but not always) emitted with a
 <div class="refsect2" lang="en">
 <a name="VteTerminal-icon-title-changed"></a><h3>The <code class="literal">"icon-title-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted when the terminal's <em class="parameter"><code>icon_title</code></em> field is modified.
 </p>
@@ -3869,9 +3353,7 @@ Emitted when the terminal's <em class="parameter"><code>icon_title</code></em> f
 <div class="refsect2" lang="en">
 <a name="VteTerminal-iconify-window"></a><h3>The <code class="literal">"iconify-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -3895,9 +3377,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-increase-font-size"></a><h3>The <code class="literal">"increase-font-size"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted when the user hits the '+' key while holding the Control key.
 </p>
@@ -3921,9 +3401,7 @@ Emitted when the user hits the '+' key while holding the Control key.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-lower-window"></a><h3>The <code class="literal">"lower-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -3947,9 +3425,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-maximize-window"></a><h3>The <code class="literal">"maximize-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -3973,15 +3449,9 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-move-window"></a><h3>The <code class="literal">"move-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>        arg1,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>        arg2,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        guint        arg1,
+                                                        guint        arg2,
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -4015,9 +3485,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-paste-clipboard"></a><h3>The <code class="literal">"paste-clipboard"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last / Action</pre>
+                                                        gpointer     user_data)        : Run Last / Action</pre>
 <p>
 Emitted whenever <a class="link" href="VteTerminal.html#vte-terminal-paste-clipboard" title="vte_terminal_paste_clipboard ()"><code class="function">vte_terminal_paste_clipboard()</code></a> is called.
 </p>
@@ -4041,9 +3509,7 @@ Emitted whenever <a class="link" href="VteTerminal.html#vte-terminal-paste-clipb
 <div class="refsect2" lang="en">
 <a name="VteTerminal-raise-window"></a><h3>The <code class="literal">"raise-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -4067,9 +3533,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-refresh-window"></a><h3>The <code class="literal">"refresh-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -4093,15 +3557,9 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-resize-window"></a><h3>The <code class="literal">"resize-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>        arg1,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>        arg2,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        guint        arg1,
+                                                        guint        arg2,
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -4135,9 +3593,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-restore-window"></a><h3>The <code class="literal">"restore-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -4161,9 +3617,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-selection-changed"></a><h3>The <code class="literal">"selection-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the contents of terminal's selection changes.
 </p>
@@ -4187,15 +3641,9 @@ Emitted whenever the contents of terminal's selection changes.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-set-scroll-adjustments"></a><h3>The <code class="literal">"set-scroll-adjustments"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a>   *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"
->GtkAdjustment</a> *arg1,
-                                                        <a
-href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"
->GtkAdjustment</a> *arg2,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>       user_data)        : Run Last</pre>
+                                                        GtkAdjustment *arg1,
+                                                        GtkAdjustment *arg2,
+                                                        gpointer       user_data)        : Run Last</pre>
 <p>
 
 </p>
@@ -4229,9 +3677,7 @@ href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
 <div class="refsect2" lang="en">
 <a name="VteTerminal-status-line-changed"></a><h3>The <code class="literal">"status-line-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the contents of the status line are modified or cleared.
 </p>
@@ -4255,9 +3701,7 @@ Emitted whenever the contents of the status line are modified or cleared.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-text-deleted"></a><h3>The <code class="literal">"text-deleted"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 An internal signal used for communication between the terminal and its
 accessibility peer.  May not be emitted under certain circumstances.
@@ -4282,9 +3726,7 @@ accessibility peer.  May not be emitted under certain circumstances.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-text-inserted"></a><h3>The <code class="literal">"text-inserted"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 An internal signal used for communication between the terminal and its
 accessibility peer.  May not be emitted under certain circumstances.
@@ -4309,9 +3751,7 @@ accessibility peer.  May not be emitted under certain circumstances.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-text-modified"></a><h3>The <code class="literal">"text-modified"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 An internal signal used for communication between the terminal and its
 accessibility peer.  May not be emitted under certain circumstances.
@@ -4336,12 +3776,8 @@ accessibility peer.  May not be emitted under certain circumstances.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-text-scrolled"></a><h3>The <code class="literal">"text-scrolled"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>         arg1,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gint         arg1,
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 An internal signal used for communication between the terminal and its
 accessibility peer.  May not be emitted under certain circumstances.
@@ -4371,9 +3807,7 @@ accessibility peer.  May not be emitted under certain circumstances.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-window-title-changed"></a><h3>The <code class="literal">"window-title-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"
->gpointer</a>     user_data)        : Run Last</pre>
+                                                        gpointer     user_data)        : Run Last</pre>
 <p>
 Emitted when the terminal's <em class="parameter"><code>window_title</code></em> field is modified.
 </p>
@@ -4397,6 +3831,6 @@ Emitted when the terminal's <em class="parameter"><code>window_title</code></em>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>
