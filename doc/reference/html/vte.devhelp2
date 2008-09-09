@@ -127,5 +127,9 @@
     <keyword type="" name="The &quot;window-title-changed&quot; signal" link="VteTerminal.html#VteTerminal-window-title-changed"/>
     <keyword type="struct" name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <keyword type="function" name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
+    <keyword type="struct" name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
+    <keyword type="function" name="vte_reaper_get ()" link="VteReaper.html#vte-reaper-get"/>
+    <keyword type="function" name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child"/>
+    <keyword type="" name="The &quot;child-exited&quot; signal" link="VteReaper.html#VteReaper-child-exited"/>
   </functions>
 </book>

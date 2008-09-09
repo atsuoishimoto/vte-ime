@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vtemodule.c 1154 2005-03-17 06:43:44Z yosh $"
+#ident "$Id$"
 
 #ifdef HAVE_CONFIG_H
 #include "../config.h"

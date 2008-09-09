@@ -61,7 +61,7 @@ scan-build.stamp: $(HFILE_GLOB) $(CFILE_GLOB)
 	cd $(srcdir) && \
 	  gtkdoc-scan --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --ignore-headers="$(IGNORE_HFILES)" $(SCAN_OPTIONS) $(EXTRA_HFILES)
 	if grep -l '^..*$$' $(srcdir)/$(DOC_MODULE).types > /dev/null 2>&1 ; then \
-	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" CFLAGS="$(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)" gtkdoc-scangobj $(SCANGOBJ_OPTIONS) --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
+	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" CFLAGS="$(GTKDOC_CFLAGS) $(CFLAGS)" LDFLAGS="$(GTKDOC_LIBS) $(LDFLAGS)" gtkdoc-scangobj $(SCANGOBJ_OPTIONS) --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
 	else \
 	    cd $(srcdir) ; \
 	    for i in $(SCANOBJ_FILES) ; do \
@@ -107,7 +107,12 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	@-chmod -R u+w $(srcdir)
 	rm -rf $(srcdir)/html
 	mkdir $(srcdir)/html
-	cd $(srcdir)/html && gtkdoc-mkhtml $(DOC_MODULE) ../$(DOC_MAIN_SGML_FILE)
+	mkhtml_options=""; \
+	gtkdoc-mkhtml 2>&1 --help | grep  >/dev/null "\-\-path"; \
+	if test "$(?)" = "0"; then \
+	  mkhtml_options=--path="$(srcdir)"; \
+	fi
+	cd $(srcdir)/html && gtkdoc-mkhtml $(mkhtml_options) $(MKHTML_OPTIONS) $(DOC_MODULE) ../$(DOC_MAIN_SGML_FILE)
 	test "x$(HTML_IMAGES)" = "x" || ( cd $(srcdir) && cp $(HTML_IMAGES) html )
 	@echo 'gtk-doc: Fixing cross-references'
 	cd $(srcdir) && gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
