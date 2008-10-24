@@ -17,8 +17,8 @@ include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
 PY_VERSIONS = $(shell pyversions --requested debian/control)
 
 DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/$(libvteN)
-DEB_FIXPERMS_EXCLUDE := gnome-pty-helper
-DEB_DH_MAKESHLIBS_ARGS_ALL = -V '$(libvteN) (>= 1:0.16.9)' --add-udeb=$(udeb)
+DEB_FIXPERMS_EXCLUDE += gnome-pty-helper
+DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.16.9)' --add-udeb=$(udeb)
 
 UDEB_CONFIGURE_EXTRA_FLAGS += \
 	--disable-python \

@@ -1,3 +1,18 @@
+vte (1:0.16.14-4) unstable; urgency=low
+
+  [ Josselin Mouette ]
+  * libvte-doc.links: add a link in /usr/share/doc to the documentation.
+    Closes: #495356.
+
+  [ Loic Minier ]
+  * Don't overwrite DEB_FIXPERMS_EXCLUDE and DEB_DH_MAKESHLIBS_ARGS_ALL.
+
+  [ Josselin Mouette ]
+  * 01_anjuta_hang.patch: new patch, stolen from upstream. Fix hangs in 
+    Geany and Anjuta. Closes: #498295.
+
+ -- Josselin Mouette <joss@debian.org>  Fri, 24 Oct 2008 18:53:48 +0200
+
 vte (1:0.16.14-3) unstable; urgency=low
 
   * Fix 1:0.16.14-2 changelog entry.
