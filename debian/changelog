@@ -1,3 +1,25 @@
+vte (1:0.17.4-0ubuntu2) jaunty; urgency=low
+
+  * Resynchronise with Debian 1:0.16.14-4. Remaining packaging changes:
+    - Newer upstream version:
+      + 01_anjuta_hang.patch, 29_add_am_prog_cc_c_o_for_buffer_c.patch:
+        Removed; obsolete.
+      + 20_make_ft2_optional.patch: Adjust to apply cleanly.
+      + 90_autoreconf.patch: Regenerate.
+      + Bump glib requirement to 2.14.
+      + Bump shlibs to 0.17.1.
+    - Set minimum Python version to 2.4.
+    - Build a python-vte-dbg package.
+    - Install python-vte examples.
+    - 91_keep_fds.patch: Keep file descriptors open on vte_fork_pty().
+    - 92_full_bold_fonts.patch: Fix bold font handling.
+    - 93_add_alt_screen_scroll_toggle.patch: Handle scrolling differently
+      when using alternate screen or scrolling is restricted.
+  * Tag Ubuntu patches per UbuntuDevelopment/PatchTaggingGuidelines.
+  * Drop XS- from Vcs-Bzr control field, now official.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 18 Nov 2008 13:36:23 +0000
+
 vte (1:0.17.4-0ubuntu1) intrepid; urgency=low
 
   * New upstream release:
@@ -63,6 +85,58 @@ vte (1:0.17.1-0ubuntu1) intrepid; urgency=low
     - Bump shlibs to 0.17.1
     
  -- Pedro Fragoso <ember@ubuntu.com>  Wed, 06 Aug 2008 03:39:17 +0100
+
+vte (1:0.16.14-4) unstable; urgency=low
+
+  [ Josselin Mouette ]
+  * libvte-doc.links: add a link in /usr/share/doc to the documentation.
+    Closes: #495356.
+
+  [ Loic Minier ]
+  * Don't overwrite DEB_FIXPERMS_EXCLUDE and DEB_DH_MAKESHLIBS_ARGS_ALL.
+
+  [ Josselin Mouette ]
+  * 01_anjuta_hang.patch: new patch, stolen from upstream. Fix hangs in 
+    Geany and Anjuta. Closes: #498295.
+
+ -- Josselin Mouette <joss@debian.org>  Fri, 24 Oct 2008 18:53:48 +0200
+
+vte (1:0.16.14-3) unstable; urgency=low
+
+  * Fix 1:0.16.14-2 changelog entry.
+  * Upload to unstable.
+
+ -- Loic Minier <lool@dooz.org>  Mon, 04 Aug 2008 12:21:58 +0200
+
+vte (1:0.16.14-2) experimental; urgency=low
+
+  [ Loic Minier ]
+  * Properly anchor libvteN regexp.
+  * Misc cleanups of the below changelog and patches.
+
+  [ Jérémy Bobbio ]
+  * New patch, 20_make_ft2_optional, make Freetype2 bdep/dep optional;
+    GNOME #542560.
+  * New patch, 29_add_am_prog_cc_c_o_for_buffer_c, add the AM_PROG_CC_C_O
+    macro which automake claim is required and was added in upstream SVN
+    already.
+  * New patch, 30_fix_build_no_pty_helper, fix missing header issue when
+    building without gnome-pty-helper; GNOME #542561.
+  * New patch, 25_optional_ncurses, allows not linking against ncurses but
+    using the builtin termcap support instead.
+  * New patch, 90_autoreconf, run autoreconf for 20_make_ft2_optional,
+    29_add_am_prog_cc_c_o_for_buffer_c, and 25_optional_ncurses.
+  * Re-enable libvte9-udeb build.
+     - Drop libvte-common dep in the udeb.
+     - Configure the udeb without pangox and ft2 and with a static ncurses.
+  * New patch, 60_termcap-home-end, defines home/end in the builtin termcap
+    support file.
+
+  [ Loic Minier ]
+  * Drop dup --disable-maintainer-mode flag.
+  * Override CFLAGS for udeb during configure.
+
+ -- Loic Minier <lool@dooz.org>  Thu, 26 Jun 2008 20:44:36 +0200
 
 vte (1:0.16.14-1ubuntu2) intrepid; urgency=low
 

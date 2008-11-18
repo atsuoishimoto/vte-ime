@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-libvteN := $(shell sed -rn 's/Package:[[:space:]]*(libvte[0-9]+)[[:space:]]*$$/\1/p' debian/control | head -n 1)
+libvteN := $(shell sed -rn 's/^Package:[[:space:]]*(libvte[0-9]+)[[:space:]]*$$/\1/p' debian/control | head -n 1)
 udeb := $(libvteN)-udeb
 
 buildbasedir := $(CURDIR)/debian/build
@@ -17,21 +17,26 @@ include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
 PY_VERSIONS = $(shell pyversions --requested debian/control)
 
 DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/$(libvteN)
-DEB_FIXPERMS_EXCLUDE := gnome-pty-helper
+DEB_FIXPERMS_EXCLUDE += gnome-pty-helper
 DEB_DBG_PACKAGE_python-vte = python-vte-dbg
 .PRECIOUS: configure-stamp-% dbg-configure-stamp-%
-DEB_DH_MAKESHLIBS_ARGS_ALL = -V '$(libvteN) (>= 1:0.17.1)' --add-udeb=$(udeb)
+DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.17.1)' --add-udeb=$(udeb)
 
-udeb_configure_flags := --disable-python \
-			--disable-gnome-pty-helper \
-			--disable-gtk-doc \
-			--without-x \
-			--without-xft2 \
-			--with-pangox \
-			--without-glX
+UDEB_CONFIGURE_EXTRA_FLAGS += \
+	--disable-python \
+	--disable-gnome-pty-helper \
+	--disable-gtk-doc \
+	--without-x \
+	--without-xft2 \
+	--without-ft2 \
+	--without-pangox \
+	--without-glX \
+	--without-ncurses
 
 DEB_DESTDIR := $(CURDIR)/debian/tmp/main
 DEB_DESTDIR_$(udeb) := $(CURDIR)/debian/tmp/udeb
+
+CFLAGS_$(udeb) += $(CFLAGS) -Os
 
 DEB_DH_INSTALL_ARGS = --sourcedir=$(if $(findstring $(udeb),$(cdbs_curpkg)),$(DEB_DESTDIR_$(udeb)),$(DEB_DESTDIR))
 
@@ -49,10 +54,12 @@ $(DEB_BUILDDIR_$(udeb))/config.status:
 	cd $(DEB_BUILDDIR_$(udeb)) && \
 		PKG_CONFIG_PATH=pkg-config \
 		$(DEB_CONFIGURE_SCRIPT_ENV) \
+		CFLAGS="$(CFLAGS_$(udeb))" \
 			$(DEB_CONFIGURE_SCRIPT) \
 				$(DEB_CONFIGURE_NORMAL_ARGS) \
 				$(cdbs_configure_flags) \
 				$(DEB_CONFIGURE_EXTRA_FLAGS) \
+				$(UDEB_CONFIGURE_EXTRA_FLAGS) \
 				$(DEB_CONFIGURE_USER_FLAGS)
 
 build/$(udeb)::
@@ -69,7 +76,6 @@ configure-stamp-%:
 	cd $(buildbasedir)/$* && PYTHON=`which $*` $(DEB_CONFIGURE_SCRIPT_ENV) \
 	    $(DEB_CONFIGURE_SCRIPT) \
 		$(DEB_CONFIGURE_NORMAL_ARGS) \
-		--disable-maintainer-mode \
 		$(cdbs_configure_flags) \
 		$(DEB_CONFIGURE_EXTRA_FLAGS) \
 		$(DEB_CONFIGURE_USER_FLAGS)

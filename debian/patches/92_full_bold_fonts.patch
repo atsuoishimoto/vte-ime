@@ -1,4 +1,5 @@
-Backported bold fixes from http://bugzilla.gnome.org/show_bug.cgi?id=54926
+Upstream: http://bugzilla.gnome.org/show_bug.cgi?id=54926
+Description: Fix bold font handling.
 
 diff -Nur -x '*.orig' -x '*~' vte/src/vte.c vte.new/src/vte.c
 --- vte/src/vte.c	2008-05-27 01:27:06.000000000 -0700

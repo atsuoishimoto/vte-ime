@@ -1,3 +1,8 @@
+Ubuntu: https://bugs.launchpad.net/bugs/106995
+Upstream: http://bugzilla.gnome.org/show_bug.cgi?id=538195
+Description: Handle scrolling differently when using alternate screen or
+ scrolling is restricted.
+
 diff -Nur -x '*.orig' -x '*~' vte/doc/reference/xml/vte.xml vte.new/doc/reference/xml/vte.xml
 --- vte/doc/reference/xml/vte.xml	2008-08-13 17:03:32.000000000 -0700
 +++ vte.new/doc/reference/xml/vte.xml	2008-08-28 09:23:40.000000000 -0700
