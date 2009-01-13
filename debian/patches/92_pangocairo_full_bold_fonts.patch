@@ -1,0 +1,307 @@
+Upstream: http://bugzilla.gnome.org/show_bug.cgi?id=54926
+Description: Fix bold font handling.
+
+diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vte.c vte-0.19.4.new/src/vte.c
+--- vte-0.19.4/src/vte.c	2008-12-13 22:49:02.000000000 +0000
++++ vte-0.19.4.new/src/vte.c	2009-01-12 21:26:24.000000000 +0000
+@@ -724,7 +724,7 @@
+ 					_vte_draw_get_char_width (
+ 						terminal->pvt->draw,
+ 						cell->c,
+-						columns) >
++						columns, cell->attr.bold) >
+ 					terminal->char_width * columns) {
+ 				columns++;
+ 			}
+@@ -781,7 +781,7 @@
+ 					_vte_draw_get_char_width (
+ 						terminal->pvt->draw,
+ 						cell->c,
+-						columns) >
++						columns, cell->attr.bold) >
+ 			    terminal->char_width * columns) {
+ 				columns++;
+ 			}
+@@ -8853,7 +8853,7 @@
+ vte_terminal_unichar_is_local_graphic(VteTerminal *terminal, vteunistr c)
+ {
+ 	return vte_unichar_is_local_graphic (c) &&
+-		!_vte_draw_has_char (terminal->pvt->draw, c);
++		!_vte_draw_has_char (terminal->pvt->draw, c, FALSE);
+ }
+ 
+ static void
+@@ -8968,7 +8968,7 @@
+ 	}
+ 
+ 	if (_vte_draw_char(terminal->pvt->draw, &request,
+-			   &color, VTE_DRAW_OPAQUE)) {
++			   &color, VTE_DRAW_OPAQUE, FALSE)) {
+ 		/* We were able to draw with actual fonts. */
+ 		return TRUE;
+ 	}
+@@ -9761,20 +9761,7 @@
+ 	color.green = fg->green;
+ 	_vte_draw_text(terminal->pvt->draw,
+ 			items, n,
+-			&color, VTE_DRAW_OPAQUE);
+-	if (bold) {
+-		/* Take a step to the right. */
+-		for (i = 0; i < n; i++) {
+-			items[i].x++;
+-		}
+-		_vte_draw_text(terminal->pvt->draw,
+-				items, n,
+-				&color, VTE_DRAW_OPAQUE);
+-		/* Now take a step back. */
+-		for (i = 0; i < n; i++) {
+-			items[i].x--;
+-		}
+-	}
++			&color, VTE_DRAW_OPAQUE, bold);
+ 	for (i = 0; i < n; i++) {
+ 		/* Deadjust for the border. */
+ 		items[i].x -= VTE_PAD_WIDTH;
+@@ -10634,7 +10621,7 @@
+ 	cursor_width = item.columns * width;
+ 	if (cell && cell->c != 0) {
+ 		gint cw = _vte_draw_get_char_width (terminal->pvt->draw,
+-				cell->c, cell->attr.columns);
++				cell->c, cell->attr.columns, cell->attr.bold);
+ 		cursor_width = MAX(cursor_width, cw);
+ 		cursor_width += cell->attr.bold; /* for pseudo-bolding */
+ 	}
+diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vtedraw.c vte-0.19.4.new/src/vtedraw.c
+--- vte-0.19.4/src/vtedraw.c	2008-12-12 03:31:52.000000000 +0000
++++ vte-0.19.4.new/src/vtedraw.c	2009-01-12 20:57:16.000000000 +0000
+@@ -312,12 +312,13 @@
+ }
+ 
+ int
+-_vte_draw_get_char_width (struct _vte_draw *draw, vteunistr c, int columns)
++_vte_draw_get_char_width (struct _vte_draw *draw, vteunistr c, int columns,
++			  gboolean bold)
+ {
+ 	int width = 0;
+ 
+ 	if (draw->impl->get_char_width)
+-		width = draw->impl->get_char_width (draw, c, columns);
++		width = draw->impl->get_char_width (draw, c, columns, bold);
+ 
+ 	if (width == 0)
+ 		_vte_draw_get_text_metrics (draw, &width, NULL, NULL);
+@@ -328,7 +329,7 @@
+ void
+ _vte_draw_text (struct _vte_draw *draw,
+ 	       struct _vte_draw_text_request *requests, gsize n_requests,
+-	       GdkColor *color, guchar alpha)
++	       GdkColor *color, guchar alpha, gboolean bold)
+ {
+ 	g_return_if_fail (draw->started == TRUE);
+ 	g_return_if_fail (draw->impl->draw_text != NULL);
+@@ -341,43 +342,44 @@
+ 			g_string_append_unichar (string, requests[n].c);
+ 		}
+ 		str = g_string_free (string, FALSE);
+-		g_printerr ("draw_text (\"%s\", len=%"G_GSIZE_FORMAT", color=(%d,%d,%d,%d))\n",
++		g_printerr ("draw_text (\"%s\", len=%"G_GSIZE_FORMAT", color=(%d,%d,%d,%d), %s)\n",
+ 				str, n_requests, color->red, color->green, color->blue,
+-				alpha);
++				alpha, bold ? "bold" : "normal");
+ 		g_free (str);
+ 	}
+ 
+-	draw->impl->draw_text (draw, requests, n_requests, color, alpha);
++	draw->impl->draw_text (draw, requests, n_requests, color, alpha, bold);
+ }
+ 
+ gboolean
+ _vte_draw_char (struct _vte_draw *draw,
+ 	       struct _vte_draw_text_request *request,
+-	       GdkColor *color, guchar alpha)
++	       GdkColor *color, guchar alpha, gboolean bold)
+ {
+ 	gboolean has_char;
+ 
+ 	_vte_debug_print (VTE_DEBUG_DRAW,
+-			"draw_char ('%c', color=(%d,%d,%d,%d))\n",
++			"draw_char ('%c', color=(%d,%d,%d,%d), %s)\n",
+ 			request->c,
+ 			color->red, color->green, color->blue,
+-			alpha);
++			alpha, bold ? "bold" : "normal");
+ 
+-	has_char =_vte_draw_has_char (draw, request->c);
++	has_char =_vte_draw_has_char (draw, request->c, bold);
+ 	if (has_char)
+-		_vte_draw_text (draw, request, 1, color, alpha);
++		_vte_draw_text (draw, request, 1, color, alpha, bold);
+ 
+ 	return has_char;
+ }
+ gboolean
+-_vte_draw_has_char (struct _vte_draw *draw, vteunistr c)
++_vte_draw_has_char (struct _vte_draw *draw, vteunistr c, gboolean bold)
+ {
+ 	gboolean has_char = TRUE;
+ 
+-	_vte_debug_print (VTE_DEBUG_DRAW, "draw_has_char ('0x%04X')\n", c);
++	_vte_debug_print (VTE_DEBUG_DRAW, "draw_has_char ('0x%04X', %s)\n", c,
++			  bold ? "bold" : "normal");
+ 
+ 	if (draw->impl->has_char)
+-		has_char = draw->impl->has_char (draw, c);
++		has_char = draw->impl->has_char (draw, c, bold);
+ 
+ 	return has_char;
+ }
+diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vtedraw.h vte-0.19.4.new/src/vtedraw.h
+--- vte-0.19.4/src/vtedraw.h	2008-12-12 03:30:57.000000000 +0000
++++ vte-0.19.4.new/src/vtedraw.h	2009-01-12 21:10:54.000000000 +0000
+@@ -87,11 +87,12 @@
+ 			      const PangoFontDescription *,
+ 			      VteTerminalAntiAlias);
+ 	void (*get_text_metrics)(struct _vte_draw *, gint *, gint *, gint *);
+-	int (*get_char_width)(struct _vte_draw *, vteunistr c, int columns);
++	int (*get_char_width)(struct _vte_draw *, vteunistr c, int columns,
++			      gboolean);
+ 	void (*draw_text)(struct _vte_draw *,
+-			  struct _vte_draw_text_request *, gsize,
+-			  GdkColor *, guchar);
+-	gboolean (*has_char)(struct _vte_draw *, vteunistr);
++			  		  struct _vte_draw_text_request *, gsize,
++					  GdkColor *, guchar, gboolean);
++	gboolean (*has_char)(struct _vte_draw *, vteunistr, gboolean);
+ 	void (*draw_rectangle)(struct _vte_draw *,
+ 			       gint, gint, gint, gint,
+ 			       GdkColor *, guchar);
+@@ -151,15 +152,17 @@
+ 			     VteTerminalAntiAlias anti_alias);
+ void _vte_draw_get_text_metrics(struct _vte_draw *draw,
+ 				gint *width, gint *height, gint *ascent);
+-int _vte_draw_get_char_width(struct _vte_draw *draw, vteunistr c, int columns);
++int _vte_draw_get_char_width(struct _vte_draw *draw, vteunistr c, int columns,
++			     gboolean bold);
+ 
+ void _vte_draw_text(struct _vte_draw *draw,
+ 		    struct _vte_draw_text_request *requests, gsize n_requests,
+-		    GdkColor *color, guchar alpha);
++		    GdkColor *color, guchar alpha, gboolean);
+ gboolean _vte_draw_char(struct _vte_draw *draw,
+ 			struct _vte_draw_text_request *request,
+-			GdkColor *color, guchar alpha);
+-gboolean _vte_draw_has_char(struct _vte_draw *draw, vteunistr c);
++			GdkColor *color, guchar alpha, gboolean bold);
++gboolean _vte_draw_has_char(struct _vte_draw *draw, vteunistr c, gboolean bold);
++
+ 
+ void _vte_draw_fill_rectangle(struct _vte_draw *draw,
+ 			      gint x, gint y, gint width, gint height,
+diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vtepangocairo.c vte-0.19.4.new/src/vtepangocairo.c
+--- vte-0.19.4/src/vtepangocairo.c	2008-12-12 03:47:29.000000000 +0000
++++ vte-0.19.4.new/src/vtepangocairo.c	2009-01-12 21:20:57.000000000 +0000
+@@ -755,6 +755,7 @@
+ 
+ struct _vte_pangocairo_data {
+ 	struct font_info *font;
++	struct font_info *font_bold;
+ 	cairo_pattern_t *bg_pattern;
+ 
+ 	cairo_t *cr;
+@@ -917,6 +918,20 @@
+ 
+ 	font_info_destroy (data->font);
+ 	data->font = font_info_create_for_widget (draw->widget, fontdesc, antialias);
++	
++	/* calculate bold font desc */
++	font_info_destroy (data->font_bold);
++	PangoFontDescription *bolddesc = pango_font_description_copy (fontdesc);
++	if (bolddesc) {
++		pango_font_description_set_weight (bolddesc, PANGO_WEIGHT_BOLD);
++
++		data->font_bold = font_info_create_for_widget (draw->widget, bolddesc, antialias);
++		pango_font_description_free (bolddesc);
++	}
++	else {
++		g_warning(_("can not create bold font"));
++		data->font_bold = font_info_create_for_widget (draw->widget, fontdesc, antialias);
++	}
+ }
+ 
+ static void
+@@ -927,21 +942,22 @@
+ 	
+ 	g_return_if_fail (data->font != NULL);
+ 
+-	*width  = data->font->width;
+-	*height = data->font->height;
+-	*ascent = data->font->ascent;
++	*width  = MAX(data->font->width, data->font_bold->width);
++	*height = MAX(data->font->height, data->font_bold->height);
++	*ascent = MAX(data->font->ascent, data->font_bold->ascent);
+ }
+ 
+ 
+ static int
+-_vte_pangocairo_get_char_width (struct _vte_draw *draw, vteunistr c, int columns)
++_vte_pangocairo_get_char_width (struct _vte_draw *draw, vteunistr c, int columns,
++				gboolean bold)
+ {
+ 	struct _vte_pangocairo_data *data = draw->impl_data;
+ 	struct unistr_info *uinfo;
+ 
+ 	g_return_val_if_fail (data->font != NULL, 0);
+ 
+-	uinfo = font_info_get_unistr_info (data->font, c);
++	uinfo = font_info_get_unistr_info (bold ? data->font_bold : data->font, c);
+ 	return uinfo->width;
+ }
+ 
+@@ -960,15 +976,16 @@
+ static void
+ _vte_pangocairo_draw_text (struct _vte_draw *draw,
+ 			   struct _vte_draw_text_request *requests, gsize n_requests,
+-			   GdkColor *color, guchar alpha)
++			   GdkColor *color, guchar alpha, gboolean bold)
+ {
+ 	struct _vte_pangocairo_data *data = draw->impl_data;
+ 	gsize i;
+ 	cairo_scaled_font_t *last_scaled_font = NULL;
+ 	int n_cr_glyphs = 0;
+ 	cairo_glyph_t cr_glyphs[MAX_RUN_LENGTH];
++	struct font_info *font = bold ? data->font_bold : data->font;
+ 
+-	g_return_if_fail (data->font != NULL);
++	g_return_if_fail (font != NULL);
+ 
+ 	set_source_color_alpha (data->cr, color, alpha);
+ 	cairo_set_operator (data->cr, CAIRO_OPERATOR_OVER);
+@@ -976,8 +993,8 @@
+ 	for (i = 0; i < n_requests; i++) {
+ 		vteunistr c = requests[i].c;
+ 		int x = requests[i].x;
+-		int y = requests[i].y + data->font->ascent;
+-		struct unistr_info *uinfo = font_info_get_unistr_info (data->font, c);
++		int y = requests[i].y + font->ascent;
++		struct unistr_info *uinfo = font_info_get_unistr_info (font, c);
+ 		union unistr_font_info *ufi = &uinfo->ufi;
+ 
+ 		switch (uinfo->coverage) {
+@@ -1024,14 +1041,15 @@
+ }
+ 
+ static gboolean
+-_vte_pangocairo_draw_has_char (struct _vte_draw *draw, vteunistr c)
++_vte_pangocairo_draw_has_char (struct _vte_draw *draw, vteunistr c,
++			       gboolean bold)
+ {
+ 	struct _vte_pangocairo_data *data = draw->impl_data;
+ 	struct unistr_info *uinfo;
+ 
+ 	g_return_val_if_fail (data->font != NULL, FALSE);
+ 
+-	uinfo = font_info_get_unistr_info (data->font, c);
++	uinfo = font_info_get_unistr_info (bold ? data->font_bold : data->font, c);
+ 	return !uinfo->has_unknown_chars;
+ }
+ 

@@ -8,7 +8,6 @@
 <refnamediv>
 <refname>Internals</refname>
 <refpurpose>Internal stuff.</refpurpose>
-<!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
 <refsynopsisdiv id="vte-Internals.synopsis" role="synopsis">
@@ -30,7 +29,6 @@
 <title role="desc.title">Description</title>
 <para>
 You really shouldn't see this.
-
 </para>
 </refsect1>
 

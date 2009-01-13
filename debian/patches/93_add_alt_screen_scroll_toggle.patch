@@ -3,10 +3,10 @@ Upstream: http://bugzilla.gnome.org/show_bug.cgi?id=538195
 Description: Handle scrolling differently when using alternate screen or
  scrolling is restricted.
 
-diff -Nur -x '*.orig' -x '*~' vte/doc/reference/xml/vte.xml vte.new/doc/reference/xml/vte.xml
---- vte/doc/reference/xml/vte.xml	2008-08-13 17:03:32.000000000 -0700
-+++ vte.new/doc/reference/xml/vte.xml	2008-08-28 09:23:40.000000000 -0700
-@@ -68,6 +68,9 @@
+diff -Nur -x '*.orig' -x '*~' vte-0.19.4/doc/reference/xml/vte.xml vte-0.19.4.new/doc/reference/xml/vte.xml
+--- vte-0.19.4/doc/reference/xml/vte.xml	2008-12-15 20:45:26.000000000 +0000
++++ vte-0.19.4.new/doc/reference/xml/vte.xml	2009-01-12 18:43:11.000000000 +0000
+@@ -71,6 +71,9 @@
  <link linkend="void">void</link>                <link linkend="vte-terminal-set-scroll-on-keystroke">vte_terminal_set_scroll_on_keystroke</link>
                                                          (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                           <link linkend="gboolean">gboolean</link> scroll);
@@ -16,10 +16,10 @@ diff -Nur -x '*.orig' -x '*~' vte/doc/reference/xml/vte.xml vte.new/doc/referenc
  <link linkend="void">void</link>                <link linkend="vte-terminal-set-color-bold">vte_terminal_set_color_bold</link>         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                           const <link linkend="GdkColor">GdkColor</link> *bold);
  <link linkend="void">void</link>                <link linkend="vte-terminal-set-color-foreground">vte_terminal_set_color_foreground</link>   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-diff -Nur -x '*.orig' -x '*~' vte/src/vte.c vte.new/src/vte.c
---- vte/src/vte.c	2008-08-28 09:23:34.000000000 -0700
-+++ vte.new/src/vte.c	2008-08-28 09:23:40.000000000 -0700
-@@ -10729,8 +10729,9 @@
+diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vte.c vte-0.19.4.new/src/vte.c
+--- vte-0.19.4/src/vte.c	2008-12-13 22:49:02.000000000 +0000
++++ vte-0.19.4.new/src/vte.c	2009-01-12 18:44:55.000000000 +0000
+@@ -10988,8 +10988,9 @@
  		return FALSE;
  	}
  
@@ -31,8 +31,8 @@ diff -Nur -x '*.orig' -x '*~' vte/src/vte.c vte.new/src/vte.c
  		char *normal;
  		gssize normal_length;
  		const gchar *special;
-@@ -11356,6 +11357,22 @@
- 	terminal->pvt->scroll_on_keystroke = scroll;
+@@ -12293,6 +12294,22 @@
+         g_object_notify (G_OBJECT (terminal), "scroll-on-keystroke");
  }
  
 +/**
@@ -54,10 +54,10 @@ diff -Nur -x '*.orig' -x '*~' vte/src/vte.c vte.new/src/vte.c
  static void
  vte_terminal_real_copy_clipboard(VteTerminal *terminal)
  {
-diff -Nur -x '*.orig' -x '*~' vte/src/vte.h vte.new/src/vte.h
---- vte/src/vte.h	2008-06-29 09:48:34.000000000 -0700
-+++ vte.new/src/vte.h	2008-08-28 09:23:40.000000000 -0700
-@@ -256,6 +256,8 @@
+diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vte.h vte-0.19.4.new/src/vte.h
+--- vte-0.19.4/src/vte.h	2008-12-02 00:05:02.000000000 +0000
++++ vte-0.19.4.new/src/vte.h	2009-01-12 18:45:35.000000000 +0000
+@@ -252,6 +252,8 @@
  void vte_terminal_set_scroll_on_output(VteTerminal *terminal, gboolean scroll);
  void vte_terminal_set_scroll_on_keystroke(VteTerminal *terminal,
  					  gboolean scroll);
@@ -66,14 +66,14 @@ diff -Nur -x '*.orig' -x '*~' vte/src/vte.h vte.new/src/vte.h
  
  /* Set the color scheme. */
  void vte_terminal_set_color_dim(VteTerminal *terminal,
-diff -Nur -x '*.orig' -x '*~' vte/src/vte-private.h vte.new/src/vte-private.h
---- vte/src/vte-private.h	2008-08-13 16:21:04.000000000 -0700
-+++ vte.new/src/vte-private.h	2008-08-28 09:23:40.000000000 -0700
-@@ -313,6 +313,7 @@
+diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vte-private.h vte-0.19.4.new/src/vte-private.h
+--- vte-0.19.4/src/vte-private.h	2008-12-12 03:06:22.000000000 +0000
++++ vte-0.19.4.new/src/vte-private.h	2009-01-12 18:46:01.000000000 +0000
+@@ -328,6 +328,7 @@
  	gboolean scroll_on_output;
  	gboolean scroll_on_keystroke;
  	long scrollback_lines;
 +	gboolean alternate_screen_scroll;
  
- 	/* Cursor blinking. */
-         VteTerminalCursorBlinkMode cursor_blink_mode;
+ 	/* Cursor shape */
+ 	VteTerminalCursorShape cursor_shape;

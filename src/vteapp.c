@@ -17,7 +17,7 @@
  */
 
 
-#include "../config.h"
+#include <config.h>
 
 #include <stdlib.h>
 #include <sys/ioctl.h>
@@ -29,9 +29,11 @@
 #include <gtk/gtk.h>
 #include <glib-object.h>
 #include "debug.h"
+
+#undef VTE_DISABLE_DEPRECATED
 #include "vte.h"
 
-#include <glib/gi18n-lib.h>
+#include <glib/gi18n.h>
 
 #define DINGUS1 "(((news|telnet|nntp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?"
 #define DINGUS2 "(((news|telnet|nntp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?/[-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]*[^]'\\.}>\\) ,\\\"]"
@@ -411,12 +413,40 @@ add_weak_pointer(GObject *object, GtkWidget **target)
 	g_object_add_weak_pointer(object, (gpointer*)target);
 }
 
+static void
+terminal_notify_cb(GObject *object,
+                   GParamSpec *pspec,
+                   gpointer user_data)
+{
+  GValue value = { 0, };
+  char *value_string;
+
+  if (!pspec ||
+      pspec->owner_type != VTE_TYPE_TERMINAL)
+    return;
+
+
+  g_value_init(&value, pspec->value_type);
+  g_object_get_property(object, pspec->name, &value);
+  value_string = g_strdup_value_contents(&value);
+  g_print("NOTIFY property \"%s\" value '%s'\n", pspec->name, value_string);
+  g_free(value_string);
+  g_value_unset(&value);
+}
+
+static void
+child_exit_cb(VteTerminal *terminal,
+                 gpointer user_data)
+{
+  g_print("Child exited with status %x\n", vte_terminal_get_child_exit_status(terminal));
+}
+
 int
 main(int argc, char **argv)
 {
 	GdkScreen *screen;
 	GdkColormap *colormap;
-	GtkWidget *window, *hbox, *scrollbar, *widget;
+	GtkWidget *window, *widget,*hbox, *scrollbar, *scrolled_window;
 	VteTerminal *terminal;
 	char *env_add[] = {
 #ifdef VTE_DEBUG
@@ -429,7 +459,9 @@ main(int argc, char **argv)
 		 console = FALSE, scroll = FALSE, keep = FALSE,
 		 icon_title = FALSE, shell = TRUE, highlight_set = FALSE,
 		 cursor_set = FALSE, reverse = FALSE, use_geometry_hints = TRUE,
-		 antialias = TRUE;
+		 antialias = TRUE, use_scrolled_window = FALSE,
+                 show_object_notifications = FALSE;
+        int scrollbar_policy = 0;
         char *geometry = NULL;
 	gint lines = 100;
 	const char *message = "Launching interactive shell...\r\n";
@@ -557,6 +589,24 @@ main(int argc, char **argv)
 			"Allow the terminal to be resized to any dimension, not constrained to fit to an integer multiple of characters",
 			NULL
 		},
+		{
+			"scrolled-window", 'W', 0,
+			G_OPTION_ARG_NONE, &use_scrolled_window,
+			"Use a GtkScrolledWindow as terminal container",
+			NULL
+		},
+		{
+			"scrollbar-policy", 'P', 0,
+			G_OPTION_ARG_INT, &scrollbar_policy,
+			"Set the policy for the vertical scroolbar in the scrolled window (0=always, 1=auto, 2=never; default:0)",
+			NULL
+		},
+		{
+			"object-notifications", 'N', 0,
+			G_OPTION_ARG_NONE, &show_object_notifications,
+			"Print VteTerminal object notifications",
+			NULL
+		},
 		{ NULL }
 	};
 	GOptionContext *context;
@@ -611,9 +661,17 @@ main(int argc, char **argv)
 	if (colormap)
 	    gtk_widget_set_colormap(window, colormap);
 
-	/* Create a box to hold everything. */
-	hbox = gtk_hbox_new(0, FALSE);
-	gtk_container_add(GTK_CONTAINER(window), hbox);
+        if (use_scrolled_window) {
+                scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+                gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+                                               GTK_POLICY_NEVER,
+                                               CLAMP (scrollbar_policy, GTK_POLICY_ALWAYS, GTK_POLICY_NEVER));
+                gtk_container_add(GTK_CONTAINER(window), scrolled_window);
+        } else {
+                /* Create a box to hold everything. */
+                hbox = gtk_hbox_new(0, FALSE);
+                gtk_container_add(GTK_CONTAINER(window), hbox);
+        }
 
 	/* Create the terminal widget and add it to the scrolling shell. */
 	widget = vte_terminal_new();
@@ -621,7 +679,14 @@ main(int argc, char **argv)
 	if (!dbuffer) {
 		gtk_widget_set_double_buffered(widget, dbuffer);
 	}
-	gtk_box_pack_start(GTK_BOX(hbox), widget, TRUE, TRUE, 0);
+        g_signal_connect(terminal, "child-exited", G_CALLBACK(child_exit_cb), NULL);
+        if (show_object_notifications)
+                g_signal_connect(terminal, "notify", G_CALLBACK(terminal_notify_cb), NULL);
+        if (use_scrolled_window) {
+                gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(terminal));
+        } else {
+                gtk_box_pack_start(GTK_BOX(hbox), widget, TRUE, TRUE, 0);
+        }
 
 	/* Connect to the "char_size_changed" signal to set geometry hints
 	 * whenever the font used by the terminal is changed. */
@@ -682,14 +747,16 @@ main(int argc, char **argv)
 	g_signal_connect(widget, "decrease-font-size",
 			 G_CALLBACK(decrease_font_size), window);
 
-	/* Create the scrollbar for the widget. */
-	scrollbar = gtk_vscrollbar_new(terminal->adjustment);
-	gtk_box_pack_start(GTK_BOX(hbox), scrollbar, FALSE, FALSE, 0);
+        if (!use_scrolled_window) {
+                /* Create the scrollbar for the widget. */
+                scrollbar = gtk_vscrollbar_new(terminal->adjustment);
+                gtk_box_pack_start(GTK_BOX(hbox), scrollbar, FALSE, FALSE, 0);
+        }
 
 	/* Set some defaults. */
 	vte_terminal_set_audible_bell(terminal, audible);
 	vte_terminal_set_visible_bell(terminal, !audible);
-	vte_terminal_set_cursor_blinks(terminal, blink);
+	vte_terminal_set_cursor_blink_mode(terminal, blink ? VTE_CURSOR_BLINK_SYSTEM : VTE_CURSOR_BLINK_OFF);
 	vte_terminal_set_scroll_background(terminal, scroll);
 	vte_terminal_set_scroll_on_output(terminal, FALSE);
 	vte_terminal_set_scroll_on_keystroke(terminal, TRUE);

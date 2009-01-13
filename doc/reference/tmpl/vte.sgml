@@ -33,6 +33,13 @@ All of these fields should be considered read-only.
 @window_title: The terminal's idea of what the window's title should be.
 @icon_title: The terminal's idea of what the window's title should be when iconified.
 
+<!-- ##### SIGNAL VteTerminal::beep ##### -->
+<para>
+This signal is emitted when the a child sends a beep request to the terminal.
+</para>
+
+@vteterminal: the object which received the signal.
+
 <!-- ##### SIGNAL VteTerminal::char-size-changed ##### -->
 <para>
 Emitted whenever selection of a new font causes the values of the
@@ -269,6 +276,131 @@ Emitted when the terminal's @window_title field is modified.
 
 @vteterminal: the object which received the signal.
 
+<!-- ##### ARG VteTerminal:allow-bold ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:audible-bell ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:background-image-file ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:background-image-pixbuf ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:background-opacity ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:background-saturation ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:background-tint-color ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:background-transparent ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:backspace-binding ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:cursor-blink-mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:cursor-shape ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:delete-binding ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:emulation ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:encoding ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:font-desc ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:icon-title ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:pointer-autohide ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:pty ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:scroll-background ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:scroll-on-keystroke ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:scroll-on-output ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:scrollback-lines ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:visible-bell ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:window-title ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG VteTerminal:word-chars ##### -->
+<para>
+
+</para>
+
 <!-- ##### ENUM VteTerminalEraseBinding ##### -->
 <para>
 An enumerated type which can be used to indicate which string the terminal
@@ -280,6 +412,27 @@ keys.
 @VTE_ERASE_ASCII_BACKSPACE: Send an ASCII backspace character (0x08).
 @VTE_ERASE_ASCII_DELETE: Send an ASCII delete character (0x7F).
 @VTE_ERASE_DELETE_SEQUENCE: Send the "@@7" control sequence.
+
+<!-- ##### ENUM VteTerminalCursorShape ##### -->
+<para>
+An enumerated type which can be used to indicate what should the terminal
+draw at the cursor position.
+</para>
+
+@VTE_CURSOR_SHAPE_BLOCK: Draw a block cursor.  This is the default.
+@VTE_CURSOR_SHAPE_IBEAM: Draw a vertical bar on the left side of character.
+This is similar to the default cursor for other GTK+ widgets.
+@VTE_CURSOR_SHAPE_UNDERLINE: Draw a horizontal bar below the character.
+
+<!-- ##### ENUM VteTerminalCursorBlinkMode ##### -->
+<para>
+An enumerated type which can be used to indicate the cursor blink mode
+for the terminal.
+</para>
+
+@VTE_CURSOR_BLINK_SYSTEM: Follow GTK+ settings for cursor blinking.
+@VTE_CURSOR_BLINK_ON: Cursor blinks.
+@VTE_CURSOR_BLINK_OFF: Cursor does not blink.
 
 <!-- ##### FUNCTION vte_terminal_new ##### -->
 <para>
@@ -334,6 +487,15 @@ keys.
 @pty_master: 
 
 
+<!-- ##### FUNCTION vte_terminal_get_pty ##### -->
+<para>
+
+</para>
+
+@terminal: 
+@Returns: 
+
+
 <!-- ##### FUNCTION vte_terminal_feed ##### -->
 <para>
 
@@ -362,6 +524,15 @@ keys.
 @terminal: 
 @data: 
 @length: 
+
+
+<!-- ##### FUNCTION vte_terminal_get_child_exit_status ##### -->
+<para>
+
+</para>
+
+@terminal: 
+@Returns: 
 
 
 <!-- ##### FUNCTION vte_terminal_select_all ##### -->
@@ -629,6 +800,24 @@ keys.
 
 @terminal: 
 @scroll: 
+
+
+<!-- ##### FUNCTION vte_terminal_set_cursor_shape ##### -->
+<para>
+
+</para>
+
+@terminal: 
+@shape: 
+
+
+<!-- ##### FUNCTION vte_terminal_get_cursor_shape ##### -->
+<para>
+
+</para>
+
+@terminal: 
+@Returns: 
 
 
 <!-- ##### FUNCTION vte_terminal_set_cursor_blinks ##### -->

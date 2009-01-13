@@ -16,9 +16,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "../config.h"
+#include <config.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
+#include <sys/socket.h>
 #ifdef HAVE_SYS_TERMIOS_H
 #include <sys/termios.h>
 #endif
@@ -52,7 +53,6 @@
 #include <glib/gi18n-lib.h>
 
 #ifdef VTE_USE_GNOME_PTY_HELPER
-#include <sys/socket.h>
 #include <sys/uio.h>
 #ifdef HAVE_SYS_UN_H
 #include <sys/un.h>
@@ -636,6 +636,7 @@ _vte_pty_open_unix98(GPid *child, char **env_add,
 	return fd;
 }
 
+#ifdef VTE_USE_GNOME_PTY_HELPER
 #ifdef HAVE_RECVMSG
 static void
 _vte_pty_read_ptypair(int tunnel, int *parentfd, int *childfd)
@@ -695,7 +696,6 @@ _vte_pty_read_ptypair(int tunnel, int *parentfd, int *childfd)
 }
 #endif
 
-#ifdef VTE_USE_GNOME_PTY_HELPER
 #ifdef HAVE_SOCKETPAIR
 static int
 _vte_pty_pipe_open(int *a, int *b)
@@ -998,7 +998,7 @@ _vte_pty_open(pid_t *child_pid, char **env_add,
 	}
 	g_assert(op >= 0);
 	g_assert(op < G_N_ELEMENTS(opmap));
-	if (ret == -1) {
+	if (ret == -1 && op != 0) {
 		ret = _vte_pty_open_with_helper(&child, env_add, command, argv,
 						directory,
 						columns, rows, opmap[op]);
@@ -1064,9 +1064,10 @@ _vte_pty_close(int pty)
 		if (g_tree_lookup(_vte_pty_helper_map, GINT_TO_POINTER(pty))) {
 			/* Signal the helper that it needs to close its
 			 * connection. */
-			ops = GNOME_PTY_CLOSE_PTY;
 			tag = g_tree_lookup(_vte_pty_helper_map,
 					    GINT_TO_POINTER(pty));
+
+			ops = GNOME_PTY_CLOSE_PTY;
 			if (n_write(_vte_pty_helper_tunnel,
 				    &ops, sizeof(ops)) != sizeof(ops)) {
 				return;
@@ -1075,6 +1076,14 @@ _vte_pty_close(int pty)
 				    &tag, sizeof(tag)) != sizeof(tag)) {
 				return;
 			}
+
+			ops = GNOME_PTY_SYNCH;
+			if (n_write(_vte_pty_helper_tunnel,
+				    &ops, sizeof(ops)) != sizeof(ops)) {
+				return;
+			}
+			n_read(_vte_pty_helper_tunnel, &ops, 1);
+
 			/* Remove the item from the map. */
 			g_tree_remove(_vte_pty_helper_map,
 				      GINT_TO_POINTER(pty));
@@ -1100,7 +1109,7 @@ main(int argc, char **argv)
 	char c;
 	int ret;
 	signal(SIGCHLD, sigchld_handler);
-	_vte_debug_parse_string(getenv("VTE_DEBUG_FLAGS"));
+	_vte_debug_init();
 	fd = _vte_pty_open(&child, NULL,
 			   (argc > 1) ? argv[1] : NULL,
 			   (argc > 1) ? argv + 1 : NULL,

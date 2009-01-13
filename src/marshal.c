@@ -1,6 +1,10 @@
 
+#ifndef ___vte_marshal_MARSHAL_H__
+#define ___vte_marshal_MARSHAL_H__
+
 #include	<glib-object.h>
 
+G_BEGIN_DECLS
 
 #ifdef G_ENABLE_DEBUG
 #define g_marshal_value_peek_boolean(v)  g_value_get_boolean (v)
@@ -48,10 +52,18 @@
 
 
 /* VOID:VOID (marshal.list:1) */
+#define _vte_marshal_VOID__VOID	g_cclosure_marshal_VOID__VOID
 
 /* VOID:STRING (marshal.list:2) */
+#define _vte_marshal_VOID__STRING	g_cclosure_marshal_VOID__STRING
 
 /* VOID:STRING,UINT (marshal.list:3) */
+G_GNUC_INTERNAL void _vte_marshal_VOID__STRING_UINT (GClosure     *closure,
+                                                     GValue       *return_value,
+                                                     guint         n_param_values,
+                                                     const GValue *param_values,
+                                                     gpointer      invocation_hint,
+                                                     gpointer      marshal_data);
 void
 _vte_marshal_VOID__STRING_UINT (GClosure     *closure,
                                 GValue       *return_value G_GNUC_UNUSED,
@@ -89,8 +101,15 @@ _vte_marshal_VOID__STRING_UINT (GClosure     *closure,
 }
 
 /* VOID:INT (marshal.list:4) */
+#define _vte_marshal_VOID__INT	g_cclosure_marshal_VOID__INT
 
 /* VOID:INT,INT (marshal.list:5) */
+G_GNUC_INTERNAL void _vte_marshal_VOID__INT_INT (GClosure     *closure,
+                                                 GValue       *return_value,
+                                                 guint         n_param_values,
+                                                 const GValue *param_values,
+                                                 gpointer      invocation_hint,
+                                                 gpointer      marshal_data);
 void
 _vte_marshal_VOID__INT_INT (GClosure     *closure,
                             GValue       *return_value G_GNUC_UNUSED,
@@ -128,6 +147,12 @@ _vte_marshal_VOID__INT_INT (GClosure     *closure,
 }
 
 /* VOID:UINT,UINT (marshal.list:6) */
+G_GNUC_INTERNAL void _vte_marshal_VOID__UINT_UINT (GClosure     *closure,
+                                                   GValue       *return_value,
+                                                   guint         n_param_values,
+                                                   const GValue *param_values,
+                                                   gpointer      invocation_hint,
+                                                   gpointer      marshal_data);
 void
 _vte_marshal_VOID__UINT_UINT (GClosure     *closure,
                               GValue       *return_value G_GNUC_UNUSED,
@@ -165,6 +190,12 @@ _vte_marshal_VOID__UINT_UINT (GClosure     *closure,
 }
 
 /* VOID:OBJECT,OBJECT (marshal.list:7) */
+G_GNUC_INTERNAL void _vte_marshal_VOID__OBJECT_OBJECT (GClosure     *closure,
+                                                       GValue       *return_value,
+                                                       guint         n_param_values,
+                                                       const GValue *param_values,
+                                                       gpointer      invocation_hint,
+                                                       gpointer      marshal_data);
 void
 _vte_marshal_VOID__OBJECT_OBJECT (GClosure     *closure,
                                   GValue       *return_value G_GNUC_UNUSED,
@@ -200,4 +231,8 @@ _vte_marshal_VOID__OBJECT_OBJECT (GClosure     *closure,
             g_marshal_value_peek_object (param_values + 2),
             data2);
 }
+
+G_END_DECLS
+
+#endif /* ___vte_marshal_MARSHAL_H__ */
 

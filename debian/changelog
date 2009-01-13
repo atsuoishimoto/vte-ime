@@ -1,3 +1,43 @@
+vte (1:0.19.4-0ubuntu1) jaunty; urgency=low
+
+  * New upstream version (LP: #316601):
+    - New, PangoCairo, rendering backend.
+    - All other backends are removed.
+    - Configurable cursor shape (block, underline, I-beam).
+    - Preliminary object properties added to VteTerminal.
+    - API that will be removed in vte 1.0 has been marked deprecated in 
+      this release.
+    - General code maintenance and cleanup.
+    - Bug fixes.
+  * debian/rules:
+    - Bump shlibs to 0.19.1.
+    - Removed obsolete flags from UDEB_CONFIGURE_EXTRA_FLAGS:
+      (--without-xft2, --without-ft2, --without-pangox, --without-glX)
+  * debian/control{.in}:
+    - Bumped libglib2.0-dev build-dependency to 2.18.0.
+    - Bumped libgtk2.0-dev build-dependency to 2.12.0.
+  * Patches dropped due to obsolete upstream code:
+    - 04_dsp_non_alias.patch
+    - 20_make_ft2_optional.patch
+    - 92_full_bold_fonts.patch
+  * Patches updated for new version:
+    - 12_python_reaper.patch
+    - 25_optional-ncurses.patch
+    - 90_autoreconf.patch
+    - 93_add_alt_screen_scroll_toggle.patch
+  * debian/patches/92_pangocairo_full_bold_fonts.patch:
+    - Replacement for the dropped 92_full_bold_fonts.patch, which
+      was applicable to the deprecated xft backend. This patch applies
+      to the PangoCairo backend, and was submitted by Kees Cook to
+      http://bugzilla.gnome.org/show_bug.cgi?id=54926
+  * Dropped debian/patches/94_no_nul_backspace.patch:
+    - Merged upstream.
+  * debian/patches/26_optional-x.patch:
+    - Add option to build without X Window System. This flag
+      was dropped from the new upstream version.
+
+ -- Chris Coulson <chrisccoulson@googlemail.com>  Tue, 13 Jan 2009 00:16:52 +0000
+
 vte (1:0.17.4-0ubuntu3) jaunty; urgency=low
 
   * 94_no_nul_backspace.patch: Avoid sending NUL character for

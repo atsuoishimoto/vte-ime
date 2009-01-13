@@ -1,0 +1,11 @@
+diff -Nur -x '*.orig' -x '*~' vte-0.19.4/configure.in vte-0.19.4.new/configure.in
+--- vte-0.19.4/configure.in	2009-01-13 00:11:20.000000000 +0000
++++ vte-0.19.4.new/configure.in	2009-01-13 00:11:36.000000000 +0000
+@@ -229,6 +229,7 @@
+ ################################################################################
+ # Core
+ ################################################################################
++AC_PATH_XTRA()
+ 
+ # Use all available features under glibc, and disable accidental use of
+ # deprecated functionality.

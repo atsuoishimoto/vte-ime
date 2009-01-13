@@ -11,14 +11,18 @@
   <functions>
     <function name="VteTerminal" link="VteTerminal.html#VteTerminal-struct"/>
     <function name="enum VteTerminalEraseBinding" link="VteTerminal.html#VteTerminalEraseBinding"/>
+    <function name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
+    <function name="enum VteTerminalCursorBlinkMode" link="VteTerminal.html#VteTerminalCursorBlinkMode"/>
     <function name="vte_terminal_new ()" link="VteTerminal.html#vte-terminal-new"/>
     <function name="vte_terminal_im_append_menuitems ()" link="VteTerminal.html#vte-terminal-im-append-menuitems"/>
     <function name="vte_terminal_fork_command ()" link="VteTerminal.html#vte-terminal-fork-command"/>
     <function name="vte_terminal_forkpty ()" link="VteTerminal.html#vte-terminal-forkpty"/>
     <function name="vte_terminal_set_pty ()" link="VteTerminal.html#vte-terminal-set-pty"/>
+    <function name="vte_terminal_get_pty ()" link="VteTerminal.html#vte-terminal-get-pty"/>
     <function name="vte_terminal_feed ()" link="VteTerminal.html#vte-terminal-feed"/>
     <function name="vte_terminal_feed_child ()" link="VteTerminal.html#vte-terminal-feed-child"/>
     <function name="vte_terminal_feed_child_binary ()" link="VteTerminal.html#vte-terminal-feed-child-binary"/>
+    <function name="vte_terminal_get_child_exit_status ()" link="VteTerminal.html#vte-terminal-get-child-exit-status"/>
     <function name="vte_terminal_select_all ()" link="VteTerminal.html#vte-terminal-select-all"/>
     <function name="vte_terminal_select_none ()" link="VteTerminal.html#vte-terminal-select-none"/>
     <function name="vte_terminal_copy_clipboard ()" link="VteTerminal.html#vte-terminal-copy-clipboard"/>
@@ -49,6 +53,8 @@
     <function name="vte_terminal_set_background_transparent ()" link="VteTerminal.html#vte-terminal-set-background-transparent"/>
     <function name="vte_terminal_set_background_tint_color ()" link="VteTerminal.html#vte-terminal-set-background-tint-color"/>
     <function name="vte_terminal_set_scroll_background ()" link="VteTerminal.html#vte-terminal-set-scroll-background"/>
+    <function name="vte_terminal_set_cursor_shape ()" link="VteTerminal.html#vte-terminal-set-cursor-shape"/>
+    <function name="vte_terminal_get_cursor_shape ()" link="VteTerminal.html#vte-terminal-get-cursor-shape"/>
     <function name="vte_terminal_set_cursor_blinks ()" link="VteTerminal.html#vte-terminal-set-cursor-blinks"/>
     <function name="vte_terminal_get_cursor_blink_mode ()" link="VteTerminal.html#vte-terminal-get-cursor-blink-mode"/>
     <function name="vte_terminal_set_cursor_blink_mode ()" link="VteTerminal.html#vte-terminal-set-cursor-blink-mode"/>
@@ -95,6 +101,32 @@
     <function name="vte_terminal_get_icon_title ()" link="VteTerminal.html#vte-terminal-get-icon-title"/>
     <function name="vte_terminal_get_row_count ()" link="VteTerminal.html#vte-terminal-get-row-count"/>
     <function name="vte_terminal_get_window_title ()" link="VteTerminal.html#vte-terminal-get-window-title"/>
+    <function name="The &quot;allow-bold&quot; property" link="VteTerminal.html#VteTerminal--allow-bold"/>
+    <function name="The &quot;audible-bell&quot; property" link="VteTerminal.html#VteTerminal--audible-bell"/>
+    <function name="The &quot;background-image-file&quot; property" link="VteTerminal.html#VteTerminal--background-image-file"/>
+    <function name="The &quot;background-image-pixbuf&quot; property" link="VteTerminal.html#VteTerminal--background-image-pixbuf"/>
+    <function name="The &quot;background-opacity&quot; property" link="VteTerminal.html#VteTerminal--background-opacity"/>
+    <function name="The &quot;background-saturation&quot; property" link="VteTerminal.html#VteTerminal--background-saturation"/>
+    <function name="The &quot;background-tint-color&quot; property" link="VteTerminal.html#VteTerminal--background-tint-color"/>
+    <function name="The &quot;background-transparent&quot; property" link="VteTerminal.html#VteTerminal--background-transparent"/>
+    <function name="The &quot;backspace-binding&quot; property" link="VteTerminal.html#VteTerminal--backspace-binding"/>
+    <function name="The &quot;cursor-blink-mode&quot; property" link="VteTerminal.html#VteTerminal--cursor-blink-mode"/>
+    <function name="The &quot;cursor-shape&quot; property" link="VteTerminal.html#VteTerminal--cursor-shape"/>
+    <function name="The &quot;delete-binding&quot; property" link="VteTerminal.html#VteTerminal--delete-binding"/>
+    <function name="The &quot;emulation&quot; property" link="VteTerminal.html#VteTerminal--emulation"/>
+    <function name="The &quot;encoding&quot; property" link="VteTerminal.html#VteTerminal--encoding"/>
+    <function name="The &quot;font-desc&quot; property" link="VteTerminal.html#VteTerminal--font-desc"/>
+    <function name="The &quot;icon-title&quot; property" link="VteTerminal.html#VteTerminal--icon-title"/>
+    <function name="The &quot;pointer-autohide&quot; property" link="VteTerminal.html#VteTerminal--pointer-autohide"/>
+    <function name="The &quot;pty&quot; property" link="VteTerminal.html#VteTerminal--pty"/>
+    <function name="The &quot;scroll-background&quot; property" link="VteTerminal.html#VteTerminal--scroll-background"/>
+    <function name="The &quot;scroll-on-keystroke&quot; property" link="VteTerminal.html#VteTerminal--scroll-on-keystroke"/>
+    <function name="The &quot;scroll-on-output&quot; property" link="VteTerminal.html#VteTerminal--scroll-on-output"/>
+    <function name="The &quot;scrollback-lines&quot; property" link="VteTerminal.html#VteTerminal--scrollback-lines"/>
+    <function name="The &quot;visible-bell&quot; property" link="VteTerminal.html#VteTerminal--visible-bell"/>
+    <function name="The &quot;window-title&quot; property" link="VteTerminal.html#VteTerminal--window-title"/>
+    <function name="The &quot;word-chars&quot; property" link="VteTerminal.html#VteTerminal--word-chars"/>
+    <function name="The &quot;beep&quot; signal" link="VteTerminal.html#VteTerminal-beep"/>
     <function name="The &quot;char-size-changed&quot; signal" link="VteTerminal.html#VteTerminal-char-size-changed"/>
     <function name="The &quot;child-exited&quot; signal" link="VteTerminal.html#VteTerminal-child-exited"/>
     <function name="The &quot;commit&quot; signal" link="VteTerminal.html#VteTerminal-commit"/>
@@ -127,9 +159,5 @@
     <function name="The &quot;window-title-changed&quot; signal" link="VteTerminal.html#VteTerminal-window-title-changed"/>
     <function name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <function name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
-    <function name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
-    <function name="vte_reaper_get ()" link="VteReaper.html#vte-reaper-get"/>
-    <function name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child"/>
-    <function name="The &quot;child-exited&quot; signal" link="VteReaper.html#VteReaper-child-exited"/>
   </functions>
 </book>

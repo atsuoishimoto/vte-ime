@@ -41,6 +41,7 @@
 #include <unistd.h>
 #include <glib/gi18n-lib.h>
 
+#include "vteunistr.h"
 #include "vte.h"
 #include "buffer.h"
 #include "debug.h"
@@ -52,7 +53,6 @@
 
 G_BEGIN_DECLS
 
-#define VTE_CURSOR_OUTLINE		1
 #define VTE_PAD_WIDTH			1
 #define VTE_TAB_WIDTH			8
 #define VTE_LINE_WIDTH			1
@@ -91,10 +91,15 @@ G_BEGIN_DECLS
 #define VTE_MAX_PROCESS_TIME		100
 #define VTE_CELL_BBOX_SLACK		1
 
+#define VTE_UTF8_BPC                    (6) /* Maximum number of bytes used per UTF-8 character */
+
+#define I_(string) (g_intern_static_string(string))
+
+
 /* The structure we use to hold characters we're supposed to display -- this
  * includes any supported visible attributes. */
 struct vte_charcell {
-	gunichar c;		/* The Unicode character. */
+	vteunistr c;		/* The Unicode string for the cell. */
 
 	struct vte_charcell_attr {
 		guint32 columns: 4;	/* Number of visible columns
@@ -135,6 +140,16 @@ typedef enum {
   VTE_REGEX_CURSOR_GDKCURSORTYPE,
   VTE_REGEX_CURSOR_NAME
 } VteRegexCursorMode;
+
+/* The order is important */
+typedef enum {
+	MOUSE_TRACKING_NONE,
+	MOUSE_TRACKING_SEND_XY_ON_CLICK,
+	MOUSE_TRACKING_SEND_XY_ON_BUTTON,
+	MOUSE_TRACKING_HILITE_TRACKING,
+	MOUSE_TRACKING_CELL_MOTION_TRACKING,
+	MOUSE_TRACKING_ALL_MOTION_TRACKING
+} MouseTrackingMode;
 
 /* A match regex, with a tag. */
 struct vte_match_regex {
@@ -207,6 +222,7 @@ struct _VteTerminalPrivate {
 	gboolean pty_input_active;
 	GPid pty_pid;			/* pid of child using pty slave */
 	VteReaper *pty_reaper;
+        int child_exit_status;
 
 	/* Input data queues. */
 	const char *encoding;		/* the pty's encoding */
@@ -278,8 +294,7 @@ struct _VteTerminalPrivate {
 	gboolean selecting;
 	gboolean selecting_restart;
 	gboolean selecting_had_delta;
-	gboolean block_mode;
-	gboolean had_block_mode;
+	gboolean selection_block_mode;
 	char *selection;
 	enum vte_selection_type {
 		selection_type_char,
@@ -287,10 +302,10 @@ struct _VteTerminalPrivate {
 		selection_type_line
 	} selection_type;
 	struct selection_event_coords {
-		double x, y;
-	} selection_origin, selection_last, selection_restart_origin;
-	struct selection_cell_coords {
 		long x, y;
+	} selection_origin, selection_last;
+	struct selection_cell_coords {
+		long row, col;
 	} selection_start, selection_end;
 
 	/* Miscellaneous options. */
@@ -314,6 +329,9 @@ struct _VteTerminalPrivate {
 	gboolean scroll_on_keystroke;
 	long scrollback_lines;
 
+	/* Cursor shape */
+	VteTerminalCursorShape cursor_shape;
+
 	/* Cursor blinking. */
         VteTerminalCursorBlinkMode cursor_blink_mode;
 	gboolean cursor_blink_state;
@@ -326,13 +344,11 @@ struct _VteTerminalPrivate {
 
 	/* Input device options. */
 	time_t last_keypress_time;
-	gboolean mouse_send_xy_on_click;
-	gboolean mouse_send_xy_on_button;
-	gboolean mouse_hilite_tracking;
-	gboolean mouse_cell_motion_tracking;
-	gboolean mouse_all_motion_tracking;
+
+	int mouse_tracking_mode; /* this is of type MouseTrackingMode,
+				    but we need to guarantee its type. */
 	guint mouse_last_button;
-	gdouble mouse_last_x, mouse_last_y;
+	long mouse_last_x, mouse_last_y;
 	gboolean mouse_autohide;
 	guint mouse_autoscroll_tag;
 
@@ -353,7 +369,6 @@ struct _VteTerminalPrivate {
 	PangoFontDescription *fontdesc;
 	VteTerminalAntiAlias fontantialias;
 	gboolean fontdirty;
-	GtkSettings *connected_settings;
 
 	/* Data used when rendering the text which reflects server resources
 	 * and data, which should be dropped when unrealizing and (re)created
@@ -433,6 +448,7 @@ void _vte_terminal_adjust_adjustments(VteTerminal *terminal);
 void _vte_terminal_queue_contents_changed(VteTerminal *terminal);
 void _vte_terminal_emit_text_deleted(VteTerminal *terminal);
 void _vte_terminal_emit_text_inserted(VteTerminal *terminal);
+void _vte_terminal_cursor_down (VteTerminal *terminal);
 gboolean _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 			       gboolean force_insert_mode,
 			       gboolean invalidate_cells);
@@ -443,8 +459,18 @@ void _vte_terminal_clear_tabstop(VteTerminal *terminal, int column);
 gboolean _vte_terminal_get_tabstop(VteTerminal *terminal, int column);
 void _vte_terminal_set_tabstop(VteTerminal *terminal, int column);
 void _vte_terminal_update_insert_delta(VteTerminal *terminal);
+void _vte_terminal_cleanup_tab_fragments_at_cursor (VteTerminal *terminal);
+void _vte_terminal_audible_beep(VteTerminal *terminal);
+void _vte_terminal_visible_beep(VteTerminal *terminal);
+void _vte_terminal_beep(VteTerminal *terminal);
 
 void _vte_terminal_inline_error_message(VteTerminal *terminal, const char *format, ...) G_GNUC_PRINTF(2,3);
+
+/* vteseq.c: */
+void _vte_terminal_handle_sequence(VteTerminal *terminal,
+				   const char *match_s,
+				   GQuark match,
+				   GValueArray *params);
 
 G_END_DECLS
 

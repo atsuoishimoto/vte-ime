@@ -1,0 +1,11 @@
+<indexdiv>
+<indexdiv><title>V</title>
+<indexentry><primaryie linkends="vte-terminal-forkpty"><link linkend="vte-terminal-forkpty">vte_terminal_forkpty</link></primaryie></indexentry>
+<indexentry><primaryie linkends="vte-terminal-get-default-emulation"><link linkend="vte-terminal-get-default-emulation">vte_terminal_get_default_emulation</link></primaryie></indexentry>
+<indexentry><primaryie linkends="vte-terminal-get-text-include-trailing-spaces"><link linkend="vte-terminal-get-text-include-trailing-spaces">vte_terminal_get_text_include_trailing_spaces</link></primaryie></indexentry>
+<indexentry><primaryie linkends="vte-terminal-set-color-cursor"><link linkend="vte-terminal-set-color-cursor">vte_terminal_set_color_cursor</link></primaryie></indexentry>
+<indexentry><primaryie linkends="vte-terminal-set-color-highlight"><link linkend="vte-terminal-set-color-highlight">vte_terminal_set_color_highlight</link></primaryie></indexentry>
+<indexentry><primaryie linkends="vte-terminal-set-font-from-string-full"><link linkend="vte-terminal-set-font-from-string-full">vte_terminal_set_font_from_string_full</link></primaryie></indexentry>
+<indexentry><primaryie linkends="vte-terminal-set-font-full"><link linkend="vte-terminal-set-font-full">vte_terminal_set_font_full</link></primaryie></indexentry>
+</indexdiv>
+</indexdiv>

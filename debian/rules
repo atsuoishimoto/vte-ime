@@ -20,17 +20,13 @@ DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/$(libvteN)
 DEB_FIXPERMS_EXCLUDE += gnome-pty-helper
 DEB_DBG_PACKAGE_python-vte = python-vte-dbg
 .PRECIOUS: configure-stamp-% dbg-configure-stamp-%
-DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.17.1)' --add-udeb=$(udeb)
+DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.19.1)' --add-udeb=$(udeb)
 
 UDEB_CONFIGURE_EXTRA_FLAGS += \
 	--disable-python \
 	--disable-gnome-pty-helper \
 	--disable-gtk-doc \
 	--without-x \
-	--without-xft2 \
-	--without-ft2 \
-	--without-pangox \
-	--without-glX \
 	--without-ncurses
 
 DEB_DESTDIR := $(CURDIR)/debian/tmp/main

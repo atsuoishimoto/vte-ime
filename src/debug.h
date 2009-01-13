@@ -46,11 +46,21 @@ typedef enum {
 	VTE_DEBUG_TIMEOUT	= 1 << 16,
 	VTE_DEBUG_DRAW		= 1 << 17,
 	VTE_DEBUG_ALLY		= 1 << 18,
-	VTE_DEBUG_ADJ		= 1 << 19
+	VTE_DEBUG_ADJ		= 1 << 19,
+	VTE_DEBUG_PANGOCAIRO    = 1 << 20,
+	VTE_DEBUG_WIDGET_SIZE   = 1 << 21
 } VteDebugFlags;
 
-void _vte_debug_parse_string(const char *string);
-gboolean _vte_debug_on(VteDebugFlags flags) G_GNUC_CONST;
+void _vte_debug_init(void);
+
+extern VteDebugFlags _vte_debug_flags;
+static inline gboolean _vte_debug_on(VteDebugFlags flags) G_GNUC_CONST G_GNUC_UNUSED;
+
+static inline gboolean
+_vte_debug_on(VteDebugFlags flags)
+{
+	return (_vte_debug_flags & flags) == flags;
+}
 
 #ifdef VTE_DEBUG
 #define _VTE_DEBUG_IF(flags) if (G_UNLIKELY (_vte_debug_on (flags)))

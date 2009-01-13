@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "../config.h"
+#include <config.h>
 #include <sys/types.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -278,47 +278,10 @@ static const struct _vte_iso2022_map _vte_iso2022_map_wide_G[] = {
 #include "unitable.CNS11643"
 };
 
-#include "uniwidths"
-
 static gint
 _vte_direct_compare(gconstpointer a, gconstpointer b)
 {
 	return GPOINTER_TO_INT(a) - GPOINTER_TO_INT(b);
-}
-
-static gboolean
-_vte_iso2022_is_ambiguous_ht(gunichar c)
-{
-	static GHashTable *ambiguous;
-	if (G_UNLIKELY (ambiguous == NULL)) {
-		gpointer p;
-		gsize i;
-		ambiguous = g_hash_table_new (NULL, NULL);
-		for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_ambiguous_chars); i++) {
-			p = GINT_TO_POINTER(_vte_iso2022_ambiguous_chars[i]);
-			g_hash_table_insert(ambiguous, p, p);
-		}
-	}
-
-	return g_hash_table_lookup(ambiguous, GINT_TO_POINTER(c)) != NULL;
-}
-static inline gboolean
-_vte_iso2022_is_ambiguous(gunichar c)
-{
-	gsize i;
-	for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_unambiguous_ranges); i++) {
-		if ((c >= _vte_iso2022_unambiguous_ranges[i].start) &&
-		    (c <= _vte_iso2022_unambiguous_ranges[i].end)) {
-			return FALSE;
-		}
-	}
-	for (i = 0; i < G_N_ELEMENTS(_vte_iso2022_ambiguous_ranges); i++) {
-		if ((c >= _vte_iso2022_ambiguous_ranges[i].start) &&
-		    (c <= _vte_iso2022_ambiguous_ranges[i].end)) {
-			return TRUE;
-		}
-	}
-	return _vte_iso2022_is_ambiguous_ht (c);
 }
 
 /* If we only have a codepoint, guess what the ambiguous width should be based
@@ -327,23 +290,20 @@ static int
 _vte_iso2022_ambiguous_width_guess(void)
 {
 	static int guess;
-	if (guess == 0) {
+	if (G_UNLIKELY (guess == 0)) {
 		const char *lang = NULL;
 		guess = 1;
-		if ((lang == NULL) && (g_getenv("LC_ALL") != NULL)) {
+		if (lang == NULL)
 			lang = g_getenv("LC_ALL");
-		}
-		if ((lang == NULL) && (g_getenv("LC_CTYPE") != NULL)) {
+		if (lang == NULL)
 			lang = g_getenv("LC_CTYPE");
-		}
-		if ((lang == NULL) && (g_getenv("LANG") != NULL)) {
+		if (lang == NULL)
 			lang = g_getenv("LANG");
-		}
-		if (lang != NULL) {
+		if (lang) {
 			if (g_ascii_strncasecmp(lang, "ja", 2) == 0 ||
-					g_ascii_strncasecmp(lang, "ko", 2) == 0 ||
-					g_ascii_strncasecmp(lang, "vi", 2) == 0 ||
-					g_ascii_strncasecmp(lang, "zh", 2) == 0) {
+			    g_ascii_strncasecmp(lang, "ko", 2) == 0 ||
+			    g_ascii_strncasecmp(lang, "vi", 2) == 0 ||
+			    g_ascii_strncasecmp(lang, "zh", 2) == 0) {
 				guess = 2;
 			}
 		}
@@ -360,7 +320,7 @@ _vte_iso2022_ambiguous_width_guess(void)
 static int
 _vte_iso2022_ambiguous_width(struct _vte_iso2022_state *state)
 {
-	const char *wide_codelist[] = {
+	const char wide_codelist[][10] = {
 		"big5",
 		"big5hkscs",
 		"euccn",
@@ -370,6 +330,7 @@ _vte_iso2022_ambiguous_width(struct _vte_iso2022_state *state)
 		"gb18030",
 		"gb2312",
 		"gbk",
+		"shiftjis",
 		"tcvn",
 	};
 	gsize i, j;
@@ -383,12 +344,11 @@ _vte_iso2022_ambiguous_width(struct _vte_iso2022_state *state)
 	/* Sort-of canonify the encoding name. */
 	i = j = 0;
 	for (i = 0; state->codeset[i] != '\0'; i++) {
-		if (g_ascii_isalnum(state->codeset[i])) {
+		if (g_ascii_isalnum(state->codeset[i]))
 			codeset[j++] = g_ascii_tolower(state->codeset[i]);
-		}
-		if (j >= sizeof(codeset) - 1) {
+
+		if (j >= sizeof(codeset) - 1)
 			break;
-		}
 	}
 	codeset[j] = '\0';
 
@@ -403,17 +363,44 @@ _vte_iso2022_ambiguous_width(struct _vte_iso2022_state *state)
 	 * Decide the ambiguous width according to the default region if 
 	 * current locale is UTF-8.
 	 */
-	if (strcmp (codeset, "utf8") == 0 && g_getenv("VTE_CJK_WIDTH") != NULL) {
+	if (strcmp (codeset, "utf8") == 0) {
 	  const char *env = g_getenv ("VTE_CJK_WIDTH");
-	  if ((g_ascii_strcasecmp (env, "narrow")==0) || (g_ascii_strcasecmp (env, "0")==0))
+	  if (env && (g_ascii_strcasecmp (env, "narrow")==0 || g_ascii_strcasecmp (env, "0")==0))
 	    return 1;
-	  if ((g_ascii_strcasecmp (env, "wide")==0) || (g_ascii_strcasecmp (env, "1")==0))
+	  if (env && (g_ascii_strcasecmp (env, "wide")==0 || g_ascii_strcasecmp (env, "1")==0))
 	    return 2;
 	  else
 	    return _vte_iso2022_ambiguous_width_guess ();
 	}
 
 	/* Not in the list => not wide. */
+	return 1;
+}
+
+static inline gboolean
+_vte_iso2022_is_ambiguous(gunichar c)
+{
+	if (G_LIKELY (c < 0x80))
+		return FALSE;
+	if (G_UNLIKELY (g_unichar_iszerowidth (c)))
+		return FALSE;
+	return G_UNLIKELY (!g_unichar_iswide (c) && g_unichar_iswide_cjk (c));
+}
+
+int
+_vte_iso2022_unichar_width(struct _vte_iso2022_state *state,
+			   gunichar c)
+{
+	if (G_LIKELY (c < 0x80))
+		return 1;
+	if (G_UNLIKELY (g_unichar_iszerowidth (c)))
+		return 0;
+	if (G_UNLIKELY (g_unichar_iswide (c)))
+		return 2;
+	if (G_LIKELY (state->ambiguous_width == 1))
+		return 1;
+	if (G_UNLIKELY (g_unichar_iswide_cjk (c)))
+		return 2;
 	return 1;
 }
 
@@ -748,16 +735,16 @@ _vte_iso2022_map_get(gunichar mapname,
 	}
 }
 
-gssize
+int
 _vte_iso2022_get_encoded_width(gunichar c)
 {
-	gssize width;
+	int width;
 	width = (c & VTE_ISO2022_ENCODED_WIDTH_MASK) >> VTE_ISO2022_ENCODED_WIDTH_BIT_OFFSET;
 	return CLAMP(width, 0, 2);
 }
 
 static gunichar
-_vte_iso2022_set_encoded_width(gunichar c, gssize width)
+_vte_iso2022_set_encoded_width(gunichar c, int width)
 {
 	width = CLAMP(width, 0, 2);
 	c &= ~(VTE_ISO2022_ENCODED_WIDTH_MASK);
@@ -776,9 +763,9 @@ _vte_iso2022_state_new(const char *native_codeset,
 	state->current = 0;
 	state->override = -1;
 	state->g[0] = 'B';
-	state->g[1] = '0';
-	state->g[2] = 'J';
-	state->g[3] = WIDE_FUDGE + 'D';
+	state->g[1] = 'B';
+	state->g[2] = 'B';
+	state->g[3] = 'B';
 	state->codeset = native_codeset;
 	state->native_codeset = state->codeset;
 	if (native_codeset == NULL) {
@@ -843,7 +830,7 @@ _vte_iso2022_state_set_codeset(struct _vte_iso2022_state *state,
 	}
 	state->codeset = g_intern_string (codeset);
 	state->conv = conv;
-	state->ambiguous_width = _vte_iso2022_ambiguous_width(state);
+	state->ambiguous_width = _vte_iso2022_ambiguous_width (state);
 }
 
 const char *
@@ -1246,7 +1233,9 @@ process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize lengt
 		} while ((inbytes > 0) && !stop);
 
 		/* encode any ambiguous widths and skip blanks */
-		for (i = j = 0; buf + i < outbuf; i++) {
+		j = gunichars->len;
+		g_array_set_size(gunichars, gunichars->len + outbuf-buf);
+		for (i = 0; buf + i < outbuf; i++) {
 			c = buf[i];
 			if (G_UNLIKELY (c == '\0')) {
 				/* Skip the padding character. */
@@ -1256,10 +1245,9 @@ process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize lengt
 				width = ambiguous_width;
 				c = _vte_iso2022_set_encoded_width(c, width);
 			}
-			buf[j++] = c;
+			g_array_index(gunichars, gunichar, j++) = c;
 		}
-		/* And append the unichars to the GArray. */
-		g_array_append_vals(gunichars, buf, j);
+		gunichars->len = j;
 
 		/* Done. */
 		processed = length - inbytes;
@@ -1269,6 +1257,8 @@ process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize lengt
 				     &or_mask, &and_mask);
 		i = 0;
 		acc = 0;
+		j = gunichars->len;
+		g_array_set_size(gunichars, gunichars->len + length);
 		do {
 			if (i < length) {
 				acc = (acc << 8) | cdata[i];
@@ -1301,7 +1291,7 @@ process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize lengt
 							"%04x\n", acc, c);
 					c = _vte_iso2022_set_encoded_width(c, width);
 				}
-				g_array_append_val(gunichars, c);
+				g_array_index(gunichars, gunichar, j++) = c;
 				if (single) {
 					break;
 				}
@@ -1309,6 +1299,7 @@ process_cdata(struct _vte_iso2022_state *state, const guchar *cdata, gsize lengt
 			}
 		} while (i < length);
 		processed = i;
+		gunichars->len = j;
 	}
 	return processed;
 }
@@ -1761,19 +1752,6 @@ _vte_iso2022_process(struct _vte_iso2022_state *state,
 	return length;
 }
 
-gssize
-_vte_iso2022_unichar_width(gunichar c)
-{
-	c = c & ~(VTE_ISO2022_ENCODED_WIDTH_MASK); /* just in case */
-	if (G_UNLIKELY (_vte_iso2022_is_ambiguous(c))) {
-		return _vte_iso2022_ambiguous_width_guess();
-	}
-	if (g_unichar_iswide(c)) {
-		return 2;
-	}
-	return 1;
-}
-
 #ifdef ISO2022_MAIN
 #include <stdio.h>
 int
@@ -1825,7 +1803,7 @@ main(int argc, char **argv)
 			}
 		}
 		_vte_buffer_append(buffer, string->str, string->len);
-		_vte_iso2022_process(state, buffer, gunichars);
+		_vte_iso2022_process(state, buffer, _vte_buffer_length (buffer), gunichars);
 		g_string_free(string, TRUE);
 	} else {
 		for (i = 0; i < G_N_ELEMENTS(strings); i++) {
@@ -1833,7 +1811,7 @@ main(int argc, char **argv)
 			_vte_buffer_append(buffer, string->str, string->len);
 			g_string_free(string, TRUE);
 			if (strings[i].process) {
-				_vte_iso2022_process(state, buffer, gunichars);
+				_vte_iso2022_process(state, buffer, _vte_buffer_length (buffer), gunichars);
 			}
 		}
 	}

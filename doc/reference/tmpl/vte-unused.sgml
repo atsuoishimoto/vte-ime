@@ -40,6 +40,36 @@ pty
 reaper.sgml
 
 
+<!-- ##### SECTION ./tmpl/reaper.sgml:Long_Description ##### -->
+<para>
+Because an application may need to be notified when child processes
+exit, and because there is only one %SIGCHLD handler, the #VteTerminal
+widget relies on a #VteReaper to watch for %SIGCHLD notifications and
+retrieve the exit status of child processes which have exited.  When
+glib provides child_watch functionality, the #VteReaper merely acts as
+a proxy for glib's own functionality.
+</para>
+
+
+<!-- ##### SECTION ./tmpl/reaper.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/reaper.sgml:Short_Description ##### -->
+A singleton object which catches %SIGCHLD signals and converts them into
+GObject-style &quot;child-exited&quot; signals.
+
+
+<!-- ##### SECTION ./tmpl/reaper.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/reaper.sgml:Title ##### -->
+VteReaper
+
+
 <!-- ##### SECTION ./tmpl/vte-unused.sgml:Stability_Level ##### -->
 
 
@@ -172,6 +202,21 @@ VteBg
 @VTE_DEBUG_KEYBOARD: 
 @VTE_DEBUG_LIFECYCLE: 
 
+<!-- ##### STRUCT VteReaper ##### -->
+<para>
+This should not be accessed directly.
+</para>
+
+
+<!-- ##### SIGNAL VteReaper::child-exited ##### -->
+<para>
+Emitted when the #VteReaper object detects that a child of the current process has exited.
+</para>
+
+@vtereaper: the object which received the signal.
+@arg1: the process ID of the exited child.
+@arg2: the status of the exited child, as returned by waitpid().
+
 <!-- ##### STRUCT VteReaperClass ##### -->
 <para>
 
@@ -199,6 +244,18 @@ VteBg
 
 @freeing: 
 @data: 
+
+<!-- ##### ARG VteTerminal:font ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG VteTerminal:font-antialias ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### STRUCT VteTerminalClass ##### -->
 <para>
@@ -331,6 +388,21 @@ VteBg
 @master: 
 @columns: 
 @rows: 
+@Returns: 
+
+<!-- ##### FUNCTION vte_reaper_add_child ##### -->
+<para>
+
+</para>
+
+@pid: 
+@Returns: 
+
+<!-- ##### FUNCTION vte_reaper_get ##### -->
+<para>
+
+</para>
+
 @Returns: 
 
 <!-- ##### FUNCTION vte_ring_append ##### -->
