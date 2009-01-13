@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "../config.h"
+#include <config.h>
 #include <sys/types.h>
 #include <assert.h>
 #include <ctype.h>
@@ -51,7 +51,7 @@ main(int argc, char **argv)
 	GQuark quark;
 	GValueArray *values;
 
-	_vte_debug_parse_string(getenv("VTE_DEBUG_FLAGS"));
+	_vte_debug_init();
 
 	if (argc < 2) {
 		g_print("usage: %s terminal [file]\n", argv[0]);

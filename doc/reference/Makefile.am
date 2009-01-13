@@ -6,6 +6,9 @@ DOC_MODULE=vte
 # The top-level SGML file.
 DOC_MAIN_SGML_FILE=vte-docs.sgml
 
+# Extra options to supply to gtkdoc-scan
+SCAN_OPTIONS=--deprecated-guards="VTE_DISABLE_DEPRECATED"
+
 # The directory containing the source code. Relative to $(srcdir)
 DOC_SOURCE_DIR=../../src
 
@@ -44,6 +47,7 @@ IGNORE_HFILES= \
 	vteskel.h \
 	vtetc.h \
 	vtetree.h \
+	vteunistr.h \
 	vtexft.h
 
 
@@ -62,6 +66,16 @@ MAINTAINERCLEANFILES = vte-undocumented.txt
 
 include $(top_srcdir)/gtk-doc.make
 
-EXTRA_DIST += check.docs
+# This line really belongs in gtk-doc.mk
+$(REPORT_FILES): sgml-build.stamp
 
-TESTS = check.docs
+TESTS =
+
+if ENABLE_GTK_DOC
+TESTS += check-doc-coverage.sh
+endif
+
+TESTS += check-doc-syntax.sh
+EXTRA_DIST += check-doc-coverage.sh check-doc-syntax.sh
+
+TESTS_ENVIRONMENT = srcdir="$(srcdir)" top_srcdir="$(top_srcdir)" MAKE="$(MAKE) $(AM_MAKEFLAGS)" DOC_MODULE="$(DOC_MODULE)" REPORT_FILES="$(REPORT_FILES)"

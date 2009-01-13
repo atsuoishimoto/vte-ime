@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id$"
+#ident "$Id: vtemodule.c 2230 2008-11-29 21:56:32Z chpe $"
 
 #ifdef HAVE_CONFIG_H
 #include "../config.h"
@@ -27,6 +27,7 @@
 #include "../src/vte.h"
 
 extern void pyvte_register_classes(PyObject * d);
+extern void pyvte_add_constants(PyObject *module, const gchar *strip_prefix);
 extern PyMethodDef pyvte_functions[];
 extern DL_EXPORT(void) initvte(void);
 extern PyTypeObject PyVteTerminal_Type;
@@ -43,6 +44,7 @@ initvte(void)
 	d = PyModule_GetDict(m);
 
 	pyvte_register_classes(d);
+	pyvte_add_constants(m, "VTE_");
 
 	if (PyErr_Occurred()) {
 		Py_FatalError("can't initialise module vte");

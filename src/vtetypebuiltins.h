@@ -15,10 +15,12 @@ G_BEGIN_DECLS
 /* enumerations from "vte.h" */
 GType vte_terminal_erase_binding_get_type (void);
 #define VTE_TYPE_TERMINAL_ERASE_BINDING (vte_terminal_erase_binding_get_type ())
-GType vte_terminal_anti_alias_get_type (void);
-#define VTE_TYPE_TERMINAL_ANTI_ALIAS (vte_terminal_anti_alias_get_type ())
 GType vte_terminal_cursor_blink_mode_get_type (void);
 #define VTE_TYPE_TERMINAL_CURSOR_BLINK_MODE (vte_terminal_cursor_blink_mode_get_type ())
+GType vte_terminal_cursor_shape_get_type (void);
+#define VTE_TYPE_TERMINAL_CURSOR_SHAPE (vte_terminal_cursor_shape_get_type ())
+GType vte_terminal_anti_alias_get_type (void);
+#define VTE_TYPE_TERMINAL_ANTI_ALIAS (vte_terminal_anti_alias_get_type ())
 G_END_DECLS
 
 #endif /* !VTE_TYPE_BUILTINS_H */

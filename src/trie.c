@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "../config.h"
+#include <config.h>
 #include <sys/types.h>
 #ifdef HAVE_SYS_SYSLIMITS_H
 #include <sys/syslimits.h>
@@ -861,7 +861,7 @@ main(int argc, char **argv)
 	const gunichar *consumed;
 	gsize buflen;
 
-	_vte_debug_parse_string(getenv("VTE_DEBUG_FLAGS"));
+	_vte_debug_init();
 
 	g_type_init();
 	trie = _vte_trie_new();

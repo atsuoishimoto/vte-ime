@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "../config.h"
+#include <config.h>
 #include <sys/types.h>
 #include <assert.h>
 #include <ctype.h>
@@ -209,11 +209,11 @@ _vte_table_addi(struct _vte_table *table,
 
 	/* If this is the terminal node, set the result. */
 	if (length == 0) {
-		_VTE_DEBUG_IF(VTE_DEBUG_PARSE) {
-			if (table->result != NULL)
-				g_warning("`%s' and `%s' are indistinguishable",
-						table->result, result);
-		}
+		if (table->result != NULL)
+			_vte_debug_print (VTE_DEBUG_PARSE, 
+					  "`%s' and `%s' are indistinguishable.\n",
+					  table->result, result);
+
 		table->resultq = g_quark_from_string(result);
 		table->result = g_quark_to_string(table->resultq);
 		if (table->original != NULL) {
@@ -856,7 +856,7 @@ print_array(GValueArray *array)
 			}
 		}
 		printf(")");
-		_vte_matcher_free_params_array(array);
+		/* _vte_matcher_free_params_array(array); */
 	}
 }
 
