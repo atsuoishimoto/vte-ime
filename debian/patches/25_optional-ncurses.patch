@@ -1,7 +1,7 @@
 diff -Nur -x '*.orig' -x '*~' vte-0.19.4/configure.in vte-0.19.4.new/configure.in
---- vte-0.19.4/configure.in	2008-12-15 19:55:59.000000000 +0000
-+++ vte-0.19.4.new/configure.in	2009-01-12 22:05:19.000000000 +0000
-@@ -289,14 +289,25 @@
+--- vte-0.19.4/configure.in	2009-01-27 12:31:58.000000000 +0000
++++ vte-0.19.4.new/configure.in	2009-01-27 12:33:43.000000000 +0000
+@@ -289,14 +289,24 @@
  AC_CHECK_FUNC(floor,,AC_CHECK_LIB(m,floor,LIBS=["$LIBS -lm"]))
  AC_CHECK_FUNCS([ceil floor])
  
@@ -27,9 +27,71 @@ diff -Nur -x '*.orig' -x '*~' vte-0.19.4/configure.in vte-0.19.4.new/configure.i
 +            [vte_cv_termcap_lib=])])])])])
 +else
 +  AC_CHECK_FUNC([tgetent],[vte_cv_termcap_lib=libc],
-+    [AC_CHECK_LIB([termcap],[tgetent],[vte_cv_termcap_lib=libtermcap],
-+      [vte_cv_termcap_lib=])])
++    [vte_cv_termcap_lib=])
 +fi
  
  case "$vte_cv_termcap_lib" in
    libc)       # FIXME: which headers to include here?
+@@ -323,7 +333,10 @@
+                 [AC_MSG_ERROR([termcap headers not found])])
+               LIBS="-ltermcap $LIBS"
+               ;;
+-  *)          AC_MSG_ERROR([tgetent not found in any library]) ;;
++  *)          if test x$with_ncurses = xyes ; then
++                AC_MSG_ERROR([tgetent not found in any library])
++              fi
++              ;;
+ esac
+ 
+ # Search for the required modules.
+diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/keymap.c vte-0.19.4.new/src/keymap.c
+--- vte-0.19.4/src/keymap.c	2008-12-03 00:55:42.000000000 +0000
++++ vte-0.19.4.new/src/keymap.c	2009-01-27 12:35:54.000000000 +0000
+@@ -44,7 +44,7 @@
+ #include <termcap.h>
+ #define VTE_TERMCAP_NAME "termcap"
+ #else
+-#error No termcap??
++#undef VTE_TERMCAP_NAME
+ #endif
+ 
+ #ifdef VTE_DEBUG
+@@ -1008,8 +1008,10 @@
+ 	enum _vte_fkey_mode fkey_mode;
+ 	char *cap, *tmp;
+ 	const char *termcap_special = NULL;
++#ifdef VTE_TERMCAP_NAME
+ 	char ncurses_buffer[4096];
+ 	char ncurses_area[512];
++#endif
+ 
+ 	g_return_if_fail(normal != NULL);
+ 	g_return_if_fail(normal_length != NULL);
+@@ -1164,6 +1166,7 @@
+ 			}
+ 		}
+ 	}
++#ifdef VTE_TERMCAP_NAME
+ 	if (termcap_special != NULL) {
+ 		tmp = g_strdup(terminal);
+ 		cap = NULL;
+@@ -1204,6 +1207,7 @@
+ 			return;
+ 		}
+ 	}
++#endif
+ 
+ 	_vte_debug_print(VTE_DEBUG_KEYBOARD,
+ 			" (ignoring, no match for modifier state).\n");
+diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/ssfe.c vte-0.19.4.new/src/ssfe.c
+--- vte-0.19.4/src/ssfe.c	2008-12-03 00:55:42.000000000 +0000
++++ vte-0.19.4.new/src/ssfe.c	2009-01-27 12:36:30.000000000 +0000
+@@ -38,7 +38,7 @@
+ #include <termcap.h>
+ #define VTE_TERMCAP_NAME "termcap"
+ #else
+-#error No termcap??
++#undef VTE_TERMCAP_NAME
+ #endif
+ 
+ #include <sys/types.h>

@@ -1,3 +1,11 @@
+vte (1:0.19.4-0ubuntu2) jaunty; urgency=low
+
+  * 25_optional-ncurses.patch: If --without-ncurses is given, disable
+    ncurses/termcap entirely (LP: #321848).
+  * 90_autoreconf.patch: Update.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 27 Jan 2009 18:42:49 +0000
+
 vte (1:0.19.4-0ubuntu1) jaunty; urgency=low
 
   * New upstream version (LP: #316601):
