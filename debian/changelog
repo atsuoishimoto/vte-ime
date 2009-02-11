@@ -1,3 +1,10 @@
+vte (1:0.19.4-0ubuntu3) jaunty; urgency=low
+
+  * debian/patches/92_pangocairo_full_bold_fonts.patch: update from
+    upstream bug tracker with better fallback double-strike support.
+
+ -- Kees Cook <kees@ubuntu.com>  Wed, 11 Feb 2009 10:32:58 -0800
+
 vte (1:0.19.4-0ubuntu2) jaunty; urgency=low
 
   * 25_optional-ncurses.patch: If --without-ncurses is given, disable
