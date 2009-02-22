@@ -1,3 +1,9 @@
+vte (1:0.19.4-0ubuntu4) jaunty; urgency=low
+
+  * Rebuild for python2.6, fix installation path.
+
+ -- Matthias Klose <doko@ubuntu.com>  Sun, 22 Feb 2009 14:29:33 +0100
+
 vte (1:0.19.4-0ubuntu3) jaunty; urgency=low
 
   * debian/patches/92_pangocairo_full_bold_fonts.patch: update from
