@@ -1,3 +1,10 @@
+vte (1:0.19.4-0ubuntu5) jaunty; urgency=low
+
+  * Rebuild against libgtk-directfb-2.0-0 2.15.4-0ubuntu4, to correct a 
+    wrong dependency in libvte9-udeb.
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Wed, 25 Feb 2009 01:41:15 +0000
+
 vte (1:0.19.4-0ubuntu4) jaunty; urgency=low
 
   * Rebuild for python2.6, fix installation path.
