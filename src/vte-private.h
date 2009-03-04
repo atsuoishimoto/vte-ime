@@ -124,11 +124,35 @@ struct vte_charcell {
 	} attr;
 };
 
+typedef enum {
+        VTE_REGEX_GREGEX,
+        VTE_REGEX_VTE,
+        VTE_REGEX_UNDECIDED
+} VteRegexMode;
+
+typedef enum {
+  VTE_REGEX_CURSOR_GDKCURSOR,
+  VTE_REGEX_CURSOR_GDKCURSORTYPE,
+  VTE_REGEX_CURSOR_NAME
+} VteRegexCursorMode;
+
 /* A match regex, with a tag. */
 struct vte_match_regex {
-	struct _vte_regex *reg;
 	gint tag;
-	GdkCursor *cursor;
+        VteRegexMode mode;
+        union { /* switched on |mode| */
+              struct {
+                    GRegex *regex;
+                    GRegexMatchFlags flags;
+              } gregex;
+              struct _vte_regex *reg;
+        } regex;
+        VteRegexCursorMode cursor_mode;
+        union {
+	       GdkCursor *cursor;
+               char *cursor_name;
+               GdkCursorType cursor_type;
+        } cursor;
 };
 
 /* The terminal's keypad/cursor state.  A terminal can either be using the
@@ -189,9 +213,9 @@ struct _VteTerminalPrivate {
 	struct _vte_iso2022_state *iso2022;
 	struct _vte_incoming_chunk{
 		struct _vte_incoming_chunk *next;
-		gint len;
+		guint len;
 		guchar data[VTE_INPUT_CHUNK_SIZE
-			- sizeof(struct _vte_incoming_chunk *) - sizeof(gint)];
+			- 2 * sizeof(void *)];
 	} *incoming;			/* pending bytestream */
 	GArray *pending;		/* pending characters */
 	GSList *update_regions;
@@ -291,11 +315,13 @@ struct _VteTerminalPrivate {
 	long scrollback_lines;
 
 	/* Cursor blinking. */
+        VteTerminalCursorBlinkMode cursor_blink_mode;
 	gboolean cursor_blink_state;
-	gboolean cursor_blinks;
-	guint cursor_blink_tag;
-	gint cursor_blink_timeout;
-	gint64 cursor_blink_time;
+	guint cursor_blink_tag;           /* cursor blinking timeout ID */
+        gint cursor_blink_cycle;          /* gtk-cursor-blink-time / 2 */
+	gint cursor_blink_timeout;        /* gtk-cursor-blink-timeout */
+        gboolean cursor_blinks;           /* whether the cursor is actually blinking */
+	gint64 cursor_blink_time;         /* how long the cursor has been blinking yet */
 	gboolean cursor_visible;
 
 	/* Input device options. */
@@ -313,6 +339,7 @@ struct _VteTerminalPrivate {
 	/* State variables for handling match checks. */
 	char *match_contents;
 	GArray *match_attributes;
+        VteRegexMode match_regex_mode;
 	GArray *match_regexes;
 	char *match;
 	int match_tag;

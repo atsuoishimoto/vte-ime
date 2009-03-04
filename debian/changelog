@@ -1,3 +1,33 @@
+vte (1:0.17.4-2) unstable; urgency=low
+
+  * Upload to unstable.
+
+ -- Josselin Mouette <joss@debian.org>  Wed, 04 Mar 2009 13:55:08 +0100
+
+vte (1:0.17.4-1) experimental; urgency=low
+
+  * New upstream release:
+    + debian/control.in:
+      - Update build-depends.
+      - Update Standards-Version to 3.8.0, no additional changes needed.
+    + debian/rules:
+      - Update shlibs version to reflect API additions.
+    + debian/patches/29_add_am_prog_cc_c_o_for_buffer_c.patch,
+      debian/patches/01_anjuta_hang.patch:
+      - Dropped, merged upstream.
+    + debian/patches/20_make_ft2_optional.patch,
+      debian/patches/90_autoreconf.patch:
+      - Updated to apply cleanly again.
+    + debian/patches/92_full_bold_fonts.patch:
+      - Patch from the Ubuntu package to first check if a bold variant
+        of a font exists before using "pseudo-bolding".
+    + debian/python-vte.examples:
+      - Add some more examples, taken from the Ubuntu package.
+  * debian/watch:
+    + Updated for new versions.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 24 Nov 2008 10:15:11 +0100
+
 vte (1:0.16.14-4) unstable; urgency=low
 
   [ Josselin Mouette ]

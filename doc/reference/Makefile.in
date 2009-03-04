@@ -74,6 +74,7 @@ CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DSYMUTIL = @DSYMUTIL@
 ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
@@ -87,7 +88,10 @@ FT2_CONFIG = @FT2_CONFIG@
 FT2_LIBS = @FT2_LIBS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_GENMARSHAL_INTERNAL = @GLIB_GENMARSHAL_INTERNAL@
 GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
@@ -144,6 +148,7 @@ MSGFMT = @MSGFMT@
 MSGFMT_OPTS = @MSGFMT_OPTS@
 MSGMERGE = @MSGMERGE@
 NEEDEDPACKAGES = @NEEDEDPACKAGES@
+NMEDIT = @NMEDIT@
 OBJEXT = @OBJEXT@
 OTHERCFLAGS = @OTHERCFLAGS@
 OTHERLIBS = @OTHERLIBS@
@@ -183,6 +188,9 @@ VERSION = @VERSION@
 VTE_CFLAGS = @VTE_CFLAGS@
 VTE_DEFAULT_EMULATION = @VTE_DEFAULT_EMULATION@
 VTE_LIBS = @VTE_LIBS@
+VTE_MAJOR_VERSION = @VTE_MAJOR_VERSION@
+VTE_MICRO_VERSION = @VTE_MICRO_VERSION@
+VTE_MINOR_VERSION = @VTE_MINOR_VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 XGETTEXT = @XGETTEXT@
 XMKMF = @XMKMF@
@@ -295,7 +303,7 @@ IGNORE_HFILES = \
 
 # CFLAGS and LDFLAGS for compiling scan program. Only needed
 # if $(DOC_MODULE).types is non-empty.
-GTKDOC_CFLAGS = $(VTE_CFLAGS) -I$(top_srcdir)/src
+GTKDOC_CFLAGS = $(VTE_CFLAGS) -I$(top_srcdir)/src -DVTE_COMPILATION
 GTKDOC_LIBS = $(top_builddir)/src/libvte.la
 
 # Extra options to supply to gtkdoc-mkdb
@@ -304,10 +312,10 @@ MKDB_OPTIONS = --sgml-mode --output-format=xml
 # Extra options to supply to gtkdoc-fixref
 FIXXREF_OPTIONS = 
 MAINTAINERCLEANFILES = vte-undocumented.txt
-@GTK_DOC_USE_LIBTOOL_FALSE@GTKDOC_CC = $(CC) $(INCLUDES) $(AM_CFLAGS) $(CFLAGS)
-@GTK_DOC_USE_LIBTOOL_TRUE@GTKDOC_CC = $(LIBTOOL) --mode=compile $(CC) $(INCLUDES) $(AM_CFLAGS) $(CFLAGS)
-@GTK_DOC_USE_LIBTOOL_FALSE@GTKDOC_LD = $(CC) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS)
-@GTK_DOC_USE_LIBTOOL_TRUE@GTKDOC_LD = $(LIBTOOL) --mode=link $(CC) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS)
+@GTK_DOC_USE_LIBTOOL_FALSE@GTKDOC_CC = $(CC) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+@GTK_DOC_USE_LIBTOOL_TRUE@GTKDOC_CC = $(LIBTOOL) --mode=compile $(CC) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+@GTK_DOC_USE_LIBTOOL_FALSE@GTKDOC_LD = $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS)
+@GTK_DOC_USE_LIBTOOL_TRUE@GTKDOC_LD = $(LIBTOOL) --mode=link $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS)
 
 # We set GPATH here; this gives us semantics for GNU make
 # which are more like other make's VPATH, when it comes to
@@ -599,7 +607,7 @@ scan-build.stamp: $(HFILE_GLOB) $(CFILE_GLOB)
 	cd $(srcdir) && \
 	  gtkdoc-scan --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --ignore-headers="$(IGNORE_HFILES)" $(SCAN_OPTIONS) $(EXTRA_HFILES)
 	if grep -l '^..*$$' $(srcdir)/$(DOC_MODULE).types > /dev/null 2>&1 ; then \
-	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" CFLAGS="$(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)" gtkdoc-scangobj $(SCANGOBJ_OPTIONS) --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
+	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" CFLAGS="$(GTKDOC_CFLAGS) $(CFLAGS)" LDFLAGS="$(GTKDOC_LIBS) $(LDFLAGS)" gtkdoc-scangobj $(SCANGOBJ_OPTIONS) --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
 	else \
 	    cd $(srcdir) ; \
 	    for i in $(SCANOBJ_FILES) ; do \
@@ -644,7 +652,12 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	@-chmod -R u+w $(srcdir)
 	rm -rf $(srcdir)/html
 	mkdir $(srcdir)/html
-	cd $(srcdir)/html && gtkdoc-mkhtml $(DOC_MODULE) ../$(DOC_MAIN_SGML_FILE)
+	mkhtml_options=""; \
+	gtkdoc-mkhtml 2>&1 --help | grep  >/dev/null "\-\-path"; \
+	if test "$(?)" = "0"; then \
+	  mkhtml_options=--path="$(srcdir)"; \
+	fi
+	cd $(srcdir)/html && gtkdoc-mkhtml $(mkhtml_options) $(MKHTML_OPTIONS) $(DOC_MODULE) ../$(DOC_MAIN_SGML_FILE)
 	test "x$(HTML_IMAGES)" = "x" || ( cd $(srcdir) && cp $(HTML_IMAGES) html )
 	@echo 'gtk-doc: Fixing cross-references'
 	cd $(srcdir) && gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
@@ -665,7 +678,7 @@ maintainer-clean-local: clean
 	cd $(srcdir) && rm -rf xml html
 
 install-data-local:
-	installfiles=`echo $(srcdir)/html/*`; \
+	-installfiles=`echo $(srcdir)/html/*`; \
 	if test "$$installfiles" = '$(srcdir)/html/*'; \
 	then echo '-- Nothing to install' ; \
 	else \
@@ -676,8 +689,8 @@ install-data-local:
 	  done; \
 	  echo '-- Installing $(srcdir)/html/index.sgml' ; \
 	  $(INSTALL_DATA) $(srcdir)/html/index.sgml $(DESTDIR)$(TARGET_DIR) || :; \
-	  (which gtkdoc-rebase >& /dev/null && \
-            gtkdoc-rebase --relative --dest-dir=$(DESTDIR) --html-dir=$(DESTDIR)$(TARGET_DIR)) || : ; \
+	  which gtkdoc-rebase >/dev/null && \
+	    gtkdoc-rebase --relative --dest-dir=$(DESTDIR) --html-dir=$(DESTDIR)$(TARGET_DIR) ; \
 	fi
 
 uninstall-local:
@@ -698,8 +711,8 @@ dist-hook: dist-check-gtkdoc dist-hook-local
 	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
 	-cp $(srcdir)/xml/*.xml $(distdir)/xml
 	cp $(srcdir)/html/* $(distdir)/html
-	cp $(srcdir)/$(DOC_MODULE).types $(distdir)/
-	cp $(srcdir)/$(DOC_MODULE)-sections.txt $(distdir)/
+	-cp $(srcdir)/$(DOC_MODULE).types $(distdir)/
+	-cp $(srcdir)/$(DOC_MODULE)-sections.txt $(distdir)/
 	cd $(distdir) && rm -f $(DISTCLEANFILES)
 	-gtkdoc-rebase --online --relative --html-dir=$(distdir)/html
 

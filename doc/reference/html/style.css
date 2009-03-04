@@ -22,6 +22,11 @@
 
 /* this is needed so that the local anchors are displayed below the naviagtion */
 @media screen {
+  sup a.footnote
+  {
+    position: relative;
+    top: 0em ! important;
+  }
   div.refnamediv a[name], div.refsect1 a[name]
   {
     position: relative;
@@ -51,11 +56,18 @@
   {
     color: #770000;
     font-size: 80%;
+    white-space: nowrap;
   }
-  div.refentry, div.chapter, div.reference, div.part, div.book, div.index, div.glossary, div.sect1, div.appendix, div.preface
+  div.refentry, div.chapter, div.reference, div.part, div.book, div.glossary, div.sect1, div.appendix, div.preface
   {
     position: relative;
     top: 3em;
+    z-index: 0;
+  }
+  div.glossary, div.index
+  {
+    position: relative;
+    top: 2em;
     z-index: 0;
   }
   div.refnamediv
@@ -139,10 +151,17 @@ div.table table th
 
 hr
 {
-  color: #888;
-  background: #888;
+  color: #777777;
+  background: #777777;
   border: 0;
   height: 1px;
   clear: both;
 }
 
+.footer
+{
+  padding-top: 3.5em;
+  color: #777777;
+  text-align: center;
+  font-size: 80%;
+}

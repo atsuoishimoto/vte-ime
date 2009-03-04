@@ -54,10 +54,10 @@
 /* VOID:STRING,UINT (marshal.list:3) */
 void
 _vte_marshal_VOID__STRING_UINT (GClosure     *closure,
-                                GValue       *return_value,
+                                GValue       *return_value G_GNUC_UNUSED,
                                 guint         n_param_values,
                                 const GValue *param_values,
-                                gpointer      invocation_hint,
+                                gpointer      invocation_hint G_GNUC_UNUSED,
                                 gpointer      marshal_data)
 {
   typedef void (*GMarshalFunc_VOID__STRING_UINT) (gpointer     data1,
@@ -93,10 +93,10 @@ _vte_marshal_VOID__STRING_UINT (GClosure     *closure,
 /* VOID:INT,INT (marshal.list:5) */
 void
 _vte_marshal_VOID__INT_INT (GClosure     *closure,
-                            GValue       *return_value,
+                            GValue       *return_value G_GNUC_UNUSED,
                             guint         n_param_values,
                             const GValue *param_values,
-                            gpointer      invocation_hint,
+                            gpointer      invocation_hint G_GNUC_UNUSED,
                             gpointer      marshal_data)
 {
   typedef void (*GMarshalFunc_VOID__INT_INT) (gpointer     data1,
@@ -130,10 +130,10 @@ _vte_marshal_VOID__INT_INT (GClosure     *closure,
 /* VOID:UINT,UINT (marshal.list:6) */
 void
 _vte_marshal_VOID__UINT_UINT (GClosure     *closure,
-                              GValue       *return_value,
+                              GValue       *return_value G_GNUC_UNUSED,
                               guint         n_param_values,
                               const GValue *param_values,
-                              gpointer      invocation_hint,
+                              gpointer      invocation_hint G_GNUC_UNUSED,
                               gpointer      marshal_data)
 {
   typedef void (*GMarshalFunc_VOID__UINT_UINT) (gpointer     data1,
@@ -167,10 +167,10 @@ _vte_marshal_VOID__UINT_UINT (GClosure     *closure,
 /* VOID:OBJECT,OBJECT (marshal.list:7) */
 void
 _vte_marshal_VOID__OBJECT_OBJECT (GClosure     *closure,
-                                  GValue       *return_value,
+                                  GValue       *return_value G_GNUC_UNUSED,
                                   guint         n_param_values,
                                   const GValue *param_values,
-                                  gpointer      invocation_hint,
+                                  gpointer      invocation_hint G_GNUC_UNUSED,
                                   gpointer      marshal_data)
 {
   typedef void (*GMarshalFunc_VOID__OBJECT_OBJECT) (gpointer     data1,

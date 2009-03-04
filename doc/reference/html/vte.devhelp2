@@ -49,7 +49,9 @@
     <keyword type="function" name="vte_terminal_set_background_transparent ()" link="VteTerminal.html#vte-terminal-set-background-transparent"/>
     <keyword type="function" name="vte_terminal_set_background_tint_color ()" link="VteTerminal.html#vte-terminal-set-background-tint-color" since="0.11"/>
     <keyword type="function" name="vte_terminal_set_scroll_background ()" link="VteTerminal.html#vte-terminal-set-scroll-background" since="0.11"/>
-    <keyword type="function" name="vte_terminal_set_cursor_blinks ()" link="VteTerminal.html#vte-terminal-set-cursor-blinks"/>
+    <keyword type="function" name="vte_terminal_set_cursor_blinks ()" link="VteTerminal.html#vte-terminal-set-cursor-blinks" deprecated="0.16.15 Use vte_terminal_set_cursor_blink_mode() instead."/>
+    <keyword type="function" name="vte_terminal_get_cursor_blink_mode ()" link="VteTerminal.html#vte-terminal-get-cursor-blink-mode" since="0.16.15"/>
+    <keyword type="function" name="vte_terminal_set_cursor_blink_mode ()" link="VteTerminal.html#vte-terminal-set-cursor-blink-mode" since="0.16.15"/>
     <keyword type="function" name="vte_terminal_set_scrollback_lines ()" link="VteTerminal.html#vte-terminal-set-scrollback-lines"/>
     <keyword type="function" name="vte_terminal_set_font ()" link="VteTerminal.html#vte-terminal-set-font"/>
     <keyword type="function" name="vte_terminal_set_font_from_string ()" link="VteTerminal.html#vte-terminal-set-font-from-string"/>
@@ -71,10 +73,12 @@
     <keyword type="function" name="vte_terminal_get_cursor_position ()" link="VteTerminal.html#vte-terminal-get-cursor-position"/>
     <keyword type="function" name="vte_terminal_match_clear_all ()" link="VteTerminal.html#vte-terminal-match-clear-all"/>
     <keyword type="function" name="vte_terminal_match_add ()" link="VteTerminal.html#vte-terminal-match-add"/>
+    <keyword type="function" name="vte_terminal_match_add_gregex ()" link="VteTerminal.html#vte-terminal-match-add-gregex" since="0.16.15"/>
     <keyword type="function" name="vte_terminal_match_remove ()" link="VteTerminal.html#vte-terminal-match-remove"/>
     <keyword type="function" name="vte_terminal_match_check ()" link="VteTerminal.html#vte-terminal-match-check"/>
     <keyword type="function" name="vte_terminal_match_set_cursor ()" link="VteTerminal.html#vte-terminal-match-set-cursor" since="0.11"/>
     <keyword type="function" name="vte_terminal_match_set_cursor_type ()" link="VteTerminal.html#vte-terminal-match-set-cursor-type" since="0.11.9"/>
+    <keyword type="function" name="vte_terminal_match_set_cursor_name ()" link="VteTerminal.html#vte-terminal-match-set-cursor-name" since="0.16.15"/>
     <keyword type="function" name="vte_terminal_set_emulation ()" link="VteTerminal.html#vte-terminal-set-emulation"/>
     <keyword type="function" name="vte_terminal_get_emulation ()" link="VteTerminal.html#vte-terminal-get-emulation"/>
     <keyword type="function" name="vte_terminal_get_default_emulation ()" link="VteTerminal.html#vte-terminal-get-default-emulation" since="0.11.11"/>
@@ -114,19 +118,18 @@
     <keyword type="" name="The &quot;resize-window&quot; signal" link="VteTerminal.html#VteTerminal-resize-window"/>
     <keyword type="" name="The &quot;restore-window&quot; signal" link="VteTerminal.html#VteTerminal-restore-window"/>
     <keyword type="" name="The &quot;selection-changed&quot; signal" link="VteTerminal.html#VteTerminal-selection-changed"/>
+    <keyword type="" name="The &quot;set-scroll-adjustments&quot; signal" link="VteTerminal.html#VteTerminal-set-scroll-adjustments"/>
     <keyword type="" name="The &quot;status-line-changed&quot; signal" link="VteTerminal.html#VteTerminal-status-line-changed"/>
     <keyword type="" name="The &quot;text-deleted&quot; signal" link="VteTerminal.html#VteTerminal-text-deleted"/>
     <keyword type="" name="The &quot;text-inserted&quot; signal" link="VteTerminal.html#VteTerminal-text-inserted"/>
     <keyword type="" name="The &quot;text-modified&quot; signal" link="VteTerminal.html#VteTerminal-text-modified"/>
     <keyword type="" name="The &quot;text-scrolled&quot; signal" link="VteTerminal.html#VteTerminal-text-scrolled"/>
     <keyword type="" name="The &quot;window-title-changed&quot; signal" link="VteTerminal.html#VteTerminal-window-title-changed"/>
-    <keyword type="" name="" link="VteTerminal.html#id2690023"/>
-    <keyword type="" name="" link="VteTerminal.html#id2690024"/>
     <keyword type="struct" name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <keyword type="function" name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
-    <keyword type="" name="" link="VteTerminalAccessible.html#id2705498"/>
-    <keyword type="" name="" link="VteTerminalAccessible.html#id2705500"/>
-    <keyword type="" name="" link="VteReaper.html#id2706008"/>
-    <keyword type="" name="" link="VteReaper.html#id2706009"/>
+    <keyword type="struct" name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
+    <keyword type="function" name="vte_reaper_get ()" link="VteReaper.html#vte-reaper-get"/>
+    <keyword type="function" name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child"/>
+    <keyword type="" name="The &quot;child-exited&quot; signal" link="VteReaper.html#VteReaper-child-exited"/>
   </functions>
 </book>

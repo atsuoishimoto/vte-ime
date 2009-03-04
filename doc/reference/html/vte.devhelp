@@ -50,6 +50,8 @@
     <function name="vte_terminal_set_background_tint_color ()" link="VteTerminal.html#vte-terminal-set-background-tint-color"/>
     <function name="vte_terminal_set_scroll_background ()" link="VteTerminal.html#vte-terminal-set-scroll-background"/>
     <function name="vte_terminal_set_cursor_blinks ()" link="VteTerminal.html#vte-terminal-set-cursor-blinks"/>
+    <function name="vte_terminal_get_cursor_blink_mode ()" link="VteTerminal.html#vte-terminal-get-cursor-blink-mode"/>
+    <function name="vte_terminal_set_cursor_blink_mode ()" link="VteTerminal.html#vte-terminal-set-cursor-blink-mode"/>
     <function name="vte_terminal_set_scrollback_lines ()" link="VteTerminal.html#vte-terminal-set-scrollback-lines"/>
     <function name="vte_terminal_set_font ()" link="VteTerminal.html#vte-terminal-set-font"/>
     <function name="vte_terminal_set_font_from_string ()" link="VteTerminal.html#vte-terminal-set-font-from-string"/>
@@ -71,10 +73,12 @@
     <function name="vte_terminal_get_cursor_position ()" link="VteTerminal.html#vte-terminal-get-cursor-position"/>
     <function name="vte_terminal_match_clear_all ()" link="VteTerminal.html#vte-terminal-match-clear-all"/>
     <function name="vte_terminal_match_add ()" link="VteTerminal.html#vte-terminal-match-add"/>
+    <function name="vte_terminal_match_add_gregex ()" link="VteTerminal.html#vte-terminal-match-add-gregex"/>
     <function name="vte_terminal_match_remove ()" link="VteTerminal.html#vte-terminal-match-remove"/>
     <function name="vte_terminal_match_check ()" link="VteTerminal.html#vte-terminal-match-check"/>
     <function name="vte_terminal_match_set_cursor ()" link="VteTerminal.html#vte-terminal-match-set-cursor"/>
     <function name="vte_terminal_match_set_cursor_type ()" link="VteTerminal.html#vte-terminal-match-set-cursor-type"/>
+    <function name="vte_terminal_match_set_cursor_name ()" link="VteTerminal.html#vte-terminal-match-set-cursor-name"/>
     <function name="vte_terminal_set_emulation ()" link="VteTerminal.html#vte-terminal-set-emulation"/>
     <function name="vte_terminal_get_emulation ()" link="VteTerminal.html#vte-terminal-get-emulation"/>
     <function name="vte_terminal_get_default_emulation ()" link="VteTerminal.html#vte-terminal-get-default-emulation"/>
@@ -114,19 +118,18 @@
     <function name="The &quot;resize-window&quot; signal" link="VteTerminal.html#VteTerminal-resize-window"/>
     <function name="The &quot;restore-window&quot; signal" link="VteTerminal.html#VteTerminal-restore-window"/>
     <function name="The &quot;selection-changed&quot; signal" link="VteTerminal.html#VteTerminal-selection-changed"/>
+    <function name="The &quot;set-scroll-adjustments&quot; signal" link="VteTerminal.html#VteTerminal-set-scroll-adjustments"/>
     <function name="The &quot;status-line-changed&quot; signal" link="VteTerminal.html#VteTerminal-status-line-changed"/>
     <function name="The &quot;text-deleted&quot; signal" link="VteTerminal.html#VteTerminal-text-deleted"/>
     <function name="The &quot;text-inserted&quot; signal" link="VteTerminal.html#VteTerminal-text-inserted"/>
     <function name="The &quot;text-modified&quot; signal" link="VteTerminal.html#VteTerminal-text-modified"/>
     <function name="The &quot;text-scrolled&quot; signal" link="VteTerminal.html#VteTerminal-text-scrolled"/>
     <function name="The &quot;window-title-changed&quot; signal" link="VteTerminal.html#VteTerminal-window-title-changed"/>
-    <function name="" link="VteTerminal.html#id2690023"/>
-    <function name="" link="VteTerminal.html#id2690024"/>
     <function name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <function name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
-    <function name="" link="VteTerminalAccessible.html#id2705498"/>
-    <function name="" link="VteTerminalAccessible.html#id2705500"/>
-    <function name="" link="VteReaper.html#id2706008"/>
-    <function name="" link="VteReaper.html#id2706009"/>
+    <function name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
+    <function name="vte_reaper_get ()" link="VteReaper.html#vte-reaper-get"/>
+    <function name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child"/>
+    <function name="The &quot;child-exited&quot; signal" link="VteReaper.html#VteReaper-child-exited"/>
   </functions>
 </book>

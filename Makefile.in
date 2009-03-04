@@ -80,8 +80,8 @@ am__remove_distdir = \
   { test ! -d $(distdir) \
     || { find $(distdir) -type d ! -perm -200 -exec chmod u+w {} ';' \
          && rm -fr $(distdir); }; }
-DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
+DIST_ARCHIVES = $(distdir).tar.bz2
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
@@ -107,6 +107,7 @@ CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DSYMUTIL = @DSYMUTIL@
 ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
@@ -120,7 +121,10 @@ FT2_CONFIG = @FT2_CONFIG@
 FT2_LIBS = @FT2_LIBS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_GENMARSHAL_INTERNAL = @GLIB_GENMARSHAL_INTERNAL@
 GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
@@ -177,6 +181,7 @@ MSGFMT = @MSGFMT@
 MSGFMT_OPTS = @MSGFMT_OPTS@
 MSGMERGE = @MSGMERGE@
 NEEDEDPACKAGES = @NEEDEDPACKAGES@
+NMEDIT = @NMEDIT@
 OBJEXT = @OBJEXT@
 OTHERCFLAGS = @OTHERCFLAGS@
 OTHERLIBS = @OTHERLIBS@
@@ -216,6 +221,9 @@ VERSION = @VERSION@
 VTE_CFLAGS = @VTE_CFLAGS@
 VTE_DEFAULT_EMULATION = @VTE_DEFAULT_EMULATION@
 VTE_LIBS = @VTE_LIBS@
+VTE_MAJOR_VERSION = @VTE_MAJOR_VERSION@
+VTE_MICRO_VERSION = @VTE_MICRO_VERSION@
+VTE_MINOR_VERSION = @VTE_MINOR_VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 XGETTEXT = @XGETTEXT@
 XMKMF = @XMKMF@
@@ -280,10 +288,8 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = src python termcaps po doc $(am__append_1)
-EXTRA_DIST = MAINTAINERS HACKING vte.pc.in vte-uninstalled.pc.in \
-	     intltool-extract.in intltool-merge.in intltool-update.in
-
-DISTCLEANFILES = intltool-extract intltool-merge intltool-update
+EXTRA_DIST = MAINTAINERS HACKING vte.pc.in vte-uninstalled.pc.in
+DISTCLEANFILES = 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = vte.pc
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
@@ -576,7 +582,6 @@ distdir: $(DISTFILES)
 dist-gzip: distdir
 	tardir=$(distdir) && $(am__tar) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
 	$(am__remove_distdir)
-
 dist-bzip2: distdir
 	tardir=$(distdir) && $(am__tar) | bzip2 -9 -c >$(distdir).tar.bz2
 	$(am__remove_distdir)
@@ -599,7 +604,7 @@ dist-zip: distdir
 	$(am__remove_distdir)
 
 dist dist-all: distdir
-	tardir=$(distdir) && $(am__tar) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
+	tardir=$(distdir) && $(am__tar) | bzip2 -9 -c >$(distdir).tar.bz2
 	$(am__remove_distdir)
 
 # This target untars the dist file and tries a VPATH configuration.  Then

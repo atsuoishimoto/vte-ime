@@ -213,6 +213,15 @@ Emitted whenever the contents of terminal's selection changes.
 
 @vteterminal: the object which received the signal.
 
+<!-- ##### SIGNAL VteTerminal::set-scroll-adjustments ##### -->
+<para>
+
+</para>
+
+@vteterminal: the object which received the signal.
+@arg1: 
+@arg2: 
+
 <!-- ##### SIGNAL VteTerminal::status-line-changed ##### -->
 <para>
 Emitted whenever the contents of the status line are modified or cleared.
@@ -631,6 +640,24 @@ keys.
 @blink: 
 
 
+<!-- ##### FUNCTION vte_terminal_get_cursor_blink_mode ##### -->
+<para>
+
+</para>
+
+@terminal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION vte_terminal_set_cursor_blink_mode ##### -->
+<para>
+
+</para>
+
+@terminal: 
+@mode: 
+
+
 <!-- ##### FUNCTION vte_terminal_set_scrollback_lines ##### -->
 <para>
 
@@ -838,6 +865,17 @@ keys.
 @Returns: 
 
 
+<!-- ##### FUNCTION vte_terminal_match_add_gregex ##### -->
+<para>
+
+</para>
+
+@terminal: 
+@regex: 
+@flags: 
+@Returns: 
+
+
 <!-- ##### FUNCTION vte_terminal_match_remove ##### -->
 <para>
 
@@ -877,6 +915,16 @@ keys.
 @terminal: 
 @tag: 
 @cursor_type: 
+
+
+<!-- ##### FUNCTION vte_terminal_match_set_cursor_name ##### -->
+<para>
+
+</para>
+
+@terminal: 
+@tag: 
+@cursor_name: 
 
 
 <!-- ##### FUNCTION vte_terminal_set_emulation ##### -->

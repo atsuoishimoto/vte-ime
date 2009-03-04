@@ -1,6 +1,6 @@
 <refentry id="vte-Internals">
 <refmeta>
-<refentrytitle role="top_of_page">Internals</refentrytitle>
+<refentrytitle role="top_of_page" id="vte-Internals.top_of_page">Internals</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>VTE Library</refmiscinfo>
 </refmeta>
@@ -11,14 +11,10 @@
 <!--[<xref linkend="desc" endterm="desc.title"/>]-->
 </refnamediv>
 
-<refsynopsisdiv role="synopsis">
+<refsynopsisdiv id="vte-Internals.synopsis" role="synopsis">
 <title role="synopsis.title">Synopsis</title>
 
 <synopsis>
-
-
-
-
 </synopsis>
 </refsynopsisdiv>
 
@@ -30,7 +26,7 @@
 
 
 
-<refsect1 role="desc">
+<refsect1 id="vte-Internals.description" role="desc">
 <title role="desc.title">Description</title>
 <para>
 You really shouldn't see this.
@@ -38,7 +34,7 @@ You really shouldn't see this.
 </para>
 </refsect1>
 
-<refsect1 role="details">
+<refsect1 id="vte-Internals.details" role="details">
 <title role="details.title">Details</title>
 
 </refsect1>
@@ -46,6 +42,4 @@ You really shouldn't see this.
 
 
 
-
-<refsect1><refsect2 /><refsect2 /></refsect1>
 </refentry>
