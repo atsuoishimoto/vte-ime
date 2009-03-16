@@ -541,15 +541,38 @@ font_info_destroy (struct font_info *info)
 	if (info->ref_count)
 		return;
 
-#if !GTK_CHECK_VERSION (2, 14, 0)
-#define gdk_threads_add_timeout_seconds(sec, func, data) gdk_threads_add_timeout ((sec) * 1000, (func), (data))
-#endif
-
 	/* Delay destruction by a few seconds, in case we need it again */
 	ensure_quit_handler ();
 	info->destroy_timeout = gdk_threads_add_timeout_seconds (FONT_CACHE_TIMEOUT,
 								 (GSourceFunc) font_info_destroy_delayed,
 								 info);
+}
+
+static GQuark
+fontconfig_timestamp_quark (void)
+{
+	static GQuark quark;
+
+	if (G_UNLIKELY (!quark))
+		quark = g_quark_from_static_string ("vte-fontconfig-timestamp");
+
+	return quark;
+}
+
+static void
+vte_pango_cairo_set_fontconfig_timestamp (PangoContext *context,
+					  guint         fontconfig_timestamp)
+{
+	g_object_set_qdata ((GObject *) context,
+			    fontconfig_timestamp_quark (),
+			    GUINT_TO_POINTER (fontconfig_timestamp));
+}
+
+static guint
+vte_pango_cairo_get_fontconfig_timestamp (PangoContext *context)
+{
+	return GPOINTER_TO_UINT (g_object_get_qdata ((GObject *) context,
+						     fontconfig_timestamp_quark ()));
 }
 
 static guint
@@ -558,7 +581,8 @@ context_hash (PangoContext *context)
 	return pango_units_from_double (pango_cairo_context_get_resolution (context))
 	     ^ pango_font_description_hash (pango_context_get_font_description (context))
 	     ^ cairo_font_options_hash (pango_cairo_context_get_font_options (context))
-	     ^ GPOINTER_TO_UINT (pango_context_get_language (context));
+	     ^ GPOINTER_TO_UINT (pango_context_get_language (context))
+	     ^ vte_pango_cairo_get_fontconfig_timestamp (context);
 }
 
 static gboolean
@@ -568,7 +592,8 @@ context_equal (PangoContext *a,
 	return pango_cairo_context_get_resolution (a) == pango_cairo_context_get_resolution (b)
 	    && pango_font_description_equal (pango_context_get_font_description (a), pango_context_get_font_description (b))
 	    && cairo_font_options_equal (pango_cairo_context_get_font_options (a), pango_cairo_context_get_font_options (b))
-	    && pango_context_get_language (a) == pango_context_get_language (b);
+	    && pango_context_get_language (a) == pango_context_get_language (b)
+	    && vte_pango_cairo_get_fontconfig_timestamp (a) == vte_pango_cairo_get_fontconfig_timestamp (b);
 }
 
 static struct font_info *
@@ -601,7 +626,8 @@ static struct font_info *
 font_info_create_for_context (PangoContext               *context,
 			      const PangoFontDescription *desc,
 			      VteTerminalAntiAlias        antialias,
-			      PangoLanguage              *language)
+			      PangoLanguage              *language,
+			      guint                       fontconfig_timestamp)
 {
 	if (!PANGO_IS_CAIRO_FONT_MAP (pango_context_get_font_map (context))) {
 		/* Ouch, Gtk+ switched over to some drawing system?
@@ -610,6 +636,8 @@ font_info_create_for_context (PangoContext               *context,
 		g_object_unref (context);
 		context = pango_font_map_create_context (pango_cairo_font_map_get_default ());
 	}
+
+	vte_pango_cairo_set_fontconfig_timestamp (context, fontconfig_timestamp);
 
 	pango_context_set_base_dir (context, PANGO_DIRECTION_LTR);
 
@@ -659,8 +687,11 @@ font_info_create_for_screen (GdkScreen                  *screen,
 			     VteTerminalAntiAlias        antialias,
 			     PangoLanguage              *language)
 {
+	GtkSettings *settings = gtk_settings_get_for_screen (screen);
+	int fontconfig_timestamp;
+	g_object_get (settings, "gtk-fontconfig-timestamp", &fontconfig_timestamp, NULL);
 	return font_info_create_for_context (gdk_pango_context_get_for_screen (screen),
-					     desc, antialias, language);
+					     desc, antialias, language, fontconfig_timestamp);
 }
 
 static struct font_info *
@@ -755,6 +786,7 @@ font_info_get_unistr_info (struct font_info *info,
 
 struct _vte_pangocairo_data {
 	struct font_info *font;
+	struct font_info *font_bold;
 	cairo_pattern_t *bg_pattern;
 
 	cairo_t *cr;
@@ -785,6 +817,7 @@ _vte_pangocairo_destroy (struct _vte_draw *draw)
 	}
 
 	g_slice_free (struct _vte_pangocairo_data, draw->impl_data);
+	draw->impl_data = NULL;
 }
 
 static void
@@ -832,43 +865,38 @@ _vte_pangocairo_set_background_image (struct _vte_draw *draw,
 {
 	struct _vte_pangocairo_data *data = draw->impl_data;
 	GdkPixmap *pixmap;
-
-	if (type == VTE_BG_SOURCE_NONE)
-		return;
-
-	if (data->bg_pattern) {
-		cairo_pattern_destroy (data->bg_pattern);
-		data->bg_pattern = NULL;
-	}
+	cairo_pattern_t *old_pattern;
+	cairo_surface_t *surface;
+	cairo_t *cr;
 
 	pixmap = vte_bg_get_pixmap (vte_bg_get_for_screen (gtk_widget_get_screen (draw->widget)),
 				    type, pixbuf, file,
 				    color, saturation,
 				    _vte_draw_get_colormap(draw, TRUE));
 
-	if (pixmap) {
+	if (!pixmap)
+		return;
 
-		/* Ugh... We need to create a dummy cairo_t */
-		cairo_surface_t *surface;
-		cairo_t *cr;
+	if (data->bg_pattern)
+		cairo_pattern_destroy (data->bg_pattern);
 
-		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 0, 0);
-		cr = cairo_create (surface);
+	/* Ugh... We need to create a dummy cairo_t */
+	surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 0, 0);
+	cr = cairo_create (surface);
 
-		gdk_cairo_set_source_pixmap (cr, pixmap, 0, 0);
-		data->bg_pattern = cairo_pattern_reference (cairo_get_source (cr));
+	gdk_cairo_set_source_pixmap (cr, pixmap, 0, 0);
+	data->bg_pattern = cairo_pattern_reference (cairo_get_source (cr));
 
-		cairo_destroy (cr);
-		cairo_surface_destroy (surface);
+	cairo_destroy (cr);
+	cairo_surface_destroy (surface);
 
-		/* Transfer the pixmap ownership to the pattern */
-		cairo_pattern_set_user_data (data->bg_pattern,
-					     (cairo_user_data_key_t *) data,
-					     pixmap,
-					     (cairo_destroy_func_t) g_object_unref);
+	/* Transfer the pixmap ownership to the pattern */
+	cairo_pattern_set_user_data (data->bg_pattern,
+				     (cairo_user_data_key_t *) data,
+				     pixmap,
+				     (cairo_destroy_func_t) g_object_unref);
 
-		cairo_pattern_set_extend (data->bg_pattern, CAIRO_EXTEND_REPEAT);
-	}
+	cairo_pattern_set_extend (data->bg_pattern, CAIRO_EXTEND_REPEAT);
 }
 
 static void
@@ -914,9 +942,27 @@ _vte_pangocairo_set_text_font (struct _vte_draw *draw,
 			       VteTerminalAntiAlias antialias)
 {
 	struct _vte_pangocairo_data *data = draw->impl_data;
+	PangoFontDescription *bolddesc = NULL;
 
+	if (data->font_bold != data->font)
+		font_info_destroy (data->font_bold);
 	font_info_destroy (data->font);
 	data->font = font_info_create_for_widget (draw->widget, fontdesc, antialias);
+
+	/* calculate bold font desc */
+	bolddesc = pango_font_description_copy (fontdesc);
+	pango_font_description_set_weight (bolddesc, PANGO_WEIGHT_BOLD);
+
+	data->font_bold = font_info_create_for_widget (draw->widget, bolddesc, antialias);
+	pango_font_description_free (bolddesc);
+
+	/* Decide if we should keep this bold font face, per bug 54926:
+	 *  - reject bold font if it is not within 10% of normal font width
+	 */
+	if ( abs((data->font_bold->width * 100 / data->font->width) - 100) > 10 ) {
+		font_info_destroy (data->font_bold);
+		data->font_bold = data->font;
+	}
 }
 
 static void
@@ -934,15 +980,24 @@ _vte_pangocairo_get_text_metrics(struct _vte_draw *draw,
 
 
 static int
-_vte_pangocairo_get_char_width (struct _vte_draw *draw, vteunistr c, int columns)
+_vte_pangocairo_get_char_width (struct _vte_draw *draw, vteunistr c, int columns,
+				gboolean bold)
 {
 	struct _vte_pangocairo_data *data = draw->impl_data;
 	struct unistr_info *uinfo;
 
 	g_return_val_if_fail (data->font != NULL, 0);
 
-	uinfo = font_info_get_unistr_info (data->font, c);
+	uinfo = font_info_get_unistr_info (bold ? data->font_bold : data->font, c);
 	return uinfo->width;
+}
+
+static gboolean
+_vte_pangocairo_has_bold (struct _vte_draw *draw)
+{
+	struct _vte_pangocairo_data *data = draw->impl_data;
+
+	return (data->font != data->font_bold);
 }
 
 static void
@@ -960,15 +1015,16 @@ set_source_color_alpha (cairo_t        *cr,
 static void
 _vte_pangocairo_draw_text (struct _vte_draw *draw,
 			   struct _vte_draw_text_request *requests, gsize n_requests,
-			   GdkColor *color, guchar alpha)
+			   GdkColor *color, guchar alpha, gboolean bold)
 {
 	struct _vte_pangocairo_data *data = draw->impl_data;
 	gsize i;
 	cairo_scaled_font_t *last_scaled_font = NULL;
 	int n_cr_glyphs = 0;
 	cairo_glyph_t cr_glyphs[MAX_RUN_LENGTH];
+	struct font_info *font = bold ? data->font_bold : data->font;
 
-	g_return_if_fail (data->font != NULL);
+	g_return_if_fail (font != NULL);
 
 	set_source_color_alpha (data->cr, color, alpha);
 	cairo_set_operator (data->cr, CAIRO_OPERATOR_OVER);
@@ -976,8 +1032,8 @@ _vte_pangocairo_draw_text (struct _vte_draw *draw,
 	for (i = 0; i < n_requests; i++) {
 		vteunistr c = requests[i].c;
 		int x = requests[i].x;
-		int y = requests[i].y + data->font->ascent;
-		struct unistr_info *uinfo = font_info_get_unistr_info (data->font, c);
+		int y = requests[i].y + font->ascent;
+		struct unistr_info *uinfo = font_info_get_unistr_info (font, c);
 		union unistr_font_info *ufi = &uinfo->ufi;
 
 		switch (uinfo->coverage) {
@@ -1024,14 +1080,15 @@ _vte_pangocairo_draw_text (struct _vte_draw *draw,
 }
 
 static gboolean
-_vte_pangocairo_draw_has_char (struct _vte_draw *draw, vteunistr c)
+_vte_pangocairo_draw_has_char (struct _vte_draw *draw, vteunistr c,
+			       gboolean bold)
 {
 	struct _vte_pangocairo_data *data = draw->impl_data;
 	struct unistr_info *uinfo;
 
 	g_return_val_if_fail (data->font != NULL, FALSE);
 
-	uinfo = font_info_get_unistr_info (data->font, c);
+	uinfo = font_info_get_unistr_info (bold ? data->font_bold : data->font, c);
 	return !uinfo->has_unknown_chars;
 }
 
@@ -1080,6 +1137,7 @@ const struct _vte_draw_impl _vte_draw_pangocairo = {
 	_vte_pangocairo_set_text_font,
 	_vte_pangocairo_get_text_metrics,
 	_vte_pangocairo_get_char_width,
+	_vte_pangocairo_has_bold,
 	_vte_pangocairo_draw_text,
 	_vte_pangocairo_draw_has_char,
 	_vte_pangocairo_draw_rectangle,

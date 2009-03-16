@@ -94,14 +94,14 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
+/* Define to 1 if you have the <ncurses/curses.h> header file. */
+#undef HAVE_NCURSES_CURSES_H
+
 /* Define to 1 if you have the <ncurses.h> header file. */
 #undef HAVE_NCURSES_H
 
 /* Define to 1 if you have the <ncurses/term.h> header file. */
 #undef HAVE_NCURSES_TERM_H
-
-/* Define to 1 if you have the <ncuses/curses.h> header file. */
-#undef HAVE_NCUSES_CURSES_H
 
 /* Define to 1 if you have the `ptsname' function. */
 #undef HAVE_PTSNAME

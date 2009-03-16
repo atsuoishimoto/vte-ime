@@ -1,3 +1,207 @@
+2009-03-15  Christian Persch  <chpe@gnome.org>
+
+	* configure.in: Prepare version 0.20.0.
+
+2009-03-15  Christian Persch  <chpe@gnome.org>
+
+	Bug 575398 – configure warns about term.h under OpenSolaris
+
+	* configure.in: Fix curses detection on solaris. Patch by David	Adam.
+
+2009-03-09  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 574616 – "real" transparency not working from python bindings
+
+	* src/vtepangocairo.c (_vte_pangocairo_destroy),
+	(_vte_pangocairo_set_background_image): Better handle failure of
+	creating pixmap.
+
+	* src/vtebg.c (vte_bg_get_pixmap): Get rid of unused mask parameter.
+
+2009-03-07  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 574025 – Crash in _vte_terminal_insert_char
+
+	* src/vte.c (_vte_terminal_insert_char): Don't crash.
+
+2009-03-02  Christian Persch  <chpe@gnome.org>
+
+	* NEWS:
+	* configure.in: Updated for version 0.19.5.
+
+2009-03-02  Christian Persch  <chpe@gnome.org>
+
+	* src/vteaccess.c: (vte_terminal_accessible_set_size),
+	(vte_terminal_accessible_ref_accessible_at_point):
+	* src/vteapp.c: (button_pressed): Correct use of padding returned
+        by vte_terminal_get_padding().
+
+2009-03-02  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: (vte_terminal_refresh_size), (vte_terminal_set_size):
+	Use g_strerror() instead of strerror().
+
+2009-02-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 54926 – Should try bold version of font before pseudo-bolding
+
+	Patch from Kees Cook <kees@outflux.net>
+
+	* src/vte.c (_vte_invalidate_cell), (_vte_invalidate_cursor_once),
+	(vte_terminal_unichar_is_local_graphic),
+	(vte_terminal_draw_graphic), (vte_terminal_draw_cells),
+	(vte_terminal_draw_rows), (vte_terminal_paint_cursor):
+	* src/vtedraw.c (_vte_draw_get_char_width), (_vte_draw_text),
+	(_vte_draw_char), (_vte_draw_has_char):
+	* src/vtedraw.h:
+	* src/vtepangocairo.c (_vte_pangocairo_set_text_font),
+	(_vte_pangocairo_get_char_width), (_vte_pangocairo_has_bold),
+	(_vte_pangocairo_draw_text), (_vte_pangocairo_draw_has_char):
+	* src/vteskel.c:
+	Try bold font before pseudo-bolding.
+
+2009-02-02  Christian Persch  <chpe@gnome.org>
+
+	Bug 570208 – vte fails to build outside source tree
+
+	* python/Makefile.am: Build fix.
+
+2009-02-01  Christian Persch  <chpe@gnome.org>
+
+	* src/marshal.list:
+	* src/vte.c: (vte_terminal_class_init):
+	* src/vtebg.c: (vte_bg_class_init): Remove marshalers that have stock
+	ones in gobject, and use the stock ones instead.
+
+2009-02-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* configure.in: Require GTK+ >= 2.14, for "gtk-fontconfig-timestamp"
+	settings property.
+
+	* src/vte.c (vte_terminal_style_set),
+	(vte_terminal_set_font_full_internal), (vte_terminal_init),
+	(vte_terminal_class_init):  Use style_set class method instead of
+	hooking to style-set signal.  Also, proceed to recreating the font
+	even if neither description nor antialias setting changed.  This is
+	necessary to pick up fontconfig configuration changes as well as font
+	install/uninstallations or GNOME font preferences changes.
+
+	* src/vtepangocairo.c (font_info_destroy),
+	(fontconfig_timestamp_quark),
+	(vte_pango_cairo_set_fontconfig_timestamp),
+	(vte_pango_cairo_get_fontconfig_timestamp), (context_hash),
+	(context_equal), (font_info_create_for_context),
+	(font_info_create_for_screen):
+	Use fontconfig_timestamp in the font object hash, such that we respond
+	to fontconfig configuration changes.
+
+2009-01-22  Saleem Abdulrasool <compnerd@compnerd.org>
+
+	* src/vteseq.c (vte_sequence_handler_window_manipulation):
+		Tweak output for OSC 13, 14, 18, 19, 20, 21.  Bug #548272.
+
+2009-01-20  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: (vte_terminal_realize): Use GDK_BLANK_CURSOR for the
+	invisible cursor on gtk+ >= 2.15.
+
+2009-01-20  Christian Persch  <chpe@gnome.org>
+
+	* gnome-pty-helper/gnome-pty-helper.c: (init_term_with_defaults),
+	(open_ptys), (close_pty_pair): Use ttyname() as recommended in the
+	glibc manual. Bug #565688.
+
+2009-01-06  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (vte_parse_color),
+	(vte_sequence_handler_change_color),
+	(vte_sequence_handler_request_terminal_parameters),
+	(vte_sequence_handler_send_primary_device_attributes),
+	(vte_sequence_handler_send_secondary_device_attributes),
+	(vte_sequence_handler_device_status_report),
+	(vte_sequence_handler_dec_device_status_report),
+	(vte_sequence_handler_window_manipulation),
+	(vte_sequence_handler_change_cursor_color):
+	Convert some g_strdup_printf() uses to g_snprintf() when
+	the buffer was fixed-size and freed immediately.
+	Also fix g_snprintf usage by not using its return value.
+	*If* the buffer is short, the returned len is not what we
+	are interested in.
+	Finally, pass -1 as len to vte_terminal_feed_child() in
+	most places.  This means a bit more work for the processor,
+	but cleaner code.
+
+2009-01-06  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 566795 – VTE fails to build in trunk
+
+	* src/vteseq.c (vte_sequence_handler_change_cursor_color):
+	Fix build.
+
+2009-01-06  Saleem Abdulrasool <compnerd@compnerd.org>
+
+	* src/vteseq-n.gperf:
+	* src/vteseq.c (vte_ucs4_to_utf8), (vte_parse_color),
+	(vte_terminal_emit_deiconify_window), (vte_sequence_handler_change_color),
+	(vte_sequence_handler_change_cursor_color):
+
+	Bug #524170 - Pull out ucs4_to_utf8 and use in new functions.  Add support
+	for OSC 4 (initc) and OSC 12 (change cursor color).
+
+2009-01-06  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 566730 – vte_terminal_set_color_cursor() calls invalidate_all but
+	it doesn't have to
+
+	* src/vte.c (vte_terminal_set_color_internal): If color is VTE_CUR_BG,
+	invalidate_cursor_once instead of invalidate_all.
+
+2008-12-26  Halton Huo  <halton.huo@sun.com>
+
+	Bug 565679 – alloca is discouraged
+
+	* gnome-pty-helper/gnome-pty-helper.c: use malloc replace alloca.
+
+2008-12-26  Christian Persch  <chpe@gnome.org>
+
+	* configure.in: Fix the same typo also in the libinfo check.
+
+2008-12-26  Halton Huo  <halton.huo@sun.com>
+
+	Bug 565675 – typo in configure.in cause ncurses checking fail
+
+	* configure.in: Fix typo for ncurses. s/ncuses/ncurses
+
+2008-12-25  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/interpret.c (main):
+	* src/slowcat.c (catfile):
+	* src/table.c (_vte_table_addi), (_vte_table_add):
+	* src/trie.c (_vte_trie_matchx):
+	* src/vte.c (_vte_invalidate_cell), (_vte_terminal_insert_char):
+	* src/vteaccess.c (offset_from_xy),
+	(vte_terminal_accessible_finalize),
+	(vte_terminal_accessible_get_text),
+	(vte_terminal_accessible_get_text_somewhere):
+	* src/vteapp.c (main):
+	* src/vtebg.c (vte_bg_cache_item_free), (vte_bg_cache_add):
+	Fix warnings.
+
+2008-12-25  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 565663 – compile failure because use static function in another .h
+	file
+
+	* src/vte.c: Don't mark extern function inline.
+
+2008-12-17  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 149631 – gnome-terminal doesn't combine combining chars in utf8
+
+	* src/vteunistr.c:
+	Limit to 9 combining marks per unistr, and a total of 100,000 unistrs.
+	All to prevent OOM.
+
 2008-12-15  Behdad Esfahbod  <behdad@gnome.org>
 
 	* NEWS:

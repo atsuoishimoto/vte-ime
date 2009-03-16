@@ -270,20 +270,6 @@ pty_add (int utmp, int wtmp, int lastlog, char *line, char *login_name)
 	return pi;
 }
 
-static int
-path_max (void)
-{
-#ifdef _PC_PATH_MAX
-	return pathconf ("/", _PC_PATH_MAX);
-#else
-#  ifdef PATH_MAX
-	return PATH_MAX;
-#  else
-	return 1024;
-#  endif
-#endif
-}
-
 static struct termios*
 init_term_with_defaults(struct termios* term)
 {
@@ -453,7 +439,7 @@ init_term_with_defaults(struct termios* term)
 static int
 open_ptys (int utmp, int wtmp, int lastlog)
 {
-	char *term_name;
+	const char *term_name;
 	int status, master_pty, slave_pty;
 	pty_info *p;
 	int result;
@@ -462,11 +448,6 @@ open_ptys (int utmp, int wtmp, int lastlog)
 	struct group *group_info;
 	struct termios term;
 
-	term_name = (char *) alloca (path_max () + 1);
-
-	if (term_name == NULL) {
-		exit (1);
-	}
 	/* Initialize term */
 	init_term_with_defaults(&term);
 
@@ -485,7 +466,7 @@ open_ptys (int utmp, int wtmp, int lastlog)
 #error "No means to drop privileges! Huge security risk! Won't compile."
 #endif
 	/* Open pty with privileges of the user */
-	status = openpty (&master_pty, &slave_pty, term_name, &term, NULL);
+	status = openpty (&master_pty, &slave_pty, NULL, &term, NULL);
 
 	/* Restore saved privileges to root */
 #ifdef HAVE_SETEUID
@@ -498,7 +479,7 @@ open_ptys (int utmp, int wtmp, int lastlog)
 #error "No means to raise privileges! Huge security risk! Won't compile."
 #endif
 	/* openpty() failed, reject request */
-	if (status == -1) {
+	if (status == -1 || (term_name = ttyname(slave_pty)) == NULL) {
 		result = 0;
 		n_write (STDIN_FILENO, &result, sizeof (result));
 		return 0;

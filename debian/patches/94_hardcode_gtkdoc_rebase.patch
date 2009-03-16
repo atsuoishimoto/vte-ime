@@ -1,0 +1,12 @@
+diff -Nur -x '*.orig' -x '*~' vte-0.20.0/doc/reference/Makefile.in vte-0.20.0.new/doc/reference/Makefile.in
+--- vte-0.20.0/doc/reference/Makefile.in	2009-03-17 01:10:32.000000000 +0000
++++ vte-0.20.0.new/doc/reference/Makefile.in	2009-03-17 01:11:58.000000000 +0000
+@@ -721,7 +721,7 @@
+ 	    mv -f $${installdir}/$(DOC_MODULE).devhelp \
+ 	      $${installdir}/$(DOC_MODULE)-$(DOC_MODULE_VERSION).devhelp; \
+ 	  fi; \
+-	  $(GTKDOC_REBASE) --relative --dest-dir=$(DESTDIR) --html-dir=$${installdir}; \
++	  gtkdoc-rebase --relative --dest-dir=$(DESTDIR) --html-dir=$${installdir}; \
+ 	fi
+ 
+ uninstall-local:

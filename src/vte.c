@@ -706,7 +706,7 @@ _vte_invalidate_cell(VteTerminal *terminal, glong col, glong row)
 	VteRowData *row_data;
 	int columns;
 
-	if (!GTK_WIDGET_DRAWABLE(terminal) || terminal->pvt->invalidated_all) {
+	if (G_UNLIKELY (!GTK_WIDGET_DRAWABLE(terminal) || terminal->pvt->invalidated_all)) {
 		return;
 	}
 
@@ -724,7 +724,7 @@ _vte_invalidate_cell(VteTerminal *terminal, glong col, glong row)
 					_vte_draw_get_char_width (
 						terminal->pvt->draw,
 						cell->c,
-						columns) >
+						columns, cell->attr.bold) >
 					terminal->char_width * columns) {
 				columns++;
 			}
@@ -781,7 +781,7 @@ _vte_invalidate_cursor_once(VteTerminal *terminal, gboolean periodic)
 					_vte_draw_get_char_width (
 						terminal->pvt->draw,
 						cell->c,
-						columns) >
+						columns, cell->attr.bold) >
 			    terminal->char_width * columns) {
 				columns++;
 			}
@@ -2526,8 +2526,8 @@ vte_terminal_set_color_internal(VteTerminal *terminal, int entry,
 	color = &terminal->pvt->palette[entry];
 
 	if (color->red == proposed->red &&
-			color->green == proposed->green &&
-			color->blue == proposed->blue) {
+	    color->green == proposed->green &&
+	    color->blue == proposed->blue) {
 		return;
 	}
 
@@ -2552,7 +2552,10 @@ vte_terminal_set_color_internal(VteTerminal *terminal, int entry,
 	}
 
 	/* and redraw */
-	_vte_invalidate_all (terminal);
+	if (entry == VTE_CUR_BG)
+		_vte_invalidate_cursor_once(terminal, FALSE);
+	else
+		_vte_invalidate_all (terminal);
 }
 
 static void
@@ -2933,7 +2936,7 @@ vte_terminal_set_default_colors(VteTerminal *terminal)
 
 
 /* Cleanup smart-tabs.  See vte_sequence_handler_ta() */
-inline void
+void
 _vte_terminal_cleanup_tab_fragments_at_cursor (VteTerminal *terminal)
 {
 	VteRowData *row = _vte_terminal_ensure_row (terminal);
@@ -3131,18 +3134,20 @@ _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 
 		row_num = screen->cursor_current.row;
 		row = NULL;
-		if (col == 0) {
+		if (G_UNLIKELY (col == 0)) {
 			/* We are at first column.  See if the previous line softwrapped.
 			 * If it did, move there.  Otherwise skip inserting. */
 
-			if (row_num > 0) {
+			if (G_LIKELY (row_num > 0)) {
 				row_num--;
 				row = _vte_terminal_find_row_data (terminal, row_num);
 
-				if (!row->soft_wrapped)
-					row = NULL;
-				else
-					col = row->cells->len;
+				if (row) {
+					if (!row->soft_wrapped)
+						row = NULL;
+					else
+						col = row->cells->len;
+				}
 			}
 		} else {
 			row = _vte_terminal_find_row_data (terminal, row_num);
@@ -3204,7 +3209,7 @@ _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 
 	/* Convert any wide characters we may have broken into single
 	 * cells. (#514632) */
-	if (col > 0) {
+	if (G_LIKELY (col > 0)) {
 		glong col2 = col - 1;
 		struct vte_charcell *cell = _vte_row_data_find_charcell(row, col2);
 		while (cell != NULL && cell->attr.fragment && col2 > 0) {
@@ -4682,9 +4687,9 @@ vte_terminal_hierarchy_changed(GtkWidget *widget, GtkWidget *old_toplevel,
 	}
 }
 
-/* Handle a style-changed signal. */
 static void
-vte_terminal_style_changed(GtkWidget *widget, GtkStyle *style, gpointer data)
+vte_terminal_style_set (GtkWidget      *widget,
+			GtkStyle       *prev_style)
 {
 	VteTerminal *terminal;
 	if (!GTK_WIDGET_REALIZED(widget)) {
@@ -7509,7 +7514,7 @@ vte_terminal_set_font_full_internal(VteTerminal *terminal,
         VteTerminalPrivate *pvt;
         GObject *object;
 	PangoFontDescription *desc;
-        gboolean same_antialias, same_desc;
+        gboolean same_desc;
 
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
 
@@ -7535,13 +7540,13 @@ vte_terminal_set_font_full_internal(VteTerminal *terminal,
 				"Using default monospace font.\n");
 	}
 
-	/* check for any change */
-        same_antialias = antialias == pvt->fontantialias;
         same_desc = pvt->fontdesc && pango_font_description_equal (pvt->fontdesc, desc);
-	if (same_antialias && same_desc) {
-		pango_font_description_free(desc);
-		return;
-	}
+	
+	/* Note that we proceed to recreating the font even if the description
+	 * and antialias settings are the same.  This is because maybe screen
+	 * font options were changed, or new fonts installed.  Those will be
+	 * detected at font creation time and respected.
+	 */
 
         g_object_freeze_notify(object);
 
@@ -7663,8 +7668,10 @@ vte_terminal_refresh_size(VteTerminal *terminal)
 	if (terminal->pvt->pty_master != -1) {
 		/* Use an ioctl to read the size of the terminal. */
 		if (_vte_pty_get_size(terminal->pvt->pty_master, &columns, &rows) != 0) {
+                        int errsv = errno;
+
 			g_warning(_("Error reading PTY size, using defaults: "
-				    "%s."), strerror(errno));
+				    "%s."), g_strerror(errsv));
 		} else {
 			terminal->row_count = rows;
 			terminal->column_count = columns;
@@ -7699,8 +7706,8 @@ vte_terminal_set_size(VteTerminal *terminal, glong columns, glong rows)
 	if (terminal->pvt->pty_master != -1) {
 		/* Try to set the terminal size. */
 		if (_vte_pty_set_size(terminal->pvt->pty_master, columns, rows) != 0) {
-			g_warning(_("Error setting PTY size: %s."),
-				    strerror(errno));
+			g_warning("Error setting PTY size: %s.",
+				  g_strerror(errno));
 		}
 		/* Read the terminal size, in case something went awry. */
 		vte_terminal_refresh_size(terminal);
@@ -8144,11 +8151,6 @@ vte_terminal_init(VteTerminal *terminal)
 	/* Listen for hierarchy change notifications. */
 	g_signal_connect(terminal, "hierarchy-changed",
 			 G_CALLBACK(vte_terminal_hierarchy_changed),
-			 NULL);
-
-	/* Listen for style changes. */
-	g_signal_connect(terminal, "style-set",
-			 G_CALLBACK(vte_terminal_style_changed),
 			 NULL);
 
 #ifdef VTE_DEBUG
@@ -8634,8 +8636,7 @@ vte_terminal_realize(GtkWidget *widget)
 {
 	VteTerminal *terminal;
 	GdkWindowAttr attributes;
-	GdkPixmap *bitmap;
-	GdkColor black = {0,0,0}, color;
+        GdkColor color;
 	guint attributes_mask = 0, i;
 
 	_vte_debug_print(VTE_DEBUG_LIFECYCLE, "vte_terminal_realize()\n");
@@ -8733,6 +8734,13 @@ vte_terminal_realize(GtkWidget *widget)
 	terminal->pvt->modifiers = 0;
 
 	/* Create our invisible cursor. */
+#if GTK_CHECK_VERSION (2, 15, 1)
+	terminal->pvt->mouse_inviso_cursor = gdk_cursor_new_for_display(gtk_widget_get_display(widget), GDK_BLANK_CURSOR);
+#else
+    {
+	GdkPixmap *bitmap;
+	GdkColor black = {0,0,0,0};
+
 	bitmap = gdk_bitmap_create_from_data(widget->window, "\0", 1, 1);
 	terminal->pvt->mouse_inviso_cursor = gdk_cursor_new_from_pixmap(bitmap,
 									bitmap,
@@ -8740,6 +8748,8 @@ vte_terminal_realize(GtkWidget *widget)
 									&black,
 									0, 0);
 	g_object_unref(bitmap);
+    }
+#endif /* GTK >= 2.15.1 */
 
 	widget->style = gtk_style_attach(widget->style, widget->window);
 
@@ -8850,10 +8860,10 @@ vte_unichar_is_local_graphic(vteunistr c)
 	return FALSE;
 }
 static gboolean
-vte_terminal_unichar_is_local_graphic(VteTerminal *terminal, vteunistr c)
+vte_terminal_unichar_is_local_graphic(VteTerminal *terminal, vteunistr c, gboolean bold)
 {
 	return vte_unichar_is_local_graphic (c) &&
-		!_vte_draw_has_char (terminal->pvt->draw, c);
+		!_vte_draw_has_char (terminal->pvt->draw, c, bold);
 }
 
 static void
@@ -8940,7 +8950,8 @@ static gboolean
 vte_terminal_draw_graphic(VteTerminal *terminal, vteunistr c,
 			  gint fore, gint back, gboolean draw_default_bg,
 			  gint x, gint y,
-			  gint column_width, gint columns, gint row_height)
+			  gint column_width, gint columns, gint row_height,
+			  gboolean bold)
 {
 	gboolean ret;
 	gint xcenter, xright, ycenter, ybottom, i, j, draw;
@@ -8968,7 +8979,7 @@ vte_terminal_draw_graphic(VteTerminal *terminal, vteunistr c,
 	}
 
 	if (_vte_draw_char(terminal->pvt->draw, &request,
-			   &color, VTE_DRAW_OPAQUE)) {
+			   &color, VTE_DRAW_OPAQUE, bold)) {
 		/* We were able to draw with actual fonts. */
 		return TRUE;
 	}
@@ -9761,20 +9772,7 @@ vte_terminal_draw_cells(VteTerminal *terminal,
 	color.green = fg->green;
 	_vte_draw_text(terminal->pvt->draw,
 			items, n,
-			&color, VTE_DRAW_OPAQUE);
-	if (bold) {
-		/* Take a step to the right. */
-		for (i = 0; i < n; i++) {
-			items[i].x++;
-		}
-		_vte_draw_text(terminal->pvt->draw,
-				items, n,
-				&color, VTE_DRAW_OPAQUE);
-		/* Now take a step back. */
-		for (i = 0; i < n; i++) {
-			items[i].x--;
-		}
-	}
+			&color, VTE_DRAW_OPAQUE, bold);
 	for (i = 0; i < n; i++) {
 		/* Deadjust for the border. */
 		items[i].x -= VTE_PAD_WIDTH;
@@ -10305,7 +10303,7 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 			j = i + items[0].columns;
 
 			/* If this is a graphics character, draw it locally. */
-			if (vte_terminal_unichar_is_local_graphic(terminal, cell->c)) {
+			if (vte_terminal_unichar_is_local_graphic(terminal, cell->c, cell->attr.bold)) {
 				if (vte_terminal_draw_graphic(terminal,
 							items[0].c,
 							fore, back,
@@ -10314,7 +10312,8 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 							items[0].y,
 							column_width,
 							items[0].columns,
-							row_height)) {
+							row_height,
+							cell->attr.bold)) {
 					i = j;
 					continue;
 				}
@@ -10357,7 +10356,7 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 							FALSE,
 							&nfore, &nback);
 					/* Graphic characters must be drawn individually. */
-					if (vte_terminal_unichar_is_local_graphic(terminal, cell->c)) {
+					if (vte_terminal_unichar_is_local_graphic(terminal, cell->c, cell->attr.bold)) {
 						if (vte_terminal_draw_graphic(terminal,
 									cell->c,
 									nfore, nback,
@@ -10366,7 +10365,8 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 									y,
 									column_width,
 									cell->attr.columns,
-									row_height)) {
+									row_height,
+									cell->attr.bold)) {
 
 							j += cell->attr.columns;
 							continue;
@@ -10634,9 +10634,8 @@ vte_terminal_paint_cursor(VteTerminal *terminal)
 	cursor_width = item.columns * width;
 	if (cell && cell->c != 0) {
 		gint cw = _vte_draw_get_char_width (terminal->pvt->draw,
-				cell->c, cell->attr.columns);
+				cell->c, cell->attr.columns, cell->attr.bold);
 		cursor_width = MAX(cursor_width, cw);
-		cursor_width += cell->attr.bold; /* for pseudo-bolding */
 	}
 
 	selected = vte_cell_is_selected(terminal, col, drow, NULL);
@@ -10685,7 +10684,7 @@ vte_terminal_paint_cursor(VteTerminal *terminal)
 							 &color,
 							 VTE_DRAW_OPAQUE);
 
-				if (!vte_terminal_unichar_is_local_graphic(terminal, item.c) ||
+				if (!vte_terminal_unichar_is_local_graphic(terminal, item.c, cell ? cell->attr.bold : FALSE) ||
 				    !vte_terminal_draw_graphic(terminal,
 							       item.c,
 							       fore, back,
@@ -10694,7 +10693,8 @@ vte_terminal_paint_cursor(VteTerminal *terminal)
 							       item.y,
 							       width,
 							       item.columns,
-							       height)) {
+							       height,
+							       cell ? cell->attr.bold : FALSE)) {
 					gboolean hilite = FALSE;
 					if (cell && terminal->pvt->show_match) {
 						hilite = vte_cell_is_between(col, row,
@@ -11318,6 +11318,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 	widget_class->visibility_notify_event = vte_terminal_visibility_notify;
 	widget_class->unrealize = vte_terminal_unrealize;
 	widget_class->style_set = NULL;
+	widget_class->style_set = vte_terminal_style_set;
 	widget_class->size_request = vte_terminal_size_request;
 	widget_class->size_allocate = vte_terminal_size_allocate;
 	widget_class->get_accessible = vte_terminal_get_accessible;
@@ -11391,7 +11392,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, eof),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->child_exited_signal =
                 g_signal_new(I_("child-exited"),
@@ -11400,7 +11401,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, child_exited),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+			     g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->window_title_changed_signal =
                 g_signal_new(I_("window-title-changed"),
@@ -11409,7 +11410,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, window_title_changed),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->icon_title_changed_signal =
                 g_signal_new(I_("icon-title-changed"),
@@ -11418,7 +11419,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, icon_title_changed),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->encoding_changed_signal =
                 g_signal_new(I_("encoding-changed"),
@@ -11427,7 +11428,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, encoding_changed),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->commit_signal =
                 g_signal_new(I_("commit"),
@@ -11445,7 +11446,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, emulation_changed),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->char_size_changed_signal =
                 g_signal_new(I_("char-size-changed"),
@@ -11463,7 +11464,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			      G_STRUCT_OFFSET(VteTerminalClass, selection_changed),
 			      NULL,
 			      NULL,
-			      _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 	klass->contents_changed_signal =
                 g_signal_new(I_("contents-changed"),
@@ -11472,7 +11473,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, contents_changed),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->cursor_moved_signal =
                 g_signal_new(I_("cursor-moved"),
@@ -11481,7 +11482,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, cursor_moved),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->deiconify_window_signal =
                 g_signal_new(I_("deiconify-window"),
@@ -11490,7 +11491,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, deiconify_window),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->iconify_window_signal =
                 g_signal_new(I_("iconify-window"),
@@ -11499,7 +11500,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, iconify_window),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->raise_window_signal =
                 g_signal_new(I_("raise-window"),
@@ -11508,7 +11509,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, raise_window),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->lower_window_signal =
                 g_signal_new(I_("lower-window"),
@@ -11517,7 +11518,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, lower_window),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->refresh_window_signal =
                 g_signal_new(I_("refresh-window"),
@@ -11526,7 +11527,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, refresh_window),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->restore_window_signal =
                 g_signal_new(I_("restore-window"),
@@ -11535,7 +11536,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, restore_window),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->maximize_window_signal =
                 g_signal_new(I_("maximize-window"),
@@ -11544,7 +11545,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, maximize_window),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->resize_window_signal =
                 g_signal_new(I_("resize-window"),
@@ -11571,7 +11572,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, status_line_changed),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->increase_font_size_signal =
                 g_signal_new(I_("increase-font-size"),
@@ -11580,7 +11581,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, increase_font_size),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->decrease_font_size_signal =
                 g_signal_new(I_("decrease-font-size"),
@@ -11589,7 +11590,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, decrease_font_size),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->text_modified_signal =
                 g_signal_new(I_("text-modified"),
@@ -11598,7 +11599,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, text_modified),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->text_inserted_signal =
                 g_signal_new(I_("text-inserted"),
@@ -11607,7 +11608,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, text_inserted),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->text_deleted_signal =
                 g_signal_new(I_("text-deleted"),
@@ -11616,7 +11617,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, text_deleted),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 	klass->text_scrolled_signal =
                 g_signal_new(I_("text-scrolled"),
@@ -11625,7 +11626,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, text_scrolled),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__INT,
+                             g_cclosure_marshal_VOID__INT,
 			     G_TYPE_NONE, 1, G_TYPE_INT);
 	signals[COPY_CLIPBOARD] =
                 g_signal_new(I_("copy-clipboard"),
@@ -11634,7 +11635,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, copy_clipboard),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 
 	signals[PASTE_CLIPBOARD] =
@@ -11644,7 +11645,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, paste_clipboard),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 
         g_signal_new(I_("beep"),
@@ -11653,7 +11654,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_STRUCT_OFFSET(VteTerminalClass, beep),
 			     NULL,
 			     NULL,
-			     _vte_marshal_VOID__VOID,
+                             g_cclosure_marshal_VOID__VOID,
 			     G_TYPE_NONE, 0);
 
         /**
