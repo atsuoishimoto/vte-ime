@@ -134,6 +134,7 @@ GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
 GOBJECT_LIBS = @GOBJECT_LIBS@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
+GTKDOC_REBASE = @GTKDOC_REBASE@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 HTML_DIR = @HTML_DIR@
@@ -187,7 +188,6 @@ MSGFMT_OPTS = @MSGFMT_OPTS@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
 NMEDIT = @NMEDIT@
-OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
@@ -287,7 +287,6 @@ srcdir = @srcdir@
 subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = vte.defs pyvte.pc.in vte.override cat.py unrealize.py vte-demo.py
@@ -299,14 +298,14 @@ PYTHON_MODULES = vtemodule.la
 @BUILD_PYTHON_MODULES_TRUE@pythonsiteexecdir = $(pyexecdir)/gtk-2.0
 @BUILD_PYTHON_MODULES_TRUE@pythonsiteexec_LTLIBRARIES = $(PYTHON_MODULES)
 @BUILD_PYTHON_MODULES_TRUE@CLEANFILES = vte.c
-
-# we do this to suport building with -Wl,-z,defs which errors on 
-# vtemodule.so as we cannot include $(PYTHON_LIBS) due to bug 410986.
-@BUILD_PYTHON_MODULES_TRUE@AM_LDFLAGS = $(PYTHON_LDFLAGS)
-@BUILD_PYTHON_MODULES_TRUE@vtemodule_la_CFLAGS = $(VTE_CFLAGS) $(X_CFLAGS) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS)
 @BUILD_PYTHON_MODULES_TRUE@vtemodule_la_SOURCES = vtemodule.c
+@BUILD_PYTHON_MODULES_TRUE@vtemodule_la_CPPFLAGS = -I$(top_builddir)/src $(AM_CPPFLAGS)
+@BUILD_PYTHON_MODULES_TRUE@vtemodule_la_CFLAGS = $(VTE_CFLAGS) $(X_CFLAGS) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS) $(AM_CFLAGS)
+
+# we do this to suport building with -Wl,-z,defs which errors on
+# vtemodule.so as we cannot include $(PYTHON_LIBS) due to bug 410986.
+@BUILD_PYTHON_MODULES_TRUE@vtemodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initvte $(PYTHON_LDFLAGS) $(AM_LDFLAGS)
 @BUILD_PYTHON_MODULES_TRUE@vtemodule_la_LIBADD = $(top_builddir)/src/libvte.la $(LIBS) $(PYGTK_LIBS) $(VTE_LIBS) $(X_LIBS)
-@BUILD_PYTHON_MODULES_TRUE@vtemodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initvte
 @BUILD_PYTHON_MODULES_TRUE@nodist_vtemodule_la_SOURCES = vte.c
 all: all-am
 
@@ -321,9 +320,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  python/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  python/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  python/Makefile
+	  $(AUTOMAKE) --foreign  python/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -404,18 +403,18 @@ distclean-compile:
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
 vtemodule_la-vtemodule.lo: vtemodule.c
-@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vtemodule_la_CFLAGS) $(CFLAGS) -MT vtemodule_la-vtemodule.lo -MD -MP -MF $(DEPDIR)/vtemodule_la-vtemodule.Tpo -c -o vtemodule_la-vtemodule.lo `test -f 'vtemodule.c' || echo '$(srcdir)/'`vtemodule.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(vtemodule_la_CPPFLAGS) $(CPPFLAGS) $(vtemodule_la_CFLAGS) $(CFLAGS) -MT vtemodule_la-vtemodule.lo -MD -MP -MF $(DEPDIR)/vtemodule_la-vtemodule.Tpo -c -o vtemodule_la-vtemodule.lo `test -f 'vtemodule.c' || echo '$(srcdir)/'`vtemodule.c
 @am__fastdepCC_TRUE@	mv -f $(DEPDIR)/vtemodule_la-vtemodule.Tpo $(DEPDIR)/vtemodule_la-vtemodule.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vtemodule.c' object='vtemodule_la-vtemodule.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vtemodule_la_CFLAGS) $(CFLAGS) -c -o vtemodule_la-vtemodule.lo `test -f 'vtemodule.c' || echo '$(srcdir)/'`vtemodule.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(vtemodule_la_CPPFLAGS) $(CPPFLAGS) $(vtemodule_la_CFLAGS) $(CFLAGS) -c -o vtemodule_la-vtemodule.lo `test -f 'vtemodule.c' || echo '$(srcdir)/'`vtemodule.c
 
 vtemodule_la-vte.lo: vte.c
-@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vtemodule_la_CFLAGS) $(CFLAGS) -MT vtemodule_la-vte.lo -MD -MP -MF $(DEPDIR)/vtemodule_la-vte.Tpo -c -o vtemodule_la-vte.lo `test -f 'vte.c' || echo '$(srcdir)/'`vte.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(vtemodule_la_CPPFLAGS) $(CPPFLAGS) $(vtemodule_la_CFLAGS) $(CFLAGS) -MT vtemodule_la-vte.lo -MD -MP -MF $(DEPDIR)/vtemodule_la-vte.Tpo -c -o vtemodule_la-vte.lo `test -f 'vte.c' || echo '$(srcdir)/'`vte.c
 @am__fastdepCC_TRUE@	mv -f $(DEPDIR)/vtemodule_la-vte.Tpo $(DEPDIR)/vtemodule_la-vte.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vte.c' object='vtemodule_la-vte.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vtemodule_la_CFLAGS) $(CFLAGS) -c -o vtemodule_la-vte.lo `test -f 'vte.c' || echo '$(srcdir)/'`vte.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(vtemodule_la_CPPFLAGS) $(CPPFLAGS) $(vtemodule_la_CFLAGS) $(CFLAGS) -c -o vtemodule_la-vte.lo `test -f 'vte.c' || echo '$(srcdir)/'`vte.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

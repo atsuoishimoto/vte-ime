@@ -54,7 +54,7 @@ framework.
 <title role="details.title">Details</title>
 <refsect2 id="VteTerminalAccessible-struct" role="struct">
 <title>VteTerminalAccessible</title>
-<indexterm zone="VteTerminalAccessible-struct"><primary sortas="VteTerminalAccessible">VteTerminalAccessible</primary></indexterm><programlisting>typedef struct {
+<indexterm zone="VteTerminalAccessible-struct"><primary>VteTerminalAccessible</primary></indexterm><programlisting>typedef struct {
 	GtkAccessible parent;
 } VteTerminalAccessible;
 </programlisting>
@@ -69,7 +69,7 @@ This should not be accessed directly.  Use the <link linkend="AtkText"><type>Atk
 </variablelist></refsect2>
 <refsect2 id="vte-terminal-accessible-new" role="function">
 <title>vte_terminal_accessible_new ()</title>
-<indexterm zone="vte-terminal-accessible-new"><primary sortas="vte_terminal_accessible_new">vte_terminal_accessible_new</primary></indexterm><programlisting><link linkend="AtkObject">AtkObject</link> *         vte_terminal_accessible_new         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<indexterm zone="vte-terminal-accessible-new"><primary>vte_terminal_accessible_new</primary></indexterm><programlisting><link linkend="AtkObject">AtkObject</link> *         vte_terminal_accessible_new         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Creates a new accessibility peer for the terminal widget.</para>
 <para>

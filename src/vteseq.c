@@ -30,6 +30,8 @@
 #include "vte-private.h"
 #include "vtetc.h"
 
+#define BEL "\007"
+
 
 
 /* FUNCTIONS WE USE */
@@ -163,6 +165,72 @@ vte_unichar_strlen(gunichar *c)
 	int i;
 	for (i = 0; c[i] != 0; i++) ;
 	return i;
+}
+
+/* Convert a wide character string to a multibyte string */
+static gchar *
+vte_ucs4_to_utf8 (VteTerminal *terminal, const guchar *in)
+{
+	gchar *out = NULL;
+	guchar *buf = NULL, *bufptr = NULL;
+	gsize inlen, outlen;
+	VteConv conv;
+
+	conv = _vte_conv_open ("UTF-8", VTE_CONV_GUNICHAR_TYPE);
+
+	if (conv != VTE_INVALID_CONV) {
+		inlen = vte_unichar_strlen ((gunichar *) in) * sizeof (gunichar);
+		outlen = (inlen * VTE_UTF8_BPC) + 1;
+
+		_vte_buffer_set_minimum_size (terminal->pvt->conv_buffer, outlen);
+		buf = bufptr = terminal->pvt->conv_buffer->bytes;
+
+		if (_vte_conv (conv, &in, &inlen, &buf, &outlen) == (size_t) -1) {
+			_vte_debug_print (VTE_DEBUG_IO,
+					  "Error converting %ld string bytes (%s), skipping.\n",
+					  (long) _vte_buffer_length (terminal->pvt->outgoing),
+					  g_strerror (errno));
+			bufptr = NULL;
+		} else {
+			out = g_strndup ((gchar *) bufptr, buf - bufptr);
+		}
+	}
+
+	_vte_conv_close (conv);
+
+	return out;
+}
+
+static gboolean
+vte_parse_color (const char *spec, GdkColor *color)
+{
+	gchar *spec_copy = (gchar *) spec;
+	gboolean retval = FALSE;
+
+	/* gdk_color_parse doesnt handle all XParseColor formats.  It only
+	 * supports the #RRRGGGBBB format, not the rgb:RRR/GGG/BBB format.
+	 * See: man XParseColor */
+
+	if (g_ascii_strncasecmp (spec_copy, "rgb:", 4) == 0) {
+		gchar *cur, *ptr;
+
+		spec_copy = g_strdup (spec);
+		cur = spec_copy;
+		ptr = spec_copy + 3;
+
+		*cur++ = '#';
+		while (*ptr++)
+			if (*ptr != '/')
+				*cur++ = *ptr;
+		*cur++ = '\0';
+	}
+
+	retval = gdk_color_parse (spec_copy, color);
+
+	if (spec_copy != spec)
+		g_free (spec_copy);
+
+	return retval;
 }
 
 
@@ -451,11 +519,7 @@ vte_sequence_handler_set_title_internal(VteTerminal *terminal,
 					gboolean window_title)
 {
 	GValue *value;
-	VteConv conv;
-	const guchar *inbuf = NULL;
-	guchar *outbuf = NULL, *outbufptr = NULL;
 	char *title = NULL;
-	gsize inbuf_len, outbuf_len;
 
 	if (icon_title == FALSE && window_title == FALSE)
 		return;
@@ -472,33 +536,7 @@ vte_sequence_handler_set_title_internal(VteTerminal *terminal,
 			title = g_value_dup_string(value);
 		} else
 		if (G_VALUE_HOLDS_POINTER(value)) {
-			/* Convert the unicode-character string into a
-			 * multibyte string. */
-			conv = _vte_conv_open("UTF-8", VTE_CONV_GUNICHAR_TYPE);
-			inbuf = g_value_get_pointer(value);
-			inbuf_len = vte_unichar_strlen((gunichar*)inbuf) *
-				    sizeof(gunichar);
-			outbuf_len = (inbuf_len * VTE_UTF8_BPC) + 1;
-			_vte_buffer_set_minimum_size(terminal->pvt->conv_buffer,
-						     outbuf_len);
-			outbuf = outbufptr = terminal->pvt->conv_buffer->bytes;
-			if (conv != VTE_INVALID_CONV) {
-				if (_vte_conv(conv, &inbuf, &inbuf_len,
-					      &outbuf, &outbuf_len) == (size_t)-1) {
-					_vte_debug_print(VTE_DEBUG_IO,
-							"Error "
-							"converting %ld title "
-							"bytes (%s), "
-							"skipping.\n",
-							(long) _vte_buffer_length(terminal->pvt->outgoing),
-							g_strerror(errno));
-					outbufptr = NULL;
-				} else {
-					title = g_strndup((gchar *)outbufptr,
-							  outbuf - outbufptr);
-				}
-				_vte_conv_close(conv);
-			}
+			title = vte_ucs4_to_utf8 (terminal, g_value_get_pointer (value));
 		}
 		if (title != NULL) {
 			char *p, *validated;
@@ -1895,6 +1933,62 @@ vte_sequence_handler_scroll_down (VteTerminal *terminal, GValueArray *params)
 	_vte_terminal_scroll_text (terminal, val);
 }
 
+/* change color in the palette */
+static void
+vte_sequence_handler_change_color (VteTerminal *terminal, GValueArray *params)
+{
+	gchar **pairs, *str = NULL;
+	GValue *value;
+	GdkColor color;
+	guint idx, i;
+
+	if (params != NULL && params->n_values > 0) {
+		value = g_value_array_get_nth (params, 0);
+
+		if (G_VALUE_HOLDS_STRING (value))
+			str = g_value_dup_string (value);
+		else if (G_VALUE_HOLDS_POINTER (value))
+			str = vte_ucs4_to_utf8 (terminal, g_value_get_pointer (value));
+
+		if (! str)
+			return;
+
+		pairs = g_strsplit (str, ";", 0);
+		if (! pairs) {
+			g_free (str);
+			return;
+		}
+
+		for (i = 0; pairs[i] && pairs[i + 1]; i += 2) {
+			idx = strtoul (pairs[i], (char **) NULL, 10);
+
+			if (idx >= VTE_DEF_FG)
+				continue;
+
+			if (vte_parse_color (pairs[i + 1], &color)) {
+				terminal->pvt->palette[idx].red = color.red;
+				terminal->pvt->palette[idx].green = color.green;
+				terminal->pvt->palette[idx].blue = color.blue;
+			} else if (strcmp (pairs[i + 1], "?") == 0) {
+				gchar buf[128];
+				g_snprintf (buf, sizeof (buf),
+					    _VTE_CAP_OSC "4;%u;rgb:%04x/%04x/%04x" BEL, idx,
+					    terminal->pvt->palette[idx].red,
+					    terminal->pvt->palette[idx].green,
+					    terminal->pvt->palette[idx].blue);
+				vte_terminal_feed_child (terminal, buf, -1);
+			}
+		}
+
+		g_free (str);
+		g_strfreev (pairs);
+
+		/* emit the refresh as the palette has changed and previous
+		 * renders need to be updated. */
+		vte_terminal_emit_refresh_window (terminal);
+	}
+}
+
 /* Scroll the text up, but don't move the cursor. */
 static void
 vte_sequence_handler_scroll_up (VteTerminal *terminal, GValueArray *params)
@@ -2496,7 +2590,7 @@ vte_sequence_handler_cursor_position (VteTerminal *terminal, GValueArray *params
 static void
 vte_sequence_handler_request_terminal_parameters (VteTerminal *terminal, GValueArray *params)
 {
-	vte_terminal_feed_child(terminal, "\e[?x", strlen("\e[?x"));
+	vte_terminal_feed_child(terminal, "\e[?x", -1);
 }
 
 /* Request terminal attributes. */
@@ -2511,7 +2605,7 @@ static void
 vte_sequence_handler_send_primary_device_attributes (VteTerminal *terminal, GValueArray *params)
 {
 	/* Claim to be a VT220 with only national character set support. */
-	vte_terminal_feed_child(terminal, "\e[?62;9;c", strlen("\e[?62;9;c"));
+	vte_terminal_feed_child(terminal, "\e[?62;9;c", -1);
 }
 
 /* Send terminal ID. */
@@ -2525,7 +2619,8 @@ vte_sequence_handler_return_terminal_id (VteTerminal *terminal, GValueArray *par
 static void
 vte_sequence_handler_send_secondary_device_attributes (VteTerminal *terminal, GValueArray *params)
 {
-	char **version, *ret;
+	char **version;
+	char buf[128];
 	long ver = 0, i;
 	/* Claim to be a VT220, more or less.  The '>' in the response appears
 	 * to be undocumented. */
@@ -2537,9 +2632,8 @@ vte_sequence_handler_send_secondary_device_attributes (VteTerminal *terminal, GV
 		}
 		g_strfreev(version);
 	}
-	ret = g_strdup_printf(_VTE_CAP_ESC "[>1;%ld;0c", ver);
-	vte_terminal_feed_child(terminal, ret, -1);
-	g_free(ret);
+	g_snprintf(buf, sizeof (buf), _VTE_CAP_ESC "[>1;%ld;0c", ver);
+	vte_terminal_feed_child(terminal, buf, -1);
 }
 
 /* Set one or the other. */
@@ -2898,8 +2992,7 @@ vte_sequence_handler_device_status_report (VteTerminal *terminal, GValueArray *p
 	GValue *value;
 	VteScreen *screen;
 	long param;
-	char buf[LINE_MAX];
-	gint len;
+	char buf[128];
 
 	screen = terminal->pvt->screen;
 
@@ -2910,18 +3003,16 @@ vte_sequence_handler_device_status_report (VteTerminal *terminal, GValueArray *p
 			switch (param) {
 			case 5:
 				/* Send a thumbs-up sequence. */
-				vte_terminal_feed_child(terminal,
-						_VTE_CAP_CSI "0n",
-						sizeof(_VTE_CAP_CSI "0n")-1);
+				vte_terminal_feed_child(terminal, _VTE_CAP_CSI "0n", -1);
 				break;
 			case 6:
 				/* Send the cursor position. */
-				len = g_snprintf(buf, sizeof(buf),
-					 _VTE_CAP_CSI "%ld;%ldR",
-					 screen->cursor_current.row + 1 -
-					 screen->insert_delta,
-					 screen->cursor_current.col + 1);
-				vte_terminal_feed_child(terminal, buf, len);
+				g_snprintf(buf, sizeof(buf),
+					   _VTE_CAP_CSI "%ld;%ldR",
+					   screen->cursor_current.row + 1 -
+					   screen->insert_delta,
+					   screen->cursor_current.col + 1);
+				vte_terminal_feed_child(terminal, buf, -1);
 				break;
 			default:
 				break;
@@ -2937,8 +3028,7 @@ vte_sequence_handler_dec_device_status_report (VteTerminal *terminal, GValueArra
 	GValue *value;
 	VteScreen *screen;
 	long param;
-	char buf[LINE_MAX];
-	gint len;
+	char buf[128];
 
 	screen = terminal->pvt->screen;
 
@@ -2949,33 +3039,27 @@ vte_sequence_handler_dec_device_status_report (VteTerminal *terminal, GValueArra
 			switch (param) {
 			case 6:
 				/* Send the cursor position. */
-				len = g_snprintf(buf, sizeof(buf),
-					 _VTE_CAP_CSI "?%ld;%ldR",
-					 screen->cursor_current.row + 1 -
-					 screen->insert_delta,
-					 screen->cursor_current.col + 1);
-				vte_terminal_feed_child(terminal, buf, len);
+				g_snprintf(buf, sizeof(buf),
+					   _VTE_CAP_CSI "?%ld;%ldR",
+					   screen->cursor_current.row + 1 -
+					   screen->insert_delta,
+					   screen->cursor_current.col + 1);
+				vte_terminal_feed_child(terminal, buf, -1);
 				break;
 			case 15:
 				/* Send printer status -- 10 = ready,
 				 * 11 = not ready.  We don't print. */
-				vte_terminal_feed_child(terminal,
-						_VTE_CAP_CSI "?11n",
-						sizeof(_VTE_CAP_CSI "?11n")-1);
+				vte_terminal_feed_child(terminal, _VTE_CAP_CSI "?11n", -1);
 				break;
 			case 25:
 				/* Send UDK status -- 20 = locked,
 				 * 21 = not locked.  I don't even know what
 				 * that means, but punt anyway. */
-				vte_terminal_feed_child(terminal,
-						_VTE_CAP_CSI "?20n",
-						sizeof(_VTE_CAP_CSI "?20n")-1);
+				vte_terminal_feed_child(terminal, _VTE_CAP_CSI "?20n", -1);
 				break;
 			case 26:
 				/* Send keyboard status.  50 = no locator. */
-				vte_terminal_feed_child(terminal,
-						_VTE_CAP_CSI "?50n",
-						sizeof(_VTE_CAP_CSI "?50n")-1);
+				vte_terminal_feed_child(terminal, _VTE_CAP_CSI "?50n", -1);
 				break;
 			default:
 				break;
@@ -3088,9 +3172,9 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 	VteScreen *screen;
 	GValue *value;
 	GtkWidget *widget;
-	char buf[LINE_MAX];
+	char buf[128];
 	long param, arg1, arg2;
-	gint width, height, len;
+	gint width, height;
 	guint i;
 
 	widget = &terminal->widget;
@@ -3197,50 +3281,50 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 			break;
 		case 11:
 			/* If we're unmapped, then we're iconified. */
-			len = g_snprintf(buf, sizeof(buf),
-				 _VTE_CAP_CSI "%dt",
-				 1 + !GTK_WIDGET_MAPPED(widget));
+			g_snprintf(buf, sizeof(buf),
+				   _VTE_CAP_CSI "%dt",
+				   1 + !GTK_WIDGET_MAPPED(widget));
 			_vte_debug_print(VTE_DEBUG_PARSE,
 					"Reporting window state %s.\n",
 					GTK_WIDGET_MAPPED(widget) ?
 					"non-iconified" : "iconified");
-			vte_terminal_feed_child(terminal, buf, len);
+			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		case 13:
 			/* Send window location, in pixels. */
 			gdk_window_get_origin(widget->window,
 					      &width, &height);
-			len = g_snprintf(buf, sizeof(buf),
-				 _VTE_CAP_CSI "%d;%dt",
-				 width + VTE_PAD_WIDTH, height + VTE_PAD_WIDTH);
+			g_snprintf(buf, sizeof(buf),
+				   _VTE_CAP_CSI "3;%d;%dt",
+				   width + VTE_PAD_WIDTH, height + VTE_PAD_WIDTH);
 			_vte_debug_print(VTE_DEBUG_PARSE,
 					"Reporting window location"
 					"(%d++,%d++).\n",
 					width, height);
-			vte_terminal_feed_child(terminal, buf, len);
+			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		case 14:
 			/* Send window size, in pixels. */
-			len = g_snprintf(buf, sizeof(buf),
-				 _VTE_CAP_CSI "%d;%dt",
-				 widget->allocation.height - 2 * VTE_PAD_WIDTH,
-				 widget->allocation.width - 2 * VTE_PAD_WIDTH);
+			g_snprintf(buf, sizeof(buf),
+				   _VTE_CAP_CSI "4;%d;%dt",
+				   widget->allocation.height - 2 * VTE_PAD_WIDTH,
+				   widget->allocation.width - 2 * VTE_PAD_WIDTH);
 			_vte_debug_print(VTE_DEBUG_PARSE,
 					"Reporting window size "
 					"(%dx%dn",
 					width - 2 * VTE_PAD_WIDTH,
 					height - 2 * VTE_PAD_WIDTH);
-			vte_terminal_feed_child(terminal, buf, len);
+			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		case 18:
 			/* Send widget size, in cells. */
 			_vte_debug_print(VTE_DEBUG_PARSE,
 					"Reporting widget size.\n");
-			len = g_snprintf(buf, sizeof(buf),
-				 _VTE_CAP_CSI "%ld;%ldt",
-				 terminal->row_count,
-				 terminal->column_count);
-			vte_terminal_feed_child(terminal, buf, len);
+			g_snprintf(buf, sizeof(buf),
+				   _VTE_CAP_CSI "8;%ld;%ldt",
+				   terminal->row_count,
+				   terminal->column_count);
+			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		case 19:
 			_vte_debug_print(VTE_DEBUG_PARSE,
@@ -3248,27 +3332,29 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 			gscreen = gtk_widget_get_screen(widget);
 			height = gdk_screen_get_height(gscreen);
 			width = gdk_screen_get_width(gscreen);
-			len = g_snprintf(buf, sizeof(buf),
-				 _VTE_CAP_CSI "%ld;%ldt",
-				 height / terminal->char_height,
-				 width / terminal->char_width);
-			vte_terminal_feed_child(terminal, buf, len);
+			g_snprintf(buf, sizeof(buf),
+				   _VTE_CAP_CSI "9;%ld;%ldt",
+				   height / terminal->char_height,
+				   width / terminal->char_width);
+			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		case 20:
 			/* Report the icon title. */
 			_vte_debug_print(VTE_DEBUG_PARSE,
 				"Reporting icon title.\n");
-			vte_terminal_feed_child(terminal,
-				 _VTE_CAP_OSC "LTerminal" _VTE_CAP_ST,
-				 sizeof(_VTE_CAP_OSC "LTerminal" _VTE_CAP_ST) - 1);
+			g_snprintf (buf, sizeof (buf),
+				    _VTE_CAP_OSC "L%s" _VTE_CAP_ST,
+				    terminal->icon_title);
+			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		case 21:
 			/* Report the window title. */
 			_vte_debug_print(VTE_DEBUG_PARSE,
 					"Reporting window title.\n");
-			vte_terminal_feed_child(terminal,
-				 _VTE_CAP_OSC "LTerminal" _VTE_CAP_ST,
-				 sizeof(_VTE_CAP_OSC "LTerminal" _VTE_CAP_ST) - 1);
+			g_snprintf (buf, sizeof (buf),
+				    _VTE_CAP_OSC "l%s" _VTE_CAP_ST,
+				    terminal->window_title);
+			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		default:
 			if (param >= 24) {
@@ -3285,6 +3371,41 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 			}
 			break;
 		}
+	}
+}
+
+/* Change the color of the cursor */
+static void
+vte_sequence_handler_change_cursor_color (VteTerminal *terminal, GValueArray *params)
+{
+	gchar *name = NULL;
+	GValue *value;
+	GdkColor color;
+
+	if (params != NULL && params->n_values > 0) {
+		value = g_value_array_get_nth (params, 0);
+
+		if (G_VALUE_HOLDS_STRING (value))
+			name = g_value_dup_string (value);
+		else if (G_VALUE_HOLDS_POINTER (value))
+			name = vte_ucs4_to_utf8 (terminal, g_value_get_pointer (value));
+
+		if (! name)
+			return;
+
+		if (vte_parse_color (name, &color))
+			vte_terminal_set_color_cursor (terminal, &color);
+		else if (strcmp (name, "?") == 0) {
+			gchar buf[128];
+			g_snprintf (buf, sizeof (buf),
+				    _VTE_CAP_OSC "12;rgb:%04x/%04x/%04x" BEL,
+				    terminal->pvt->palette[VTE_CUR_BG].red,
+				    terminal->pvt->palette[VTE_CUR_BG].green,
+				    terminal->pvt->palette[VTE_CUR_BG].blue);
+			vte_terminal_feed_child (terminal, buf, -1);
+		}
+
+		g_free (name);
 	}
 }
 

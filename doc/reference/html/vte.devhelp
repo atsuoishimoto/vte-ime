@@ -5,7 +5,6 @@
     <sub name="VTE" link="ch01.html">
       <sub name="VteTerminal" link="VteTerminal.html"/>
       <sub name="VteTerminalAccessible" link="VteTerminalAccessible.html"/>
-      <sub name="VteReaper" link="VteReaper.html"/>
     </sub>
   </chapters>
   <functions>

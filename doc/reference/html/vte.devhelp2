@@ -5,7 +5,6 @@
     <sub name="VTE" link="ch01.html">
       <sub name="VteTerminal" link="VteTerminal.html"/>
       <sub name="VteTerminalAccessible" link="VteTerminalAccessible.html"/>
-      <sub name="VteReaper" link="VteReaper.html"/>
     </sub>
   </chapters>
   <functions>
@@ -159,15 +158,15 @@
     <keyword type="signal" name="The &quot;window-title-changed&quot; signal" link="VteTerminal.html#VteTerminal-window-title-changed"/>
     <keyword type="struct" name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <keyword type="function" name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
-    <keyword type="constant" name="VTE_ERASE_AUTO" link="VteTerminal.html#VTE-ERASE-AUTO--CAPS"/>
-    <keyword type="constant" name="VTE_ERASE_ASCII_BACKSPACE" link="VteTerminal.html#VTE-ERASE-ASCII-BACKSPACE--CAPS"/>
-    <keyword type="constant" name="VTE_ERASE_ASCII_DELETE" link="VteTerminal.html#VTE-ERASE-ASCII-DELETE--CAPS"/>
-    <keyword type="constant" name="VTE_ERASE_DELETE_SEQUENCE" link="VteTerminal.html#VTE-ERASE-DELETE-SEQUENCE--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_SHAPE_BLOCK" link="VteTerminal.html#VTE-CURSOR-SHAPE-BLOCK--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_SHAPE_IBEAM" link="VteTerminal.html#VTE-CURSOR-SHAPE-IBEAM--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_SHAPE_UNDERLINE" link="VteTerminal.html#VTE-CURSOR-SHAPE-UNDERLINE--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_BLINK_SYSTEM" link="VteTerminal.html#VTE-CURSOR-BLINK-SYSTEM--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_BLINK_ON" link="VteTerminal.html#VTE-CURSOR-BLINK-ON--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_BLINK_OFF" link="VteTerminal.html#VTE-CURSOR-BLINK-OFF--CAPS"/>
+    <keyword type="constant" name="VTE_ERASE_AUTO" link="VteTerminal.html#VTE-ERASE-AUTO:CAPS"/>
+    <keyword type="constant" name="VTE_ERASE_ASCII_BACKSPACE" link="VteTerminal.html#VTE-ERASE-ASCII-BACKSPACE:CAPS"/>
+    <keyword type="constant" name="VTE_ERASE_ASCII_DELETE" link="VteTerminal.html#VTE-ERASE-ASCII-DELETE:CAPS"/>
+    <keyword type="constant" name="VTE_ERASE_DELETE_SEQUENCE" link="VteTerminal.html#VTE-ERASE-DELETE-SEQUENCE:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_SHAPE_BLOCK" link="VteTerminal.html#VTE-CURSOR-SHAPE-BLOCK:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_SHAPE_IBEAM" link="VteTerminal.html#VTE-CURSOR-SHAPE-IBEAM:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_SHAPE_UNDERLINE" link="VteTerminal.html#VTE-CURSOR-SHAPE-UNDERLINE:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_BLINK_SYSTEM" link="VteTerminal.html#VTE-CURSOR-BLINK-SYSTEM:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_BLINK_ON" link="VteTerminal.html#VTE-CURSOR-BLINK-ON:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_BLINK_OFF" link="VteTerminal.html#VTE-CURSOR-BLINK-OFF:CAPS"/>
   </functions>
 </book>
