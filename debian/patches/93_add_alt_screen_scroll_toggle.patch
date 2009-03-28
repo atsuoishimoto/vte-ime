@@ -1,11 +1,11 @@
 Ubuntu: https://bugs.launchpad.net/bugs/106995
-Upstream: http://bugzilla.gnome.org/show_bug.cgi?id=538195
+Upstream: http://bugzilla.gnome.org/show_bug.cgi?id=518405
 Description: Handle scrolling differently when using alternate screen or
  scrolling is restricted.
 
-diff -Nur -x '*.orig' -x '*~' vte-0.19.4/doc/reference/xml/vte.xml vte-0.19.4.new/doc/reference/xml/vte.xml
---- vte-0.19.4/doc/reference/xml/vte.xml	2008-12-15 20:45:26.000000000 +0000
-+++ vte-0.19.4.new/doc/reference/xml/vte.xml	2009-01-12 18:43:11.000000000 +0000
+diff -Nur -x '*.orig' -x '*~' vte/doc/reference/xml/vte.xml vte.new/doc/reference/xml/vte.xml
+--- vte/doc/reference/xml/vte.xml	2009-03-15 06:57:27.000000000 -0700
++++ vte.new/doc/reference/xml/vte.xml	2009-03-27 20:02:48.000000000 -0700
 @@ -71,6 +71,9 @@
  <link linkend="void">void</link>                <link linkend="vte-terminal-set-scroll-on-keystroke">vte_terminal_set_scroll_on_keystroke</link>
                                                          (<link linkend="VteTerminal">VteTerminal</link> *terminal,
@@ -16,9 +16,28 @@ diff -Nur -x '*.orig' -x '*~' vte-0.19.4/doc/reference/xml/vte.xml vte-0.19.4.ne
  <link linkend="void">void</link>                <link linkend="vte-terminal-set-color-bold">vte_terminal_set_color_bold</link>         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                           const <link linkend="GdkColor">GdkColor</link> *bold);
  <link linkend="void">void</link>                <link linkend="vte-terminal-set-color-foreground">vte_terminal_set_color_foreground</link>   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vte.c vte-0.19.4.new/src/vte.c
---- vte-0.19.4/src/vte.c	2008-12-13 22:49:02.000000000 +0000
-+++ vte-0.19.4.new/src/vte.c	2009-01-12 18:44:55.000000000 +0000
+diff -Nur -x '*.orig' -x '*~' vte/python/vte.defs vte.new/python/vte.defs
+--- vte/python/vte.defs	2009-03-27 20:02:47.000000000 -0700
++++ vte.new/python/vte.defs	2009-03-27 20:03:37.000000000 -0700
+@@ -210,6 +210,15 @@
+   (return-type "gboolean")
+ )
+ 
++(define-method set_alternate_screen_scroll
++  (of-object "VteTerminal")
++  (c-name "vte_terminal_set_alternate_screen_scroll")
++  (return-type "none")
++  (parameters
++    '("gboolean" "scroll")
++  )
++)
++
+ (define-method set_scroll_background
+   (of-object "VteTerminal")
+   (c-name "vte_terminal_set_scroll_background")
+diff -Nur -x '*.orig' -x '*~' vte/src/vte.c vte.new/src/vte.c
+--- vte/src/vte.c	2009-03-15 05:52:49.000000000 -0700
++++ vte.new/src/vte.c	2009-03-27 20:02:48.000000000 -0700
 @@ -10988,8 +10988,9 @@
  		return FALSE;
  	}
@@ -31,7 +50,7 @@ diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vte.c vte-0.19.4.new/src/vte.c
  		char *normal;
  		gssize normal_length;
  		const gchar *special;
-@@ -12293,6 +12294,22 @@
+@@ -12294,6 +12295,22 @@
          g_object_notify (G_OBJECT (terminal), "scroll-on-keystroke");
  }
  
@@ -54,9 +73,9 @@ diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vte.c vte-0.19.4.new/src/vte.c
  static void
  vte_terminal_real_copy_clipboard(VteTerminal *terminal)
  {
-diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vte.h vte-0.19.4.new/src/vte.h
---- vte-0.19.4/src/vte.h	2008-12-02 00:05:02.000000000 +0000
-+++ vte-0.19.4.new/src/vte.h	2009-01-12 18:45:35.000000000 +0000
+diff -Nur -x '*.orig' -x '*~' vte/src/vte.h vte.new/src/vte.h
+--- vte/src/vte.h	2009-03-05 06:06:07.000000000 -0800
++++ vte.new/src/vte.h	2009-03-27 20:02:48.000000000 -0700
 @@ -252,6 +252,8 @@
  void vte_terminal_set_scroll_on_output(VteTerminal *terminal, gboolean scroll);
  void vte_terminal_set_scroll_on_keystroke(VteTerminal *terminal,
@@ -66,9 +85,9 @@ diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vte.h vte-0.19.4.new/src/vte.h
  
  /* Set the color scheme. */
  void vte_terminal_set_color_dim(VteTerminal *terminal,
-diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/vte-private.h vte-0.19.4.new/src/vte-private.h
---- vte-0.19.4/src/vte-private.h	2008-12-12 03:06:22.000000000 +0000
-+++ vte-0.19.4.new/src/vte-private.h	2009-01-12 18:46:01.000000000 +0000
+diff -Nur -x '*.orig' -x '*~' vte/src/vte-private.h vte.new/src/vte-private.h
+--- vte/src/vte-private.h	2009-03-05 06:06:07.000000000 -0800
++++ vte.new/src/vte-private.h	2009-03-27 20:02:48.000000000 -0700
 @@ -328,6 +328,7 @@
  	gboolean scroll_on_output;
  	gboolean scroll_on_keystroke;

@@ -1,3 +1,10 @@
+vte (1:0.20.0-0ubuntu2) jaunty; urgency=low
+
+  * Update 93_add_alt_screen_scroll_toggle.patch to include Python
+    bindings (LP: #348708), thanks to Jordan Callicoat.
+
+ -- Kees Cook <kees@ubuntu.com>  Sat, 28 Mar 2009 09:40:37 -0700
+
 vte (1:0.20.0-0ubuntu1) jaunty; urgency=low
 
   * New upstream release (LP: #344049)
