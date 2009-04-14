@@ -1158,10 +1158,11 @@ vte_terminal_match_contents_clear(VteTerminal *terminal)
 
 /* Refresh the cache of the screen contents we keep. */
 static gboolean
-always_selected(VteTerminal *terminal, glong row, glong column, gpointer data)
+always_selected(VteTerminal *terminal, glong column, glong row, gpointer data)
 {
 	return TRUE;
 }
+
 static void
 vte_terminal_match_contents_refresh(VteTerminal *terminal)
 {
@@ -3442,7 +3443,7 @@ _vte_terminal_disconnect_pty_write(VteTerminal *terminal)
 	}
 }
 
-/* Basic wrapper around _vte_pty_open, which handles the pipefitting. */
+/* Basic wrapper around _vte_pty_open(), which handles the pipefitting. */
 static pid_t
 _vte_terminal_fork_basic(VteTerminal *terminal, const char *command,
 			 char **argv, char **envv,
@@ -6666,7 +6667,7 @@ vte_terminal_extend_selection(VteTerminal *terminal, long x, long y,
 
 	vte_terminal_extend_selection_expand (terminal);
 
-	if (!invalidate_selected &&
+	if (!invalidate_selected && !force &&
 	    0 == memcmp (sc, so, sizeof (*sc)) &&
 	    0 == memcmp (ec, eo, sizeof (*ec)))
 		/* No change */

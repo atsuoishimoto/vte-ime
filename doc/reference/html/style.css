@@ -176,17 +176,37 @@ hr
 {
   /* tango:orange 0/1 */
   background: #ffeed9;
-  border: solid 1px #ffb04f;
+  border-color: #ffb04f;
+}
+.note
+{
+  /* tango:chameleon 0/0.5 */
+  background: #d8ffb2;
+  border-color: #abf562;
+}
+.note, .warning
+{
   padding: 0.5em;
   border-width: 1px;
+  border-style: solid;
 }
-.warning h3
+.note h3, .warning h3
 {
   margin-top: 0.0em
 }
-.warning p
+.note p, .warning p
 {
   margin-bottom: 0.0em
+}
+
+/* blob links */
+h2 .extralinks, h3 .extralinks
+{
+  float: right;
+  /* tango:aluminium 3 */
+  color: #babdb6;
+  font-size: 80%;
+  font-weight: normal;
 }
 
 /* code listings */

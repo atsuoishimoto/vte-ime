@@ -1,3 +1,15 @@
+vte (1:0.20.1-0ubuntu1) karmic; urgency=low
+
+  * New upstream release: (LP: #361055)
+    Bugs fixed in this release:
+      - Bug 574491 – gnome-pty-helper can prevent volumes from being unmounted
+      - Bug 576504 – vte does not pass its testsuite.
+      - Bug 573674 – reset resets width to 80 chars
+      - Bug 576797 – Double-click sometimes stops working
+  * Refresh debian/patches/90_autoreconf.patch
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 14 Apr 2009 14:31:39 +0200
+
 vte (1:0.20.0-0ubuntu2) jaunty; urgency=low
 
   * Update 93_add_alt_screen_scroll_toggle.patch to include Python

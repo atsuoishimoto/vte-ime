@@ -7,7 +7,7 @@
 
 <refnamediv>
 <refname>VteTerminalAccessible</refname>
-<refpurpose>Accessibility peer of <link linkend="VteTerminal"><type>VteTerminal</type></link>.</refpurpose>
+<refpurpose>Accessibility peer of <link linkend="VteTerminal."><type>VteTerminal.</type></link></refpurpose>
 </refnamediv>
 
 <refsynopsisdiv id="VteTerminalAccessible.synopsis" role="synopsis">
@@ -44,6 +44,7 @@ VteTerminalAccessible implements
 
 <refsect1 id="VteTerminalAccessible.description" role="desc">
 <title role="desc.title">Description</title>
+
 <para>
 The accessibility peer of a <link linkend="VteTerminal"><type>VteTerminal</type></link>, implementing GNOME's accessibility
 framework.
@@ -54,7 +55,8 @@ framework.
 <title role="details.title">Details</title>
 <refsect2 id="VteTerminalAccessible-struct" role="struct">
 <title>VteTerminalAccessible</title>
-<indexterm zone="VteTerminalAccessible-struct"><primary>VteTerminalAccessible</primary></indexterm><programlisting>typedef struct {
+<indexterm zone="VteTerminalAccessible-struct"><primary>VteTerminalAccessible</primary></indexterm>
+<programlisting>typedef struct {
 	GtkAccessible parent;
 } VteTerminalAccessible;
 </programlisting>
@@ -62,14 +64,15 @@ framework.
 This should not be accessed directly.  Use the <link linkend="AtkText"><type>AtkText</type></link> interface instead.
 </para><variablelist role="struct">
 <varlistentry>
-<term><link linkend="GtkAccessible">GtkAccessible</link>&#160;<structfield>parent</structfield>;</term>
+<term><link linkend="GtkAccessible">GtkAccessible</link>&#160;<structfield id="VteTerminalAccessible-struct.parent">parent</structfield>;</term>
 <listitem><simpara>The parent <link linkend="GtkAccessible"><type>GtkAccessible</type></link> object.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2 id="vte-terminal-accessible-new" role="function">
 <title>vte_terminal_accessible_new ()</title>
-<indexterm zone="vte-terminal-accessible-new"><primary>vte_terminal_accessible_new</primary></indexterm><programlisting><link linkend="AtkObject">AtkObject</link> *         vte_terminal_accessible_new         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
+<indexterm zone="vte-terminal-accessible-new"><primary>vte_terminal_accessible_new</primary></indexterm>
+<programlisting><link linkend="AtkObject">AtkObject</link> *         vte_terminal_accessible_new         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
 <para>
 Creates a new accessibility peer for the terminal widget.</para>
 <para>

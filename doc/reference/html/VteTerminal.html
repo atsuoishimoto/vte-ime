@@ -59,27 +59,27 @@ pid_t               <a class="link" href="VteTerminal.html#vte-terminal-fork-com
                                                          char **argv,
                                                          char **envv,
                                                          const char *directory,
-                                                         gboolean lastlog,
-                                                         gboolean utmp,
-                                                         gboolean wtmp);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> lastlog,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> utmp,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> wtmp);
 pid_t               <a class="link" href="VteTerminal.html#vte-terminal-forkpty" title="vte_terminal_forkpty ()">vte_terminal_forkpty</a>                (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          char **envv,
                                                          const char *directory,
-                                                         gboolean lastlog,
-                                                         gboolean utmp,
-                                                         gboolean wtmp);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> lastlog,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> utmp,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> wtmp);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-pty" title="vte_terminal_set_pty ()">vte_terminal_set_pty</a>                (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int pty_master);
 int                 <a class="link" href="VteTerminal.html#vte-terminal-get-pty" title="vte_terminal_get_pty ()">vte_terminal_get_pty</a>                (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-feed" title="vte_terminal_feed ()">vte_terminal_feed</a>                   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *data,
-                                                         glong length);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> length);
 void                <a class="link" href="VteTerminal.html#vte-terminal-feed-child" title="vte_terminal_feed_child ()">vte_terminal_feed_child</a>             (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *text,
-                                                         glong length);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> length);
 void                <a class="link" href="VteTerminal.html#vte-terminal-feed-child-binary" title="vte_terminal_feed_child_binary ()">vte_terminal_feed_child_binary</a>      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *data,
-                                                         glong length);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> length);
 int                 <a class="link" href="VteTerminal.html#vte-terminal-get-child-exit-status" title="vte_terminal_get_child_exit_status ()">vte_terminal_get_child_exit_status</a>  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-select-all" title="vte_terminal_select_all ()">vte_terminal_select_all</a>             (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-select-none" title="vte_terminal_select_none ()">vte_terminal_select_none</a>            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
@@ -88,22 +88,22 @@ void                <a class="link" href="VteTerminal.html#vte-terminal-paste-cl
 void                <a class="link" href="VteTerminal.html#vte-terminal-copy-primary" title="vte_terminal_copy_primary ()">vte_terminal_copy_primary</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-paste-primary" title="vte_terminal_paste_primary ()">vte_terminal_paste_primary</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-size" title="vte_terminal_set_size ()">vte_terminal_set_size</a>               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         glong columns,
-                                                         glong rows);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> columns,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> rows);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-audible-bell" title="vte_terminal_set_audible_bell ()">vte_terminal_set_audible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean is_audible);
-gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-audible-bell" title="vte_terminal_get_audible_bell ()">vte_terminal_get_audible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> is_audible);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-audible-bell" title="vte_terminal_get_audible_bell ()">vte_terminal_get_audible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-visible-bell" title="vte_terminal_set_visible_bell ()">vte_terminal_set_visible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean is_visible);
-gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-visible-bell" title="vte_terminal_get_visible_bell ()">vte_terminal_get_visible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> is_visible);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-visible-bell" title="vte_terminal_get_visible_bell ()">vte_terminal_get_visible_bell</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-allow-bold" title="vte_terminal_set_allow_bold ()">vte_terminal_set_allow_bold</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean allow_bold);
-gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-allow-bold" title="vte_terminal_get_allow_bold ()">vte_terminal_get_allow_bold</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> allow_bold);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-allow-bold" title="vte_terminal_get_allow_bold ()">vte_terminal_get_allow_bold</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-scroll-on-output" title="vte_terminal_set_scroll_on_output ()">vte_terminal_set_scroll_on_output</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean scroll);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> scroll);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-scroll-on-keystroke" title="vte_terminal_set_scroll_on_keystroke ()">vte_terminal_set_scroll_on_keystroke</a>
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean scroll);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> scroll);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-color-bold" title="vte_terminal_set_color_bold ()">vte_terminal_set_color_bold</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const GdkColor *bold);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-color-foreground" title="vte_terminal_set_color_foreground ()">vte_terminal_set_color_foreground</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
@@ -120,10 +120,10 @@ void                <a class="link" href="VteTerminal.html#vte-terminal-set-colo
                                                          const GdkColor *foreground,
                                                          const GdkColor *background,
                                                          const GdkColor *palette,
-                                                         glong palette_size);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> palette_size);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-default-colors" title="vte_terminal_set_default_colors ()">vte_terminal_set_default_colors</a>     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-opacity" title="vte_terminal_set_opacity ()">vte_terminal_set_opacity</a>            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         guint16 opacity);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint16">guint16</a> opacity);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-background-image" title="vte_terminal_set_background_image ()">vte_terminal_set_background_image</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          GdkPixbuf *image);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-background-image-file" title="vte_terminal_set_background_image_file ()">vte_terminal_set_background_image_file</a>
@@ -134,23 +134,23 @@ void                <a class="link" href="VteTerminal.html#vte-terminal-set-back
                                                          double saturation);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-background-transparent" title="vte_terminal_set_background_transparent ()">vte_terminal_set_background_transparent</a>
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean transparent);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> transparent);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-background-tint-color" title="vte_terminal_set_background_tint_color ()">vte_terminal_set_background_tint_color</a>
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const GdkColor *color);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-scroll-background" title="vte_terminal_set_scroll_background ()">vte_terminal_set_scroll_background</a>  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean scroll);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> scroll);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-cursor-shape" title="vte_terminal_set_cursor_shape ()">vte_terminal_set_cursor_shape</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          <a class="link" href="VteTerminal.html#VteTerminalCursorShape" title="enum VteTerminalCursorShape">VteTerminalCursorShape</a> shape);
 <a class="link" href="VteTerminal.html#VteTerminalCursorShape" title="enum VteTerminalCursorShape">VteTerminalCursorShape</a>  <a class="link" href="VteTerminal.html#vte-terminal-get-cursor-shape" title="vte_terminal_get_cursor_shape ()">vte_terminal_get_cursor_shape</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-cursor-blinks" title="vte_terminal_set_cursor_blinks ()">vte_terminal_set_cursor_blinks</a>      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean blink);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> blink);
 <a class="link" href="VteTerminal.html#VteTerminalCursorBlinkMode" title="enum VteTerminalCursorBlinkMode">VteTerminalCursorBlinkMode</a>  <a class="link" href="VteTerminal.html#vte-terminal-get-cursor-blink-mode" title="vte_terminal_get_cursor_blink_mode ()">vte_terminal_get_cursor_blink_mode</a>
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-cursor-blink-mode" title="vte_terminal_set_cursor_blink_mode ()">vte_terminal_set_cursor_blink_mode</a>  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          <a class="link" href="VteTerminal.html#VteTerminalCursorBlinkMode" title="enum VteTerminalCursorBlinkMode">VteTerminalCursorBlinkMode</a> mode);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-scrollback-lines" title="vte_terminal_set_scrollback_lines ()">vte_terminal_set_scrollback_lines</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         glong lines);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> lines);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-font" title="vte_terminal_set_font ()">vte_terminal_set_font</a>               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const <a href="/opt/gnome-trunk/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription">PangoFontDescription</a> *font_desc);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-font-from-string" title="vte_terminal_set_font_from_string ()">vte_terminal_set_font_from_string</a>   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
@@ -163,53 +163,53 @@ void                <a class="link" href="VteTerminal.html#vte-terminal-set-font
                                                          const <a href="/opt/gnome-trunk/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription">PangoFontDescription</a> *font_desc,
                                                          VteTerminalAntiAlias antialias);
 const <a href="/opt/gnome-trunk/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription">PangoFontDescription</a> * <a class="link" href="VteTerminal.html#vte-terminal-get-font" title="vte_terminal_get_font ()">vte_terminal_get_font</a>      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-using-xft" title="vte_terminal_get_using_xft ()">vte_terminal_get_using_xft</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-has-selection" title="vte_terminal_get_has_selection ()">vte_terminal_get_has_selection</a>      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-using-xft" title="vte_terminal_get_using_xft ()">vte_terminal_get_using_xft</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-has-selection" title="vte_terminal_get_has_selection ()">vte_terminal_get_has_selection</a>      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-word-chars" title="vte_terminal_set_word_chars ()">vte_terminal_set_word_chars</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *spec);
-gboolean            <a class="link" href="VteTerminal.html#vte-terminal-is-word-char" title="vte_terminal_is_word_char ()">vte_terminal_is_word_char</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gunichar c);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-is-word-char" title="vte_terminal_is_word_char ()">vte_terminal_is_word_char</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Unicode-Manipulation.html#gunichar">gunichar</a> c);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-backspace-binding" title="vte_terminal_set_backspace_binding ()">vte_terminal_set_backspace_binding</a>  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          <a class="link" href="VteTerminal.html#VteTerminalEraseBinding" title="enum VteTerminalEraseBinding">VteTerminalEraseBinding</a> binding);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-delete-binding" title="vte_terminal_set_delete_binding ()">vte_terminal_set_delete_binding</a>     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          <a class="link" href="VteTerminal.html#VteTerminalEraseBinding" title="enum VteTerminalEraseBinding">VteTerminalEraseBinding</a> binding);
 void                <a class="link" href="VteTerminal.html#vte-terminal-set-mouse-autohide" title="vte_terminal_set_mouse_autohide ()">vte_terminal_set_mouse_autohide</a>     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean setting);
-gboolean            <a class="link" href="VteTerminal.html#vte-terminal-get-mouse-autohide" title="vte_terminal_get_mouse_autohide ()">vte_terminal_get_mouse_autohide</a>     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> setting);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-get-mouse-autohide" title="vte_terminal_get_mouse_autohide ()">vte_terminal_get_mouse_autohide</a>     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 void                <a class="link" href="VteTerminal.html#vte-terminal-reset" title="vte_terminal_reset ()">vte_terminal_reset</a>                  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean full,
-                                                         gboolean clear_history);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> full,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> clear_history);
 char *              <a class="link" href="VteTerminal.html#vte-terminal-get-text" title="vte_terminal_get_text ()">vte_terminal_get_text</a>               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         gpointer data,
-                                                         GArray *attributes);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a> data,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray">GArray</a> *attributes);
 char *              <a class="link" href="VteTerminal.html#vte-terminal-get-text-include-trailing-spaces" title="vte_terminal_get_text_include_trailing_spaces ()">vte_terminal_get_text_include_trailing_spaces</a>
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         gpointer data,
-                                                         GArray *attributes);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a> data,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray">GArray</a> *attributes);
 char *              <a class="link" href="VteTerminal.html#vte-terminal-get-text-range" title="vte_terminal_get_text_range ()">vte_terminal_get_text_range</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         glong start_row,
-                                                         glong start_col,
-                                                         glong end_row,
-                                                         glong end_col,
-                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         gpointer data,
-                                                         GArray *attributes);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> start_row,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> start_col,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> end_row,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> end_col,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a> data,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray">GArray</a> *attributes);
 void                <a class="link" href="VteTerminal.html#vte-terminal-get-cursor-position" title="vte_terminal_get_cursor_position ()">vte_terminal_get_cursor_position</a>    (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         glong *column,
-                                                         glong *row);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> *column,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> *row);
 void                <a class="link" href="VteTerminal.html#vte-terminal-match-clear-all" title="vte_terminal_match_clear_all ()">vte_terminal_match_clear_all</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 int                 <a class="link" href="VteTerminal.html#vte-terminal-match-add" title="vte_terminal_match_add ()">vte_terminal_match_add</a>              (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *match);
 int                 <a class="link" href="VteTerminal.html#vte-terminal-match-add-gregex" title="vte_terminal_match_add_gregex ()">vte_terminal_match_add_gregex</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         GRegex *regex,
-                                                         GRegexMatchFlags flags);
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Perl-compatible-regular-expressions.html#GRegex">GRegex</a> *regex,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Perl-compatible-regular-expressions.html#GRegexMatchFlags">GRegexMatchFlags</a> flags);
 void                <a class="link" href="VteTerminal.html#vte-terminal-match-remove" title="vte_terminal_match_remove ()">vte_terminal_match_remove</a>           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int tag);
 char *              <a class="link" href="VteTerminal.html#vte-terminal-match-check" title="vte_terminal_match_check ()">vte_terminal_match_check</a>            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         glong column,
-                                                         glong row,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> column,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> row,
                                                          int *tag);
 void                <a class="link" href="VteTerminal.html#vte-terminal-match-set-cursor" title="vte_terminal_match_set_cursor ()">vte_terminal_match_set_cursor</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int tag,
@@ -234,21 +234,21 @@ void                <a class="link" href="VteTerminal.html#vte-terminal-get-padd
 
 
 GtkAdjustment *     <a class="link" href="VteTerminal.html#vte-terminal-get-adjustment" title="vte_terminal_get_adjustment ()">vte_terminal_get_adjustment</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-glong               <a class="link" href="VteTerminal.html#vte-terminal-get-char-ascent" title="vte_terminal_get_char_ascent ()">vte_terminal_get_char_ascent</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-glong               <a class="link" href="VteTerminal.html#vte-terminal-get-char-descent" title="vte_terminal_get_char_descent ()">vte_terminal_get_char_descent</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-glong               <a class="link" href="VteTerminal.html#vte-terminal-get-char-height" title="vte_terminal_get_char_height ()">vte_terminal_get_char_height</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-glong               <a class="link" href="VteTerminal.html#vte-terminal-get-char-width" title="vte_terminal_get_char_width ()">vte_terminal_get_char_width</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-glong               <a class="link" href="VteTerminal.html#vte-terminal-get-column-count" title="vte_terminal_get_column_count ()">vte_terminal_get_column_count</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-char-ascent" title="vte_terminal_get_char_ascent ()">vte_terminal_get_char_ascent</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-char-descent" title="vte_terminal_get_char_descent ()">vte_terminal_get_char_descent</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-char-height" title="vte_terminal_get_char_height ()">vte_terminal_get_char_height</a>        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-char-width" title="vte_terminal_get_char_width ()">vte_terminal_get_char_width</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-column-count" title="vte_terminal_get_column_count ()">vte_terminal_get_column_count</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 const char *        <a class="link" href="VteTerminal.html#vte-terminal-get-icon-title" title="vte_terminal_get_icon_title ()">vte_terminal_get_icon_title</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
-glong               <a class="link" href="VteTerminal.html#vte-terminal-get-row-count" title="vte_terminal_get_row_count ()">vte_terminal_get_row_count</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               <a class="link" href="VteTerminal.html#vte-terminal-get-row-count" title="vte_terminal_get_row_count ()">vte_terminal_get_row_count</a>          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 const char *        <a class="link" href="VteTerminal.html#vte-terminal-get-window-title" title="vte_terminal_get_window_title ()">vte_terminal_get_window_title</a>       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);
 </pre>
 </div>
 <div class="refsect1" lang="en">
 <a name="VteTerminal.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  GObject
-   +----GInitiallyUnowned
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
          +----GtkObject
                +----GtkWidget
                      +----VteTerminal
@@ -263,31 +263,31 @@ VteTerminal implements
 <div class="refsect1" lang="en">
 <a name="VteTerminal.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="VteTerminal.html#VteTerminal--allow-bold" title='The "allow-bold" property'>allow-bold</a>"               gboolean              : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--audible-bell" title='The "audible-bell" property'>audible-bell</a>"             gboolean              : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--background-image-file" title='The "background-image-file" property'>background-image-file</a>"    gchar*                : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--allow-bold" title='The "allow-bold" property'>allow-bold</a>"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--audible-bell" title='The "audible-bell" property'>audible-bell</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--background-image-file" title='The "background-image-file" property'>background-image-file</a>"    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read / Write
   "<a class="link" href="VteTerminal.html#VteTerminal--background-image-pixbuf" title='The "background-image-pixbuf" property'>background-image-pixbuf</a>"  GdkPixbuf*            : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--background-opacity" title='The "background-opacity" property'>background-opacity</a>"       gdouble               : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--background-saturation" title='The "background-saturation" property'>background-saturation</a>"    gdouble               : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--background-opacity" title='The "background-opacity" property'>background-opacity</a>"       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble">gdouble</a>               : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--background-saturation" title='The "background-saturation" property'>background-saturation</a>"    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble">gdouble</a>               : Read / Write
   "<a class="link" href="VteTerminal.html#VteTerminal--background-tint-color" title='The "background-tint-color" property'>background-tint-color</a>"    GdkColor*             : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--background-transparent" title='The "background-transparent" property'>background-transparent</a>"   gboolean              : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--background-transparent" title='The "background-transparent" property'>background-transparent</a>"   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write
   "<a class="link" href="VteTerminal.html#VteTerminal--backspace-binding" title='The "backspace-binding" property'>backspace-binding</a>"        <a class="link" href="VteTerminal.html#VteTerminalEraseBinding" title="enum VteTerminalEraseBinding">VteTerminalEraseBinding</a>  : Read / Write
   "<a class="link" href="VteTerminal.html#VteTerminal--cursor-blink-mode" title='The "cursor-blink-mode" property'>cursor-blink-mode</a>"        <a class="link" href="VteTerminal.html#VteTerminalCursorBlinkMode" title="enum VteTerminalCursorBlinkMode">VteTerminalCursorBlinkMode</a>  : Read / Write
   "<a class="link" href="VteTerminal.html#VteTerminal--cursor-shape" title='The "cursor-shape" property'>cursor-shape</a>"             <a class="link" href="VteTerminal.html#VteTerminalCursorShape" title="enum VteTerminalCursorShape">VteTerminalCursorShape</a>  : Read / Write
   "<a class="link" href="VteTerminal.html#VteTerminal--delete-binding" title='The "delete-binding" property'>delete-binding</a>"           <a class="link" href="VteTerminal.html#VteTerminalEraseBinding" title="enum VteTerminalEraseBinding">VteTerminalEraseBinding</a>  : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--emulation" title='The "emulation" property'>emulation</a>"                gchar*                : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--encoding" title='The "encoding" property'>encoding</a>"                 gchar*                : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--emulation" title='The "emulation" property'>emulation</a>"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--encoding" title='The "encoding" property'>encoding</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read / Write
   "<a class="link" href="VteTerminal.html#VteTerminal--font-desc" title='The "font-desc" property'>font-desc</a>"                <a href="/opt/gnome-trunk/share/gtk-doc/html/pango/pango-Fonts.html#PangoFontDescription">PangoFontDescription</a>*  : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--icon-title" title='The "icon-title" property'>icon-title</a>"               gchar*                : Read
-  "<a class="link" href="VteTerminal.html#VteTerminal--pointer-autohide" title='The "pointer-autohide" property'>pointer-autohide</a>"         gboolean              : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--pty" title='The "pty" property'>pty</a>"                      gint                  : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--scroll-background" title='The "scroll-background" property'>scroll-background</a>"        gboolean              : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--scroll-on-keystroke" title='The "scroll-on-keystroke" property'>scroll-on-keystroke</a>"      gboolean              : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--scroll-on-output" title='The "scroll-on-output" property'>scroll-on-output</a>"         gboolean              : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--scrollback-lines" title='The "scrollback-lines" property'>scrollback-lines</a>"         guint                 : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--visible-bell" title='The "visible-bell" property'>visible-bell</a>"             gboolean              : Read / Write
-  "<a class="link" href="VteTerminal.html#VteTerminal--window-title" title='The "window-title" property'>window-title</a>"             gchar*                : Read
-  "<a class="link" href="VteTerminal.html#VteTerminal--word-chars" title='The "word-chars" property'>word-chars</a>"               gchar*                : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--icon-title" title='The "icon-title" property'>icon-title</a>"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read
+  "<a class="link" href="VteTerminal.html#VteTerminal--pointer-autohide" title='The "pointer-autohide" property'>pointer-autohide</a>"         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--pty" title='The "pty" property'>pty</a>"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint">gint</a>                  : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--scroll-background" title='The "scroll-background" property'>scroll-background</a>"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--scroll-on-keystroke" title='The "scroll-on-keystroke" property'>scroll-on-keystroke</a>"      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--scroll-on-output" title='The "scroll-on-output" property'>scroll-on-output</a>"         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--scrollback-lines" title='The "scrollback-lines" property'>scrollback-lines</a>"         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint">guint</a>                 : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--visible-bell" title='The "visible-bell" property'>visible-bell</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write
+  "<a class="link" href="VteTerminal.html#VteTerminal--window-title" title='The "window-title" property'>window-title</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read
+  "<a class="link" href="VteTerminal.html#VteTerminal--word-chars" title='The "word-chars" property'>word-chars</a>"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read / Write
 </pre>
 </div>
 <div class="refsect1" lang="en">
@@ -339,12 +339,12 @@ A VteTerminal is a terminal emulator implemented as a GTK2 widget.
 <pre class="programlisting">typedef struct {
 	/* Widget implementation stuffs. */
 	GtkWidget widget;
-	GtkAdjustment *adjustment;	/* Scrolling adjustment. */
+	GtkAdjustment *adjustment; /* Scrolling adjustment. */
 
 	/* Metric and sizing data. */
-	glong char_width, char_height;	/* dimensions of character cells */
+	glong char_width, char_height; /* dimensions of character cells */
 	glong char_ascent, char_descent; /* important font metrics */
-	glong row_count, column_count;	/* dimensions of the window */
+	glong row_count, column_count; /* dimensions of the window */
 
 	/* Titles. */
 	char *window_title;
@@ -358,52 +358,52 @@ All of these fields should be considered read-only.
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">GtkWidget <em class="structfield"><code>widget</code></em>;</span></p></td>
+<td><p><span class="term">GtkWidget <em class="structfield"><code><a name="VteTerminal-struct.widget"></a>widget</code></em>;</span></p></td>
 <td>Base <span class="type">GtkWidget</span> of the terminal widget.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">GtkAdjustment *<em class="structfield"><code>adjustment</code></em>;</span></p></td>
+<td><p><span class="term">GtkAdjustment *<em class="structfield"><code><a name="VteTerminal-struct.adjustment"></a>adjustment</code></em>;</span></p></td>
 <td>Scroll bar adjustments.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">glong <em class="structfield"><code>char_width</code></em>;</span></p></td>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> <em class="structfield"><code><a name="VteTerminal-struct.char_width"></a>char_width</code></em>;</span></p></td>
 <td>Width of a narrow character cell.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">glong <em class="structfield"><code>char_height</code></em>;</span></p></td>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> <em class="structfield"><code><a name="VteTerminal-struct.char_height"></a>char_height</code></em>;</span></p></td>
 <td>Height of a character cell.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">glong <em class="structfield"><code>char_ascent</code></em>;</span></p></td>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> <em class="structfield"><code><a name="VteTerminal-struct.char_ascent"></a>char_ascent</code></em>;</span></p></td>
 <td>The distance (in pixels) from the baseline of drawn text to the top of the character cell.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">glong <em class="structfield"><code>char_descent</code></em>;</span></p></td>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> <em class="structfield"><code><a name="VteTerminal-struct.char_descent"></a>char_descent</code></em>;</span></p></td>
 <td>The distance (in pixels) from the baseline of drawn text to the bottom of the character cell.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">glong <em class="structfield"><code>row_count</code></em>;</span></p></td>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> <em class="structfield"><code><a name="VteTerminal-struct.row_count"></a>row_count</code></em>;</span></p></td>
 <td>Number of visible rows.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">glong <em class="structfield"><code>column_count</code></em>;</span></p></td>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> <em class="structfield"><code><a name="VteTerminal-struct.column_count"></a>column_count</code></em>;</span></p></td>
 <td>Number of visible columns.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">char *<em class="structfield"><code>window_title</code></em>;</span></p></td>
+<td><p><span class="term">char *<em class="structfield"><code><a name="VteTerminal-struct.window_title"></a>window_title</code></em>;</span></p></td>
 <td>The terminal's idea of what the window's title should be.
 </td>
 </tr>
 <tr>
-<td><p><span class="term">char *<em class="structfield"><code>icon_title</code></em>;</span></p></td>
+<td><p><span class="term">char *<em class="structfield"><code><a name="VteTerminal-struct.icon_title"></a>icon_title</code></em>;</span></p></td>
 <td>The terminal's idea of what the window's title should be when iconified.
 </td>
 </tr>
@@ -572,15 +572,15 @@ the terminal.</p>
                                                          char **argv,
                                                          char **envv,
                                                          const char *directory,
-                                                         gboolean lastlog,
-                                                         gboolean utmp,
-                                                         gboolean wtmp);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> lastlog,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> utmp,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> wtmp);</pre>
 <p>
 Starts the specified command under a newly-allocated controlling
-pseudo-terminal.  The <em class="parameter"><code>argv</code></em> and <em class="parameter"><code>envv</code></em> lists should be <code class="literal">NULL</code>-terminated, and
+pseudo-terminal.  The <em class="parameter"><code>argv</code></em> and <em class="parameter"><code>envv</code></em> lists should be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>-terminated, and
 argv[0] is expected to be the name of the file being run, as it would be if
 <code class="function">execve()</code> were being called.  TERM is automatically set to reflect the
-terminal widget's emulation setting.  If <em class="parameter"><code>lastlog</code></em>, <em class="parameter"><code>utmp</code></em>, or <em class="parameter"><code>wtmp</code></em> are <code class="literal">TRUE</code>,
+terminal widget's emulation setting.  If <em class="parameter"><code>lastlog</code></em>, <em class="parameter"><code>utmp</code></em>, or <em class="parameter"><code>wtmp</code></em> are <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>,
 logs the session to the specified system log files.
 </p>
 <p>
@@ -598,38 +598,38 @@ before calling <code class="function">exec()</code> in the child.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>command</code></em> :</span></p></td>
-<td> the name of a binary to run, or <code class="literal">NULL</code> to get user's shell
+<td> the name of a binary to run, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to get user's shell
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>argv</code></em> :</span></p></td>
-<td> the argument list to be passed to <em class="parameter"><code>command</code></em>, or <code class="literal">NULL</code>
+<td> the argument list to be passed to <em class="parameter"><code>command</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>envv</code></em> :</span></p></td>
 <td> a list of environment variables to be added to the environment before
-starting <em class="parameter"><code>command</code></em>, or <code class="literal">NULL</code>
+starting <em class="parameter"><code>command</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directory</code></em> :</span></p></td>
-<td> the name of a directory the command should start in, or <code class="literal">NULL</code>
+<td> the name of a directory the command should start in, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lastlog</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the session should be logged to the lastlog
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the session should be logged to the lastlog
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utmp</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the session should be logged to the utmp/utmpx log
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the session should be logged to the utmp/utmpx log
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>wtmp</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the session should be logged to the wtmp/wtmpx log
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the session should be logged to the wtmp/wtmpx log
 </td>
 </tr>
 <tr>
@@ -646,13 +646,13 @@ starting <em class="parameter"><code>command</code></em>, or <code class="litera
 <pre class="programlisting">pid_t               vte_terminal_forkpty                (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          char **envv,
                                                          const char *directory,
-                                                         gboolean lastlog,
-                                                         gboolean utmp,
-                                                         gboolean wtmp);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> lastlog,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> utmp,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> wtmp);</pre>
 <p>
 Starts a new child process under a newly-allocated controlling
 pseudo-terminal.  TERM is automatically set to reflect the terminal widget's
-emulation setting.  If <em class="parameter"><code>lastlog</code></em>, <em class="parameter"><code>utmp</code></em>, or <em class="parameter"><code>wtmp</code></em> are <code class="literal">TRUE</code>, logs the session
+emulation setting.  If <em class="parameter"><code>lastlog</code></em>, <em class="parameter"><code>utmp</code></em>, or <em class="parameter"><code>wtmp</code></em> are <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, logs the session
 to the specified system log files.</p>
 <p>
 </p>
@@ -667,28 +667,28 @@ to the specified system log files.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>envv</code></em> :</span></p></td>
 <td> a list of environment variables to be added to the environment before
-starting returning in the child process, or <code class="literal">NULL</code>
+starting returning in the child process, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directory</code></em> :</span></p></td>
 <td> the name of a directory the child process should change to, or
-<code class="literal">NULL</code>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lastlog</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the session should be logged to the lastlog
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the session should be logged to the lastlog
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utmp</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the session should be logged to the utmp/utmpx log
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the session should be logged to the utmp/utmpx log
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>wtmp</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the session should be logged to the wtmp/wtmpx log
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the session should be logged to the wtmp/wtmpx log
 </td>
 </tr>
 <tr>
@@ -760,7 +760,7 @@ Returns the file descriptor of the master end of <em class="parameter"><code>ter
 <a name="vte-terminal-feed"></a><h3>vte_terminal_feed ()</h3>
 <pre class="programlisting">void                vte_terminal_feed                   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *data,
-                                                         glong length);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> length);</pre>
 <p>
 Interprets <em class="parameter"><code>data</code></em> as if it were data received from a child process.  This
 can either be used to drive the terminal without a child process, or just
@@ -793,7 +793,7 @@ to mess with your users.</p>
 <a name="vte-terminal-feed-child"></a><h3>vte_terminal_feed_child ()</h3>
 <pre class="programlisting">void                vte_terminal_feed_child             (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *text,
-                                                         glong length);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> length);</pre>
 <p>
 Sends a block of UTF-8 text to the child as if it were entered by the user
 at the keyboard.</p>
@@ -825,7 +825,7 @@ at the keyboard.</p>
 <a name="vte-terminal-feed-child-binary"></a><h3>vte_terminal_feed_child_binary ()</h3>
 <pre class="programlisting">void                vte_terminal_feed_child_binary      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const char *data,
-                                                         glong length);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> length);</pre>
 <p>
 Sends a block of binary data to the child.</p>
 <p>
@@ -1001,8 +1001,8 @@ mouse button.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-size"></a><h3>vte_terminal_set_size ()</h3>
 <pre class="programlisting">void                vte_terminal_set_size               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         glong columns,
-                                                         glong rows);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> columns,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> rows);</pre>
 <p>
 Attempts to change the terminal's size in terms of rows and columns.  If
 the attempt succeeds, the widget will resize itself to the proper size.</p>
@@ -1033,7 +1033,7 @@ the attempt succeeds, the widget will resize itself to the proper size.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-audible-bell"></a><h3>vte_terminal_set_audible_bell ()</h3>
 <pre class="programlisting">void                vte_terminal_set_audible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean is_audible);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> is_audible);</pre>
 <p>
 Controls whether or not the terminal will beep when the child outputs the
 "bl" sequence.</p>
@@ -1049,7 +1049,7 @@ Controls whether or not the terminal will beep when the child outputs the
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>is_audible</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the terminal should beep
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the terminal should beep
 </td>
 </tr>
 </tbody>
@@ -1058,7 +1058,7 @@ Controls whether or not the terminal will beep when the child outputs the
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-audible-bell"></a><h3>vte_terminal_get_audible_bell ()</h3>
-<pre class="programlisting">gboolean            vte_terminal_get_audible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            vte_terminal_get_audible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Checks whether or not the terminal will beep when the child outputs the
 "bl" sequence.</p>
@@ -1074,7 +1074,7 @@ Checks whether or not the terminal will beep when the child outputs the
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if audible bell is enabled, <code class="literal">FALSE</code> if not
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if audible bell is enabled, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not
 </td>
 </tr>
 </tbody>
@@ -1084,7 +1084,7 @@ Checks whether or not the terminal will beep when the child outputs the
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-visible-bell"></a><h3>vte_terminal_set_visible_bell ()</h3>
 <pre class="programlisting">void                vte_terminal_set_visible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean is_visible);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> is_visible);</pre>
 <p>
 Controls whether or not the terminal will present a visible bell to the
 user when the child outputs the "bl" sequence.  The terminal
@@ -1101,7 +1101,7 @@ will clear itself to the default foreground color and then repaint itself.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>is_visible</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the terminal should flash
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the terminal should flash
 </td>
 </tr>
 </tbody>
@@ -1110,7 +1110,7 @@ will clear itself to the default foreground color and then repaint itself.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-visible-bell"></a><h3>vte_terminal_get_visible_bell ()</h3>
-<pre class="programlisting">gboolean            vte_terminal_get_visible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            vte_terminal_get_visible_bell       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Checks whether or not the terminal will present a visible bell to the
 user when the child outputs the "bl" sequence.  The terminal
@@ -1127,7 +1127,7 @@ will clear itself to the default foreground color and then repaint itself.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if visible bell is enabled, <code class="literal">FALSE</code> if not
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if visible bell is enabled, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not
 </td>
 </tr>
 </tbody>
@@ -1137,7 +1137,7 @@ will clear itself to the default foreground color and then repaint itself.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-allow-bold"></a><h3>vte_terminal_set_allow_bold ()</h3>
 <pre class="programlisting">void                vte_terminal_set_allow_bold         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean allow_bold);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> allow_bold);</pre>
 <p>
 Controls whether or not the terminal will attempt to draw bold text,
 either by using a bold font variant or by repainting text with a different
@@ -1154,7 +1154,7 @@ offset.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>allow_bold</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the terminal should attempt to draw bold text
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the terminal should attempt to draw bold text
 </td>
 </tr>
 </tbody>
@@ -1163,7 +1163,7 @@ offset.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-allow-bold"></a><h3>vte_terminal_get_allow_bold ()</h3>
-<pre class="programlisting">gboolean            vte_terminal_get_allow_bold         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            vte_terminal_get_allow_bold         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Checks whether or not the terminal will attempt to draw bold text by
 repainting text with a one-pixel offset.</p>
@@ -1179,7 +1179,7 @@ repainting text with a one-pixel offset.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if bolding is enabled, <code class="literal">FALSE</code> if not
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if bolding is enabled, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not
 </td>
 </tr>
 </tbody>
@@ -1189,7 +1189,7 @@ repainting text with a one-pixel offset.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-scroll-on-output"></a><h3>vte_terminal_set_scroll_on_output ()</h3>
 <pre class="programlisting">void                vte_terminal_set_scroll_on_output   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean scroll);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> scroll);</pre>
 <p>
 Controls whether or not the terminal will forcibly scroll to the bottom of
 the viewable history when the new data is received from the child.</p>
@@ -1205,7 +1205,7 @@ the viewable history when the new data is received from the child.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scroll</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the terminal should scroll on output
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the terminal should scroll on output
 </td>
 </tr>
 </tbody>
@@ -1216,7 +1216,7 @@ the viewable history when the new data is received from the child.</p>
 <a name="vte-terminal-set-scroll-on-keystroke"></a><h3>vte_terminal_set_scroll_on_keystroke ()</h3>
 <pre class="programlisting">void                vte_terminal_set_scroll_on_keystroke
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean scroll);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> scroll);</pre>
 <p>
 Controls whether or not the terminal will forcibly scroll to the bottom of
 the viewable history when the user presses a key.  Modifier keys do not
@@ -1233,7 +1233,7 @@ trigger this behavior.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scroll</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the terminal should scroll on keystrokes
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the terminal should scroll on keystrokes
 </td>
 </tr>
 </tbody>
@@ -1347,7 +1347,7 @@ Sets the color used to draw dim text in the default foreground color.</p>
 <pre class="programlisting">void                vte_terminal_set_color_cursor       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const GdkColor *cursor_background);</pre>
 <p>
-Sets the background color for text which is under the cursor.  If <code class="literal">NULL</code>, text
+Sets the background color for text which is under the cursor.  If <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, text
 under the cursor will be drawn with foreground and background colors
 reversed.</p>
 <p>
@@ -1375,7 +1375,7 @@ reversed.</p>
 <pre class="programlisting">void                vte_terminal_set_color_highlight    (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          const GdkColor *highlight_background);</pre>
 <p>
-Sets the background color for text which is highlighted.  If <code class="literal">NULL</code>,
+Sets the background color for text which is highlighted.  If <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>,
 highlighted text (which is usually highlighted because it is selected) will
 be drawn with foreground and background colors reversed.</p>
 <p>
@@ -1404,7 +1404,7 @@ be drawn with foreground and background colors reversed.</p>
                                                          const GdkColor *foreground,
                                                          const GdkColor *background,
                                                          const GdkColor *palette,
-                                                         glong palette_size);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> palette_size);</pre>
 <p>
 The terminal widget uses a 28-color model comprised of the default foreground
 and background colors, the bold foreground color, the dim foreground
@@ -1412,9 +1412,9 @@ color, an eight color palette, bold versions of the eight color palette,
 and a dim version of the the eight color palette.
 </p>
 <p>
-<em class="parameter"><code>palette_size</code></em> must be either 0, 8, 16, or 24.  If <em class="parameter"><code>foreground</code></em> is <code class="literal">NULL</code> and
+<em class="parameter"><code>palette_size</code></em> must be either 0, 8, 16, or 24.  If <em class="parameter"><code>foreground</code></em> is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> and
 <em class="parameter"><code>palette_size</code></em> is greater than 0, the new foreground color is taken from
-<em class="parameter"><code>palette</code></em>[7].  If <em class="parameter"><code>background</code></em> is <code class="literal">NULL</code> and <em class="parameter"><code>palette_size</code></em> is greater than 0,
+<em class="parameter"><code>palette</code></em>[7].  If <em class="parameter"><code>background</code></em> is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> and <em class="parameter"><code>palette_size</code></em> is greater than 0,
 the new background color is taken from <em class="parameter"><code>palette</code></em>[0].  If
 <em class="parameter"><code>palette_size</code></em> is 8 or 16, the third (dim) and possibly the second (bold)
 8-color palettes are extrapolated from the new background color and the items
@@ -1431,12 +1431,12 @@ in <em class="parameter"><code>palette</code></em>.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>foreground</code></em> :</span></p></td>
-<td> the new foreground color, or <code class="literal">NULL</code>
+<td> the new foreground color, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>background</code></em> :</span></p></td>
-<td> the new background color, or <code class="literal">NULL</code>
+<td> the new background color, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
@@ -1473,7 +1473,7 @@ Reset the terminal palette to reasonable compiled-in defaults.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-opacity"></a><h3>vte_terminal_set_opacity ()</h3>
 <pre class="programlisting">void                vte_terminal_set_opacity            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         guint16 opacity);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint16">guint16</a> opacity);</pre>
 <p>
 Sets the opacity of the terminal background, were 0 means completely
 transparent and 65535 means completely opaque.</p>
@@ -1519,7 +1519,7 @@ in-memory copy of the image before applying it to the terminal.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>image</code></em> :</span></p></td>
-<td> a <span class="type">GdkPixbuf</span> to use, or <code class="literal">NULL</code> to cancel
+<td> a <span class="type">GdkPixbuf</span> to use, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to cancel
 </td>
 </tr>
 </tbody>
@@ -1590,7 +1590,7 @@ image (or snapshot of the root window) and modify its pixel values.</p>
 <a name="vte-terminal-set-background-transparent"></a><h3>vte_terminal_set_background_transparent ()</h3>
 <pre class="programlisting">void                vte_terminal_set_background_transparent
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean transparent);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> transparent);</pre>
 <p>
 Sets the terminal's background image to the pixmap stored in the root
 window, adjusted so that if there are no windows below your application,
@@ -1607,7 +1607,7 @@ the widget will appear to be transparent.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>transparent</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the terminal should fake transparency
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the terminal should fake transparency
 </td>
 </tr>
 </tbody>
@@ -1653,7 +1653,7 @@ saturation is not 1.0.
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-scroll-background"></a><h3>vte_terminal_set_scroll_background ()</h3>
 <pre class="programlisting">void                vte_terminal_set_scroll_background  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean scroll);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> scroll);</pre>
 <p>
 Controls whether or not the terminal will scroll the background image (if
 one is set) when the text in the window must be scrolled.</p>
@@ -1669,7 +1669,7 @@ one is set) when the text in the window must be scrolled.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scroll</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the terminal should scroll the background image along with
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the terminal should scroll the background image along with
 text.
 </td>
 </tr>
@@ -1733,7 +1733,7 @@ Returns the currently set cursor shape.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-cursor-blinks"></a><h3>vte_terminal_set_cursor_blinks ()</h3>
 <pre class="programlisting">void                vte_terminal_set_cursor_blinks      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean blink);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> blink);</pre>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
 <p><code class="literal">vte_terminal_set_cursor_blinks</code> is deprecated and should not be used in newly-written code. 0.17.1 Use <a class="link" href="VteTerminal.html#vte-terminal-set-cursor-blink-mode" title="vte_terminal_set_cursor_blink_mode ()"><code class="function">vte_terminal_set_cursor_blink_mode()</code></a> instead.</p>
@@ -1752,7 +1752,7 @@ Sets whether or not the cursor will blink.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>blink</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the cursor should blink
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the cursor should blink
 </td>
 </tr>
 </tbody>
@@ -1816,7 +1816,7 @@ will use the <span class="type">"gtk-cursor-blink"</span> setting.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-scrollback-lines"></a><h3>vte_terminal_set_scrollback_lines ()</h3>
 <pre class="programlisting">void                vte_terminal_set_scrollback_lines   (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         glong lines);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> lines);</pre>
 <p>
 Sets the length of the scrollback buffer used by the terminal.  The size of
 the scrollback buffer will be set to the larger of this value and the number
@@ -2004,7 +2004,7 @@ currently using to render text.
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-using-xft"></a><h3>vte_terminal_get_using_xft ()</h3>
-<pre class="programlisting">gboolean            vte_terminal_get_using_xft          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            vte_terminal_get_using_xft          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
 <p><code class="literal">vte_terminal_get_using_xft</code> is deprecated and should not be used in newly-written code. 0.19.1</p>
@@ -2026,7 +2026,7 @@ but in practice usually matches the behavior of GTK+ itself.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code>
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>
 
 </td>
 </tr>
@@ -2036,7 +2036,7 @@ but in practice usually matches the behavior of GTK+ itself.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-has-selection"></a><h3>vte_terminal_get_has_selection ()</h3>
-<pre class="programlisting">gboolean            vte_terminal_get_has_selection      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            vte_terminal_get_has_selection      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Checks if the terminal currently contains selected text.  Note that this
 is different from determining if the terminal is the owner of any
@@ -2053,7 +2053,7 @@ is different from determining if the terminal is the owner of any
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if part of the text in the terminal is selected.
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if part of the text in the terminal is selected.
 </td>
 </tr>
 </tbody>
@@ -2071,7 +2071,7 @@ as parts of words, and all other characters as word separators.  Ranges of
 characters can be specified by separating them with a hyphen.
 </p>
 <p>
-As a special case, if <em class="parameter"><code>spec</code></em> is <code class="literal">NULL</code> or the empty string, the terminal will
+As a special case, if <em class="parameter"><code>spec</code></em> is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> or the empty string, the terminal will
 treat all graphic non-punctuation non-space characters as word characters.</p>
 <p>
 </p>
@@ -2094,8 +2094,8 @@ treat all graphic non-punctuation non-space characters as word characters.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-is-word-char"></a><h3>vte_terminal_is_word_char ()</h3>
-<pre class="programlisting">gboolean            vte_terminal_is_word_char           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gunichar c);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            vte_terminal_is_word_char           (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Unicode-Manipulation.html#gunichar">gunichar</a> c);</pre>
 <p>
 Checks if a particular character is considered to be part of a word or not,
 based on the values last passed to <a class="link" href="VteTerminal.html#vte-terminal-set-word-chars" title="vte_terminal_set_word_chars ()"><code class="function">vte_terminal_set_word_chars()</code></a>.</p>
@@ -2116,7 +2116,7 @@ based on the values last passed to <a class="link" href="VteTerminal.html#vte-te
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the character is considered to be part of a word
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the character is considered to be part of a word
 </td>
 </tr>
 </tbody>
@@ -2180,7 +2180,7 @@ presses the delete key.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-set-mouse-autohide"></a><h3>vte_terminal_set_mouse_autohide ()</h3>
 <pre class="programlisting">void                vte_terminal_set_mouse_autohide     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean setting);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> setting);</pre>
 <p>
 Changes the value of the terminal's mouse autohide setting.  When autohiding
 is enabled, the mouse cursor will be hidden when the user presses a key and
@@ -2198,7 +2198,7 @@ shown when the user moves the mouse.  This setting can be read using
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>setting</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> if the autohide should be enabled
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the autohide should be enabled
 </td>
 </tr>
 </tbody>
@@ -2207,7 +2207,7 @@ shown when the user moves the mouse.  This setting can be read using
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-mouse-autohide"></a><h3>vte_terminal_get_mouse_autohide ()</h3>
-<pre class="programlisting">gboolean            vte_terminal_get_mouse_autohide     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>            vte_terminal_get_mouse_autohide     (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Determines the value of the terminal's mouse autohide setting.  When
 autohiding is enabled, the mouse cursor will be hidden when the user presses
@@ -2225,7 +2225,7 @@ using <a class="link" href="VteTerminal.html#vte-terminal-set-mouse-autohide" ti
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if autohiding is enabled, <code class="literal">FALSE</code> if not.
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if autohiding is enabled, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not.
 </td>
 </tr>
 </tbody>
@@ -2235,8 +2235,8 @@ using <a class="link" href="VteTerminal.html#vte-terminal-set-mouse-autohide" ti
 <div class="refsect2" lang="en">
 <a name="vte-terminal-reset"></a><h3>vte_terminal_reset ()</h3>
 <pre class="programlisting">void                vte_terminal_reset                  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean full,
-                                                         gboolean clear_history);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> full,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> clear_history);</pre>
 <p>
 Resets as much of the terminal's internal state as possible, discarding any
 unprocessed input data, resetting character attributes, cursor state,
@@ -2254,12 +2254,12 @@ selection state, and encoding.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>full</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> to reset tabstops
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to reset tabstops
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>clear_history</code></em> :</span></p></td>
-<td> <code class="literal">TRUE</code> to empty the terminal's scrollback buffer
+<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to empty the terminal's scrollback buffer
 </td>
 </tr>
 </tbody>
@@ -2269,12 +2269,12 @@ selection state, and encoding.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-text"></a><h3>vte_terminal_get_text ()</h3>
 <pre class="programlisting">char *              vte_terminal_get_text               (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         gpointer data,
-                                                         GArray *attributes);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a> data,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray">GArray</a> *attributes);</pre>
 <p>
 Extracts a view of the visible part of the terminal.  If <em class="parameter"><code>is_selected</code></em> is not
-<code class="literal">NULL</code>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <code class="literal">TRUE</code> after being
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> after being
 passed the column and row, respectively.  A <span class="type">VteCharAttributes</span> structure
 is added to <em class="parameter"><code>attributes</code></em> for each byte added to the returned string detailing
 the character's position, colors, and other characteristics.</p>
@@ -2305,7 +2305,7 @@ the character's position, colors, and other characteristics.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a text string which must be freed by the caller, or <code class="literal">NULL</code>.
+<td> a text string which must be freed by the caller, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
 </td>
 </tr>
 </tbody>
@@ -2316,12 +2316,12 @@ the character's position, colors, and other characteristics.</p>
 <a name="vte-terminal-get-text-include-trailing-spaces"></a><h3>vte_terminal_get_text_include_trailing_spaces ()</h3>
 <pre class="programlisting">char *              vte_terminal_get_text_include_trailing_spaces
                                                         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         gpointer data,
-                                                         GArray *attributes);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a> data,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray">GArray</a> *attributes);</pre>
 <p>
 Extracts a view of the visible part of the terminal.  If <em class="parameter"><code>is_selected</code></em> is not
-<code class="literal">NULL</code>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <code class="literal">TRUE</code> after being
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> after being
 passed the column and row, respectively.  A <span class="type">VteCharAttributes</span> structure
 is added to <em class="parameter"><code>attributes</code></em> for each byte added to the returned string detailing
 the character's position, colors, and other characteristics. This function
@@ -2354,7 +2354,7 @@ lines are included.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a text string which must be freed by the caller, or <code class="literal">NULL</code>.
+<td> a text string which must be freed by the caller, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
 
 </td>
 </tr>
@@ -2366,16 +2366,16 @@ lines are included.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-text-range"></a><h3>vte_terminal_get_text_range ()</h3>
 <pre class="programlisting">char *              vte_terminal_get_text_range         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         glong start_row,
-                                                         glong start_col,
-                                                         glong end_row,
-                                                         glong end_col,
-                                                         gboolean (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
-                                                         gpointer data,
-                                                         GArray *attributes);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> start_row,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> start_col,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> end_row,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> end_col,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a> (is_selectedVteTerminal *terminal,glong column,glong row,gpointer data) (),
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a> data,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray">GArray</a> *attributes);</pre>
 <p>
 Extracts a view of the visible part of the terminal.  If <em class="parameter"><code>is_selected</code></em> is not
-<code class="literal">NULL</code>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <code class="literal">TRUE</code> after being
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, characters will only be read if <em class="parameter"><code>is_selected</code></em> returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> after being
 passed the column and row, respectively.  A <span class="type">VteCharAttributes</span> structure
 is added to <em class="parameter"><code>attributes</code></em> for each byte added to the returned string detailing
 the character's position, colors, and other characteristics.  The
@@ -2428,7 +2428,7 @@ contents of the buffer using this function.</p>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a text string which must be freed by the caller, or <code class="literal">NULL</code>.
+<td> a text string which must be freed by the caller, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.
 </td>
 </tr>
 </tbody>
@@ -2438,8 +2438,8 @@ contents of the buffer using this function.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-cursor-position"></a><h3>vte_terminal_get_cursor_position ()</h3>
 <pre class="programlisting">void                vte_terminal_get_cursor_position    (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         glong *column,
-                                                         glong *row);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> *column,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> *row);</pre>
 <p>
 Reads the location of the insertion cursor and returns it.  The row
 coordinate is absolute.</p>
@@ -2526,8 +2526,8 @@ this expression, the text will be highlighted.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-match-add-gregex"></a><h3>vte_terminal_match_add_gregex ()</h3>
 <pre class="programlisting">int                 vte_terminal_match_add_gregex       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         GRegex *regex,
-                                                         GRegexMatchFlags flags);</pre>
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Perl-compatible-regular-expressions.html#GRegex">GRegex</a> *regex,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Perl-compatible-regular-expressions.html#GRegexMatchFlags">GRegexMatchFlags</a> flags);</pre>
 <p>
 Adds the regular expression <em class="parameter"><code>regex</code></em> to the list of matching expressions.  When the
 user moves the mouse cursor over a section of displayed text which matches
@@ -2544,12 +2544,12 @@ this expression, the text will be highlighted.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>regex</code></em> :</span></p></td>
-<td> a <span class="type">GRegex</span>
+<td> a <a href="http://library.gnome.org/devel/glib/unstable/glib-Perl-compatible-regular-expressions.html#GRegex"><span class="type">GRegex</span></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>flags</code></em> :</span></p></td>
-<td> the <span class="type">GRegexMatchFlags</span> to use when matching the regex
+<td> the <a href="http://library.gnome.org/devel/glib/unstable/glib-Perl-compatible-regular-expressions.html#GRegexMatchFlags"><span class="type">GRegexMatchFlags</span></a> to use when matching the regex
 </td>
 </tr>
 <tr>
@@ -2593,13 +2593,13 @@ moves the mouse cursor over matching text.</p>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-match-check"></a><h3>vte_terminal_match_check ()</h3>
 <pre class="programlisting">char *              vte_terminal_match_check            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         glong column,
-                                                         glong row,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> column,
+                                                         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a> row,
                                                          int *tag);</pre>
 <p>
 Checks if the text in and around the specified position matches any of the
 regular expressions previously set using <a class="link" href="VteTerminal.html#vte-terminal-match-add" title="vte_terminal_match_add ()"><code class="function">vte_terminal_match_add()</code></a>.  If a
-match exists, the text string is returned and if <em class="parameter"><code>tag</code></em> is not <code class="literal">NULL</code>, the number
+match exists, the text string is returned and if <em class="parameter"><code>tag</code></em> is not <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, the number
 associated with the matched regular expression will be stored in <em class="parameter"><code>tag</code></em>.
 </p>
 <p>
@@ -2798,7 +2798,7 @@ Queries the terminal for its current emulation, as last set by a call to
 <pre class="programlisting">const char *        vte_terminal_get_default_emulation  (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 Queries the terminal for its default emulation, which is attempted if the
-terminal type passed to <a class="link" href="VteTerminal.html#vte-terminal-set-emulation" title="vte_terminal_set_emulation ()"><code class="function">vte_terminal_set_emulation()</code></a> is <code class="literal">NULL</code>.</p>
+terminal type passed to <a class="link" href="VteTerminal.html#vte-terminal-set-emulation" title="vte_terminal_set_emulation ()"><code class="function">vte_terminal_set_emulation()</code></a> is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -2841,7 +2841,7 @@ application's locale settings.</p>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>codeset</code></em> :</span></p></td>
-<td> a valid <span class="type">g_iconv</span> target
+<td> a valid <a href="http://library.gnome.org/devel/glib/unstable/glib-Character-Set-Conversion.html#g-iconv"><span class="type">g_iconv</span></a> target
 </td>
 </tr>
 </tbody>
@@ -2966,7 +2966,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-char-ascent"></a><h3>vte_terminal_get_char_ascent ()</h3>
-<pre class="programlisting">glong               vte_terminal_get_char_ascent        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               vte_terminal_get_char_ascent        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
 <p><code class="literal">vte_terminal_get_char_ascent</code> is deprecated and should not be used in newly-written code. 0.19.1</p>
@@ -2995,7 +2995,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-char-descent"></a><h3>vte_terminal_get_char_descent ()</h3>
-<pre class="programlisting">glong               vte_terminal_get_char_descent       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               vte_terminal_get_char_descent       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
 <p><code class="literal">vte_terminal_get_char_descent</code> is deprecated and should not be used in newly-written code. 0.19.1</p>
@@ -3024,7 +3024,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-char-height"></a><h3>vte_terminal_get_char_height ()</h3>
-<pre class="programlisting">glong               vte_terminal_get_char_height        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               vte_terminal_get_char_height        (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3048,7 +3048,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-char-width"></a><h3>vte_terminal_get_char_width ()</h3>
-<pre class="programlisting">glong               vte_terminal_get_char_width         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               vte_terminal_get_char_width         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3072,7 +3072,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-column-count"></a><h3>vte_terminal_get_column_count ()</h3>
-<pre class="programlisting">glong               vte_terminal_get_column_count       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               vte_terminal_get_column_count       (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3120,7 +3120,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="vte-terminal-get-row-count"></a><h3>vte_terminal_get_row_count ()</h3>
-<pre class="programlisting">glong               vte_terminal_get_row_count          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong">glong</a>               vte_terminal_get_row_count          (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal);</pre>
 <p>
 An accessor function provided for the benefit of language bindings.</p>
 <p>
@@ -3170,7 +3170,7 @@ An accessor function provided for the benefit of language bindings.</p>
 <a name="VteTerminal.property-details"></a><h2>Property Details</h2>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--allow-bold"></a><h3>The <code class="literal">"allow-bold"</code> property</h3>
-<pre class="programlisting">  "allow-bold"               gboolean              : Read / Write</pre>
+<pre class="programlisting">  "allow-bold"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write</pre>
 <p>
 Controls whether or not the terminal will attempt to draw bold text.
 This may happen either by using a bold font variant, or by
@@ -3183,7 +3183,7 @@ repainting text with a different offset.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--audible-bell"></a><h3>The <code class="literal">"audible-bell"</code> property</h3>
-<pre class="programlisting">  "audible-bell"             gboolean              : Read / Write</pre>
+<pre class="programlisting">  "audible-bell"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write</pre>
 <p>
 Controls whether or not the terminal will beep when the child outputs the
 "bl" sequence.</p>
@@ -3195,7 +3195,7 @@ Controls whether or not the terminal will beep when the child outputs the
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--background-image-file"></a><h3>The <code class="literal">"background-image-file"</code> property</h3>
-<pre class="programlisting">  "background-image-file"    gchar*                : Read / Write</pre>
+<pre class="programlisting">  "background-image-file"    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read / Write</pre>
 <p>
 Sets a background image file for the widget.  If specified by
 <span class="type">"background-saturation:"</span>, the terminal will tint its
@@ -3223,7 +3223,7 @@ in-memory copy of the image before applying it to the terminal.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--background-opacity"></a><h3>The <code class="literal">"background-opacity"</code> property</h3>
-<pre class="programlisting">  "background-opacity"       gdouble               : Read / Write</pre>
+<pre class="programlisting">  "background-opacity"       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble">gdouble</a>               : Read / Write</pre>
 <p>
 Sets the opacity of the terminal background, were 0.0 means completely
 transparent and 1.0 means completely opaque.</p>
@@ -3236,7 +3236,7 @@ transparent and 1.0 means completely opaque.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--background-saturation"></a><h3>The <code class="literal">"background-saturation"</code> property</h3>
-<pre class="programlisting">  "background-saturation"    gdouble               : Read / Write</pre>
+<pre class="programlisting">  "background-saturation"    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble">gdouble</a>               : Read / Write</pre>
 <p>
 If a background image has been set using <span class="type">"background-image-file:"</span> or
 <span class="type">"background-image-pixbuf:"</span>, or <span class="type">"background-transparent:"</span>,
@@ -3270,7 +3270,7 @@ is black.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--background-transparent"></a><h3>The <code class="literal">"background-transparent"</code> property</h3>
-<pre class="programlisting">  "background-transparent"   gboolean              : Read / Write</pre>
+<pre class="programlisting">  "background-transparent"   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write</pre>
 <p>
 Sets whther the terminal uses the pixmap stored in the root
 window as the background, adjusted so that if there are no windows
@@ -3334,7 +3334,7 @@ when the user presses the delete key.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--emulation"></a><h3>The <code class="literal">"emulation"</code> property</h3>
-<pre class="programlisting">  "emulation"                gchar*                : Read / Write</pre>
+<pre class="programlisting">  "emulation"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read / Write</pre>
 <p>
 Sets what type of terminal the widget attempts to emulate by scanning for
 control sequences defined in the system's termcap file.  Unless you
@@ -3347,7 +3347,7 @@ are interested in this feature, always use the default which is "xterm".</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--encoding"></a><h3>The <code class="literal">"encoding"</code> property</h3>
-<pre class="programlisting">  "encoding"                 gchar*                : Read / Write</pre>
+<pre class="programlisting">  "encoding"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read / Write</pre>
 <p>
 Controls the encoding the terminal will expect data from the child to
 be encoded with.  For certain terminal types, applications executing in the
@@ -3375,9 +3375,9 @@ and columns.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--icon-title"></a><h3>The <code class="literal">"icon-title"</code> property</h3>
-<pre class="programlisting">  "icon-title"               gchar*                : Read</pre>
+<pre class="programlisting">  "icon-title"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read</pre>
 <p>
-The terminal's so-called icon title, or <code class="literal">NULL</code> if no icon title has been set.</p>
+The terminal's so-called icon title, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if no icon title has been set.</p>
 <p>
 </p>
 <p>Default value: NULL</p>
@@ -3386,7 +3386,7 @@ The terminal's so-called icon title, or <code class="literal">NULL</code> if no 
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--pointer-autohide"></a><h3>The <code class="literal">"pointer-autohide"</code> property</h3>
-<pre class="programlisting">  "pointer-autohide"         gboolean              : Read / Write</pre>
+<pre class="programlisting">  "pointer-autohide"         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write</pre>
 <p>
 Controls the value of the terminal's mouse autohide setting.  When autohiding
 is enabled, the mouse cursor will be hidden when the user presses a key and
@@ -3399,7 +3399,7 @@ shown when the user moves the mouse.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--pty"></a><h3>The <code class="literal">"pty"</code> property</h3>
-<pre class="programlisting">  "pty"                      gint                  : Read / Write</pre>
+<pre class="programlisting">  "pty"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint">gint</a>                  : Read / Write</pre>
 <p>
 The file descriptor of the master end of the terminal's PTY.</p>
 <p>
@@ -3411,7 +3411,7 @@ The file descriptor of the master end of the terminal's PTY.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--scroll-background"></a><h3>The <code class="literal">"scroll-background"</code> property</h3>
-<pre class="programlisting">  "scroll-background"        gboolean              : Read / Write</pre>
+<pre class="programlisting">  "scroll-background"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write</pre>
 <p>
 Controls whether or not the terminal will scroll the background image (if
 one is set) when the text in the window must be scrolled.</p>
@@ -3423,7 +3423,7 @@ one is set) when the text in the window must be scrolled.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--scroll-on-keystroke"></a><h3>The <code class="literal">"scroll-on-keystroke"</code> property</h3>
-<pre class="programlisting">  "scroll-on-keystroke"      gboolean              : Read / Write</pre>
+<pre class="programlisting">  "scroll-on-keystroke"      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write</pre>
 <p>
 Controls whether or not the terminal will forcibly scroll to the bottom of
 the viewable history when the user presses a key.  Modifier keys do not
@@ -3436,7 +3436,7 @@ trigger this behavior.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--scroll-on-output"></a><h3>The <code class="literal">"scroll-on-output"</code> property</h3>
-<pre class="programlisting">  "scroll-on-output"         gboolean              : Read / Write</pre>
+<pre class="programlisting">  "scroll-on-output"         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write</pre>
 <p>
 Controls whether or not the terminal will forcibly scroll to the bottom of
 the viewable history when the new data is received from the child.</p>
@@ -3448,7 +3448,7 @@ the viewable history when the new data is received from the child.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--scrollback-lines"></a><h3>The <code class="literal">"scrollback-lines"</code> property</h3>
-<pre class="programlisting">  "scrollback-lines"         guint                 : Read / Write</pre>
+<pre class="programlisting">  "scrollback-lines"         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint">guint</a>                 : Read / Write</pre>
 <p>
 The length of the scrollback buffer used by the terminal.  The size of
 the scrollback buffer will be set to the larger of this value and the number
@@ -3464,7 +3464,7 @@ allowed on the alternate screen buffer.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--visible-bell"></a><h3>The <code class="literal">"visible-bell"</code> property</h3>
-<pre class="programlisting">  "visible-bell"             gboolean              : Read / Write</pre>
+<pre class="programlisting">  "visible-bell"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean">gboolean</a>              : Read / Write</pre>
 <p>
 Controls whether the terminal will present a visible bell to the
 user when the child outputs the "bl" sequence.  The terminal
@@ -3477,7 +3477,7 @@ will clear itself to the default foreground color and then repaint itself.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--window-title"></a><h3>The <code class="literal">"window-title"</code> property</h3>
-<pre class="programlisting">  "window-title"             gchar*                : Read</pre>
+<pre class="programlisting">  "window-title"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read</pre>
 <p>
 The terminal's title.</p>
 <p>
@@ -3488,7 +3488,7 @@ The terminal's title.</p>
 <hr>
 <div class="refsect2" lang="en">
 <a name="VteTerminal--word-chars"></a><h3>The <code class="literal">"word-chars"</code> property</h3>
-<pre class="programlisting">  "word-chars"               gchar*                : Read / Write</pre>
+<pre class="programlisting">  "word-chars"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>*                : Read / Write</pre>
 <p>
 When the user double-clicks to start selection, the terminal will extend
 the selection on word boundaries.  It will treat characters the word-chars
@@ -3496,7 +3496,7 @@ characters as parts of words, and all other characters as word separators.
 Ranges of characters can be specified by separating them with a hyphen.
 </p>
 <p>
-As a special case, when setting this to <code class="literal">NULL</code> or the empty string, the terminal will
+As a special case, when setting this to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> or the empty string, the terminal will
 treat all graphic non-punctuation non-space characters as word characters.</p>
 <p>
 </p>
@@ -3509,7 +3509,7 @@ treat all graphic non-punctuation non-space characters as word characters.</p>
 <div class="refsect2" lang="en">
 <a name="VteTerminal-beep"></a><h3>The <code class="literal">"beep"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 This signal is emitted when the a child sends a beep request to the terminal.
 </p>
@@ -3532,9 +3532,9 @@ This signal is emitted when the a child sends a beep request to the terminal.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-char-size-changed"></a><h3>The <code class="literal">"char-size-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        guint        arg1,
-                                                        guint        arg2,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint">guint</a>        arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint">guint</a>        arg2,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted whenever selection of a new font causes the values of the
 <em class="parameter"><code>char_width</code></em> or <em class="parameter"><code>char_height</code></em> fields to change.
@@ -3568,7 +3568,7 @@ Emitted whenever selection of a new font causes the values of the
 <div class="refsect2" lang="en">
 <a name="VteTerminal-child-exited"></a><h3>The <code class="literal">"child-exited"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 This signal is emitted when the terminal detects that a child started using
 <a class="link" href="VteTerminal.html#vte-terminal-fork-command" title="vte_terminal_fork_command ()"><code class="function">vte_terminal_fork_command()</code></a> has exited.
@@ -3592,9 +3592,9 @@ This signal is emitted when the terminal detects that a child started using
 <div class="refsect2" lang="en">
 <a name="VteTerminal-commit"></a><h3>The <code class="literal">"commit"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gchar       *arg1,
-                                                        guint        arg2,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar">gchar</a>       *arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint">guint</a>        arg2,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the terminal receives input from the user and prepares to send
 it to the child process.  The signal is emitted even when there is no child
@@ -3629,10 +3629,10 @@ process.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-contents-changed"></a><h3>The <code class="literal">"contents-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the visible appearance of the terminal has changed.  Used
-primarily by <a class="link" href="VteTerminalAccessible.html" title="VteTerminalAccessible"><span class="type">VteTerminalAccessible</span></a>.
+primarily by <span class="type">VteTerminalAccessible.</span>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3653,7 +3653,7 @@ primarily by <a class="link" href="VteTerminalAccessible.html" title="VteTermina
 <div class="refsect2" lang="en">
 <a name="VteTerminal-copy-clipboard"></a><h3>The <code class="literal">"copy-clipboard"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last / Action</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last / Action</pre>
 <p>
 Emitted whenever <a class="link" href="VteTerminal.html#vte-terminal-copy-clipboard" title="vte_terminal_copy_clipboard ()"><code class="function">vte_terminal_copy_clipboard()</code></a> is called.
 </p>
@@ -3676,10 +3676,10 @@ Emitted whenever <a class="link" href="VteTerminal.html#vte-terminal-copy-clipbo
 <div class="refsect2" lang="en">
 <a name="VteTerminal-cursor-moved"></a><h3>The <code class="literal">"cursor-moved"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the cursor moves to a new character cell.  Used primarily
-by <a class="link" href="VteTerminalAccessible.html" title="VteTerminalAccessible"><span class="type">VteTerminalAccessible</span></a>.
+by <span class="type">VteTerminalAccessible.</span>
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -3700,7 +3700,7 @@ by <a class="link" href="VteTerminalAccessible.html" title="VteTerminalAccessibl
 <div class="refsect2" lang="en">
 <a name="VteTerminal-decrease-font-size"></a><h3>The <code class="literal">"decrease-font-size"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted when the user hits the '-' key while holding the Control key.
 </p>
@@ -3723,7 +3723,7 @@ Emitted when the user hits the '-' key while holding the Control key.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-deiconify-window"></a><h3>The <code class="literal">"deiconify-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -3746,7 +3746,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-emulation-changed"></a><h3>The <code class="literal">"emulation-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the terminal's emulation changes, only possible at the
 parent application's request.
@@ -3770,7 +3770,7 @@ parent application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-encoding-changed"></a><h3>The <code class="literal">"encoding-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the terminal's current encoding has changed, either as a
 result of receiving a control sequence which toggled between the local and
@@ -3795,7 +3795,7 @@ UTF-8 encodings, or at the parent application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-eof"></a><h3>The <code class="literal">"eof"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted when the terminal receives an end-of-file from a child which is running
 in the terminal.  This signal is frequently (but not always) emitted with a
@@ -3820,7 +3820,7 @@ in the terminal.  This signal is frequently (but not always) emitted with a
 <div class="refsect2" lang="en">
 <a name="VteTerminal-icon-title-changed"></a><h3>The <code class="literal">"icon-title-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted when the terminal's <em class="parameter"><code>icon_title</code></em> field is modified.
 </p>
@@ -3843,7 +3843,7 @@ Emitted when the terminal's <em class="parameter"><code>icon_title</code></em> f
 <div class="refsect2" lang="en">
 <a name="VteTerminal-iconify-window"></a><h3>The <code class="literal">"iconify-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -3866,7 +3866,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-increase-font-size"></a><h3>The <code class="literal">"increase-font-size"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted when the user hits the '+' key while holding the Control key.
 </p>
@@ -3889,7 +3889,7 @@ Emitted when the user hits the '+' key while holding the Control key.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-lower-window"></a><h3>The <code class="literal">"lower-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -3912,7 +3912,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-maximize-window"></a><h3>The <code class="literal">"maximize-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -3935,9 +3935,9 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-move-window"></a><h3>The <code class="literal">"move-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        guint        arg1,
-                                                        guint        arg2,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint">guint</a>        arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint">guint</a>        arg2,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -3970,7 +3970,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-paste-clipboard"></a><h3>The <code class="literal">"paste-clipboard"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last / Action</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last / Action</pre>
 <p>
 Emitted whenever <a class="link" href="VteTerminal.html#vte-terminal-paste-clipboard" title="vte_terminal_paste_clipboard ()"><code class="function">vte_terminal_paste_clipboard()</code></a> is called.
 </p>
@@ -3993,7 +3993,7 @@ Emitted whenever <a class="link" href="VteTerminal.html#vte-terminal-paste-clipb
 <div class="refsect2" lang="en">
 <a name="VteTerminal-raise-window"></a><h3>The <code class="literal">"raise-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -4016,7 +4016,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-refresh-window"></a><h3>The <code class="literal">"refresh-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -4039,9 +4039,9 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-resize-window"></a><h3>The <code class="literal">"resize-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        guint        arg1,
-                                                        guint        arg2,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint">guint</a>        arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint">guint</a>        arg2,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -4074,7 +4074,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-restore-window"></a><h3>The <code class="literal">"restore-window"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted at the child application's request.
 </p>
@@ -4097,7 +4097,7 @@ Emitted at the child application's request.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-selection-changed"></a><h3>The <code class="literal">"selection-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the contents of terminal's selection changes.
 </p>
@@ -4122,11 +4122,11 @@ Emitted whenever the contents of terminal's selection changes.
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a>   *horizontal,
                                                         GtkAdjustment *vertical,
                                                         GtkAdjustment *arg2,
-                                                        gpointer       user_data)       : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>       user_data)       : Run Last</pre>
 <p>
 Set the scroll adjustments for the terminal. Usually scrolled containers
 like <span class="type">GtkScrolledWindow</span> will emit this signal to connect two instances
-of <span class="type">GtkScrollbar</span> to the scroll directions of the <a class="link" href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>.</p>
+of <span class="type">GtkScrollbar</span> to the scroll directions of the <span class="type">VteTerminal.</span></p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -4154,7 +4154,7 @@ of <span class="type">GtkScrollbar</span> to the scroll directions of the <a cla
 <div class="refsect2" lang="en">
 <a name="VteTerminal-status-line-changed"></a><h3>The <code class="literal">"status-line-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted whenever the contents of the status line are modified or cleared.
 </p>
@@ -4177,7 +4177,7 @@ Emitted whenever the contents of the status line are modified or cleared.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-text-deleted"></a><h3>The <code class="literal">"text-deleted"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 An internal signal used for communication between the terminal and its
 accessibility peer.  May not be emitted under certain circumstances.
@@ -4201,7 +4201,7 @@ accessibility peer.  May not be emitted under certain circumstances.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-text-inserted"></a><h3>The <code class="literal">"text-inserted"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 An internal signal used for communication between the terminal and its
 accessibility peer.  May not be emitted under certain circumstances.
@@ -4225,7 +4225,7 @@ accessibility peer.  May not be emitted under certain circumstances.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-text-modified"></a><h3>The <code class="literal">"text-modified"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 An internal signal used for communication between the terminal and its
 accessibility peer.  May not be emitted under certain circumstances.
@@ -4249,8 +4249,8 @@ accessibility peer.  May not be emitted under certain circumstances.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-text-scrolled"></a><h3>The <code class="literal">"text-scrolled"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gint         arg1,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint">gint</a>         arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 An internal signal used for communication between the terminal and its
 accessibility peer.  May not be emitted under certain circumstances.
@@ -4279,7 +4279,7 @@ accessibility peer.  May not be emitted under certain circumstances.
 <div class="refsect2" lang="en">
 <a name="VteTerminal-window-title-changed"></a><h3>The <code class="literal">"window-title-changed"</code> signal</h3>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
-                                                        gpointer     user_data)        : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer">gpointer</a>     user_data)        : Run Last</pre>
 <p>
 Emitted when the terminal's <em class="parameter"><code>window_title</code></em> field is modified.
 </p>
