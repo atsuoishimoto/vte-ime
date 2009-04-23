@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "../config.h"
+#include <config.h>
 #include <sys/types.h>
 #include <assert.h>
 #include <ctype.h>
@@ -201,7 +201,7 @@ _vte_table_addi(struct _vte_table *table,
 	struct _vte_table *subtable;
 
 	if (original_length == -1) {
-		original_length = strlen(original);
+		original_length = strlen((char *) original);
 	}
 	if (length == -1) {
 		length = strlen(pattern);
@@ -209,11 +209,11 @@ _vte_table_addi(struct _vte_table *table,
 
 	/* If this is the terminal node, set the result. */
 	if (length == 0) {
-		_VTE_DEBUG_IF(VTE_DEBUG_PARSE) {
-			if (table->result != NULL)
-				g_warning("`%s' and `%s' are indistinguishable",
-						table->result, result);
-		}
+		if (table->result != NULL)
+			_vte_debug_print (VTE_DEBUG_PARSE, 
+					  "`%s' and `%s' are indistinguishable.\n",
+					  table->result, result);
+
 		table->resultq = g_quark_from_string(result);
 		table->result = g_quark_to_string(table->resultq);
 		if (table->original != NULL) {
@@ -269,9 +269,9 @@ _vte_table_addi(struct _vte_table *table,
 				b = g_byte_array_new();
 				g_byte_array_set_size(b, 0);
 				g_byte_array_append(b, original, initial);
-				g_byte_array_append(b, pattern + 2, length - 2);
+				g_byte_array_append(b, (const guint8*)pattern + 2, length - 2);
 				_vte_table_addi(table, b->data, b->len,
-						b->data + initial,
+						(const char *)b->data + initial,
 						b->len - initial,
 						result, quark, inc);
 				g_byte_array_free(b, TRUE);
@@ -401,7 +401,8 @@ _vte_table_add(struct _vte_table *table,
 	       const char *pattern, gssize length,
 	       const char *result, GQuark quark)
 {
-	_vte_table_addi(table, pattern, length,
+	_vte_table_addi(table,
+			(const unsigned char *) pattern, length,
 			pattern, length,
 			result, quark, 0);
 }
@@ -856,7 +857,7 @@ print_array(GValueArray *array)
 			}
 		}
 		printf(")");
-		_vte_matcher_free_params_array(array);
+		/* _vte_matcher_free_params_array(array); */
 	}
 }
 

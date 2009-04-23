@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "../config.h"
+#include <config.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <errno.h>
@@ -62,7 +62,8 @@ catfile(const char *pathname, long delay, long chunksize)
 			}
 		}
 		if (i > 0) {
-			write(STDOUT_FILENO, buf, i);
+			int bytes;
+			bytes = write(STDOUT_FILENO, buf, i);
 			fsync(STDOUT_FILENO);
 		}
 	}

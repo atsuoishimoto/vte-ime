@@ -16,9 +16,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifndef VTE_DISABLE_DEPRECATED
+
 #ifndef vte_reaper_h_included
 #define vte_reaper_h_included
-
 
 #include <sys/wait.h>
 #include <signal.h>
@@ -29,8 +30,8 @@ G_BEGIN_DECLS
 
 struct _VteReaper {
 	GObject object;
-	GIOChannel *channel;
-	int iopipe[2];
+	GIOChannel *_channel; /* unused */
+	int _iopipe[2]; /* unused */
 };
 typedef struct _VteReaper VteReaper;
 
@@ -62,3 +63,5 @@ int vte_reaper_add_child(GPid pid);
 G_END_DECLS
 
 #endif
+
+#endif /* !VTE_DISABLE_DEPRECATED */

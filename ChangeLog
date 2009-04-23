@@ -1,3 +1,1873 @@
+2009-03-31  Adam Jackson  <ajax@redhat.com>
+
+	* src/vteapp.c:
+	Add gopher:// to the dingus-click regexes.
+
+2009-03-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (always_selected):
+	* src/vtepangocairo.c (_vte_pangocairo_set_background_image):
+	* src/vteskel.c (_vte_skel_draw_text):
+	Minor fixes from Richard Russon.
+
+2009-03-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 576797 – Double-click sometimes stops working
+
+	* src/vte.c (vte_terminal_extend_selection): Invalidate selection
+	if forced.
+
+2009-03-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 573674 – reset resets width to 80 chars
+
+	* src/vteseq.c (vte_sequence_handler_decset_internal): Disable
+	resizing on decreset.
+
+2009-03-23  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 576504 – vte does not pass its testsuite.
+
+	* src/vte.c:
+	* src/vtedraw.h:
+	Fix "make check".
+
+2009-03-15  Christian Persch  <chpe@gnome.org>
+
+	Bug 574491 – gnome-pty-helper can prevent volumes from being unmounted
+
+	* gnome-pty-helper/gnome-pty-helper.c: (main): chdir to /.
+
+2009-03-15  Christian Persch  <chpe@gnome.org>
+
+	* configure.in: Prepare version 0.20.0.
+
+2009-03-15  Christian Persch  <chpe@gnome.org>
+
+	Bug 575398 – configure warns about term.h under OpenSolaris
+
+	* configure.in: Fix curses detection on solaris. Patch by David	Adam.
+
+2009-03-09  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 574616 – "real" transparency not working from python bindings
+
+	* src/vtepangocairo.c (_vte_pangocairo_destroy),
+	(_vte_pangocairo_set_background_image): Better handle failure of
+	creating pixmap.
+
+	* src/vtebg.c (vte_bg_get_pixmap): Get rid of unused mask parameter.
+
+2009-03-07  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 574025 – Crash in _vte_terminal_insert_char
+
+	* src/vte.c (_vte_terminal_insert_char): Don't crash.
+
+2009-03-02  Christian Persch  <chpe@gnome.org>
+
+	* NEWS:
+	* configure.in: Updated for version 0.19.5.
+
+2009-03-02  Christian Persch  <chpe@gnome.org>
+
+	* src/vteaccess.c: (vte_terminal_accessible_set_size),
+	(vte_terminal_accessible_ref_accessible_at_point):
+	* src/vteapp.c: (button_pressed): Correct use of padding returned
+        by vte_terminal_get_padding().
+
+2009-03-02  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: (vte_terminal_refresh_size), (vte_terminal_set_size):
+	Use g_strerror() instead of strerror().
+
+2009-02-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 54926 – Should try bold version of font before pseudo-bolding
+
+	Patch from Kees Cook <kees@outflux.net>
+
+	* src/vte.c (_vte_invalidate_cell), (_vte_invalidate_cursor_once),
+	(vte_terminal_unichar_is_local_graphic),
+	(vte_terminal_draw_graphic), (vte_terminal_draw_cells),
+	(vte_terminal_draw_rows), (vte_terminal_paint_cursor):
+	* src/vtedraw.c (_vte_draw_get_char_width), (_vte_draw_text),
+	(_vte_draw_char), (_vte_draw_has_char):
+	* src/vtedraw.h:
+	* src/vtepangocairo.c (_vte_pangocairo_set_text_font),
+	(_vte_pangocairo_get_char_width), (_vte_pangocairo_has_bold),
+	(_vte_pangocairo_draw_text), (_vte_pangocairo_draw_has_char):
+	* src/vteskel.c:
+	Try bold font before pseudo-bolding.
+
+2009-02-02  Christian Persch  <chpe@gnome.org>
+
+	Bug 570208 – vte fails to build outside source tree
+
+	* python/Makefile.am: Build fix.
+
+2009-02-01  Christian Persch  <chpe@gnome.org>
+
+	* src/marshal.list:
+	* src/vte.c: (vte_terminal_class_init):
+	* src/vtebg.c: (vte_bg_class_init): Remove marshalers that have stock
+	ones in gobject, and use the stock ones instead.
+
+2009-02-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* configure.in: Require GTK+ >= 2.14, for "gtk-fontconfig-timestamp"
+	settings property.
+
+	* src/vte.c (vte_terminal_style_set),
+	(vte_terminal_set_font_full_internal), (vte_terminal_init),
+	(vte_terminal_class_init):  Use style_set class method instead of
+	hooking to style-set signal.  Also, proceed to recreating the font
+	even if neither description nor antialias setting changed.  This is
+	necessary to pick up fontconfig configuration changes as well as font
+	install/uninstallations or GNOME font preferences changes.
+
+	* src/vtepangocairo.c (font_info_destroy),
+	(fontconfig_timestamp_quark),
+	(vte_pango_cairo_set_fontconfig_timestamp),
+	(vte_pango_cairo_get_fontconfig_timestamp), (context_hash),
+	(context_equal), (font_info_create_for_context),
+	(font_info_create_for_screen):
+	Use fontconfig_timestamp in the font object hash, such that we respond
+	to fontconfig configuration changes.
+
+2009-01-22  Saleem Abdulrasool <compnerd@compnerd.org>
+
+	* src/vteseq.c (vte_sequence_handler_window_manipulation):
+		Tweak output for OSC 13, 14, 18, 19, 20, 21.  Bug #548272.
+
+2009-01-20  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: (vte_terminal_realize): Use GDK_BLANK_CURSOR for the
+	invisible cursor on gtk+ >= 2.15.
+
+2009-01-20  Christian Persch  <chpe@gnome.org>
+
+	* gnome-pty-helper/gnome-pty-helper.c: (init_term_with_defaults),
+	(open_ptys), (close_pty_pair): Use ttyname() as recommended in the
+	glibc manual. Bug #565688.
+
+2009-01-06  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (vte_parse_color),
+	(vte_sequence_handler_change_color),
+	(vte_sequence_handler_request_terminal_parameters),
+	(vte_sequence_handler_send_primary_device_attributes),
+	(vte_sequence_handler_send_secondary_device_attributes),
+	(vte_sequence_handler_device_status_report),
+	(vte_sequence_handler_dec_device_status_report),
+	(vte_sequence_handler_window_manipulation),
+	(vte_sequence_handler_change_cursor_color):
+	Convert some g_strdup_printf() uses to g_snprintf() when
+	the buffer was fixed-size and freed immediately.
+	Also fix g_snprintf usage by not using its return value.
+	*If* the buffer is short, the returned len is not what we
+	are interested in.
+	Finally, pass -1 as len to vte_terminal_feed_child() in
+	most places.  This means a bit more work for the processor,
+	but cleaner code.
+
+2009-01-06  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 566795 – VTE fails to build in trunk
+
+	* src/vteseq.c (vte_sequence_handler_change_cursor_color):
+	Fix build.
+
+2009-01-06  Saleem Abdulrasool <compnerd@compnerd.org>
+
+	* src/vteseq-n.gperf:
+	* src/vteseq.c (vte_ucs4_to_utf8), (vte_parse_color),
+	(vte_terminal_emit_deiconify_window), (vte_sequence_handler_change_color),
+	(vte_sequence_handler_change_cursor_color):
+
+	Bug #524170 - Pull out ucs4_to_utf8 and use in new functions.  Add support
+	for OSC 4 (initc) and OSC 12 (change cursor color).
+
+2009-01-06  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 566730 – vte_terminal_set_color_cursor() calls invalidate_all but
+	it doesn't have to
+
+	* src/vte.c (vte_terminal_set_color_internal): If color is VTE_CUR_BG,
+	invalidate_cursor_once instead of invalidate_all.
+
+2008-12-26  Halton Huo  <halton.huo@sun.com>
+
+	Bug 565679 – alloca is discouraged
+
+	* gnome-pty-helper/gnome-pty-helper.c: use malloc replace alloca.
+
+2008-12-26  Christian Persch  <chpe@gnome.org>
+
+	* configure.in: Fix the same typo also in the libinfo check.
+
+2008-12-26  Halton Huo  <halton.huo@sun.com>
+
+	Bug 565675 – typo in configure.in cause ncurses checking fail
+
+	* configure.in: Fix typo for ncurses. s/ncuses/ncurses
+
+2008-12-25  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/interpret.c (main):
+	* src/slowcat.c (catfile):
+	* src/table.c (_vte_table_addi), (_vte_table_add):
+	* src/trie.c (_vte_trie_matchx):
+	* src/vte.c (_vte_invalidate_cell), (_vte_terminal_insert_char):
+	* src/vteaccess.c (offset_from_xy),
+	(vte_terminal_accessible_finalize),
+	(vte_terminal_accessible_get_text),
+	(vte_terminal_accessible_get_text_somewhere):
+	* src/vteapp.c (main):
+	* src/vtebg.c (vte_bg_cache_item_free), (vte_bg_cache_add):
+	Fix warnings.
+
+2008-12-25  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 565663 – compile failure because use static function in another .h
+	file
+
+	* src/vte.c: Don't mark extern function inline.
+
+2008-12-17  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 149631 – gnome-terminal doesn't combine combining chars in utf8
+
+	* src/vteunistr.c:
+	Limit to 9 combining marks per unistr, and a total of 100,000 unistrs.
+	All to prevent OOM.
+
+2008-12-15  Behdad Esfahbod  <behdad@gnome.org>
+
+	* NEWS:
+	* configure.in:
+	Released 0.19.4.
+
+2008-12-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 564535 – check for gperf on build
+
+	* autogen.sh: Check for gperf.
+
+2008-12-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	* doc/reference/Makefile.am:
+	* src/vteunistr.c (unistr_comp_hash), (unistr_comp_equal),
+	(_vte_unistr_append_unichar), (_vte_unistr_get_base),
+	(_vte_unistr_append_to_string), (_vte_unistr_strlen):
+	* src/vteunistr.h:
+	Document vteunistr.
+
+2008-12-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteunistr.h: Minor cleanup.
+
+2008-12-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/iso2022.c (_vte_iso2022_ambiguous_width): Avoid pointers in the
+	const array.
+
+2008-12-12  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 149631 – gnome-terminal doesn't combine combining chars in utf8
+
+	* src/vteunistr.c:
+	* src/vteunistr.h:
+	An extended UTF-32 type that assigns numeric values to UTF-8 sequences
+	on demand.  Can be used to efficiently store a string, instead of one
+	character, at each cell.
+
+	* src/vte-private.h:
+	* src/vte.c:
+	* src/vtedraw.c:
+	* src/vtedraw.h:
+	* src/vtepangocairo.c:
+	Port to vteunistr instead of gunichar for cell content.
+	
+	* src/vte.c:
+	Handle zerowidth insertions by sticking it on the previous cell.
+
+	* src/iso2022.h:
+	* src/iso2022.c:
+	Cleanup ambiguous-width handling.  Handle zero-width chars.
+
+2008-12-11  Christian Persch  <chpe@gnome.org>
+
+	Bug 564057 – src/pty.c does not compile with
+	--disable-gnome-pty-helper
+	
+	* src/pty.c: Build with --disable-gnome-pty-helper. Patch by
+	yselkowitz at users.sourceforge.net .
+
+2008-12-11  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: (vte_terminal_class_init): Update set-scroll-adjustement
+	docs.
+
+2008-12-10  Paolo Borelli  <pborelli@katamail.com>
+
+	Bug 562695 - ship pkg-config file for python bindings
+
+	* configure.in:
+	* python/Makefile.am:
+	* python/pyvte.pc.in:
+
+2008-12-08  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 563752 – pangocairo backend recreates cairo_surface_t for
+	background drawing
+
+	* src/vte.c (vte_terminal_paint),
+	(vte_terminal_set_scroll_background),
+	(vte_terminal_background_update):
+	* src/vtedraw.c (_vte_draw_new), (_vte_draw_set_background_solid),
+	(_vte_draw_set_background_image),
+	(_vte_draw_set_background_scroll), (_vte_draw_draw_rectangle):
+	* src/vtedraw.h:
+	* src/vtepangocairo.c (_vte_pangocairo_destroy),
+	(_vte_pangocairo_set_background_solid),
+	(_vte_pangocairo_set_background_image),
+	(_vte_pangocairo_set_background_scroll), (_vte_pangocairo_clear),
+	(_vte_pangocairo_clip), (set_source_color_alpha):
+	* src/vteskel.c:
+	Cleanup vte_draw background API.  Use a cached cairo_pattern_t in
+	pangocairo backend.
+
+	Also, queue background update on scroll_background change.
+
+2008-12-07  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 163213 – Cursor should remain visible when selected
+
+	* src/vte.c (vte_terminal_paint_cursor): Do a reverse hollow cursor
+	if selected but not focused.
+
+2008-12-05  Christian Persch  <chpe@gnome.org>
+
+	* src/vtebg.c: (vte_bg_get_pixmap): Don't modify source_pixbuf. If
+	we're going to change the saturation, first make a copy. Fixes
+	switching background type between fauxtransparency and image in
+	gnome-terminal trunk.
+
+2008-12-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtepangocairo.c (_vte_pangocairo_clear): Fix scrolling offset.
+	Ray Strode reported that background offset was being done incorrectly.
+	A negation did it.
+
+2008-12-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	* Makefile.am:
+	* configure.in:
+	Hook up perf/.
+
+	Also adjust svn:ignore props.
+
+2008-12-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	* NEWS:
+	* configure.in:
+	Released 0.19.3.
+
+2008-12-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (_vte_new_row_data), (_vte_new_row_data_sized),
+	(vte_terminal_match_contents_refresh),
+	(vte_terminal_process_incoming), (vte_terminal_init),
+	(vte_terminal_set_word_chars):
+	Always call g_array_new() with clear flag set.  It incurs no overhead
+	but avoids heisenbugs.
+
+2008-12-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (_vte_terminal_insert_char):
+	* src/vteseq.c (vte_sequence_handler_screen_alignment_test):
+	Use structure assignment instead of memcpy().
+
+2008-12-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (_vte_terminal_cleanup_tab_fragments_at_cursor): Remove
+	unneeded checks.  They were masking bugs.
+
+2008-12-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	Red Hat Bug 474618 -  gnome-terminal sometime leaves empty begining
+	of the line
+
+	* src/vte.c (_vte_terminal_insert_char): Really fix the bug this time.
+
+2008-12-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am:
+	Build fixes.
+
+	* NEWS:
+	* configure.in:
+	Released 0.19.2.
+
+2008-12-05  Behdad Esfahbod  <behdad@gnome.org>
+
+	Red Hat Bug 474618 -  gnome-terminal sometime leaves empty begining
+	of the line
+
+	* src/vte.c (_vte_terminal_cleanup_tab_fragments_at_cursor): continue
+	instead of break'ing out of the loop.
+
+2008-12-04  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 563274 – Misspelled word in src code
+
+	* src/vte.c (vte_terminal_process_incoming): Fix typo.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 563024 – In alternate-screen, selection can copy out of screen
+	boundaries
+
+	* src/vte.c (vte_terminal_extend_selection_expand),
+	(vte_terminal_extend_selection): Make sure current selection row is in the
+	visible screen.
+
+	I have a deja vu of fixing this bug like two years ago...
+
+2008-12-02  Christian Persch  <chpe@gnome.org>
+
+	Bug 552096 – Detect tgetent if provided by libtinfo
+
+	* configure.in: Rewrote tgetent checks to be more readable. Also check
+	for tgetent in libtinfo.
+	* src/keymap.c: (_vte_keymap_map), (_vte_keymap_key_is_modifier):
+	* src/ssfe.c: Adjust includes accordingly.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_start_selection),
+	(vte_terminal_extend_selection): Don't do fancy rounding for row
+	selection, only for column.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_invalidate_selection),
+	(vte_terminal_start_selection): Call function instead of open coding.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtedraw.h:
+	* src/vtepangocairo.c (font_info_cache_ascii):
+	Cache the full ASCII range if Latin uses the default language.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtepangocairo.c (context_hash), (context_equal),
+	(font_info_create_for_context), (font_info_create_for_screen),
+	(font_info_create_for_widget): Respect PangoLanguage set on a widget's
+	PangoContext.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtepangocairo.c (font_info_measure_font): Remove CJK fullwidth
+	measurement hacks.  Pango doesn't need these.  We're down to one
+	FcFontSort() instead of two during initialization.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 559818 – redundant selection-changed signal on deselection
+
+	* src/vte.c (vte_terminal_start_selection),
+	(vte_terminal_extend_selection): Fix all redundant selection-changed
+	signals.  Including those on double-click.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c:
+	Rewrite text selection.  In particular, fix block_mode.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* HACKING: Update.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_terminal_set_pointer_visible),
+	(vte_terminal_get_mouse_tracking_info),
+	(vte_terminal_send_mouse_button_internal),
+	(vte_terminal_maybe_send_mouse_button),
+	(vte_terminal_maybe_send_mouse_drag), (vte_terminal_motion_notify),
+	(vte_terminal_button_press), (vte_terminal_button_release),
+	(vte_terminal_scroll), (vte_terminal_reset):
+	* src/vteseq.c (vte_sequence_handler_decset_internal):
+	Mouse tracking cleanup.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* configure.in: Add -Wno-switch-enum warning flag as we are not
+	-Wswitch-enum clean.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_extend_selection_on_type),
+	(vte_terminal_extend_selection):
+	Cut one third of the 400-line function out into a function of its own.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_extend_selection): Revert previous change.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_extend_selection):  Add a shortcircuit
+	check.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_send_mouse_button_internal),
+	(vte_terminal_maybe_send_mouse_drag), (cursor_inside_match),
+	(vte_terminal_match_hilite_show),
+	(vte_terminal_match_hilite_update), (vte_terminal_match_hilite),
+	(vte_terminal_extend_selection), (vte_terminal_autoscroll),
+	(vte_terminal_motion_notify), (vte_terminal_button_press),
+	(vte_terminal_button_release):
+	Change mouse coordinates type from double to long.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_start_selection),
+	(vte_terminal_extend_selection):
+	Cleanup selection code a bit more.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_start_selection),
+	(vte_terminal_extend_selection):
+	Merge selection_origin and selection_restart_origin as only one was
+	being used at a time.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 471480 – select single character
+	Bug 110371 – Cannot select newline at end of full line
+
+	* src/vte-private.h:
+	* src/vte.c (find_start_column), (find_end_column),
+	(vte_terminal_start_selection), (math_div),
+	(vte_terminal_extend_selection):
+	Make selection work more I-beam-like.
+
+2008-12-02  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: (vte_terminal_class_init): Show the correct version in
+	Since: and Deprecated: annotations.
+
+2008-12-02  Christian Persch  <chpe@gnome.org>
+
+	Bug 112172 – Get rid of VteReaper
+
+	* src/reaper.h: Deprecate.
+
+2008-12-02  Christian Persch  <chpe@gnome.org>
+
+	* configure.in: Enable maintainer mode by default. Define more
+	deprecation defines, and define the *_DISABLE_SINGLE_INCLUDES defines.
+	Enable deprecations by default in maintainer mode.
+	* src/vteapp.c: Undef VTE_DISABLE_DEPRECATED here.
+
+2008-12-02  Christian Persch  <chpe@gnome.org>
+
+	* configure.in:
+	* src/vte-private.h: Move VTE_UTF8_BPC definition from configure to
+	vte-private.h.
+	* src/vteconv.c: Include vte-private.h here.
+
+2008-12-02  Christian Persch  <chpe@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c: (mark_input_source_invalid),
+	(_vte_terminal_connect_pty_read), (mark_output_source_invalid),
+	(_vte_terminal_connect_pty_write),
+	(_vte_terminal_disconnect_pty_read),
+	(_vte_terminal_disconnect_pty_write),
+	(_vte_terminal_enable_input_source), (remove_cursor_timeout),
+	(vte_terminal_key_press), (vte_terminal_focus_in),
+	(vte_terminal_focus_out), (vte_terminal_init),
+	(vte_terminal_unrealize), (vte_terminal_expose),
+	(vte_terminal_background_update), (add_update_timeout),
+	(remove_from_active_list), (vte_terminal_add_process_timeout),
+	(process_timeout), (update_repeat_timeout), (update_timeout): Remove
+	VTE_INVALID_SOURCE definition and just use 0 directly.
+
+2008-12-02  Christian Persch  <chpe@gnome.org>
+
+	Bug 560667 – invalid definition of VTE_INVALID_SOURCE
+
+	* src/vte-private.h: Fix VTE_INVALID_SOURCE define to use 0 instead of
+	-1.
+
+2008-12-02  Christian Persch  <chpe@gnome.org>
+
+	* configure.in: Remove two AC_DEFINEs from here.
+	* src/vte-private.h: Define VTE_INVALID_SOURCE here for now.
+
+2008-12-02  Christian Persch  <chpe@gnome.org>
+
+	Bug 112172 – Get rid of VteReaper
+
+	* src/reaper.c: (vte_reaper_child_watch_cb),
+	(vte_reaper_add_child), (vte_reaper_init),
+	(vte_reaper_constructor), (vte_reaper_finalize),
+	(vte_reaper_class_init), (vte_reaper_get), (child_exited), (main):
+	* src/reaper.h: Prepare for removal of Reaper in vte1.0 by removing
+	the unused pre-glib-2.4 code from Reaper.
+
+2008-12-02  Christian Persch  <chpe@gnome.org>
+
+	* src/vteapp.c: (main): Catch the child-exited signal to the child's
+	exit code.
+
+2008-12-02  Christian Persch  <chpe@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c: (vte_terminal_class_init): Intern the signal names.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_motion_notify): Do not discard motion notify
+	events with coordinates out of our allocation, or when the cell under
+	the cursor didn't change.  These are useful for extending selection
+	and for sub-cell selection details, as well as app-requested all
+	motion tracking.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 541441 – Dehighlight links on visibility notify?
+
+	* src/vte.c (vte_terminal_focus_in), (vte_terminal_enter):  Move match
+	highlight enabling into "enter" event instead of "focus in".
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_terminal_set_pointer_visible),
+	(vte_terminal_maybe_send_mouse_button),
+	(vte_terminal_maybe_send_mouse_drag), (vte_terminal_motion_notify),
+	(vte_terminal_button_press), (vte_terminal_button_release),
+	(vte_terminal_scroll), (vte_terminal_reset):
+	* src/vteseq.c (vte_sequence_handler_decset_internal):
+	Simplify mouse event tracking by using a single int instead of five
+	booleans.
+
+2008-12-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_deselect_all),
+	(vte_terminal_process_incoming), (vte_cell_is_selected),
+	(vte_terminal_copy), (vte_terminal_start_selection),
+	(vte_terminal_extend_selection), (vte_terminal_select_all),
+	(vte_terminal_paint), (_vte_terminal_get_start_selection),
+	(_vte_terminal_get_end_selection), (_vte_terminal_select_text):
+	Rename struct selection_cell_coords members from x,y to col,row for
+	clarity.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* NEWS:
+	* configure.in:
+	Released 0.19.1.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* doc/reference/Makefile.am:
+	* doc/reference/check-doc-syntax.sh:
+	* src/Makefile.am:
+	* src/check-doc-syntax.sh:
+	* src/vte.c (vte_terminal_catch_child_exited),
+	(vte_terminal_class_init):
+	* src/vte.h:
+	* src/vtepangocairo.c:
+	Copy check-doc-syntax.sh tests from cairo and fix doc bugs.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* doc/reference/tmpl/vte-unused.sgml:
+	* doc/reference/vte-sections.txt:
+	Remove reaper docs.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 562806 – crash in Terminal: Typing "cd " just after ...
+
+	* src/vte.c (_vte_terminal_cleanup_tab_fragments_at_cursor):
+	Fix possible NULL dereference.
+
+	* src/vteseq.c (vte_sequence_handler_ta):
+	Fix tab fragments to have \t as c.
+
+2008-12-01  Christian Persch  <chpe@gnome.org>
+
+	* NEWS:
+	* configure.in: Prepare 0.19.0.
+
+2008-12-01  Christian Persch  <chpe@gnome.org>
+
+	Bug 562511 – scrollbar doesn't sit at the bottom
+
+	* src/vte.c: (vte_terminal_init),
+	(vte_terminal_set_scrollback_lines): Always update the scrollback
+	lines, even if the setting hasn't changed. Work-around to fix bug
+	#562511.
+
+2008-12-01  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: (vte_terminal_class_init): Fix visible-bell property.
+
+2008-12-01  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: (vte_terminal_set_font_full_internal),
+	(vte_terminal_class_init): Rename font property to "font-desc" to be
+	more in line with other properties of this type in gtk.
+
+2008-12-01  Christian Persch  <chpe@gnome.org>
+
+	* src/vteapp.c: (main): Add gobject notification debugging.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (vte_terminal_termcap_string_same_as_for),
+	(vte_sequence_handler_se), (vte_sequence_handler_so):
+	Simplify standout handling code.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c: Rip out VTE_SEQUENCE_HANDLER_PROTO.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c: Rip out vte_sequence_handler_invoke.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c: Rip out VTE_SEQUENCE_HANDLER_INVOKE.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c: Rip out VTE_SEQUENCE_HANDLER_REFERENCE.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (_vte_terminal_handle_sequence): Rip out the gcc label
+	vtable code.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (display_control_sequence),
+	(_vte_terminal_handle_sequence):
+	Some cleanup of the gcc label vtable code before I rip it out.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (vte_sequence_handler_set_title_internal),
+	(vte_sequence_handler_set_mode_internal),
+	(vte_sequence_handler_invoke_internal):
+	Move some code around.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteskel.c: Remove excess initializer.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/buffer.c:
+	* src/caps.c:
+	* src/dumpkeys.c:
+	* src/interpret.c:
+	* src/iso2022.c:
+	* src/keymap.c:
+	* src/matcher.c:
+	* src/mev.c:
+	* src/pty.c:
+	* src/reaper.c:
+	* src/reflect.c:
+	* src/ring.c:
+	* src/slowcat.c:
+	* src/ssfe.c:
+	* src/table.c:
+	* src/trie.c:
+	* src/vteaccess.c:
+	* src/vtebg.c:
+	* src/vteconv.c:
+	* src/vtedraw.c:
+	* src/vteseq.c:
+	* src/vteskel.c:
+	* src/xticker.c:
+	#include <config.h> instead of "../config.h".
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c: Some wild crack to build the vtable using gcc
+	extension for labels as values.  The advantage is that we get down to
+	an empty .data for vteseq.o but .text grows considerably.  And we have
+	to use nested functions, and #define static auto.  It's really ugly.
+	I'm going to remove it in the next commit or the one after.  Just
+	wanted to record it here for posterity.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (vte_sequence_handler_invoke),
+	(vte_sequence_handler_offset), (vte_sequence_handler_multiple),
+	(vte_sequence_handler_decset_internal),
+	(VTE_SEQUENCE_HANDLER_PROTO), (_vte_terminal_handle_sequence):
+	Almost there.  Towards a .data-free vtable.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c: Finish decoupling handle type from function type.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vteseq.c (vte_sequence_handler_offset),
+	(vte_sequence_handler_multiple),
+	(vte_sequence_handler_decset_internal),
+	(vte_sequence_handler_set_mode_internal),
+	(VTE_SEQUENCE_HANDLER_PROTO), (_vte_terminal_handle_sequence):
+	Make sequence handlers return void instead of gboolean.  The return
+	value was unused.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (vte_sequence_handler_offset),
+	(vte_sequence_handler_multiple),
+	(vte_sequence_handler_decset_internal),
+	(VTE_SEQUENCE_HANDLER_PROTO), (_vte_terminal_handle_sequence):
+	Switch to calling other handlers using two macros.
+	Get rid of match and match_quark arguments to sequence handlers.
+	They were unused.
+
+2008-12-01  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (vte_sequence_handler_set_title_internal):
+	Cleanup vte_sequence_handler_set_title_internal.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (VTE_SEQUENCE_HANDLER_PROTO): Use a macro to define
+	type of sequence handlers.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am:
+	* src/vteseq-2.c:
+	* src/vteseq-n.c:
+	Remove gperf-generated files from SVN, but still distribute them in
+	the tarball.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c:
+	* src/vteseq.c (_vte_terminal_scroll_text),
+	(vte_sequence_handler_scroll_down),
+	(vte_sequence_handler_scroll_up):
+	More code shufflling.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am:
+	* src/vteseq-list.h:
+	Remove vteseq-list.h from SVN, but still distribute it in the tarball.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am:
+	* src/vteseq-list.h:
+	Autogenerate vteseq-list.h.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq-list.h:
+	* src/vteseq.c (_vte_terminal_home_cursor),
+	(_vte_terminal_clear_screen), (_vte_terminal_clear_current_line),
+	(_vte_terminal_clear_above_current),
+	(vte_sequence_handler_decset_internal), (vte_sequence_handler_cl),
+	(vte_sequence_handler_ho), (vte_sequence_handler_erase_in_display),
+	(vte_sequence_handler_erase_in_line):
+	Sync vteseql-list.h with actual handlers used in gperf files.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq-list.h:
+	* src/vteseq.c (vte_sequence_handler_scroll_down),
+	(vte_sequence_handler_scroll_up):
+	Implement these calling vte_terminal_scroll() directly instead of
+	multiple'ing.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_terminal_scroll), (_vte_terminal_scroll_region):
+	* src/vteseq.c (vte_sequence_handler_scroll_down_one),
+	(vte_sequence_handler_scroll_up_one):
+	Move vte_terminal_scroll to vte.c
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq-2.c (vteseq_2_hash), (vteseq_2_lookup):
+	* src/vteseq-2.gperf:
+	* src/vteseq-list.h:
+	* src/vteseq.c:
+	Remove vte_sequence_handler_complain_key.  The idea was to warn about
+	receiving control-sequence handling request for escape sequences that
+	actually belong to a key stroke.  Kinda like a debugging feature.
+	Remove it as the number of sequences being handle that way was
+	greater than the number of sequences handled in the real sense.
+	Saves 2k .data!
+
+	The actual list is still in vteseq-2.gperf, but commented out.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (_vte_sequence_get_handler),
+	(display_control_sequence):
+	Remove stale comment.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am:
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_process_incoming):
+	* src/vteseq.c (display_control_sequence),
+	(_vte_terminal_handle_sequence):
+	* src/vteseq.h:
+	Move _vte_terminal_handle_sequence() into vteseq.c
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c (vte_insert_line_internal), (vte_remove_line_internal),
+	(_vte_terminal_cursor_down), (_vte_terminal_insert_char),
+	(_vte_terminal_audible_beep), (_vte_terminal_visible_beep),
+	(_vte_terminal_beep), (vte_terminal_key_press):
+	* src/vteseq.c (vte_insert_line_internal),
+	(vte_remove_line_internal), (vte_unichar_strlen),
+	(vte_sequence_handler_bl), (vte_sequence_handler_sf),
+	(vte_sequence_handler_SF), (vte_sequence_handler_vb):
+	* src/vteseq.h:
+	Some code reshuffling to remove vte.c calls to vteseq.c functions.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq-2.gperf:
+	* src/vteseq.c:
+	Minor.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (vte_terminal_beep): Move helper function out of the
+	way.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq-2.c (vteseq_2_lookup):
+	* src/vteseq-2.gperf:
+	* src/vteseq-n.c (vteseq_n_lookup):
+	* src/vteseq-n.gperf:
+	* src/vteseq.c:
+	Add a macro around sequence handler citations, for future table
+	tricks.
+
+2008-11-30  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq-n.gperf:
+	* src/vteseq-n.c (vteseq_n_hash), (vteseq_n_lookup):
+	Remove bogus entry that accidentally made it into the gperf list.
+
+2008-11-30  Christian Persch  <chpe@gnome.org>
+
+	* acinclude.m4: Remove more crufty macros.
+
+2008-11-30  Christian Persch  <chpe@gnome.org>
+
+	* acinclude.m4: Remove FT2 check macro.
+
+2008-11-30  Christian Persch  <chpe@gnome.org>
+
+	Bug 540951 – The gnome-pty-helper is spawn when its not needed
+	
+	* src/pty.c: (_vte_pty_open): Don't use the pty helper when we don't
+	need to update any of utmp, wtmp, lastlog. Patch by Alex Cornejo.
+
+2008-11-30  Christian Persch  <chpe@gnome.org>
+
+	Bug 465036 – gnome-pty-helper locks /var/run/utmp
+
+	* gnome-pty-helper/gnome-utmp.c: (update_utmp): Close the utmp
+	database after updating it. Patch by Kevin W. Rudd.
+
+2008-11-29  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 127870 – terminal garbled and needs 'reset' after cat'ing file
+
+	* src/iso2022.c (_vte_iso2022_state_new): Initialize all four maps
+	(G0, G1, G2, G3) in USASCII mode, like xterm does.
+
+2008-11-29  Christian Persch  <chpe@gnome.org>
+
+	* python/vtemodule.c: (initvte): Register the constants too!
+
+2008-11-29  Christian Persch  <chpe@gnome.org>
+
+	* src/debug.c: (_vte_debug_init):
+	* src/debug.h:
+	* src/vte.c: (vte_terminal_size_request),
+	(vte_terminal_size_allocate): Add a specific debug flag for widget
+	size-request/size-allocation.
+
+2008-11-29  Christian Persch  <chpe@gnome.org>
+
+	* src/vteapp.c: (main): Add options to use a GtkScrolledWindow as the
+	terminal's container, and to set its vertical scrollbar policy, to
+	allow testing VteTerminal in a scrolled window.
+
+2008-11-29  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 317236 – vte resynchrones too late on invalid UTF-8
+
+	* src/vteconv.c (_vte_conv_utf8_utf8): In our UTF-8 to UTF-8 converter
+	differentiate between an incomplete sequence and an ill sequence at
+	the end of the buffer.  Also cleanup some minor inaccuracies (return
+	value).
+
+2008-11-29  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 107031 – device-control-string error
+
+	* src/table.c (_vte_table_addi):
+	* src/vte.c (vte_terminal_handle_sequence):
+	* src/vteseq.c (vte_sequence_handler_decset_internal):
+	Replace some g_warning's with vte debug output.
+
+2008-11-29  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 521420 – vte closes connection to child before all output is read
+	Patch from Thomas Leonard
+
+	* src/reaper.c (vte_reaper_add_child): Install child watch at low
+	priority instead of high.
+
+2008-11-29  Behdad Esfahbod  <behdad@gnome.org>
+
+	* configure.in: Require glib >= 2.18.0 as earlier glib versions
+	had a totally bogus g_unichar_iswide_cjk().
+
+	* perf/vim.sh: Don't use builting time command.
+
+2008-11-29  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_emit_char_size_changed),
+	(_vte_terminal_emit_status_line_changed), (vte_terminal_init),
+	(vte_terminal_background_update):
+	Remove C++-style comment markers.
+
+2008-11-29  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 514632 – Problem with cursor in emacs in gnome-terminal
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_terminal_cleanup_tab_fragments_at_cursor),
+	(_vte_terminal_insert_char):
+	* src/vteseq.c (vte_sequence_handler_ch),
+	(vte_sequence_handler_cm), (vte_sequence_handler_le),
+	(vte_sequence_handler_cursor_character_absolute):
+	Break "smart tabs" into multiple empty cells when cursor moves
+	into them or inserting character there.
+
+2008-11-28  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/debug.c (_vte_debug_init):
+	* src/debug.h:
+	* src/vtepangocairo.c (font_info_cache_ascii),
+	(font_info_allocate), (font_info_free),
+	(font_info_find_for_context), (font_info_get_unichar_info):
+	Port vtepangocairo profiling and lifecycle logging to vtedebug
+	facilities under debug domain "pangocairo".
+
+2008-11-28  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/debug.c (_vte_debug_init): Rename debug env var from
+	VTE_DEBUG_FLAGS to VTE_DEBUG.
+
+2008-11-28  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/debug.c (_vte_debug_init):
+	* src/debug.h:
+	Make _vte_debug_on() inline.
+
+2008-11-28  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: Remove backward compat define for gtk 2.0, since we
+	already depend on a much higher version.
+
+2008-11-28  Christian Persch  <chpe@gnome.org>
+
+	* src/debug.c: (_vte_debug_on): Revert behaviour change of
+	_vte_debug_on() from last commit.
+
+2008-11-28  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 459553 – gnome-terminal cannot shows circled digits with the
+	correct width on ja_JP.PCK
+	Patch from Takao Fujiwara
+
+	* src/iso2022.c (_vte_iso2022_ambiguous_width): Recognize Shift_JIS
+	as East Asian locale for width considerations.
+
+2008-11-28  Christian Persch  <chpe@gnome.org>
+
+	* src/debug.c: (_vte_debug_init), (_vte_debug_on):
+	* src/debug.h:
+	* src/interpret.c: (main):
+	* src/pty.c: (main):
+	* src/reaper.c: (main):
+	* src/trie.c: (main):
+	* src/vte.c: (vte_terminal_new), (vte_terminal_class_init): Use
+	g_parse_debug_string to parse the debug flags.
+
+2008-11-28  Christian Persch  <chpe@gnome.org>
+
+	* src/vteregex.c: (compare_matches), (_vte_regex_compile),
+	(_vte_regex_free), (_vte_regex_exec): Remove the unused GNU regex
+	code too.
+
+2008-11-28  Christian Persch  <chpe@gnome.org>
+
+	* src/vteregex.c: (_vte_regex_compile), (_vte_regex_free),
+	(_vte_regex_exec): Remove unused PCRE code. If you want PCRE regexes,
+	use the new APIs that take GRegex.
+
+2008-11-28  Christian Persch  <chpe@gnome.org>
+
+	Bug 562385 – gnome-pty-helper goes to 100% cpu usage
+
+	* gnome-pty-helper/gnome-pty-helper.c: (pass_fd), (pty_free),
+	(main): Make sure data structures are correctly aligned and of the
+	right size. 
+
+2008-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	* configure.in:
+	* src/Makefile.am:
+	More cleanup.
+
+2008-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am:
+	Run some of the utilities in "make check", and build the others.
+
+	* src/nativeecho.c:
+	* src/utf8echo.c:
+	Remove more useless trivial utilities.
+
+2008-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am:
+	* src/iso8859mode.c:
+	* src/utf8mode.c:
+	Remove useless trivial utilities.
+
+2008-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am: Update EXTRA_DIST.
+
+2008-11-27  Behdad Esfahbod  <behdad@gnome.org>
+
+	* HACKING: Update :P.
+
+2008-11-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vteseq.c (_vte_sequence_get_handler): Safely handle input of
+	length 1.
+
+2008-11-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am:
+	* src/vteseq-2.c (vteseq_2_hash), (vteseq_2_lookup):
+	* src/vteseq-2.gperf:
+	* src/vteseq-n.c (vteseq_n_lookup):
+	* src/vteseq-n.gperf:
+	Don't use switch in gperf-generated code.  This increases .data by 1k
+	but decreases .text by 6k AND the lookup code is MUCH faster.  It used
+	to do tens of compares before.
+
+2008-11-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am:
+	* src/vteseq-2.c (vteseq_2_hash), (vteseq_2_lookup):
+	* src/vteseq-n.c (vteseq_n_lookup):
+	* src/vteseq.c (_vte_sequence_get_handler):
+	Revert previous commit, fix NULL dereference that it was trying to
+	fix, and make lookup functions inline.
+
+2008-11-26  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/Makefile.am:
+	* src/vteseq-2.c (vteseq_2_hash), (vteseq_2_lookup):
+	* src/vteseq-n.c (vteseq_n_lookup):
+	* src/vteseq.c (_vte_sequence_get_handler):
+	Manually modify (and record those modifications in the Makefile)
+	the autogenerated gperf source code so that we return the sequence
+	handler directly from the lookup function, or NULL on failure.
+	So is this pain worth it?
+
+2008-11-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtepangocairo.c (font_info_get_unichar_info):
+	Free internal layout resources.
+
+2008-11-26  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 562332 – cleanup font infos on exit?
+
+	* src/vtepangocairo.c
+	(cleanup_delayed_font_info_destroys_predicate),
+	(cleanup_delayed_font_info_destroys), (ensure_quit_handler),
+	(font_info_register), (font_info_reference),
+	(font_info_destroy_delayed), (font_info_destroy):
+	Use gtk_quit_add() to complete delayed font_info destroys.
+
+2008-11-26  Christian Persch  <chpe@gnome.org>
+
+	Bug 562338 – don't need to connect to bunch of xft settings
+
+	* src/vte-private.h:
+	* src/vte.c: (vte_terminal_style_changed), (add_cursor_timeout),
+	(vte_terminal_init), (vte_terminal_size_allocate),
+	(vte_terminal_finalize), (vte_terminal_realize): Don't listen to
+	changes on the gtk-xft-* GtkSettings properties. Just calling
+	vte_terminal_set_font_full in the style-set handler works fine.
+
+2008-11-26  Christian Persch  <chpe@gnome.org>
+
+	Bug 488960 – gnome-terminal on Solaris 10 does not clean up utmpx on
+	exit (intermittent)
+
+	* gnome-pty-helper/gnome-pty-helper.c: (main):
+	* gnome-pty-helper/gnome-pty.h:
+	* src/pty.c: (_vte_pty_close): Add new GNOME_PTY_SYNCH operation to
+	gnome-pty-helper. Patch from Behdad.
+
+2008-11-26  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: (vte_terminal_style_changed),
+	(vte_terminal_ensure_font), (vte_terminal_set_font_full),
+	(vte_terminal_set_font_from_string_full_internal),
+	(vte_terminal_set_font_from_string_full),
+	(vte_terminal_reset_rowdata), (vte_terminal_set_property): Add
+	vte_terminal_set_font_*full_internal so we don't use deprecated
+	symbols internally.
+
+2008-11-26  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: (vte_terminal_sync_settings),
+	(vte_terminal_screen_changed): Remove gtk 2.12 version checks, since
+	we already depend on 2.12.
+
+2008-11-26  Christian Persch  <chpe@gnome.org>
+
+	Bug 561366 – remove antialias setting for 1.0
+	
+	* src/vte.c: (vte_terminal_set_font_full),
+	(vte_terminal_get_property), (vte_terminal_class_init):
+	* src/vte.h: Deprecate the font antialias setting, and remove the
+	(existing only on trunk) font-antialias property already.
+
+2008-11-25  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/Makefile.am:
+	* src/vteseq-2.c (vteseq_2_hash), (vteseq_2_lookup):
+	* src/vteseq-2.gperf:
+	* src/vteseq-n.c (vteseq_n_hash), (vteseq_n_lookup):
+	* src/vteseq-n.gperf:
+	* src/vteseq.c (_vte_sequence_get_handler):
+	Cleanup gperf stuff.
+
+2008-11-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 562187 – Add make rules for calling gperf
+
+	* src/Makefile.am: Add a "gperf" target to be run manually.
+
+	* src/vteseq-2.gperf:
+	* src/vteseq-n.gperf:
+	Add comment about "make gperf".
+
+	* src/vteseq-2.c:
+	* src/vteseq-n.c:
+	Regenerate using newer gperf.
+
+2008-11-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 416518 – Do something about uniwidths
+
+	* src/iso2022.c (_vte_iso2022_is_ambiguous):
+	Call into glib to determine ambiguous-width chars.
+
+	* src/genwidths.py:
+	* src/uniwidths:
+	Remove.
+
+2008-11-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 500191 – Remove vteseq-table.h?
+
+	* src/Makefile.am:
+	* src/vteseq-gen.c:
+	* src/vteseq-table.h:
+	Remove the old table implementation.  We use gperf-generated tables
+	now.
+
+2008-11-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 514457 – Use g_strv_length()
+
+	* src/vte.c (_vte_terminal_fork_basic): Do it.
+
+2008-11-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtepangocairo.c (font_info_create_for_widget): No need to check
+	widget font desc here as vte.c does that for us already.
+
+2008-11-24  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtepangocairo.c (font_info_destroy): Modify GTK_CHECK_VERSION
+	handling to make my vim syntax highlighter happy.
+
+2008-11-23  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_ensure_cursor): Refactor duplicate code.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.h: Move all the deprecated stuff into one place.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	Bug 542561 – Doesn't build when disabling gnome-pty-helper
+
+	* src/pty.c: Always include sys/socket.h. Patch by Loïc Minier.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* src/vteapp.c: (main): Fix --blink; the flag is inverted.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* src/vteapp.c: (main): Use vte_terminal_set_cursor_blink_mode instead
+	of the deprecated set_cursor_blinks here.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	Bug 560766 – Deprecate and remove vte_terminal_get_using_xft()
+
+	* src/vte.c: (vte_terminal_get_using_xft):
+	* src/vte.h:
+	* src/vtedraw.c: (_vte_draw_text):
+	* src/vtedraw.h:
+	* src/vtepangocairo.c: Deprecate vte_terminal_get_using_xft() as preparation for
+	bug #560766. Remove the internal vtedraw method already.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	Bug 536894 – Confusing use of "free" as variable-name in ring
+	functions
+
+	* src/ring.c: (_vte_ring_new), (_vte_ring_new_with_delta),
+	(_vte_ring_remove):
+	* src/ring.h: Don't shadow global declarations. Patch by dmacks at 
+	netspace.org. 
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* python/vte.override: Fix missing-prototypes warnings.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* src/vtepangocairo.c: No need to include gi18n-lib.h here.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* configure.in:
+	* vte-uninstalled.pc.in:
+	* vte.pc.in: Clean up the pkgs declared for use in the .pc files.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* configure.in: Depend on gtk 2.12. Bug #398862.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* src/table.c: (print_array): Fix the build (broken since r1622).
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* src/reaper.c: Don't include gtk.h here, it's unneeded.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* src/iso2022.c: (main): Make iso2022 programme build again; it was
+	broken since r1612.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* src/Makefile.am: Separate CFLAGS and CPPFLAGS.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* src/Makefile.am: Don't add LDFLAGS to *_LDADD, that's wrong and
+	broken.
+
+2008-11-22  Christian Persch  <chpe@gnome.org>
+
+	* configure.in:
+	* src/Makefile.am:
+	* vte-uninstalled.pc.in:
+	* vte.pc.in: Remove more configure cruft: OTHERCFLAGS, OTHERLIBS,
+	X_CFLAGS and X_LIBS.
+
+2008-11-21  Christian Persch  <chpe@gnome.org>
+
+        * src/vtepangocairo.c: (font_info_destroy_delayed),
+        (font_info_destroy): Use gdk_threads_add_timeout_seconds() for
+        complete threadsafety.
+
+2008-11-21  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* vte.pc.in: Remove FT2_LIBS and FT2_CFLAGS
+
+2008-11-21  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/iso2022.c (_vte_iso2022_is_ambiguous): Break out of interval
+	search as early as possible. Exploit the strict ordering of the 
+	ambiguous/unambiguous ranges to break out of the for loop as soon
+	as the character is less than a range start. (As the arrays only
+	contain 2/3 elements, it is not worth adding the overhead of calling
+	bsearch()).
+
+2008-11-21  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/iso2022.c (process_cdata): Copy the gunichars directly to the
+	array from the incoming chunk.
+
+2008-11-20  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	* src/Makefile.am: Remove FT2_FLAGS
+
+2008-11-20  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtepangocairo.c (font_info_destroy_delayed): Remove obsolete
+	check.
+
+2008-11-20  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 561713 – crash on font cache cleanup
+
+	* src/vtepangocairo.c (font_info_reference), (font_info_destroy):
+	Remove destroy timeout when resurrecting a font info.
+
+2008-11-20  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtepangocairo.c (font_info_cache_ascii),
+	(font_info_allocate), (font_info_free),
+	(font_info_find_for_context):
+	Make profiling messages print the info pointer.
+
+2008-11-20  Behdad Esfahbod  <behdad@gnome.org>
+
+	* configure.in:  Remove more cruft.
+
+2008-11-20  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 560819 – Remove obsolete backends
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/vtebg.c (vte_bg_get_pixmap):
+	* src/vtebg.h:
+	* src/vtedraw.c:
+	* src/vtefc.c:
+	* src/vtefc.h:
+	* src/vteft2.c:
+	* src/vteft2.h:
+	* src/vtegl.c:
+	* src/vtegl.h:
+	* src/vteglyph.c:
+	* src/vteglyph.h:
+	* src/vterdb.c:
+	* src/vterdb.h:
+	* src/vtergb.c:
+	* src/vtergb.h:
+	* src/vtexft.c:
+	* src/vtexft.h:
+	Remove all backends except for pangocairo.  Saves so much code.
+
+2008-11-20  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 560819 – Remove obsolete backends
+
+	* src/Makefile.am:
+	* src/vtedraw.c:
+	* src/vtepango.c:
+	* src/vtepango.h:
+	Remove pango backend.
+
+2008-11-20  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 560819 – Remove obsolete backends
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/vtedraw.c:
+	* src/vtepangox.c:
+	* src/vtepangox.h:
+	Remove pangox backend.
+
+2008-11-20  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 560818 – pangocairo backend doesn't share font cache across
+	widgets
+
+	* src/vtepangocairo.c (font_info_cache_ascii),
+	(font_info_allocate), (font_info_free), (font_info_register),
+	(font_info_unregister), (font_info_reference),
+	(font_info_destroy_delayed), (font_info_destroy), (context_hash),
+	(context_equal), (font_info_find_for_context),
+	(font_info_create_for_context), (font_info_create_for_screen),
+	(font_info_get_unichar_info): Cache font info and use it for multiple
+	widgets.
+
+2008-11-19  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtepangocairo.c (font_info_create_for_screen),
+	(font_info_destroy): Remove unused PangoCoverage.
+
+2008-11-19  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtepangocairo.c (font_info_find_unichar_info),
+	(font_info_cache_ascii), (font_info_measure_font),
+	(font_info_get_unichar_info): Cache ASCII characters when building
+	font.
+
+2008-11-18  Christian Persch  <chpe@gnome.org>
+
+	Remove glib usage from gnome-pty-helper. Bug #560977.
+
+	* gnome-pty-helper/Makefile.am: Remove GLIB CFLAGS/LIBS.
+	* gnome-pty-helper/configure.in: Remove glib check, and do some auto*
+	modernisation.
+	* gnome-pty-helper/gnome-pty-helper.c: (open_ptys), (exit_handler),
+	(main): Use alloca instead of g_alloca, and use int instead of
+	gboolean.
+
+2008-11-18  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtepangocairo.c (font_info_create_for_screen),
+	(font_info_destroy): Remove copy of font desc and antialias from font
+	info object as they were not used.
+
+2008-11-18  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 561185 – pangocairo backend sets antialias incorrectly
+
+	* src/vtepangocairo.c (font_info_create_for_screen): Handle
+	FORCE_ENABLE correctly.
+
+2008-11-16  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 560817 – pagocairo backend doesn't have correct opacity support	
+
+	* src/vtepangocairo.c (_vte_pangocairo_clear),
+	(_vte_pangocairo_draw_text), (_vte_pangocairo_draw_rectangle),
+	(_vte_pangocairo_fill_rectangle): Fix opacity support by using
+	SOURCE operator.
+
+2008-11-16  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 560991 – Unsetting background doesn't work
+
+	* src/vte.c (vte_terminal_set_background_image): Correctly unset
+	background if image==NULL.
+
+2008-11-14 Christian Persch <chpe@gnome.org>
+
+	* src/vteskel.c: Fix missing prototype warning.
+
+2008-11-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 395599 – Add pangocairo backend
+
+	* configure.in:
+	Require pango >= 1.22.0
+
+	* src/Makefile.am:
+	* src/vtedraw.c:
+	* src/vtepangocairo.c:
+	* src/vtepangocairo.h:
+	Add a pangocairo drawing backend.  Use it by default.  This is as fast
+	as the xft backend.  Doesn't share font caches across widgets yet.
+	Also, the transparent background stuff doesn't match xft backend's
+	yet.
+
+2008-11-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_ensure_font):
+	* src/vtedraw.c (_vte_draw_new), (_vte_draw_free),
+	(_vte_draw_set_background_opacity),
+	(_vte_draw_set_background_color), (_vte_draw_set_text_font),
+	(_vte_draw_get_text_metrics), (_vte_draw_get_char_width),
+	(_vte_draw_char), (_vte_draw_draw_rectangle),
+	(_vte_draw_set_scroll):
+	* src/vtedraw.h:
+	* src/vteft2.c (_vte_ft2_destroy), (_vte_ft2_start),
+	(_vte_ft2_end), (_vte_ft2_set_background_image), (_vte_ft2_clear),
+	(_vte_ft2_set_text_font), (_vte_ft2_get_text_metrics),
+	(_vte_ft2_get_char_width), (_vte_ft2_draw_text),
+	(_vte_ft2_draw_has_char), (_vte_ft2_draw_rectangle),
+	(_vte_ft2_fill_rectangle):
+	* src/vtegl.c (_vte_gl_destroy), (_vte_gl_get_visual),
+	(_vte_gl_start), (_vte_gl_end), (_vte_gl_set_background_image),
+	(_vte_gl_clear), (_vte_gl_set_text_font),
+	(_vte_gl_get_text_metrics), (_vte_gl_get_char_width),
+	(_vte_gl_draw_text), (_vte_gl_draw_has_char), (_vte_gl_rectangle):
+	* src/vtepango.c (_vte_pango_set_text_font),
+	(_vte_pango_get_text_metrics):
+	* src/vtepangox.c (_vte_pangox_create), (_vte_pangox_destroy),
+	(_vte_pangox_start), (_vte_pangox_end),
+	(_vte_pangox_set_background_image), (_vte_pangox_clip),
+	(_vte_pangox_clear), (_vte_pangox_set_text_font),
+	(_vte_pangox_get_text_metrics), (_vte_pangox_get_using_fontconfig),
+	(_vte_pangox_draw_text), (_vte_pangox_draw_has_char),
+	(_vte_pangox_draw_rectangle), (_vte_pangox_fill_rectangle):
+	* src/vtepangox.h:
+	* src/vteskel.c (_vte_skel_clear), (_vte_skel_get_text_metrics),
+	(_vte_skel_draw_text), (_vte_skel_fill_rectangle):
+	* src/vtexft.c (_vte_xft_set_text_font),
+	(_vte_xft_get_text_metrics), (_vte_xft_draw_text):
+	Remove unneeded draw methods.
+
+2008-11-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtedraw.c (_vte_draw_get_char_width): Minor fix.
+
+	* src/vtepangox.c (_vte_pango_x_create), (_vte_pango_x_start),
+	(_vte_pango_x_clear): Cleanup here too.
+
+2008-11-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* configure.in:
+	* src/vte-private.h:
+	Undo previous change instead of cleanly fix it for now.
+
+2008-11-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* configure.in:
+	* src/vte-private.h:
+	Why do we let people configure random things?
+
+2008-11-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_background_update):
+	* src/vtedraw.c (_vte_draw_update_requires_clear), (_vte_draw_new),
+	(_vte_draw_set_background_opacity),
+	(_vte_draw_set_background_color), (_vte_draw_set_background_image),
+	(_vte_draw_char), (_vte_draw_set_scroll):
+	* src/vtedraw.h:
+	* src/vteft2.c (_vte_ft2_set_background_image), (_vte_ft2_clear),
+	(_vte_ft2_get_char_width):
+	* src/vtegl.c (_vte_gl_create), (_vte_gl_clear),
+	(_vte_gl_get_char_width), (_vte_gl_draw_text):
+	* src/vtepango.c (_vte_pango_create), (_vte_pango_start),
+	(_vte_pango_set_background_image), (_vte_pango_clear):
+	* src/vtexft.c (_vte_xft_create), (_vte_xft_set_background_image),
+	(_vte_xft_clear), (_vte_xft_get_char_width):
+	Simplify backends by relying more on defaults.
+
+2008-11-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtedraw.c (_vte_draw_init_user), (_vte_draw_init_default):
+	Accept draw impl if impl->check is NULL.
+
+2008-11-13  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vtedraw.h:
+	* src/vtedraw.c (_vte_draw_new), (_vte_draw_get_visual),
+	(_vte_draw_get_colormap), (_vte_draw_start), (_vte_draw_end),
+	(_vte_draw_set_background_color), (_vte_draw_set_background_image),
+	(_vte_draw_requires_repaint), (_vte_draw_clip), (_vte_draw_clear),
+	(_vte_draw_set_text_font), (_vte_draw_get_text_width),
+	(_vte_draw_get_text_height), (_vte_draw_get_text_ascent),
+	(_vte_draw_get_char_width), (_vte_draw_get_using_fontconfig),
+	(_vte_draw_text), (_vte_draw_char), (_vte_draw_has_char),
+	(_vte_draw_fill_rectangle), (_vte_draw_draw_rectangle),
+	(_vte_draw_set_scroll):
+	Use sensical defaults instead of g_return_if_fail'ing when backend
+	functions are not implemented.
+
+2008-10-31  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 557375 – >=vte-0.16.14 breaks highlighting on activity
+
+	* src/vte.c (vte_terminal_deselect_all):
+	Preserve the copy of the selection until it is replace by a new
+	selection, so that we can perform asynchronous copies from the
+	clipboard.
+
+2008-10-23  Chris Wilson  <chris@chris-wilson.co.uk>
+
+	Bug 557375 – >=vte-0.16.14 breaks highlighting on activity
+
+	* src/vte.c (vte_terminal_deselect_all),
+	(vte_terminal_extend_selection):
+	After the user modifies the selection, copy it to PRIMARY and store
+	it on the terminal. This ensures that after a screen redraw, we
+	compare the contents of the selected region with the current
+	selection, instead of stale data.
+
+2008-10-23  Christian Persch  <chpe@gnome.org>
+
+        * configure.in:
+        * src/Makefile.am: Use glib-genmarshal --internal directly instead
+        of checking the glib version, since we now depend on a glib version
+        that provides this.
+
+2008-10-23  Christian Persch  <chpe@gnome.org>
+
+        Bug 556398 – maybe deprecate vte_terminal_get_char_ascent/descent
+
+        * src/vte.[ch]: Deprecate vte_terminal_get_char_ascent/descent.
+
+2008-10-23  Christian Persch  <chpe@gnome.org>
+
+        Bug 339819 – LibVTE terminals in GLADE
+
+        A glade/*:
+        * Makefile.am
+        * configure.in: Add glade catalogue.
+
+2008-10-23  Christian Persch  <chpe@gnome.org>
+
+        Bug 399364 – Implement properties
+
+        * src/vte.c: Add gobject properties.
+
+2008-10-19  Christian Persch  <chpe@gnome.org>
+
+        Bug 556328 – Document set-scroll-adjustment parameters
+
+        * src/vte.c: Document the set-scroll-adjustments signal.
+
+2008-10-15  Behdad Esfahbod  <behdad@gnome.org>
+
+	* doc/reference/Makefile.am:
+	* doc/reference/check-doc-coverage.sh:
+	* doc/reference/check.docs:
+	Update doc coverage test from cairo.
+
+2008-10-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_set_cursor_shape):
+	Invalidate cursor upon shape change.
+
+2008-10-15  Christian Persch  <chpe@gnome.org>
+
+	* python/vte.defs: Add new API to the binding.
+
+2008-10-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte-private.h:
+	* src/vte.c (vte_terminal_draw_line), (vte_terminal_paint_cursor):
+	Remove VTE_CURSOR_OUTLINE in favor of VTE_LINE_WIDTH.
+
+2008-10-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_paint_cursor):
+	Supposedly handle reverse video during cursor drawing.
+
+2008-10-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* src/vte.c (vte_terminal_paint_im_preedit_string),
+	(vte_terminal_paint):
+	Move IM preedit string drawing into its own function for code
+	clarity.
+
+2008-10-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 549835 – Feature Request: Configurable cursor appearance
+
+	* src/vte.h:
+	New public api:
+
+		VteTerminalCursorShape
+		vte_terminal_set_cursor_shape
+		vte_terminal_get_cursor_shape
+
+	* src/vte-private.h:
+	* src/vte.c (_vte_terminal_insert_char), (vte_terminal_init),
+	(vte_terminal_paint_cursor), (vte_terminal_paint),
+	(vte_terminal_set_cursor_shape), (vte_terminal_get_cursor_shape):
+	Implement new API.  Also clean up cursor drawing in general.
+
+	* doc/reference/Makefile.am:
+	* doc/reference/tmpl/reaper.sgml:
+	* doc/reference/tmpl/vte-unused.sgml:
+	* doc/reference/tmpl/vte.sgml:
+	* doc/reference/vte-sections.txt:
+	Doc new symbols.  Also add some missing docs.
+
+2008-10-13  Christian Persch  <chpe@gnome.org>
+
+	* src/vte.c: Add gobject property infrastructure.
+
+2008-10-13  Christian Persch  <chpe@gnome.org>
+
+	* src/Makefile.am: Fix missing prototypes compiler warning in
+	marshal.c.
+
+2008-10-06  Christian Persch  <chpe@gnome.org>
+
+	* src/vteconv.c: (_vte_conv_open): Fix compiler warning.
+
+2008-10-06  Christian Persch  <chpe@gnome.org>
+
+        Bug 509204 – child-exited signal does not provide exit code
+
+	* python/vte.defs: Add the new function to the bindings.
+
+2008-10-06  Christian Persch  <chpe@gnome.org>
+
+        Bug 539130 – building g-t fails due to GtkType etc. deprecation
+
+        * src/vte.h: Deprecate useless macros.
+
+2008-10-06  Christian Persch  <chpe@gnome.org>
+
+        Bug 509204 – child-exited signal does not provide exit code
+
+        * src/vte-private.h:
+        * src/vte.h:
+        * src/vte.c: Add function to get the child's exit status.
+
+2008-10-06  Christian Persch  <chpe@gnome.org>
+
+	* configure.in: Bump version to 0.17.5.
+
 2008-09-08  Christian Persch  <chpe@gnome.org>
 
         Release 0.17.3.

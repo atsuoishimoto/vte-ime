@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "../config.h"
+#include <config.h>
 #include <stdio.h>
 #include <string.h>
 #include <gtk/gtk.h>
@@ -243,7 +243,7 @@ vte_bg_class_init(VteBgClass *klass)
 						  0,
 						  NULL,
 						  NULL,
-						  _vte_marshal_VOID__VOID,
+                                                  g_cclosure_marshal_VOID__VOID,
 						  G_TYPE_NONE, 0);
 	g_type_class_add_private(klass, sizeof (struct VteBgPrivate));
 }
@@ -343,16 +343,16 @@ vte_bg_cache_item_free(struct VteBgCacheItem *item)
 	/* Clean up whatever is left in the structure. */
 	if (item->source_pixbuf != NULL) {
 		g_object_remove_weak_pointer(G_OBJECT(item->source_pixbuf),
-				(gpointer*)&item->source_pixbuf);
+				(gpointer*)(void*)&item->source_pixbuf);
 	}
 	g_free(item->source_file);
 	if (item->pixmap != NULL) {
 		g_object_remove_weak_pointer(G_OBJECT(item->pixmap),
-				(gpointer*)&item->pixmap);
+				(gpointer*)(void*)&item->pixmap);
 	}
 	if (item->pixbuf != NULL) {
 		g_object_remove_weak_pointer(G_OBJECT(item->pixbuf),
-				(gpointer*)&item->pixbuf);
+				(gpointer*)(void*)&item->pixbuf);
 	}
 
 	g_slice_free(struct VteBgCacheItem, item);
@@ -441,15 +441,15 @@ vte_bg_cache_add(VteBg *bg, struct VteBgCacheItem *item)
 	bg->pvt->cache = g_list_prepend(bg->pvt->cache, item);
 	if (item->source_pixbuf != NULL) {
 		g_object_add_weak_pointer(G_OBJECT(item->source_pixbuf),
-					  (gpointer*)&item->source_pixbuf);
+					  (gpointer*)(void*)&item->source_pixbuf);
 	}
 	if (item->pixbuf != NULL) {
 		g_object_add_weak_pointer(G_OBJECT(item->pixbuf),
-					  (gpointer*)&item->pixbuf);
+					  (gpointer*)(void*)&item->pixbuf);
 	}
 	if (item->pixmap != NULL) {
 		g_object_add_weak_pointer(G_OBJECT(item->pixmap),
-					  (gpointer*)&item->pixmap);
+					  (gpointer*)(void*)&item->pixmap);
 	}
 }
 
@@ -555,7 +555,6 @@ vte_bg_get_pixmap(VteBg *bg,
 	gpointer cached;
 	GdkColormap *rcolormap;
 	GdkPixmap *pixmap;
-	GdkBitmap *mask;
 	GdkPixbuf *pixbuf;
 	char *file;
 
@@ -619,9 +618,13 @@ vte_bg_get_pixmap(VteBg *bg,
 		}
 		break;
 	case VTE_BG_SOURCE_PIXBUF:
-		pixbuf = source_pixbuf;
-		if (GDK_IS_PIXBUF(pixbuf)) {
-			g_object_ref(pixbuf);
+		if (GDK_IS_PIXBUF(source_pixbuf)) {
+                        /* If we're going to modify the pixbuf below, make a copy first! */
+                        if (saturation != 1.0) {
+                                pixbuf = gdk_pixbuf_copy(source_pixbuf);
+                        } else {
+                                pixbuf = g_object_ref(source_pixbuf);
+                        }
 		}
 		break;
 	case VTE_BG_SOURCE_FILE:
@@ -648,7 +651,6 @@ vte_bg_get_pixmap(VteBg *bg,
 	}
 
 	pixmap = NULL;
-	mask = NULL;
 	if (GDK_IS_PIXBUF(pixbuf)) {
 		/* If the image is smaller than 256x256 then tile it into a
 		 * pixbuf that is at least this large.  This is done because
@@ -657,11 +659,8 @@ vte_bg_get_pixmap(VteBg *bg,
 		pixbuf = _vte_bg_resize_pixbuf(pixbuf, 256, 256);
 		gdk_pixbuf_render_pixmap_and_mask_for_colormap(pixbuf,
 							       colormap,
-							       &pixmap, &mask,
+							       &pixmap, NULL,
 							       0);
-		if (mask != NULL) {
-			g_object_unref(mask);
-		}
 		g_object_unref(pixbuf);
 	}
 
@@ -670,110 +669,4 @@ vte_bg_get_pixmap(VteBg *bg,
 	vte_bg_cache_add(bg, item);
 
 	return item->pixmap;
-}
-
-GdkPixbuf *
-vte_bg_get_pixbuf(VteBg *bg,
-		  enum VteBgSourceType source_type,
-		  GdkPixbuf *source_pixbuf,
-		  const char *source_file,
-		  const GdkColor *tint,
-		  double saturation)
-{
-	struct VteBgCacheItem *item;
-	gpointer cached;
-	GdkPixbuf *pixbuf;
-	GdkColormap *rcolormap;
-	char *file;
-
-	if (source_type == VTE_BG_SOURCE_NONE) {
-		return NULL;
-	}
-
-	cached = vte_bg_cache_search(bg, source_type,
-				     source_pixbuf, source_file,
-				     tint, saturation, NULL, TRUE, FALSE);
-	if (cached != NULL) {
-		return cached;
-	}
-
-	item = g_slice_new(struct VteBgCacheItem);
-	item->source_type = source_type;
-	item->source_pixbuf = NULL;
-	item->source_file = NULL;
-	item->tint_color = *tint;
-	item->saturation = saturation;
-	item->pixmap = NULL;
-	item->pixbuf = NULL;
-	pixbuf = NULL;
-	file = NULL;
-
-	switch (source_type) {
-	case VTE_BG_SOURCE_ROOT:
-		if (GDK_IS_PIXMAP(bg->root_pixmap)) {
-			gint width, height;
-
-			/* If the pixmap doesn't have a colormap, tell GTK+ that
-			 * it shares the root window's colormap. */
-			rcolormap = gdk_drawable_get_colormap(gdk_screen_get_root_window(bg->screen));
-			if (gdk_drawable_get_colormap(bg->root_pixmap) == NULL) {
-				gdk_drawable_set_colormap(bg->root_pixmap, rcolormap);
-			}
-
-			/* Read the pixmap's size. */
-			gdk_error_trap_push();
-			width = height = -1;
-			gdk_drawable_get_size(bg->root_pixmap, &width, &height);
-			_vte_bg_display_sync(bg);
-			gdk_error_trap_pop();
-
-			/* If we got a valid size, read the pixmap's
-			 * contents. */
-			if ((width > 0) && (height > 0)) {
-				gdk_error_trap_push();
-				pixbuf = gdk_pixbuf_get_from_drawable(NULL,
-								      bg->root_pixmap,
-								      NULL,
-								      0, 0,
-								      0, 0,
-								      width, height);
-				_vte_bg_display_sync(bg);
-				gdk_error_trap_pop();
-			}
-		}
-		break;
-	case VTE_BG_SOURCE_PIXBUF:
-		pixbuf = source_pixbuf;
-		if (G_IS_OBJECT(pixbuf)) {
-			g_object_ref(pixbuf);
-		}
-		break;
-	case VTE_BG_SOURCE_FILE:
-		if ((source_file != NULL) && (strlen(source_file) > 0)) {
-			file = g_strdup(source_file);
-			pixbuf = gdk_pixbuf_new_from_file(source_file, NULL);
-		}
-		break;
-	default:
-		g_assert_not_reached();
-		break;
-	}
-
-	item->source_pixbuf = pixbuf;
-	item->source_file = file;
-
-	if (GDK_IS_PIXBUF(item->source_pixbuf)) {
-		if (saturation == 1.0) {
-			g_object_ref(item->source_pixbuf);
-			item->pixbuf = item->source_pixbuf;
-		} else {
-			item->pixbuf = gdk_pixbuf_copy(item->source_pixbuf);
-			vte_bg_desaturate_pixbuf(item->pixbuf,
-						 tint, saturation);
-		}
-	}
-
-	vte_bg_cache_add(bg, item);
-
-	return item->pixbuf;
 }

@@ -1,3 +1,52 @@
+vte (1:0.20.1-1) unstable; urgency=low
+
+  [ Luca Bruno ]
+  * New upstream release.
+  * debian/patches/20_make_ft2_optional.patch:
+    - Removed as ft2 files have been removed upstream.
+  * debian/patches/12_python_reaper.patch,
+    debian/patches/25_optional-ncurses.patch,
+    debian/patches/90_autoreconf.patch:
+    - Updated to apply cleanly.
+  * debian/patches/30_fix_build_no_pty_helper.patch,
+    debian/patches/04_dsp_non_alias.patch,
+    debian/patches/92_full_bold_fonts.patch:
+    - Removed as applied upstream.
+  * debian/control.in:
+    - General dependencies changes:
+      + Removed libxt, libxft, libfontconfig1, libxrenderer and libfreetype6
+        as they are no more referenced in the upstream code since using
+        pangocairo.
+      + Bump libglib2.0-dev to 2.18.0.
+      + Bump libgtk2.0-dev to 2.14.0.
+      + Specify libpango1.0-dev version needed is 1.22.0.
+    - Build-Depends:
+      + Added libgladeui-1-dev.
+    - libvte-dev Depends:
+      + Removed libatk1.0-dev, libsm-dev, libice-dev, zlib1g-dev and
+        libx11-dev.
+    - Update Standards-Version to 3.8.1, no additional changes needed.
+  * debian/rules:
+    - Removed xft2, ft, pangox, glX and x configure options.
+    - Add -DX_DISPLAY_MISSING to udeb CFLAGS.
+    - Add --enable-glade-catalogue to DEB_CONFIGURE_EXTRA_FLAGS to install
+      gladeui files.
+  * debian/libvte-common.install:
+    - Install gladeui files under /usr/share/glade3.
+
+  [ Josselin Mouette ]
+  * New upstream release.
+  * Install the Python development files in libvte-dev and make this 
+    package provide python-vte-dev, just in case.
+  * Fix dh_pysupport invocation.
+  * Bump shlibs to version 1:0.19.4.
+  * Remove libvte-dev dependency on ncurses.
+  * Remove incorrect Provides: in python-vte.
+  * Switch to quilt to manage patches.
+  * 90_autoreconf.patch: updated for the new version.
+
+ -- Josselin Mouette <joss@debian.org>  Thu, 23 Apr 2009 00:41:20 +0200
+
 vte (1:0.17.4-2) unstable; urgency=low
 
   * Upload to unstable.

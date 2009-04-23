@@ -1,28 +1,46 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
+/* Disable deprecated features */
+#undef ATK_DISABLE_DEPRECATED
+
+/* Disable single includes */
+#undef ATK_DISABLE_SINGLE_INCLUDES
+
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
 
-/* Disable deprecated GDK features. */
+/* Disable deprecated features */
 #undef GDK_DISABLE_DEPRECATED
+
+/* Disable single includes */
+#undef GDK_DISABLE_SINGLE_INCLUDES
 
 /* Force use of GDK's multihead-safe APIs. */
 #undef GDK_MULTIHEAD_SAFE
 
-/* Disable deprecated gdk-pixbuf features. */
+/* Disable deprecated features */
 #undef GDK_PIXBUF_DISABLE_DEPRECATED
+
+/* Disable single includes */
+#undef GDK_PIXBUF_DISABLE_SINGLE_INCLUDES
 
 /* Package translatable messages domain name. */
 #undef GETTEXT_PACKAGE
 
-/* Disable deprecated GTK+ features. */
+/* Disable deprecated features */
 #undef GTK_DISABLE_DEPRECATED
+
+/* Disable single includes */
+#undef GTK_DISABLE_SINGLE_INCLUDES
 
 /* Define to 1 if `TIOCGWINSZ' requires <sys/ioctl.h>. */
 #undef GWINSZ_IN_SYS_IOCTL
 
-/* Disable deprecated GLib features. */
+/* Disable deprecated features */
 #undef G_DISABLE_DEPRECATED
+
+/* Disable single includes */
+#undef G_DISABLE_SINGLE_INCLUDES
 
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
@@ -33,8 +51,8 @@
 /* Define to 1 if you have the `cfmakeraw' function. */
 #undef HAVE_CFMAKERAW
 
-/* Define if you have curses.h and libcurses */
-#undef HAVE_CURSES
+/* Define to 1 if you have the <curses.h> header file. */
+#undef HAVE_CURSES_H
 
 /* Define to 1 if you have the `dcgettext' function. */
 #undef HAVE_DCGETTEXT
@@ -43,65 +61,14 @@
    to 0 if you don't. */
 #undef HAVE_DECL_BIND_TEXTDOMAIN_CODESET
 
-/* Define to 1 if you have the declaration of `FT_LOAD_NO_HINTING', and to 0
-   if you don't. */
-#undef HAVE_DECL_FT_LOAD_NO_HINTING
-
-/* Define if your freetype2 build declares FT_PIXEL_MODE_GRAY. */
-#undef HAVE_DECL_FT_PIXEL_MODE_GRAY
-
-/* Define to 1 if you have the declaration of `FT_PIXEL_MODE_GRAY2', and to 0
-   if you don't. */
-#undef HAVE_DECL_FT_PIXEL_MODE_GRAY2
-
-/* Define to 1 if you have the declaration of `FT_PIXEL_MODE_GRAY4', and to 0
-   if you don't. */
-#undef HAVE_DECL_FT_PIXEL_MODE_GRAY4
-
-/* Define to 1 if you have the declaration of `FT_PIXEL_MODE_LCD', and to 0 if
-   you don't. */
-#undef HAVE_DECL_FT_PIXEL_MODE_LCD
-
-/* Define if your freetype2 build declares FT_PIXEL_MODE_MONO. */
-#undef HAVE_DECL_FT_PIXEL_MODE_MONO
-
-/* Define to 1 if you have the declaration of `FT_RENDER_MODE_LIGHT', and to 0
-   if you don't. */
-#undef HAVE_DECL_FT_RENDER_MODE_LIGHT
-
-/* Define if your freetype2 installation defines FT_RENDER_MODE_MONO. */
-#undef HAVE_DECL_FT_RENDER_MODE_MONO
-
-/* Define to 1 if you have the declaration of `FT_RENDER_MODE_NORMAL', and to
-   0 if you don't. */
-#undef HAVE_DECL_FT_RENDER_MODE_NORMAL
-
-/* Define if your freetype2 build declares ft_pixel_mode_grays. */
-#undef HAVE_DECL_ft_pixel_mode_grays
-
-/* Define if your freetype2 build declares ft_pixel_mode_mono. */
-#undef HAVE_DECL_ft_pixel_mode_mono
-
-/* Define if your freetype2 installation defines ft_render_mode_mono. */
-#undef HAVE_DECL_ft_render_mode_mono
-
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
-
-/* Define to 1 if you have the `FcNameUnparse' function. */
-#undef HAVE_FCNAMEUNPARSE
-
-/* Define to 1 if you have the `FcStrFree' function. */
-#undef HAVE_FCSTRFREE
 
 /* Define to 1 if you have the `floor' function. */
 #undef HAVE_FLOOR
 
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
-
-/* Define to 1 if you have the <ft2build.h> header file. */
-#undef HAVE_FT2BUILD_H
 
 /* Define to 1 if you have the `getpgid' function. */
 #undef HAVE_GETPGID
@@ -111,12 +78,6 @@
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
-
-/* Whether we have GL and glX. */
-#undef HAVE_GL
-
-/* Define to 1 if you have the <GL/glx.h> header file. */
-#undef HAVE_GL_GLX_H
 
 /* Define to 1 if you have the `grantpt' function. */
 #undef HAVE_GRANTPT
@@ -133,14 +94,14 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* Define if you have ncurses.h and libncurses */
-#undef HAVE_NCURSES
+/* Define to 1 if you have the <ncurses/curses.h> header file. */
+#undef HAVE_NCURSES_CURSES_H
 
-/* Define if you have ncurses/curses.h and libncurses */
-#undef HAVE_NCURSES_CURSES
+/* Define to 1 if you have the <ncurses.h> header file. */
+#undef HAVE_NCURSES_H
 
-/* Whether we have PangoX */
-#undef HAVE_PANGOX
+/* Define to 1 if you have the <ncurses/term.h> header file. */
+#undef HAVE_NCURSES_TERM_H
 
 /* Define to 1 if you have the `ptsname' function. */
 #undef HAVE_PTSNAME
@@ -205,11 +166,14 @@
 /* Define to 1 if you have the `tcsetattr' function. */
 #undef HAVE_TCSETATTR
 
-/* Define if you have termcap.h and libtermcap */
-#undef HAVE_TERMCAP
+/* Define to 1 if you have the <termcap.h> header file. */
+#undef HAVE_TERMCAP_H
 
 /* Define to 1 if you have the <termios.h> header file. */
 #undef HAVE_TERMIOS_H
+
+/* Define to 1 if you have the <term.h> header file. */
+#undef HAVE_TERM_H
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
@@ -223,13 +187,14 @@
 /* Define to 1 if the system has the type `wint_t'. */
 #undef HAVE_WINT_T
 
-/* Whether we have Xft2 */
-#undef HAVE_XFT2
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#undef LT_OBJDIR
 
 /* Define to 1 if your C compiler doesn't accept -c and -o together. */
 #undef NO_MINUS_C_MINUS_O
 
-/* Package name. */
+/* Name of package */
 #undef PACKAGE
 
 /* Define to the address where bug reports for this package should be sent. */
@@ -247,8 +212,11 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* Disable deprecated Pango features. */
+/* Disable deprecated features */
 #undef PANGO_DISABLE_DEPRECATED
+
+/* Disable single includes */
+#undef PANGO_DISABLE_SINGLE_INCLUDES
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
@@ -262,17 +230,8 @@
 /* The default terminal type to be emulated. */
 #undef VTE_DEFAULT_EMULATION
 
-/* A number which can never be a valid source ID. */
-#undef VTE_INVALID_SOURCE
-
 /* Define if you intend to use gnome-pty-helper. */
 #undef VTE_USE_GNOME_PTY_HELPER
-
-/* Maximum number of bytes used per UTF-8 character. */
-#undef VTE_UTF8_BPC
-
-/* Define to 1 if the X Window System is missing or not being used. */
-#undef X_DISPLAY_MISSING
 
 /* Use all glibc features. */
 #undef _GNU_SOURCE

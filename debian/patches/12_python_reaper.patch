@@ -1,8 +1,8 @@
 GNOME #112172; move VteReaper down the library stack
 
-diff -Nur vte-0.11.15/python/vte.defs vte-0.11.15.new/python/vte.defs
---- vte-0.11.15/python/vte.defs	2004-04-29 22:41:55.000000000 -0400
-+++ vte-0.11.15.new/python/vte.defs	2005-10-28 15:59:50.000000000 -0400
+diff -urN vte-0.20.0.orig/python/vte.defs vte-0.20.0/python/vte.defs
+--- vte-0.20.0.orig/python/vte.defs	2009-03-05 15:06:07.000000000 +0100
++++ vte-0.20.0/python/vte.defs	2009-04-07 20:17:08.000000000 +0200
 @@ -7,6 +7,14 @@
    (gtype-id "VTE_TYPE_TERMINAL")
  )
@@ -18,8 +18,8 @@ diff -Nur vte-0.11.15/python/vte.defs vte-0.11.15.new/python/vte.defs
  ;; Enumerations and flags ...
  
  (define-enum TerminalEraseBinding
-@@ -665,3 +673,13 @@
- )
+@@ -813,6 +821,17 @@
+ 
  
  
 +;; From ../src/reaper.h
@@ -27,32 +27,18 @@ diff -Nur vte-0.11.15/python/vte.defs vte-0.11.15.new/python/vte.defs
 +  (c-name "vte_reaper_get_type")
 +  (return-type "GtkType")
 +)
-+
++ 
 +(define-function reaper_get
 +  (c-name "vte_reaper_get")
 +  (return-type "VteReaper*")
 +)
-diff -Nur vte-0.11.15/python/vte.override vte-0.11.15.new/python/vte.override
---- vte-0.11.15/python/vte.override	2005-10-28 15:59:45.000000000 -0400
-+++ vte-0.11.15.new/python/vte.override	2005-10-28 15:59:50.000000000 -0400
-@@ -6,12 +6,14 @@
- #include <pygobject.h>
- #include <gtk/gtk.h>
- #include "../src/vte.h"
-+#include "../src/reaper.h"
- %%
- modulename vte
- %%
- import gtk.gdk.Pixbuf as PyGdkPixbuf_Type
- import gtk.MenuShell as PyGtkMenuShell_Type
- import gtk.Widget as PyGtkWidget_Type
-+import gobject.GObject as PyGObject_Type
- %%
- override vte_terminal_feed kwargs
- static PyObject *
-diff -Nur vte-0.11.15/python/vtemodule.c vte-0.11.15.new/python/vtemodule.c
---- vte-0.11.15/python/vtemodule.c	2005-03-17 01:43:44.000000000 -0500
-+++ vte-0.11.15.new/python/vtemodule.c	2005-10-28 15:59:50.000000000 -0400
++
+ ;; From vteversion.h
+ 
+ 
+diff -urN vte-0.20.0.orig/python/vtemodule.c vte-0.20.0/python/vtemodule.c
+--- vte-0.20.0.orig/python/vtemodule.c	2009-03-05 15:06:07.000000000 +0100
++++ vte-0.20.0/python/vtemodule.c	2009-04-07 20:18:05.000000000 +0200
 @@ -25,6 +25,7 @@
  #include <pygobject.h>
  #include <pygtk/pygtk.h>
@@ -60,4 +46,23 @@ diff -Nur vte-0.11.15/python/vtemodule.c vte-0.11.15.new/python/vtemodule.c
 +#include "../src/reaper.h"
  
  extern void pyvte_register_classes(PyObject * d);
- extern PyMethodDef pyvte_functions[];
+ extern void pyvte_add_constants(PyObject *module, const gchar *strip_prefix);
+diff -urN vte-0.20.0.orig/python/vte.override vte-0.20.0/python/vte.override
+--- vte-0.20.0.orig/python/vte.override	2009-03-05 15:06:07.000000000 +0100
++++ vte-0.20.0/python/vte.override	2009-04-07 20:17:45.000000000 +0200
+@@ -7,6 +7,7 @@
+ #include <pygobject.h>
+ #include <gtk/gtk.h>
+ #include "../src/vte.h"
++#include "../src/reaper.h"
+ 
+ void pyvte_add_constants(PyObject *module, const gchar *strip_prefix);
+ void pyvte_register_classes(PyObject *d);
+@@ -16,6 +17,7 @@
+ import gtk.gdk.Pixbuf as PyGdkPixbuf_Type
+ import gtk.MenuShell as PyGtkMenuShell_Type
+ import gtk.Widget as PyGtkWidget_Type
++import gobject.GObject as PyGObject_Type
+ %%
+ override vte_terminal_feed kwargs
+ static PyObject *
