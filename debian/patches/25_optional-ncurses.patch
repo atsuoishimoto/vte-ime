@@ -1,52 +1,101 @@
-diff -Nur -x '*.orig' -x '*~' vte-0.19.4/configure.in vte-0.19.4.new/configure.in
---- vte-0.19.4/configure.in	2009-01-27 12:31:58.000000000 +0000
-+++ vte-0.19.4.new/configure.in	2009-01-27 12:33:43.000000000 +0000
-@@ -289,14 +289,24 @@
+diff -urN vte-0.20.0.orig/configure.in vte-0.20.0/configure.in
+--- vte-0.20.0.orig/configure.in	2009-03-15 13:53:09.000000000 +0100
++++ vte-0.20.0/configure.in	2009-04-07 22:45:40.000000000 +0200
+@@ -289,45 +289,52 @@
  AC_CHECK_FUNC(floor,,AC_CHECK_LIB(m,floor,LIBS=["$LIBS -lm"]))
  AC_CHECK_FUNCS([ceil floor])
  
-+AC_ARG_WITH(ncurses,
-+	    [AS_HELP_STRING([--without-ncurses],
-+	 	            [don't use ncurses library])
-+	    ], with_ncurses=$withval, with_ncurses=yes)
-+
- # Look for tgetent
- 
+-# Look for tgetent
+-
 -AC_CHECK_FUNC([tgetent],[vte_cv_termcap_lib=libc],
 -  [AC_CHECK_LIB([ncurses],[tgetent],[vte_cv_termcap_lib=libncurses],
 -    [AC_CHECK_LIB([tinfo],[tgetent],[vte_cv_termcap_lib=libtinfo],
 -      [AC_CHECK_LIB([curses],[tgetent],[vte_cv_termcap_lib=libcurses],
 -        [AC_CHECK_LIB([termcap],[tgetent],[vte_cv_termcap_lib=libtermcap],
 -          [vte_cv_termcap_lib=])])])])])
+-
+-case "$vte_cv_termcap_lib" in
+-  libc)       # FIXME: which headers to include here?
+-              ;;
+-  libncurses) # We need ncurses.h and term.h, or ncurses/curses.h and ncurses/term.h
+-              AC_CHECK_HEADERS([ncurses.h term.h],[],
+-                [AC_CHECK_HEADERS([ncurses/curses.h ncurses/term.h],[],
+-                  [AC_MSG_ERROR([ncurses headers not found])])])
+-              LIBS="-lncurses $LIBS"
+-              ;;
+-  libtinfo)   # Need ncurses/curses.h and ncurses/term.h
+-              AC_CHECK_HEADERS([ncurses.h term.h],[],
+-                [AC_CHECK_HEADERS([ncurses/curses.h ncurses/term.h],[],
+-                  [AC_MSG_ERROR([ncurses headers not found])])])
+-              LIBS="-ltinfo $LIBS"
+-              ;;
+-  libcurses)  # Need curses.h and term.h
+-              AC_CHECK_HEADERS([curses.h term.h],[],
+-                [AC_MSG_ERROR([curses headers not found])],
+-                [[#ifdef HAVE_CURSES_H
+-                  #include <curses.h>
+-                  #endif]])
+-              LIBS="-lcurses $LIBS"
+-              ;;
+-  libtermcap) # Need termcap.h
+-              AC_CHECK_HEADERS([termcap.h],[],
+-                [AC_MSG_ERROR([termcap headers not found])])
+-              LIBS="-ltermcap $LIBS"
+-              ;;
+-  *)          AC_MSG_ERROR([tgetent not found in any library]) ;;
+-esac
++AC_ARG_WITH(ncurses,
++           [AS_HELP_STRING([--without-ncurses],
++                           [don't use ncurses library])
++           ], with_ncurses=$withval, with_ncurses=yes)
++
 +if test x$with_ncurses = xyes ; then
-+  AC_CHECK_FUNC([tgetent],[vte_cv_termcap_lib=libc],
-+    [AC_CHECK_LIB([ncurses],[tgetent],[vte_cv_termcap_lib=libncurses],
-+      [AC_CHECK_LIB([tinfo],[tgetent],[vte_cv_termcap_lib=libtinfo],
-+        [AC_CHECK_LIB([curses],[tgetent],[vte_cv_termcap_lib=libcurses],
-+          [AC_CHECK_LIB([termcap],[tgetent],[vte_cv_termcap_lib=libtermcap],
-+            [vte_cv_termcap_lib=])])])])])
-+else
-+  AC_CHECK_FUNC([tgetent],[vte_cv_termcap_lib=libc],
-+    [vte_cv_termcap_lib=])
++	# Look for tgetent
++
++	AC_CHECK_FUNC([tgetent],[vte_cv_termcap_lib=libc],
++	  [AC_CHECK_LIB([ncurses],[tgetent],[vte_cv_termcap_lib=libncurses],
++	    [AC_CHECK_LIB([tinfo],[tgetent],[vte_cv_termcap_lib=libtinfo],
++	      [AC_CHECK_LIB([curses],[tgetent],[vte_cv_termcap_lib=libcurses],
++	        [AC_CHECK_LIB([termcap],[tgetent],[vte_cv_termcap_lib=libtermcap],
++	          [vte_cv_termcap_lib=])])])])])
++
++	case "$vte_cv_termcap_lib" in
++	  libc)       # FIXME: which headers to include here?
++	              ;;
++	  libncurses) # We need ncurses.h and term.h, or ncurses/curses.h and ncurses/term.h
++	              AC_CHECK_HEADERS([ncurses.h term.h],[],
++	                [AC_CHECK_HEADERS([ncurses/curses.h ncurses/term.h],[],
++	                  [AC_MSG_ERROR([ncurses headers not found])])])
++	              LIBS="-lncurses $LIBS"
++	              ;;
++	  libtinfo)   # Need ncurses/curses.h and ncurses/term.h
++	              AC_CHECK_HEADERS([ncurses.h term.h],[],
++	                [AC_CHECK_HEADERS([ncurses/curses.h ncurses/term.h],[],
++	                  [AC_MSG_ERROR([ncurses headers not found])])])
++	              LIBS="-ltinfo $LIBS"
++	              ;;
++	  libcurses)  # Need curses.h and term.h
++	              AC_CHECK_HEADERS([curses.h term.h],[],
++	                [AC_MSG_ERROR([curses headers not found])],
++	                [[#ifdef HAVE_CURSES_H
++	                  #include <curses.h>
++	                  #endif]])
++	              LIBS="-lcurses $LIBS"
++	              ;;
++	  libtermcap) # Need termcap.h
++	              AC_CHECK_HEADERS([termcap.h],[],
++	                [AC_MSG_ERROR([termcap headers not found])])
++	              LIBS="-ltermcap $LIBS"
++	              ;;
++	  *)          AC_MSG_ERROR([tgetent not found in any library]) ;;
++	esac
 +fi
  
- case "$vte_cv_termcap_lib" in
-   libc)       # FIXME: which headers to include here?
-@@ -323,7 +333,10 @@
-                 [AC_MSG_ERROR([termcap headers not found])])
-               LIBS="-ltermcap $LIBS"
-               ;;
--  *)          AC_MSG_ERROR([tgetent not found in any library]) ;;
-+  *)          if test x$with_ncurses = xyes ; then
-+                AC_MSG_ERROR([tgetent not found in any library])
-+              fi
-+              ;;
- esac
- 
  # Search for the required modules.
-diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/keymap.c vte-0.19.4.new/src/keymap.c
---- vte-0.19.4/src/keymap.c	2008-12-03 00:55:42.000000000 +0000
-+++ vte-0.19.4.new/src/keymap.c	2009-01-27 12:35:54.000000000 +0000
+ VTE_PKGS="glib-2.0 >= $GLIB_REQUIRED gobject-2.0 pango >= $PANGO_REQUIRED gtk+-2.0 >= $GTK_REQUIRED"
+diff -urN vte-0.20.0.orig/src/keymap.c vte-0.20.0/src/keymap.c
+--- vte-0.20.0.orig/src/keymap.c	2009-03-05 15:06:07.000000000 +0100
++++ vte-0.20.0/src/keymap.c	2009-04-07 22:53:53.000000000 +0200
 @@ -44,7 +44,7 @@
  #include <termcap.h>
  #define VTE_TERMCAP_NAME "termcap"
@@ -83,9 +132,9 @@ diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/keymap.c vte-0.19.4.new/src/keymap.
  
  	_vte_debug_print(VTE_DEBUG_KEYBOARD,
  			" (ignoring, no match for modifier state).\n");
-diff -Nur -x '*.orig' -x '*~' vte-0.19.4/src/ssfe.c vte-0.19.4.new/src/ssfe.c
---- vte-0.19.4/src/ssfe.c	2008-12-03 00:55:42.000000000 +0000
-+++ vte-0.19.4.new/src/ssfe.c	2009-01-27 12:36:30.000000000 +0000
+diff -urN vte-0.20.0.orig/src/ssfe.c vte-0.20.0/src/ssfe.c
+--- vte-0.20.0.orig/src/ssfe.c	2009-03-05 15:06:07.000000000 +0100
++++ vte-0.20.0/src/ssfe.c	2009-04-07 22:51:52.000000000 +0200
 @@ -38,7 +38,7 @@
  #include <termcap.h>
  #define VTE_TERMCAP_NAME "termcap"

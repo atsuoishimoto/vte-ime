@@ -1,8 +1,8 @@
 GNOME #112172; move VteReaper down the library stack
 
-diff -Nur -x '*.orig' -x '*~' vte-0.19.4/python/vte.defs vte-0.19.4.new/python/vte.defs
---- vte-0.19.4/python/vte.defs	2008-10-23 07:11:06.000000000 +0100
-+++ vte-0.19.4.new/python/vte.defs	2009-01-11 23:03:08.000000000 +0000
+diff -urN vte-0.20.0.orig/python/vte.defs vte-0.20.0/python/vte.defs
+--- vte-0.20.0.orig/python/vte.defs	2009-03-05 15:06:07.000000000 +0100
++++ vte-0.20.0/python/vte.defs	2009-04-07 20:17:08.000000000 +0200
 @@ -7,6 +7,14 @@
    (gtype-id "VTE_TYPE_TERMINAL")
  )
@@ -18,27 +18,27 @@ diff -Nur -x '*.orig' -x '*~' vte-0.19.4/python/vte.defs vte-0.19.4.new/python/v
  ;; Enumerations and flags ...
  
  (define-enum TerminalEraseBinding
-@@ -690,6 +698,17 @@
-   )
- )
+@@ -813,6 +821,17 @@
+ 
+ 
  
 +;; From ../src/reaper.h
 +(define-function vte_reaper_get_type
 +  (c-name "vte_reaper_get_type")
 +  (return-type "GtkType")
 +)
-+
++ 
 +(define-function reaper_get
 +  (c-name "vte_reaper_get")
 +  (return-type "VteReaper*")
 +)
 +
- (define-method get_encoding
-   (of-object "VteTerminal")
-   (c-name "vte_terminal_get_encoding")
-diff -Nur -x '*.orig' -x '*~' vte-0.19.4/python/vtemodule.c vte-0.19.4.new/python/vtemodule.c
---- vte-0.19.4/python/vtemodule.c	2008-11-29 21:57:09.000000000 +0000
-+++ vte-0.19.4.new/python/vtemodule.c	2009-01-11 23:03:58.000000000 +0000
+ ;; From vteversion.h
+ 
+ 
+diff -urN vte-0.20.0.orig/python/vtemodule.c vte-0.20.0/python/vtemodule.c
+--- vte-0.20.0.orig/python/vtemodule.c	2009-03-05 15:06:07.000000000 +0100
++++ vte-0.20.0/python/vtemodule.c	2009-04-07 20:18:05.000000000 +0200
 @@ -25,6 +25,7 @@
  #include <pygobject.h>
  #include <pygtk/pygtk.h>
@@ -47,9 +47,9 @@ diff -Nur -x '*.orig' -x '*~' vte-0.19.4/python/vtemodule.c vte-0.19.4.new/pytho
  
  extern void pyvte_register_classes(PyObject * d);
  extern void pyvte_add_constants(PyObject *module, const gchar *strip_prefix);
-diff -Nur -x '*.orig' -x '*~' vte-0.19.4/python/vte.override vte-0.19.4.new/python/vte.override
---- vte-0.19.4/python/vte.override	2008-11-22 14:51:06.000000000 +0000
-+++ vte-0.19.4.new/python/vte.override	2009-01-11 23:03:37.000000000 +0000
+diff -urN vte-0.20.0.orig/python/vte.override vte-0.20.0/python/vte.override
+--- vte-0.20.0.orig/python/vte.override	2009-03-05 15:06:07.000000000 +0100
++++ vte-0.20.0/python/vte.override	2009-04-07 20:17:45.000000000 +0200
 @@ -7,6 +7,7 @@
  #include <pygobject.h>
  #include <gtk/gtk.h>

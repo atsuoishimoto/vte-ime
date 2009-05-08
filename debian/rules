@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-libvteN := $(shell sed -rn 's/^Package:[[:space:]]*(libvte[0-9]+)[[:space:]]*$$/\1/p' debian/control | head -n 1)
+libvteN := $(shell sed -rn 's/^Package:[[:space:]]*(libvte[0-9]+)[[:space:]]*$$/\1/p' debian/control)
 udeb := $(libvteN)-udeb
 
 buildbasedir := $(CURDIR)/debian/build
@@ -8,7 +8,7 @@ DEB_BUILDDIR := $(buildbasedir)/main
 DEB_BUILDDIR_$(udeb) := $(buildbasedir)/udeb
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
+include /usr/share/cdbs/1/rules/patchsys-quilt.mk
 include /usr/share/cdbs/1/rules/utils.mk
 include /usr/share/cdbs/1/class/gnome.mk
 include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
@@ -20,19 +20,21 @@ DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/$(libvteN)
 DEB_FIXPERMS_EXCLUDE += gnome-pty-helper
 DEB_DBG_PACKAGE_python-vte = python-vte-dbg
 .PRECIOUS: configure-stamp-% dbg-configure-stamp-%
-DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.19.1)' --add-udeb=$(udeb)
+DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.19.4)' --add-udeb=$(udeb)
+
+DEB_CONFIGURE_EXTRA_FLAGS += \
+	--enable-glade-catalogue
 
 UDEB_CONFIGURE_EXTRA_FLAGS += \
 	--disable-python \
 	--disable-gnome-pty-helper \
 	--disable-gtk-doc \
-	--without-x \
 	--without-ncurses
 
 DEB_DESTDIR := $(CURDIR)/debian/tmp/main
 DEB_DESTDIR_$(udeb) := $(CURDIR)/debian/tmp/udeb
 
-CFLAGS_$(udeb) += $(CFLAGS) -Os
+CFLAGS_$(udeb) += $(CFLAGS) -Os -DX_DISPLAY_MISSING
 
 DEB_DH_INSTALL_ARGS = --sourcedir=$(if $(findstring $(udeb),$(cdbs_curpkg)),$(DEB_DESTDIR_$(udeb)),$(DEB_DESTDIR))
 
@@ -116,7 +118,7 @@ dbg-install-stamp-%:
 install/python-vte:: $(addprefix install-stamp-, $(PY_VERSIONS))
 
 binary-install/python-vte::
-	dh_pysupport -d
+	dh_pysupport -ppython-vte
 	find debian/python-vte -name '*.la' -exec rm {} \;
 	find debian/python-vte -name '*.a' -exec rm {} \;
 

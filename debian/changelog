@@ -1,3 +1,72 @@
+vte (1:0.20.1-1ubuntu1) karmic; urgency=low
+
+  * Merge from debian unstable, remaining changes: (LP: #373582)
+    - debian/patches:
+      + 91_keep_fds.patch: Keep file descriptors open on vte_fork_pty()
+      + 93_add_alt_screen_scroll_toggle.patch: Handle scrolling differently
+        when using alternate screen or scrolling is restricted.
+      + add them to series file (no use quilt)
+    - debian/python-vte.install: make it build against python 2.6 new FS layout
+    - debian/rules:
+      + Build a python-vte-dbg package
+      + Clean .a and .la files from package to keep .install file easy
+        to read
+    - debian/control.in:
+      + depends on libgtk-directfb-2.0-0 2.15.4-0ubuntu4, to correct a 
+        wrong dependency in libvte9-udeb
+      + Re-generate debian/control
+
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 08 May 2009 10:21:30 +0200
+
+vte (1:0.20.1-1) unstable; urgency=low
+
+  [ Luca Bruno ]
+  * New upstream release.
+  * debian/patches/20_make_ft2_optional.patch:
+    - Removed as ft2 files have been removed upstream.
+  * debian/patches/12_python_reaper.patch,
+    debian/patches/25_optional-ncurses.patch,
+    debian/patches/90_autoreconf.patch:
+    - Updated to apply cleanly.
+  * debian/patches/30_fix_build_no_pty_helper.patch,
+    debian/patches/04_dsp_non_alias.patch,
+    debian/patches/92_full_bold_fonts.patch:
+    - Removed as applied upstream.
+  * debian/control.in:
+    - General dependencies changes:
+      + Removed libxt, libxft, libfontconfig1, libxrenderer and libfreetype6
+        as they are no more referenced in the upstream code since using
+        pangocairo.
+      + Bump libglib2.0-dev to 2.18.0.
+      + Bump libgtk2.0-dev to 2.14.0.
+      + Specify libpango1.0-dev version needed is 1.22.0.
+    - Build-Depends:
+      + Added libgladeui-1-dev.
+    - libvte-dev Depends:
+      + Removed libatk1.0-dev, libsm-dev, libice-dev, zlib1g-dev and
+        libx11-dev.
+    - Update Standards-Version to 3.8.1, no additional changes needed.
+  * debian/rules:
+    - Removed xft2, ft, pangox, glX and x configure options.
+    - Add -DX_DISPLAY_MISSING to udeb CFLAGS.
+    - Add --enable-glade-catalogue to DEB_CONFIGURE_EXTRA_FLAGS to install
+      gladeui files.
+  * debian/libvte-common.install:
+    - Install gladeui files under /usr/share/glade3.
+
+  [ Josselin Mouette ]
+  * New upstream release.
+  * Install the Python development files in libvte-dev and make this 
+    package provide python-vte-dev, just in case.
+  * Fix dh_pysupport invocation.
+  * Bump shlibs to version 1:0.19.4.
+  * Remove libvte-dev dependency on ncurses.
+  * Remove incorrect Provides: in python-vte.
+  * Switch to quilt to manage patches.
+  * 90_autoreconf.patch: updated for the new version.
+
+ -- Josselin Mouette <joss@debian.org>  Thu, 23 Apr 2009 00:41:20 +0200
+
 vte (1:0.20.1-0ubuntu1) karmic; urgency=low
 
   * New upstream release: (LP: #361055)
@@ -117,6 +186,36 @@ vte (1:0.19.4-0ubuntu1) jaunty; urgency=low
 
  -- Chris Coulson <chrisccoulson@googlemail.com>  Tue, 13 Jan 2009 00:16:52 +0000
 
+vte (1:0.17.4-2) unstable; urgency=low
+
+  * Upload to unstable.
+
+ -- Josselin Mouette <joss@debian.org>  Wed, 04 Mar 2009 13:55:08 +0100
+
+vte (1:0.17.4-1) experimental; urgency=low
+
+  * New upstream release:
+    + debian/control.in:
+      - Update build-depends.
+      - Update Standards-Version to 3.8.0, no additional changes needed.
+    + debian/rules:
+      - Update shlibs version to reflect API additions.
+    + debian/patches/29_add_am_prog_cc_c_o_for_buffer_c.patch,
+      debian/patches/01_anjuta_hang.patch:
+      - Dropped, merged upstream.
+    + debian/patches/20_make_ft2_optional.patch,
+      debian/patches/90_autoreconf.patch:
+      - Updated to apply cleanly again.
+    + debian/patches/92_full_bold_fonts.patch:
+      - Patch from the Ubuntu package to first check if a bold variant
+        of a font exists before using "pseudo-bolding".
+    + debian/python-vte.examples:
+      - Add some more examples, taken from the Ubuntu package.
+  * debian/watch:
+    + Updated for new versions.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 24 Nov 2008 10:15:11 +0100
+
 vte (1:0.17.4-0ubuntu3) jaunty; urgency=low
 
   * 94_no_nul_backspace.patch: Avoid sending NUL character for
@@ -124,7 +223,7 @@ vte (1:0.17.4-0ubuntu3) jaunty; urgency=low
     backspace is bound to VTE_ERASE_AUTO. (LP: #29787)
 	
  -- Micah Cowan <micah@cowan.name>  Thu, 17 Jul 2008 02:06:29 -0700
-	
+
 vte (1:0.17.4-0ubuntu2) jaunty; urgency=low
 
   * Resynchronise with Debian 1:0.16.14-4. Remaining packaging changes:
