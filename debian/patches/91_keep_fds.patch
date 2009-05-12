@@ -1,3 +1,4 @@
+Upstream: http://bugzilla.gnome.org/show_bug.cgi?id=320128
 Description: Keep file descriptors open on vte_fork_pty().
 
 diff -Nur vte-0.16.0/src/pty.c vte-0.16.0.new/src/pty.c

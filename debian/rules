@@ -122,6 +122,9 @@ binary-install/python-vte::
 	find debian/python-vte -name '*.la' -exec rm {} \;
 	find debian/python-vte -name '*.a' -exec rm {} \;
 
+binary-install/python-vte-dbg::
+	dh_pysupport -ppython-vte-dbg
+
 install/python-vte-dbg:: $(addprefix dbg-install-stamp-, $(PY_VERSIONS))
 	for i in $$(find debian/python-*-dbg/usr/lib/py* -name '*.so'); do \
 	  b=$$(basename $$i .so); \

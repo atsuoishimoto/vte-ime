@@ -1,3 +1,11 @@
+vte (1:0.20.1-1ubuntu2) karmic; urgency=low
+
+  * debian/rules:
+    - add a -dbg bin-install target to call dh_pysupport, needed for
+      installing properly python-vte dbg library in the right place.
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 12 May 2009 14:12:04 +0200
+
 vte (1:0.20.1-1ubuntu1) karmic; urgency=low
 
   * Merge from debian unstable, remaining changes: (LP: #373582)
@@ -16,7 +24,7 @@ vte (1:0.20.1-1ubuntu1) karmic; urgency=low
         wrong dependency in libvte9-udeb
       + Re-generate debian/control
 
- -- Didier Roche <didrocks@ubuntu.com>  Fri, 08 May 2009 10:21:30 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 08 May 2009 10:03:29 +0200
 
 vte (1:0.20.1-1) unstable; urgency=low
 
