@@ -1,13 +1,6 @@
 <indexdiv>
-<indexdiv><title>C</title>
-<indexentry><primaryie linkends="VTE-CHECK-VERSION:CAPS"><link linkend="VTE-CHECK-VERSION:CAPS">VTE_CHECK_VERSION</link></primaryie></indexentry>
-</indexdiv>
-<indexdiv><title>M</title>
-<indexentry><primaryie linkends="VTE-MAJOR-VERSION:CAPS"><link linkend="VTE-MAJOR-VERSION:CAPS">VTE_MAJOR_VERSION</link></primaryie></indexentry>
-<indexentry><primaryie linkends="VTE-MICRO-VERSION:CAPS"><link linkend="VTE-MICRO-VERSION:CAPS">VTE_MICRO_VERSION</link></primaryie></indexentry>
-<indexentry><primaryie linkends="VTE-MINOR-VERSION:CAPS"><link linkend="VTE-MINOR-VERSION:CAPS">VTE_MINOR_VERSION</link></primaryie></indexentry>
-</indexdiv>
-<indexdiv><title>T</title>
+<indexdiv><title>V</title>
+<indexentry><primaryie linkends="VteSelectionFunc"><link linkend="VteSelectionFunc">VteSelectionFunc</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminal-struct"><link linkend="VteTerminal-struct">VteTerminal</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminal-beep"><link linkend="VteTerminal-beep">VteTerminal::beep</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminal-char-size-changed"><link linkend="VteTerminal-char-size-changed">VteTerminal::char-size-changed</link></primaryie></indexentry>
@@ -69,6 +62,10 @@
 <indexentry><primaryie linkends="VteTerminalCursorBlinkMode"><link linkend="VteTerminalCursorBlinkMode">VteTerminalCursorBlinkMode</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminalCursorShape"><link linkend="VteTerminalCursorShape">VteTerminalCursorShape</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminalEraseBinding"><link linkend="VteTerminalEraseBinding">VteTerminalEraseBinding</link></primaryie></indexentry>
+<indexentry><primaryie linkends="VTE-CHECK-VERSION--CAPS"><link linkend="VTE-CHECK-VERSION--CAPS">VTE_CHECK_VERSION</link></primaryie></indexentry>
+<indexentry><primaryie linkends="VTE-MAJOR-VERSION--CAPS"><link linkend="VTE-MAJOR-VERSION--CAPS">VTE_MAJOR_VERSION</link></primaryie></indexentry>
+<indexentry><primaryie linkends="VTE-MICRO-VERSION--CAPS"><link linkend="VTE-MICRO-VERSION--CAPS">VTE_MICRO_VERSION</link></primaryie></indexentry>
+<indexentry><primaryie linkends="VTE-MINOR-VERSION--CAPS"><link linkend="VTE-MINOR-VERSION--CAPS">VTE_MINOR_VERSION</link></primaryie></indexentry>
 <indexentry><primaryie linkends="vte-terminal-accessible-new"><link linkend="vte-terminal-accessible-new">vte_terminal_accessible_new</link></primaryie></indexentry>
 <indexentry><primaryie linkends="vte-terminal-copy-clipboard"><link linkend="vte-terminal-copy-clipboard">vte_terminal_copy_clipboard</link></primaryie></indexentry>
 <indexentry><primaryie linkends="vte-terminal-copy-primary"><link linkend="vte-terminal-copy-primary">vte_terminal_copy_primary</link></primaryie></indexentry>

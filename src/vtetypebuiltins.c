@@ -15,6 +15,7 @@ vte_terminal_erase_binding_get_type (void)
       { VTE_ERASE_ASCII_BACKSPACE, "VTE_ERASE_ASCII_BACKSPACE", "ascii-backspace" },
       { VTE_ERASE_ASCII_DELETE, "VTE_ERASE_ASCII_DELETE", "ascii-delete" },
       { VTE_ERASE_DELETE_SEQUENCE, "VTE_ERASE_DELETE_SEQUENCE", "delete-sequence" },
+      { VTE_ERASE_TTY, "VTE_ERASE_TTY", "tty" },
       { 0, NULL, NULL }
     };
     GType g_define_type_id = \

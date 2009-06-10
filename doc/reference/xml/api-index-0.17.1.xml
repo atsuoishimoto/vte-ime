@@ -1,5 +1,5 @@
 <indexdiv>
-<indexdiv><title>T</title>
+<indexdiv><title>V</title>
 <indexentry><primaryie linkends="VteTerminal-set-scroll-adjustments"><link linkend="VteTerminal-set-scroll-adjustments">VteTerminal::set-scroll-adjustments</link></primaryie></indexentry>
 <indexentry><primaryie linkends="vte-terminal-get-cursor-blink-mode"><link linkend="vte-terminal-get-cursor-blink-mode">vte_terminal_get_cursor_blink_mode</link></primaryie></indexentry>
 <indexentry><primaryie linkends="vte-terminal-match-add-gregex"><link linkend="vte-terminal-match-add-gregex">vte_terminal_match_add_gregex</link></primaryie></indexentry>
