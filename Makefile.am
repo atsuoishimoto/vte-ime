@@ -1,5 +1,11 @@
 SUBDIRS = src python termcaps po doc perf
-EXTRA_DIST = MAINTAINERS HACKING autogen.sh
+
+EXTRA_DIST = \
+	MAINTAINERS \
+	HACKING \
+	autogen.sh \
+	ChangeLog.pre-git
+
 DISTCLEANFILES =
 
 if BUILD_GNOME_PTY_HELPER
@@ -16,6 +22,7 @@ pkgconfig_DATA = vte.pc
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
 
 MAINTAINERCLEANFILES = \
+		ChangeLog \
 		$(srcdir)/INSTALL \
 		$(srcdir)/aclocal.m4 \
 		$(srcdir)/autoscan.log \
@@ -35,3 +42,15 @@ MAINTAINERCLEANFILES = \
 		$(srcdir)/gtk-doc.make \
 		$(srcdir)/po/Makefile.in.in \
 		`find "$(srcdir)" -type f -name Makefile.in -print`
+
+# Build ChangeLog from GIT  history
+ChangeLog:
+	@if test -d $(top_srcdir)/.git; then \
+		GIT_DIR="$(top_srcdir)/.git" git log --stat > $@; \
+	fi
+
+dist: ChangeLog
+
+.PHONY: ChangeLog
+
+-include $(top_srcdir)/git.mk

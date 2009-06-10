@@ -1,3 +1,34 @@
+vte (1:0.20.5-1) unstable; urgency=low
+
+  * New upstream bugfix release, undoing the unintended
+    soname bump (Closes: #532552):
+    + debian/control.in,
+      debian/*.install:
+      - Undo package rename.
+    + debian/patches/90_autoreconf.patch:
+      - Updated for the new version.
+
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 10 Jun 2009 07:07:43 +0200
+
+vte (1:0.20.4-1) unstable; urgency=low
+
+  [ Josselin Mouette ]
+  * Add libglib2.0-doc, libgtk2.0-doc and libatk1.0-doc to b-d-i to 
+    ensure proper xrefs.
+  * 01_bashisms.patch: fix bashims in provided scripts. Closes: #530123.
+
+  [ Sebastian Dröge ]
+  * New upstream bugfix releases:
+    + debian/rules:
+      - Update shlibs version to >= 0.20.4 for API additions.
+    + debian/control.in,
+      debian/*.install:
+      - Update for the new soname.
+    + debian/patches/90_autoreconf.patch:
+      - Regenerated for the new version.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 02 Jun 2009 07:01:29 +0200
+
 vte (1:0.20.1-1) unstable; urgency=low
 
   [ Luca Bruno ]

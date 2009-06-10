@@ -79,7 +79,7 @@ struct _VteTerminalClass {
 	void (*contents_changed)(VteTerminal* terminal);
 	void (*cursor_moved)(VteTerminal* terminal);
 	void (*status_line_changed)(VteTerminal* terminal);
-	void (*commit)(VteTerminal* terminal, gchar *text, guint size);
+	void (*commit)(VteTerminal* terminal, const gchar *text, guint size);
 
 	void (*deiconify_window)(VteTerminal* terminal);
 	void (*iconify_window)(VteTerminal* terminal);
@@ -158,7 +158,8 @@ typedef enum {
 	VTE_ERASE_AUTO,
 	VTE_ERASE_ASCII_BACKSPACE,
 	VTE_ERASE_ASCII_DELETE,
-	VTE_ERASE_DELETE_SEQUENCE
+	VTE_ERASE_DELETE_SEQUENCE,
+	VTE_ERASE_TTY
 } VteTerminalEraseBinding;
 
 /* Values for the cursor blink setting */
@@ -189,6 +190,11 @@ struct vte_char_attributes {
 	GdkColor fore, back;
 	guint underline:1, strikethrough:1;
 };
+
+typedef gboolean (*VteSelectionFunc)(VteTerminal *terminal,
+                                     glong column,
+                                     glong row,
+                                     gpointer data);
 
 /* The widget's type. */
 GType vte_terminal_get_type(void);
@@ -340,26 +346,17 @@ void vte_terminal_reset(VteTerminal *terminal, gboolean full,
  * Note that it will have one entry per byte, not per character, so indexes
  * should match up exactly. */
 char *vte_terminal_get_text(VteTerminal *terminal,
-			    gboolean(*is_selected)(VteTerminal *terminal,
-						   glong column,
-						   glong row,
-						   gpointer data),
+			    VteSelectionFunc is_selected,
 			    gpointer data,
 			    GArray *attributes);
 char *vte_terminal_get_text_include_trailing_spaces(VteTerminal *terminal,
-						    gboolean(*is_selected)(VteTerminal *terminal,
-									   glong column,
-									   glong row,
-									   gpointer data),
+						    VteSelectionFunc is_selected,
 						    gpointer data,
 						    GArray *attributes);
 char *vte_terminal_get_text_range(VteTerminal *terminal,
 				  glong start_row, glong start_col,
 				  glong end_row, glong end_col,
-				  gboolean(*is_selected)(VteTerminal *terminal,
-							 glong column,
-							 glong row,
-							 gpointer data),
+				  VteSelectionFunc is_selected,
 				  gpointer data,
 				  GArray *attributes);
 void vte_terminal_get_cursor_position(VteTerminal *terminal,
