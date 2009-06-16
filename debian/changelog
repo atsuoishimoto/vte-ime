@@ -1,3 +1,58 @@
+vte (1:0.20.5-1ubuntu1) karmic; urgency=low
+
+  * Merge from debian unstable (LP: #388046), remaining changes:
+    - debian/control{.in}:
+      + Build-depend on python-all-dbg.
+      + Build-depend on libgtk-directfb-2.0-0 2.15.4-0ubuntu4, to 
+        correct a wrong dependency in libvte9-udeb.
+      + Add Vcs-Bzr info.
+      + Add python-vte-dbg package.
+    - debian/python-vte.install: 
+      + Make it build against python 2.6 new FS layout
+    - debian/rules:
+      + Build a python-vte-dbg package.
+      + Clean .a and .la files from package to keep .install file easy
+        to read.
+    - debian/patches/91_keep_fds.patch:
+      + Keep file descriptors open on vte_fork_pty().
+    - debian/patches/93_add_alt_screen_scroll_toggle.patch:
+      + Handle scrolling differently when using alternate screen 
+        or scrolling is restricted.
+  * Closes LP: #314826 and LP: #369440.
+   
+ -- Chris Coulson <chrisccoulson@googlemail.com>  Tue, 16 Jun 2009 19:47:00 +0100
+
+vte (1:0.20.5-1) unstable; urgency=low
+
+  * New upstream bugfix release, undoing the unintended
+    soname bump (Closes: #532552):
+    + debian/control.in,
+      debian/*.install:
+      - Undo package rename.
+    + debian/patches/90_autoreconf.patch:
+      - Updated for the new version.
+
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 10 Jun 2009 07:07:43 +0200
+
+vte (1:0.20.4-1) unstable; urgency=low
+
+  [ Josselin Mouette ]
+  * Add libglib2.0-doc, libgtk2.0-doc and libatk1.0-doc to b-d-i to 
+    ensure proper xrefs.
+  * 01_bashisms.patch: fix bashims in provided scripts. Closes: #530123.
+
+  [ Sebastian Dröge ]
+  * New upstream bugfix releases:
+    + debian/rules:
+      - Update shlibs version to >= 0.20.4 for API additions.
+    + debian/control.in,
+      debian/*.install:
+      - Update for the new soname.
+    + debian/patches/90_autoreconf.patch:
+      - Regenerated for the new version.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 02 Jun 2009 07:01:29 +0200
+
 vte (1:0.20.1-1ubuntu3) karmic; urgency=low
 
   * No-change rebuild against directfb 1.2.

@@ -20,7 +20,7 @@ DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/$(libvteN)
 DEB_FIXPERMS_EXCLUDE += gnome-pty-helper
 DEB_DBG_PACKAGE_python-vte = python-vte-dbg
 .PRECIOUS: configure-stamp-% dbg-configure-stamp-%
-DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.19.4)' --add-udeb=$(udeb)
+DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.20.4)' --add-udeb=$(udeb)
 
 DEB_CONFIGURE_EXTRA_FLAGS += \
 	--enable-glade-catalogue

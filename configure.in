@@ -1,6 +1,6 @@
 m4_define([vte_version_major],[0])
 m4_define([vte_version_minor],[20])
-m4_define([vte_version_micro],[1])
+m4_define([vte_version_micro],[5])
 m4_define([vte_version],[vte_version_major.vte_version_minor.vte_version_micro])
 
 AC_PREREQ([2.59])
@@ -20,13 +20,13 @@ AM_MAINTAINER_MODE([enable])
 # Libtool shared library versioning stuffs.
 # REVISION gets incremented whenever the source code changes without adding
 # an API or ABI change.
-LTVERSION_REVISION=1
+LTVERSION_REVISION=0
 # CURRENT must be incremented when an API or ABI change (addition or removal)
 # is made, and REVISION must be reset to 0 when this happens.
-LTVERSION_CURRENT=14
+LTVERSION_CURRENT=15
 # AGE must be incremented when an API or ABI addition is made, and REVISION
 # must be reset to 0 when this happens.
-LTVERSION_AGE=5
+LTVERSION_AGE=6
 
 LIBVTE_LTVERSION=${LTVERSION_CURRENT}:${LTVERSION_REVISION}:${LTVERSION_AGE}
 AC_SUBST([LIBVTE_LTVERSION])
@@ -264,6 +264,7 @@ emulation=$withval,emulation=xterm)
 AC_DEFINE_UNQUOTED(VTE_DEFAULT_EMULATION,"$emulation",[The default terminal type to be emulated.])
 VTE_DEFAULT_EMULATION=$emulation
 AC_SUBST(VTE_DEFAULT_EMULATION)
+AM_CONDITIONAL(VTE_DEFAULT_EMULATION, [test "$emulation" != xterm])
 
 # Check for headers.
 AC_CHECK_HEADERS(sys/select.h sys/syslimits.h sys/termios.h sys/un.h sys/wait.h stropts.h termios.h wchar.h)

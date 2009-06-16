@@ -1,5 +1,5 @@
 <indexdiv>
-<indexdiv><title>T</title>
+<indexdiv><title>V</title>
 <indexentry><primaryie linkends="vte-terminal-forkpty"><link linkend="vte-terminal-forkpty">vte_terminal_forkpty</link></primaryie></indexentry>
 <indexentry><primaryie linkends="vte-terminal-get-default-emulation"><link linkend="vte-terminal-get-default-emulation">vte_terminal_get_default_emulation</link></primaryie></indexentry>
 <indexentry><primaryie linkends="vte-terminal-get-text-include-trailing-spaces"><link linkend="vte-terminal-get-text-include-trailing-spaces">vte_terminal_get_text_include_trailing_spaces</link></primaryie></indexentry>
