@@ -1,3 +1,10 @@
+vte (1:0.20.5-1ubuntu2) karmic; urgency=low
+
+  * debian/patches/30_fix_env.patch:
+    - make the envv paramter work again (LP: #388953)
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Mon, 06 Jul 2009 14:03:47 +0200
+
 vte (1:0.20.5-1ubuntu1) karmic; urgency=low
 
   * Merge from debian unstable (LP: #388046), remaining changes:
