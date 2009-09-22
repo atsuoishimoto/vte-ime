@@ -1,5 +1,5 @@
 /*
- * Copyright 2001,2002 Red Hat, Inc.
+ * Copyright 2009 Red Hat, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,47 +24,19 @@
 #define vte_buffer_h_included
 
 
-#include <sys/types.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 
-struct _vte_buffer {
-	/* public */
-	unsigned char *bytes;
-	/* private stuff is hidden */
-};
+typedef GByteArray VteBuffer;
 
-struct _vte_buffer* _vte_buffer_new(void);
-struct _vte_buffer* _vte_buffer_new_with_data(gconstpointer data,
-					      size_t length);
-void _vte_buffer_free(struct _vte_buffer *buffer);
-void _vte_buffer_prepend(struct _vte_buffer *buffer,
-			 gconstpointer bytes, size_t length);
-void _vte_buffer_append(struct _vte_buffer *buffer,
-			gconstpointer bytes, size_t length);
-size_t _vte_buffer_length(struct _vte_buffer *buffer);
-void _vte_buffer_consume(struct _vte_buffer *buffer, size_t length);
-void _vte_buffer_clear(struct _vte_buffer *buffer);
-void _vte_buffer_set_minimum_size(struct _vte_buffer *buffer, size_t length);
-
-void _vte_buffer_append_guint16(struct _vte_buffer *buffer, guint16 i);
-guint16 _vte_buffer_peek_guint16(struct _vte_buffer *buffer);
-guint16 _vte_buffer_read_guint16(struct _vte_buffer *buffer);
-
-void _vte_buffer_append_guint32(struct _vte_buffer *buffer, guint32 i);
-guint32 _vte_buffer_peek_guint32(struct _vte_buffer *buffer);
-guint32 _vte_buffer_read_guint32(struct _vte_buffer *buffer);
-
-void _vte_buffer_append_gstring(struct _vte_buffer *buffer, const GString *s);
-GString *_vte_buffer_peek_gstring(struct _vte_buffer *buffer);
-GString * _vte_buffer_read_gstring(struct _vte_buffer *buffer);
-
-void _vte_buffer_append_buffer(struct _vte_buffer *buffer,
-			       struct _vte_buffer *s);
-void _vte_buffer_append_buffer_contents(struct _vte_buffer *buffer,
-					struct _vte_buffer *s);
-struct _vte_buffer *_vte_buffer_peek_buffer(struct _vte_buffer *buffer);
-struct _vte_buffer *_vte_buffer_read_buffer(struct _vte_buffer *buffer);
+#define _vte_buffer_new				g_byte_array_new
+#define _vte_buffer_free(B)			g_byte_array_free (B, TRUE)
+#define _vte_buffer_append(B, data, length)	g_byte_array_append (B, (const guint8 *) (data), length)
+#define _vte_buffer_length(B)			((B)->len)
+#define _vte_buffer_consume(B, length)		g_byte_array_remove_range (B, 0, length)
+#define _vte_buffer_clear(B)			g_byte_array_set_size (B, 0)
+#define _vte_buffer_set_minimum_size(B, length)	g_byte_array_set_size (B, MAX ((length), (B)->len))
 
 G_END_DECLS
 

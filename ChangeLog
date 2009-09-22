@@ -1,3 +1,1218 @@
+commit a37a6377089b5f856043b3660a8380326f8c89a8
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 11:34:36 2009 -0400
+
+    Release 0.21.5
+
+ NEWS         |    6 ++++++
+ configure.in |    4 ++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+commit f42c894d767ecf9a5a43355d5b10c132945f66e8
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 03:08:16 2009 -0400
+
+    Simplify access
+
+ src/vte.c |  174 +++++++++++++++++++++++++++++++------------------------------
+ 1 files changed, 89 insertions(+), 85 deletions(-)
+
+commit ecc159908714dfa325106de5a2b5fb01bd1dc09b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 03:04:02 2009 -0400
+
+    [ring] Reinstate attr.fragment
+    
+    Fixes the last bug in the new ring.  Yay!
+
+ src/ring.h        |    6 ++----
+ src/vte-private.h |    1 +
+ src/vte.c         |   41 ++++++++++++++++++++++-------------------
+ src/vteseq.c      |    6 +++---
+ 4 files changed, 28 insertions(+), 26 deletions(-)
+
+commit ccac54d0217e0c13d69012f5fa407d2e0fe5d53a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 02:56:51 2009 -0400
+
+    [ring] Whitespace
+
+ src/ring.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 413abad8f245b0db38cfe18fa23f322579c7a906
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 02:54:01 2009 -0400
+
+    [ring] Fix signed issues
+
+ src/ring.c |   24 ++++++++++++------------
+ src/ring.h |    2 +-
+ 2 files changed, 13 insertions(+), 13 deletions(-)
+
+commit 1db31d7d1168294f830b5b0ad0c57a56cf679dc1
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 02:50:05 2009 -0400
+
+    [ring] Const correctness
+
+ src/ring.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 3300760dad390e6299bd21e25521c5e12f5534cd
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 02:43:34 2009 -0400
+
+    [ring] Rename a bit
+
+ src/ring.c |   44 ++++++++++++++++++++++----------------------
+ 1 files changed, 22 insertions(+), 22 deletions(-)
+
+commit e2d2ca6888fedcbdc5d61c58d10207dfeebb7000
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 02:24:52 2009 -0400
+
+    [ring] Free all spare chunks when all rings are destroyed
+
+ src/ring.c |   70 ++++++++++++++++++++++++++++++++++++++---------------------
+ 1 files changed, 45 insertions(+), 25 deletions(-)
+
+commit 1972a3614be3f7453a13a48d0ab7013a23d83f09
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 02:24:42 2009 -0400
+
+    [ring] Reduce free chunks from 10 to 4
+
+ src/ring.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 9ba03097d00059dd5d833053b5cf7f06e22a8f1f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 02:10:07 2009 -0400
+
+    [ring] Fix chunk disposal
+
+ src/ring.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 0f97ca6162d6219040f0273626f88044eecabee5
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 02:05:38 2009 -0400
+
+    [ring] Fix bytes_left calculation
+
+ src/ring.c |   29 +++++++++++++++--------------
+ src/ring.h |    8 ++------
+ 2 files changed, 17 insertions(+), 20 deletions(-)
+
+commit 284b9bbb884d36e65af13e968304b74ddb5be1c7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 01:42:25 2009 -0400
+
+    [ring] Invalidate cache
+
+ src/ring.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit c00499dd53ef5ee43ec39fa5823ffcb0659b51e6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 01:25:40 2009 -0400
+
+    [ring] Optimize attribute bitfield placement
+
+ src/ring.c |    6 +++---
+ src/ring.h |    9 ++++++---
+ 2 files changed, 9 insertions(+), 6 deletions(-)
+
+commit 3ea50a543462262407a54b7e0860c5121c96655e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 01:03:42 2009 -0400
+
+    [ring] Add debug output
+
+ src/ring.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+commit c35dc0dab0da6318428b6d049e20c0c90f80ca00
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 00:56:00 2009 -0400
+
+    [ring] Fix insert at start
+
+ src/ring.c |   83 +++++++++++++++++++++++++++++++++++++++++------------------
+ 1 files changed, 57 insertions(+), 26 deletions(-)
+
+commit ec5229042aee27c074b8d700dad5058f3b50872d
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 8 00:27:52 2009 -0400
+
+    [ring] Move view cache row to ring
+
+ src/ring.c |   72 +++++++++++++++++++++++++++++------------------------------
+ src/ring.h |   11 ++++-----
+ 2 files changed, 40 insertions(+), 43 deletions(-)
+
+commit 36ad6fac029ccb29465434d46135559d9f5d5584
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 22:59:35 2009 -0400
+
+    [ring] Implement uncompact
+
+ src/ring.c |  203 ++++++++++++++++++++++++++++++++++++++++++++++++++++-------
+ src/ring.h |    7 ++-
+ 2 files changed, 185 insertions(+), 25 deletions(-)
+
+commit eb0444e52d7995f50326109cd6d4cf254b2a4774
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 22:05:08 2009 -0400
+
+    Fix ring access const correctness
+
+ src/ring.c   |   14 +++++++++++-
+ src/ring.h   |   14 +++++++++--
+ src/vte.c    |   65 ++++++++++++++++++++++++++++++++++-----------------------
+ src/vteseq.c |   24 ++++++++++----------
+ 4 files changed, 75 insertions(+), 42 deletions(-)
+
+commit f214a7b86a3a3f37fbcef457bdbe81ac08c302f6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 21:37:31 2009 -0400
+
+    [ring] Minor
+
+ src/ring.h |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 29bceb6074fa708d37f6901073648b146f8c98e7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 21:30:26 2009 -0400
+
+    [ring] Cleanup warnings
+
+ src/ring.c |   26 ++++++++++++++------------
+ src/ring.h |    7 +++++--
+ 2 files changed, 19 insertions(+), 14 deletions(-)
+
+commit 99b5708db5a7bf04e8cf12195ed2b4309b199bf9
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 21:25:08 2009 -0400
+
+    [ring] Ease default attr computations
+
+ src/ring.c   |    6 +++---
+ src/ring.h   |   40 ++++++++++++++++++++++++----------------
+ src/vte.c    |    6 +++---
+ src/vteseq.c |    2 +-
+ 4 files changed, 31 insertions(+), 23 deletions(-)
+
+commit 1cd88dc0ba39d9c76e165c917510280cf22513a7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 21:16:30 2009 -0400
+
+    [ring] Allow one more room in insert such that position doesn't fall off
+
+ src/ring.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit 5b559865f8237b4aa77c513a3d5847bf0a0e01aa
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 21:00:13 2009 -0400
+
+    [ring] Enlarge initial writable size
+
+ src/ring.c        |    8 +++++---
+ src/ring.h        |    2 ++
+ src/vte-private.h |    1 -
+ 3 files changed, 7 insertions(+), 4 deletions(-)
+
+commit c40b3e92c52057dc84be0c99b57fe7af07bffecd
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 20:09:04 2009 -0400
+
+    [ring] Store max_rows
+
+ src/ring.c |   74 ++++++++++++++++++++++++++++++++++--------------------------
+ 1 files changed, 42 insertions(+), 32 deletions(-)
+
+commit f24dbdf32f0456b5a0e949aaf2068680ccf1feb7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 20:07:38 2009 -0400
+
+    [ring] Almost working
+
+ src/ring.c |   56 +++++++++++++++++++++++++++++++++-----------------------
+ 1 files changed, 33 insertions(+), 23 deletions(-)
+
+commit 05d1c8b063fb9c601bf20b23475dc395221c8f5b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 19:55:14 2009 -0400
+
+    Fix initial scrollback size
+
+ src/vte.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 024c67a1a12e1e82b65cc53b8b0adc89a689e53f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 19:51:50 2009 -0400
+
+    Fix comment
+
+ src/ring.c        |    1 +
+ src/vte-private.h |    3 +--
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 3e1ea9728a313c296fbda053359152192f5305e7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 18:59:02 2009 -0400
+
+    [ring] Compacting goodness; disabled now; eats babies
+
+ src/ring.c |  282 ++++++++++++++++++++++++++++++++++++++++++++++++------------
+ src/ring.h |   20 ++++-
+ 2 files changed, 243 insertions(+), 59 deletions(-)
+
+commit 91697b796a9c0f1e8e20a6ae18139556f10cb5ca
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 17:01:12 2009 -0400
+
+    [ring] Closer to working
+
+ src/ring.c |  191 +++++++++++++++++++++++++++++++++++++-----------------------
+ 1 files changed, 118 insertions(+), 73 deletions(-)
+
+commit 68d17bacfd7b7127ff03497df555f7274f60b604
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 15:36:54 2009 -0400
+
+    [ring] Overhaul.  Not working right now.
+
+ src/ring.c        |  268 +++++++++++++++++++++++++++++++++++++++--------------
+ src/ring.h        |   56 +++++++++---
+ src/vte-private.h |    2 +-
+ src/vte.c         |   16 ++--
+ 4 files changed, 249 insertions(+), 93 deletions(-)
+
+commit de3f63efab64408c2eb3b0e02e358063769c9396
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 01:30:44 2009 -0400
+
+    [ring] Keep ring->next instead of ring->length
+
+ src/ring.c |   45 ++++++++++++++++++++-------------------------
+ src/ring.h |    8 ++++----
+ 2 files changed, 24 insertions(+), 29 deletions(-)
+
+commit 75809e632eb097c8a96c855781677cee560978eb
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 7 01:15:55 2009 -0400
+
+    Fix palette handling
+
+ src/ring.h        |    1 +
+ src/vte-private.h |    2 +-
+ src/vte.c         |    5 +++--
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+commit 294b146da1c74ae16d2fd97a986a187d7e2a280d
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sun Sep 6 00:08:54 2009 -0400
+
+    [ring] Simplify insert/remove
+
+ src/ring.c |   24 ++++++++----------------
+ 1 files changed, 8 insertions(+), 16 deletions(-)
+
+commit 0a855cc5c15f986607e9d2b1c77801792db796fc
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 23:58:33 2009 -0400
+
+    [ring] Allocate main row array in powers of two
+    
+    This way we can use a bitwise-and to index, instead of int division
+
+ src/ring.c |   39 +++++++++++++++++++++++++--------------
+ src/ring.h |    4 ++--
+ 2 files changed, 27 insertions(+), 16 deletions(-)
+
+commit b86951330fa9cbb8341aec7ca2fc0be7be4596c1
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 23:35:37 2009 -0400
+
+    [ring] Assert struct sizes
+
+ src/ring.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit e36788647962b2632e8f241b830e2bb18f173889
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 23:32:58 2009 -0400
+
+    Add static assertions
+
+ src/debug.h |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 475606d988458605f2f79e649dabe335e3a0453a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 23:09:34 2009 -0400
+
+    [ring] Remove glong in favor of guint
+
+ src/ring.c |   64 ++++++++++++++++++++++++++++++------------------------------
+ src/ring.h |   24 +++++++++++-----------
+ 2 files changed, 44 insertions(+), 44 deletions(-)
+
+commit 086cbf79dd47cbecf2b9afe777f940acf1ae19ef
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 23:06:58 2009 -0400
+
+    [ring] Minor cleanup
+
+ src/ring.c |   25 ++++++++++++++++---------
+ src/ring.h |   16 ++++++++--------
+ src/vte.c  |    4 ++--
+ 3 files changed, 26 insertions(+), 19 deletions(-)
+
+commit 08972ae6e02c65b5ad0442674b6c6f4b938ed17f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 23:00:53 2009 -0400
+
+    [ring] Remove unused macro
+
+ src/ring.h |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 86211afa952dc878b84ce1b7f14b381fcd91991f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 22:55:51 2009 -0400
+
+    [ring] Tune pool allocation to allocate in powers of two in bytes
+
+ src/ring.c |   12 +++++++-----
+ 1 files changed, 7 insertions(+), 5 deletions(-)
+
+commit ddfef75afd62dc324ec033f57594cad70d0ed34e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 22:41:58 2009 -0400
+
+    [ring] Rename
+
+ src/ring.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 99f63f1da37c343064175572b5b53b5193bbcb3f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 22:24:26 2009 -0400
+
+    [ring] Set minimum row size for allocation to 80
+
+ src/ring.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 865e8e2d981873cfd1d98535c6666f25a8315b22
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 22:23:44 2009 -0400
+
+    [ring] Add debug messages to new code
+
+ src/ring.c |   24 +++++++++++++++++++-----
+ 1 files changed, 19 insertions(+), 5 deletions(-)
+
+commit e92865dce49fdcec5181add1a2be36fa57fad3af
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 22:06:56 2009 -0400
+
+    Minor cleanup
+
+ src/debug.h |    2 +-
+ src/ring.c  |    1 +
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 7b7bea551750d0ff5103fd1e2de969b0d093812c
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 21:06:53 2009 -0400
+
+    [ring] Use large-size pools for rowdata allocation
+
+ src/ring.c |  155 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 files changed, 141 insertions(+), 14 deletions(-)
+
+commit c6b2621d549b51dc9499673717d1125437576963
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 20:13:23 2009 -0400
+
+    Rename vtecells to VteCells as well
+
+ src/ring.c |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
+
+commit 2ce6acc60f48a0ce929a222a49957e90c0b8e077
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 20:12:14 2009 -0400
+
+    Rename vtecell to VteCell as it's not a value type
+
+ src/ring.c        |   19 ++++++++++---------
+ src/ring.h        |   20 ++++++++++----------
+ src/vte-private.h |    6 +++---
+ src/vte.c         |   50 +++++++++++++++++++++++++-------------------------
+ src/vteseq.c      |   16 ++++++++--------
+ 5 files changed, 56 insertions(+), 55 deletions(-)
+
+commit 064822346af55ce36e0a7e82b38bf235e9fb394f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 5 00:06:38 2009 -0400
+
+    [ring] Remove GArray for rowcell allocation
+    
+    A very dumb allocator right now.  To be optimized.
+
+ src/ring.c |  124 +++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ src/ring.h |   47 ++++++++++++----------
+ 2 files changed, 140 insertions(+), 31 deletions(-)
+
+commit fb9a0d3727c12c0dd5de384335050bb416d33815
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Sep 4 21:20:30 2009 -0400
+
+    Remove chunk mutex
+    
+    We always get called in from the mainloop and hence are essentially
+    single-threaded.
+
+ src/vte.c |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
+
+commit 9f486dfe6b1c71073ee85fd092cb375842a98f42
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Sep 4 21:17:13 2009 -0400
+
+    Bug 594025 -  crash in Terminal: running cat /dev/urandom...
+    
+    Bug 593795 -  crash in Terminal: By mistake cat'ing a bin...
+    Remove assert.  G_DISABLE_ASSERT has been in use for years...
+    None of the asserts in place right now have been tested much :(
+
+ src/vte.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit f5f3e586ec83c8da5b473164669f501de6fa281a
+Author: Og B. Maciel <ogmaciel@gnome.org>
+Date:   Sun Aug 30 12:11:29 2009 -0400
+
+    Updated mailing list address.
+
+ po/pt_BR.po |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 00566ad0acd9f4a959f1d91935741f9ef07ca4fe
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Aug 28 14:03:50 2009 -0400
+
+    Enable silent rules by default
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit cbb3071086f9bc173b9d8b9d3f79f87bae256c6a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 27 17:10:19 2009 -0400
+
+    Remove cell.attr.fragment and use cell.c == FRAGMENT instead
+
+ src/ring.h   |    6 +++---
+ src/vte.c    |   42 +++++++++++++++++++-----------------------
+ src/vteseq.c |    6 +++---
+ 3 files changed, 25 insertions(+), 29 deletions(-)
+
+commit 71a6cf23eeb0237858b7b769074ed9c5bb564c3d
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 27 17:07:53 2009 -0400
+
+    [ring] Fix brokenness with macro implementation
+
+ src/ring.h |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
+
+commit 96793d9716c658b5d9ee4c87846c8e6e7b1c26c7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 27 16:37:27 2009 -0400
+
+    Minor cleanup
+
+ src/vte.c |   88 +++++++++++++++++++++++++++---------------------------------
+ 1 files changed, 40 insertions(+), 48 deletions(-)
+
+commit f73e04e92c092f4ce791df2008bb3078847f4805
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 27 00:23:35 2009 -0400
+
+    Remove ring from test programs
+
+ src/Makefile.am |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+commit 5a2879bcc28c703b4e120f57d750d47b7b27a8f4
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 27 00:14:16 2009 -0400
+
+    [ring] Swap rows instead of moving
+    
+    Avoids lots of free/new's
+
+ src/ring.c |   17 ++++++-----------
+ 1 files changed, 6 insertions(+), 11 deletions(-)
+
+commit 05f07e28d7f2b886ee924dd37164a7dfb78d0bb3
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 27 00:10:47 2009 -0400
+
+    [ring] Simplify more
+
+ src/ring.c |   21 +++++++++++++++------
+ 1 files changed, 15 insertions(+), 6 deletions(-)
+
+commit a2c132d6ffa528cbfde0ccd0ed35e08900182ffe
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 26 18:45:36 2009 -0400
+
+    Rename _vte_row_data_set_length() to _vte_row_data_shrink()
+
+ src/ring.h   |    4 ++--
+ src/vte.c    |   15 +++------------
+ src/vteseq.c |   23 ++++++++++-------------
+ 3 files changed, 15 insertions(+), 27 deletions(-)
+
+commit 8cb3e376efd04a92570fec8059f6c634e80603c7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 26 18:32:03 2009 -0400
+
+    Simplify a bit
+
+ src/vte.c    |    3 +--
+ src/vteseq.c |    6 ++----
+ 2 files changed, 3 insertions(+), 6 deletions(-)
+
+commit 4c8cbb00831c40ed62b29da7fe9ae2734dcb5925
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 26 18:19:12 2009 -0400
+
+    Add basic_cell with default cell attrs
+
+ src/ring.c        |    2 +-
+ src/ring.h        |  104 +++++++++++++++++++++++++++++++++-------------------
+ src/vte-private.h |   14 ++-----
+ src/vte.c         |   72 ++++++++++++++----------------------
+ src/vteseq.c      |   18 +++++-----
+ 5 files changed, 108 insertions(+), 102 deletions(-)
+
+commit d3f87acad23aa0b50f2d15756ccd12e173ddbcf7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 26 01:06:27 2009 -0400
+
+    Abstract rowdata functions away from GArray
+
+ src/ring.c   |   17 +++---
+ src/ring.h   |   31 ++++++++++-
+ src/vte.c    |  171 +++++++++++++++++++++++++---------------------------------
+ src/vteseq.c |  146 ++++++++++++++-----------------------------------
+ 4 files changed, 153 insertions(+), 212 deletions(-)
+
+commit 545fb3c59298058a682879545ff52230054642a6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 26 00:24:09 2009 -0400
+
+    [ring] Simplify insert and remove even more
+
+ src/ring.c   |   41 ++++++++++++++++++++++++++++++-----------
+ src/vte.c    |   24 ++++--------------------
+ src/vteseq.c |   44 ++++++++++++++------------------------------
+ 3 files changed, 48 insertions(+), 61 deletions(-)
+
+commit 681db91a7772a77b903163f6985330a6f24ef977
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 26 00:12:21 2009 -0400
+
+    Simplify insert
+
+ src/vte.c    |   11 ++---------
+ src/vteseq.c |   11 ++---------
+ 2 files changed, 4 insertions(+), 18 deletions(-)
+
+commit e95ee843ef2954635ca3405f8de009fcb2095304
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 26 00:08:10 2009 -0400
+
+    Simplify remove
+
+ src/ring.c   |    4 ++--
+ src/vte.c    |    3 +--
+ src/vteseq.c |    3 +--
+ 3 files changed, 4 insertions(+), 6 deletions(-)
+
+commit 54e717f081f365ac0e9b2a9947e50893c7666807
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 26 00:00:17 2009 -0400
+
+    Simplify code
+
+ src/vte.c    |    9 +++++----
+ src/vteseq.c |   21 ++++++---------------
+ 2 files changed, 11 insertions(+), 19 deletions(-)
+
+commit ffcb06a6bc2bf1d66eadf2e708ec444cf612f0c0
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 23:47:07 2009 -0400
+
+    [ring] Add safeguards to remove()
+
+ src/ring.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 41f2912b527d3aa69ac3e70e9146f8ee171c1a9b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 23:42:06 2009 -0400
+
+    [ring] Simplify insert
+
+ src/ring.c |   49 +++++++++++--------------------------------------
+ 1 files changed, 11 insertions(+), 38 deletions(-)
+
+commit 684e66aeb8597e9f54fda6361ef9e337fdb44eda
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 23:26:22 2009 -0400
+
+    [ring] Don't free items when inserting, reuse them
+
+ src/ring.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 717f5bc3422dd3b4a838adec7a65e183e2843702
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 23:23:12 2009 -0400
+
+    [ring] Update docs
+
+ src/ring.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 10220e808e6a9406fd96792f14ebcb0e8474ba13
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 23:20:48 2009 -0400
+
+    [ring] Add _vte_ring_move()
+
+ src/ring.c |   30 +++++++++++++-----------------
+ 1 files changed, 13 insertions(+), 17 deletions(-)
+
+commit dd06b763d657a5f4f95b30c259eb08e0a6a9118e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 19:30:29 2009 -0400
+
+    [ring] Cleanup debug messages
+
+ src/ring.c |   39 ++++++++-------------------------------
+ 1 files changed, 8 insertions(+), 31 deletions(-)
+
+commit 1c231e40714b9224da37c4aa0352e72a9a35f9e6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 19:08:37 2009 -0400
+
+    Release 0.21.4
+
+ NEWS         |    5 +++++
+ configure.in |    4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+commit ea6488d28be389b047bd0aa2ba69e2a736266a71
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 19:06:52 2009 -0400
+
+    Remove another stale assert()
+    
+    fatalerror!  Why did you disable asserts!
+
+ src/vtepangocairo.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit a74e9fb90ba1068a29bc83cc1a33c2d9e4cc68c3
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 18:56:58 2009 -0400
+
+    [iso2022] Oops, use the right map decoding function
+
+ src/iso2022.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 8ad1d698f5053aa748339e602e7f823169def211
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 18:52:09 2009 -0400
+
+    Release 0.21.3
+
+ NEWS         |    5 +++++
+ configure.in |    4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+commit f0f873a6f0944dcae012d1c4b12fe7a582afd474
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 18:49:23 2009 -0400
+
+    [ring] Remove newly-added asserts
+    
+    Ok, the ring should be functionally working again now.
+
+ src/ring.c |   11 ++++-------
+ 1 files changed, 4 insertions(+), 7 deletions(-)
+
+commit c84078230b8a9078843cf027846e16d25555128f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 18:40:28 2009 -0400
+
+    [ring] Remove insert_preserve(), just call insert()
+    
+    I changed the semantics of insert_preserve() and broke vim.  Reading
+    the old code however, it seems equivalent functionally to insert().
+    Just use that.
+
+ src/ring.c |   44 --------------------------------------------
+ src/ring.h |    1 -
+ src/vte.c  |    4 ++--
+ 3 files changed, 2 insertions(+), 47 deletions(-)
+
+commit e8d90d684f158d3ad0b4013685fa65a84a49bcd9
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 18:40:09 2009 -0400
+
+    Remove assert
+    
+    I just enabled g_assert, so some old disabled asserts are failing now.
+
+ src/keymap.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 43190598174cfc92e74f72e2c34587ca182c3eae
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 18:17:59 2009 -0400
+
+    Fix alternate screen default size, again
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ce4926abf990fa10d9172c058b2248fee69b75d5
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 18:11:54 2009 -0400
+
+    Fix initial size of scrollback in alternate screen
+
+ src/debug.h |    1 +
+ src/vte.c   |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+commit edea8adf1a042a5055dac56b97e78540eba6250d
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 18:11:31 2009 -0400
+
+    Really fix the ring this time
+
+ src/ring.c |   25 +++++++++++++++----------
+ 1 files changed, 15 insertions(+), 10 deletions(-)
+
+commit 674f91ff949f532b7037c9aba658ad5ea3330a91
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 18:11:05 2009 -0400
+
+    Remove G_DISABLE_ASSERT
+
+ src/Makefile.am |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 689990df0e51ee96b434c1f98e193de537d3a395
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 13:39:57 2009 -0400
+
+    Release 0.21.2
+
+ NEWS         |    5 +++++
+ configure.in |    4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+commit c4aff049937050c58da80ec3c789d3b35abbffd0
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 25 13:37:08 2009 -0400
+
+    Bug 592990 - gnome terminal crashes with glibc detected
+
+ src/ring.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 6db87763b28687f468ca881b20a543dd7487c3dd
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Aug 24 19:11:27 2009 -0400
+
+    Release 0.21.1
+
+ NEWS         |    8 ++++++++
+ configure.in |    6 +++---
+ 2 files changed, 11 insertions(+), 3 deletions(-)
+
+commit 7f9757c725f769ce582a928ecbadc2c352c1b635
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Aug 24 16:51:54 2009 -0400
+
+    Add _vte_ring_set_length
+
+ src/ring.h |    3 ++-
+ src/vte.c  |    4 ++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+commit 9a3de3c246360025f31ad9d6625f7792960c582e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Aug 21 21:37:07 2009 -0400
+
+    Make ring keep an array of VteRowData, not VteRowData*
+
+ src/ring.c |   55 +++++++++++++++++++++++++------------------------------
+ src/ring.h |    4 ++--
+ 2 files changed, 27 insertions(+), 32 deletions(-)
+
+commit 440737678453a83e812ee60545369ec0e54a4759
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Aug 21 21:01:17 2009 -0400
+
+    Move _vte_new_row_data() business into the ring
+
+ src/ring.c        |  239 +++++++++++++++++++++++++++-------------------------
+ src/ring.h        |   61 +++++++++----
+ src/vte-private.h |   34 --------
+ src/vte.c         |   48 +++--------
+ src/vteseq.c      |   38 +++------
+ 5 files changed, 192 insertions(+), 228 deletions(-)
+
+commit 4e20a3b77e0adf2d2b3db655d9f7b5c3dd1a6c99
+Author: Claude Paroz <claude@2xlibre.net>
+Date:   Mon Aug 24 23:18:53 2009 +0200
+
+    Rename nds*.po to nds.po
+
+ po/LINGUAS    |    2 +-
+ po/nds.po     |   94 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ po/nds_NFE.po |   94 ---------------------------------------------------------
+ 3 files changed, 95 insertions(+), 95 deletions(-)
+
+commit 0b78dea524ee01e581327d09324193f2c1cce435
+Author: Nils-Christoph Fiedler <linux@medienkompanie.de>
+Date:   Sat Aug 22 21:27:28 2009 +0200
+
+    Added Low German translation
+
+ po/LINGUAS    |    1 +
+ po/nds_NFE.po |   94 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 95 insertions(+), 0 deletions(-)
+
+commit 031a653d791248c51df12af1b59d169179330b55
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Aug 21 14:09:44 2009 -0400
+
+    Add _vte_ring_resize()
+    
+    Avoids creating a new ring when changing scrollback lines.
+
+ src/ring.c |   43 +++++++++++++++++++++++++++++++++----------
+ src/ring.h |   16 ++++++++--------
+ src/vte.c  |   36 ++++--------------------------------
+ 3 files changed, 45 insertions(+), 50 deletions(-)
+
+commit 4e533b106a1c39b8565a9891fba83e384cc40669
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Aug 21 12:17:38 2009 -0400
+
+    Revert 80dc9064
+    
+    Removing the optimization, so I can clean up the ring API and redesign
+    the implementation.  Sorry Chris!
+
+ src/ring.c |   17 -----------------
+ src/ring.h |    5 -----
+ src/vte.c  |   19 +++++++------------
+ 3 files changed, 7 insertions(+), 34 deletions(-)
+
+commit bf5977d230dd95fcb86d3cbb8ce492f39ff71ae3
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Aug 21 00:20:44 2009 -0400
+
+    Fix bug introduced in ba1f44d6119cc39602d8a660f4e5a9f56a6f19da
+
+ src/ring.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 08caf3b174e68ba3d02f04c2595ad552cd50db30
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 23:20:06 2009 -0400
+
+    Remove the fill argument from _vte_new_row_data()
+    
+    I cannot prove that this change is right, though it looks like it's
+    correct!
+
+ src/vte-private.h |    2 +-
+ src/vte.c         |   28 +++++-----------------------
+ src/vteseq.c      |   12 ++++++------
+ 3 files changed, 12 insertions(+), 30 deletions(-)
+
+commit 7a2a78d3ea4a0128251089acef89d56241a455ca
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 23:13:06 2009 -0400
+
+    Minor
+
+ src/vteseq.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+commit fb7fb842be37441b37bc4ae79937540fd4a0de3f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 23:10:07 2009 -0400
+
+    Minor
+
+ src/vteseq.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 1904625c65d111a99e5920e6bc8121cb272ecc7b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 23:08:18 2009 -0400
+
+    Rename _vte_new_row_data_sized to _vte_new_row_data
+
+ src/vte-private.h |    2 +-
+ src/vte.c         |   10 +++++-----
+ src/vteseq.c      |   12 ++++++------
+ 3 files changed, 12 insertions(+), 12 deletions(-)
+
+commit 5e2b6753201ae416bdf1c594ab5ca5ab8bbf2130
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 23:06:37 2009 -0400
+
+    Remove _vte_new_row_data
+
+ src/vte-private.h |    1 -
+ src/vte.c         |   11 -----------
+ src/vteseq.c      |    4 ++--
+ 3 files changed, 2 insertions(+), 14 deletions(-)
+
+commit ba1f44d6119cc39602d8a660f4e5a9f56a6f19da
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 23:03:50 2009 -0400
+
+    Specialize VteRing to know about VteRowData
+
+ src/ring.c        |  139 ++++++++--------------------------------------------
+ src/ring.h        |   24 ++++-----
+ src/vte-private.h |    6 --
+ src/vte.c         |   68 ++++----------------------
+ src/vteseq.c      |   28 ++++-------
+ 5 files changed, 53 insertions(+), 212 deletions(-)
+
+commit b2280c01c376d70d931fa039fbdf3ed2fd3fa3f6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 18:39:34 2009 -0400
+
+    Store small iso2022 maps in 16bit structs
+    
+    Saves over 100k of the shared library size
+
+ src/iso2022.c |  132 +++++++++++++++++++++++++++++++++------------------------
+ 1 files changed, 76 insertions(+), 56 deletions(-)
+
+commit 68ac36d9bb7e3ad17bda46de00de229cbe0ff5db
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 18:15:10 2009 -0400
+
+    Optimize iso2022 map struct on x86-64
+
+ src/iso2022.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit f5ce4c445055b7f19db38fea0a79253d68ac6562
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 17:26:14 2009 -0400
+
+    Revert b307bc5c and implement it in a clean way
+
+ src/ring.c        |   68 ++++++++++++++--------------
+ src/ring.h        |    8 ++--
+ src/vte-private.h |    4 +-
+ src/vte.c         |  132 +++++++++++++++++++++++++---------------------------
+ src/vteseq.c      |   77 +++++++------------------------
+ 5 files changed, 120 insertions(+), 169 deletions(-)
+
+commit c34204b358df9d887096b4cd1b5ce7f299d1e3ff
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 17:12:13 2009 -0400
+
+    Fix warnings
+
+ src/buffer.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit c59dc9252888cf3824f31e307758fd49cf7f9b17
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 15:25:28 2009 -0400
+
+    Update git.mk
+
+ git.mk |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit dc03f2f6035befdc2e8ca5a0537ca2e8c26c324f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 15:15:01 2009 -0400
+
+    Update copyright header
+
+ src/buffer.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit f168a8a2e6b266e980d15c2af023ce7ea1f15394
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 15:09:20 2009 -0400
+
+    Use GByteArray for VteBuffer
+    
+    The implementation was the same.  Keep the abstraction though, since
+    VteBuffer may want to implement O(1) _consume() in the future.
+
+ src/Makefile.am |    7 +--
+ src/buffer.c    |  156 -------------------------------------------------------
+ src/buffer.h    |   25 ++++-----
+ src/interpret.c |    2 +-
+ src/iso2022.c   |    2 +-
+ src/vte.c       |   16 +++---
+ src/vteconv.c   |    6 +-
+ src/vteseq.c    |    2 +-
+ 8 files changed, 25 insertions(+), 191 deletions(-)
+
+commit 83018a7d3aa975211996d69dd922b79165439622
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 15:01:40 2009 -0400
+
+    Rename "struct _vte_buffer" to VteBuffer
+
+ src/buffer.c      |   18 +++++++++---------
+ src/buffer.h      |   18 +++++++++---------
+ src/interpret.c   |    2 +-
+ src/iso2022.c     |    4 ++--
+ src/vte-private.h |    4 ++--
+ src/vteconv.c     |    2 +-
+ 6 files changed, 24 insertions(+), 24 deletions(-)
+
+commit ee6fd1c3d8c2ba19c63565a0c889bbdc10125596
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Aug 20 14:55:41 2009 -0400
+
+    Remove unused code
+
+ src/Makefile.am |    7 +-
+ src/buffer.c    |  247 -------------------------------------------------------
+ src/buffer.h    |   23 -----
+ 3 files changed, 2 insertions(+), 275 deletions(-)
+
+commit af4ced55057c3bdc1ec8e87ce8bbef6639663f37
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Aug 17 18:31:04 2009 -0400
+
+    Remove newline after AM_V_GEN
+
+ src/Makefile.am |    9 +++------
+ 1 files changed, 3 insertions(+), 6 deletions(-)
+
+commit 11bf7a92d4e0cc75ceda1fcd4da892f58e63b4b8
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sun Aug 16 01:53:18 2009 -0400
+
+    Reuse ->pending array instead of creating a new one
+
+ src/vte.c |    9 +--------
+ 1 files changed, 1 insertions(+), 8 deletions(-)
+
+commit 80ffef9ad70e70827138f18fdd847dc8a27ebc34
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Aug 16 22:19:25 2009 +0200
+
+    Support AM_SILENT_RULES
+    
+    And sprinkle some $(AM_V_GEN) around. Silent rules are disabled by default.
+
+ Makefile.am          |    2 +-
+ configure.in         |    4 ++++
+ doc/Makefile.am      |    4 ++--
+ python/Makefile.am   |    2 +-
+ src/Makefile.am      |   18 ++++++++++--------
+ termcaps/Makefile.am |    2 +-
+ 6 files changed, 19 insertions(+), 13 deletions(-)
+
+commit 41e1e01046e2bc0f9cfbc84c2f41430c9a9a9743
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 12 16:16:09 2009 -0400
+
+    Bug 590824 – gnome-terminal crashed with SIGSEGV after hiting ctrl+o
+
+ src/vte.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 1b2c6bf6136d8a6033499d73cdb659a6709982a3
+Author: Seán de Búrca <leftmostcat@gmail.com>
+Date:   Sun Aug 9 14:11:16 2009 -0600
+
+    Updated Irish translation
+
+ po/ga.po |  111 +++++++++++++++++++++++++++-----------------------------------
+ 1 files changed, 48 insertions(+), 63 deletions(-)
+
+commit 3eaca3e36fb806608c961ef594baf99cecf9fdfa
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 5 21:26:05 2009 -0400
+
+    Bug 572230 – text mode program rendering is strange in cjk locale.
+    
+    Under UTF-8 encoding, always use width=1 for ambiguous-width chars,
+    only allow override using VTE_CJK_WIDTH=1.  Preivously we were using
+    width=2 for CJKS locales.  That's against Unicode recommendations,
+    and breaks a bunch of programs.
+
+ src/iso2022.c |   36 +-----------------------------------
+ 1 files changed, 1 insertions(+), 35 deletions(-)
+
+commit 403a6b40a1b34627dcd88fc4c3d0c30ef6369768
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Jul 26 12:56:05 2009 +0200
+
+    Post-branch version bump
+
+ configure.in |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit b8e1a5d9cc583c3a6d31b5594a4c7ce15ea73f5c
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Jul 10 15:56:19 2009 +0100
+
+    Bug 588200 – bashisms in shell scripts
+
+ src/osc    |    2 +-
+ src/window |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit deda7bccf35e153628ca348b5fdf054e608ec462
+Author: Rajesh Ranjan <rranjan@rranjan.csb>
+Date:   Tue Jul 7 14:23:37 2009 +0530
+
+    hindi update by rajesh Ranjan
+
+ po/hi.po |   93 ++++++++++++++++++++++++--------------------------------------
+ 1 files changed, 36 insertions(+), 57 deletions(-)
+
 commit 4fc17c3fb75cc211232c92ac8b0afa3a8f934cbc
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Tue Jun 9 18:33:36 2009 -0400
