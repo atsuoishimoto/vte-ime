@@ -90,7 +90,8 @@ am_libvte_la_OBJECTS = libvte_la-caps.lo libvte_la-debug.lo \
 	libvte_la-vte.lo libvte_la-vteaccess.lo libvte_la-vtebg.lo \
 	libvte_la-vteconv.lo libvte_la-vtedraw.lo \
 	libvte_la-vtepangocairo.lo libvte_la-vteregex.lo \
-	libvte_la-vteseq.lo libvte_la-vteskel.lo libvte_la-vtetc.lo \
+	libvte_la-vterowdata.lo libvte_la-vteseq.lo \
+	libvte_la-vteskel.lo libvte_la-vtestream.lo libvte_la-vtetc.lo \
 	libvte_la-vtetree.lo libvte_la-vtetypebuiltins.lo \
 	libvte_la-vteunistr.lo
 libvte_la_OBJECTS = $(am_libvte_la_OBJECTS)
@@ -492,10 +493,16 @@ libvte_la_SOURCES = \
 	vtepangocairo.h \
 	vteregex.c \
 	vteregex.h \
+	vterowdata.c \
+	vterowdata.h \
 	vteseq.c \
 	vteseq-list.h \
 	vteskel.c \
 	vteskel.h \
+	vtestream.c \
+	vtestream.h \
+	vtestream-base.h \
+	vtestream-file.h \
 	vtetc.c \
 	vtetc.h \
 	vtetree.c \
@@ -943,10 +950,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vtedraw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vtepangocairo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vteregex.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vterowdata.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vteseq-2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vteseq-n.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vteseq.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vteskel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vtestream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vtetc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vtetree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvte_la-vtetypebuiltins.Plo@am__quote@
@@ -1150,6 +1159,14 @@ libvte_la-vteregex.lo: vteregex.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvte_la_CPPFLAGS) $(CPPFLAGS) $(libvte_la_CFLAGS) $(CFLAGS) -c -o libvte_la-vteregex.lo `test -f 'vteregex.c' || echo '$(srcdir)/'`vteregex.c
 
+libvte_la-vterowdata.lo: vterowdata.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvte_la_CPPFLAGS) $(CPPFLAGS) $(libvte_la_CFLAGS) $(CFLAGS) -MT libvte_la-vterowdata.lo -MD -MP -MF $(DEPDIR)/libvte_la-vterowdata.Tpo -c -o libvte_la-vterowdata.lo `test -f 'vterowdata.c' || echo '$(srcdir)/'`vterowdata.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvte_la-vterowdata.Tpo $(DEPDIR)/libvte_la-vterowdata.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vterowdata.c' object='libvte_la-vterowdata.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvte_la_CPPFLAGS) $(CPPFLAGS) $(libvte_la_CFLAGS) $(CFLAGS) -c -o libvte_la-vterowdata.lo `test -f 'vterowdata.c' || echo '$(srcdir)/'`vterowdata.c
+
 libvte_la-vteseq.lo: vteseq.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvte_la_CPPFLAGS) $(CPPFLAGS) $(libvte_la_CFLAGS) $(CFLAGS) -MT libvte_la-vteseq.lo -MD -MP -MF $(DEPDIR)/libvte_la-vteseq.Tpo -c -o libvte_la-vteseq.lo `test -f 'vteseq.c' || echo '$(srcdir)/'`vteseq.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvte_la-vteseq.Tpo $(DEPDIR)/libvte_la-vteseq.Plo
@@ -1165,6 +1182,14 @@ libvte_la-vteskel.lo: vteskel.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vteskel.c' object='libvte_la-vteskel.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvte_la_CPPFLAGS) $(CPPFLAGS) $(libvte_la_CFLAGS) $(CFLAGS) -c -o libvte_la-vteskel.lo `test -f 'vteskel.c' || echo '$(srcdir)/'`vteskel.c
+
+libvte_la-vtestream.lo: vtestream.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvte_la_CPPFLAGS) $(CPPFLAGS) $(libvte_la_CFLAGS) $(CFLAGS) -MT libvte_la-vtestream.lo -MD -MP -MF $(DEPDIR)/libvte_la-vtestream.Tpo -c -o libvte_la-vtestream.lo `test -f 'vtestream.c' || echo '$(srcdir)/'`vtestream.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvte_la-vtestream.Tpo $(DEPDIR)/libvte_la-vtestream.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vtestream.c' object='libvte_la-vtestream.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvte_la_CPPFLAGS) $(CPPFLAGS) $(libvte_la_CFLAGS) $(CFLAGS) -c -o libvte_la-vtestream.lo `test -f 'vtestream.c' || echo '$(srcdir)/'`vtestream.c
 
 libvte_la-vtetc.lo: vtetc.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libvte_la_CPPFLAGS) $(CPPFLAGS) $(libvte_la_CFLAGS) $(CFLAGS) -MT libvte_la-vtetc.lo -MD -MP -MF $(DEPDIR)/libvte_la-vtetc.Tpo -c -o libvte_la-vtetc.lo `test -f 'vtetc.c' || echo '$(srcdir)/'`vtetc.c
