@@ -1,3 +1,13 @@
+vte (1:0.22.0-1) unstable; urgency=low
+
+  [ Emilio Pozuelo Monfort ]
+  * debian/patches/01_bashisms.patch: forwarded, add header.
+
+  [ Sebastian Dröge ]
+  * New upstream stable release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 22 Sep 2009 13:34:21 +0200
+
 vte (1:0.20.5-1) unstable; urgency=low
 
   * New upstream bugfix release, undoing the unintended

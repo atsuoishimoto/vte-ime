@@ -21,61 +21,60 @@
 #ifndef vte_ring_h_included
 #define vte_ring_h_included
 
-
-#include <glib.h>
+#include "vterowdata.h"
+#include "vtestream.h"
 
 G_BEGIN_DECLS
 
+
+typedef struct _VteCellAttrChange {
+	gsize text_offset;
+	VteIntCellAttr attr;
+} VteCellAttrChange;
+
+
+/*
+ * VteRing: A scrollback buffer ring
+ */
+
 typedef struct _VteRing VteRing;
-typedef void (*VteRingFreeFunc)(gpointer freeing, gpointer data);
-
 struct _VteRing {
-	glong delta, length, max;
-	glong cached_item;
-	gpointer cached_data;
-	gpointer *array;
+	guint max;
 
-	VteRingFreeFunc free;
-	gpointer user_data;
+	guint start, end;
+
+	/* Writable */
+	guint writable, mask;
+	VteRowData *array;
+
+	/* Storage */
+	guint last_page;
+	VteStream *attr_stream, *text_stream, *row_stream;
+	VteCellAttrChange last_attr;
+	GString *utf8_buffer;
+
+	VteRowData cached_row;
+	guint cached_row_num;
+
 };
 
 #define _vte_ring_contains(__ring, __position) \
-	(((__position) >= (__ring)->delta) && \
-	 ((__position) < (__ring)->delta + (__ring)->length))
-#define _vte_ring_delta(__ring) ((__ring)->delta)
-#define _vte_ring_length(__ring) ((__ring)->length)
-#define _vte_ring_next(__ring) ((__ring)->delta + (__ring)->length)
-#define _vte_ring_max(__ring) ((__ring)->max)
-#define _vte_ring_is_cached(__ring, __v) ((__ring)->cached_item == (__v))
-#define _vte_ring_get_cached_data(__ring) ((__ring)->cached_data)
-#define _vte_ring_set_cache(__ring, __v, __data) ((__ring)->cached_item = (__v), (__ring)->cached_data = (__data))
-#ifdef VTE_DEBUG
-#define _vte_ring_at(__ring, __position) \
-	((__ring)->array[(__position) % (__ring)->max] ? \
-	 (__ring)->array[(__position) % (__ring)->max] : \
-	 (g_critical("NULL at %ld(->%ld) delta %ld, length %ld, max %ld next %ld" \
-		  " at %d\n", \
-		  (__position), (__position) % (__ring)->max, \
-		  (__ring)->delta, (__ring)->length, (__ring)->max, \
-		  (__ring)->delta + (__ring)->length, \
-		  __LINE__), (gpointer) NULL))
-#else
-#define _vte_ring_at(__ring, __position) \
-	((__ring)->array[(__position) % (__ring)->max])
-#endif
-#define _vte_ring_index(__ring, __cast, __position) \
-	(__cast) _vte_ring_at(__ring, __position)
+	(((__position) >= (__ring)->start) && \
+	 ((__position) < (__ring)->end))
+#define _vte_ring_delta(__ring) ((__ring)->start + 0)
+#define _vte_ring_length(__ring) ((__ring)->end - (__ring)->start)
+#define _vte_ring_next(__ring) ((__ring)->end + 0)
 
-VteRing *_vte_ring_new(glong max_elements,
-		      VteRingFreeFunc free_func,
-		      gpointer data);
-VteRing *_vte_ring_new_with_delta(glong max_elements, glong delta,
-				  VteRingFreeFunc free_func, gpointer data);
-gpointer _vte_ring_insert(VteRing *ring, glong position, gpointer data);
-gpointer _vte_ring_insert_preserve(VteRing *ring, glong position, gpointer data);
-gpointer _vte_ring_remove(VteRing *ring, glong position, gboolean free_element);
-gpointer _vte_ring_append(VteRing *ring, gpointer data);
-void _vte_ring_free(VteRing *ring, gboolean free_elements);
+const VteRowData *_vte_ring_index (VteRing *ring, guint position);
+VteRowData *_vte_ring_index_writable (VteRing *ring, guint position);
+
+void _vte_ring_init (VteRing *ring, guint max_rows);
+void _vte_ring_fini (VteRing *ring);
+void _vte_ring_resize (VteRing *ring, guint max_rows);
+void _vte_ring_shrink (VteRing *ring, guint max_len);
+VteRowData *_vte_ring_insert (VteRing *ring, guint position);
+VteRowData *_vte_ring_append (VteRing *ring);
+void _vte_ring_remove (VteRing *ring, guint position);
 
 G_END_DECLS
 

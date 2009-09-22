@@ -30,7 +30,6 @@ EXTRA_libvte_la_SOURCES = \
 	$(NULL)
 
 libvte_la_SOURCES = \
-	buffer.c \
 	buffer.h \
 	caps.c \
 	caps.h \
@@ -70,10 +69,16 @@ libvte_la_SOURCES = \
 	vtepangocairo.h \
 	vteregex.c \
 	vteregex.h \
+	vterowdata.c \
+	vterowdata.h \
 	vteseq.c \
 	vteseq-list.h \
 	vteskel.c \
 	vteskel.h \
+	vtestream.c \
+	vtestream.h \
+	vtestream-base.h \
+	vtestream-file.h \
 	vtetc.c \
 	vtetc.h \
 	vtetree.c \
@@ -86,7 +91,6 @@ libvte_la_SOURCES = \
 	$(NULL)
 
 libvte_la_CPPFLAGS = \
-	-DG_DISABLE_ASSERT \
 	-DG_LOG_DOMAIN=\"Vte\" \
  	-DDATADIR='"$(datadir)"' \
 	-DLIBEXECDIR='"$(libexecdir)"' \
@@ -108,36 +112,35 @@ MAINTAINERCLEANFILES = $(VTESEQ_BUILTSOURCES)
 EXTRA_DIST += $(VTESEQ_BUILTSOURCES)
 CLEANFILES = marshal.c marshal.h vtetypebuiltins.c vtetypebuiltins.h stamp-vtetypebuiltins.h
 
-marshal.c marshal.h: marshal.list
-	$(GLIB_GENMARSHAL) --prefix=_vte_marshal --header --body --internal $^ > marshal.c
-	$(GLIB_GENMARSHAL) --prefix=_vte_marshal --header --internal $^ > marshal.h
+marshal.c: marshal.list
+	$(AM_V_GEN) $(GLIB_GENMARSHAL) --prefix=_vte_marshal --header --body --internal $< > $@
+	
+marshal.h: marshal.list
+	$(AM_V_GEN) $(GLIB_GENMARSHAL) --prefix=_vte_marshal --header --internal $< > $@
 
 vtetypebuiltins.h: stamp-vtetypebuiltins.h
 	@true
 stamp-vtetypebuiltins.h: vtetypebuiltins.h.template vte.h
-	$(GLIB_MKENUMS) --template $< $(filter-out $<,$^) > xgen-vtbh \
+	$(AM_V_GEN) $(GLIB_MKENUMS) --template $< $(filter-out $<,$^) > xgen-vtbh \
 	&& (cmp -s xgen-vtbh vtetypebuiltins.h || cp xgen-vtbh vtetypebuiltins.h ) \
 	&& rm -f xgen-vtbh \
 	&& echo timestamp > $(@F)
 
 vtetypebuiltins.c: vtetypebuiltins.c.template vte.h
-	$(GLIB_MKENUMS) --template $< $(filter-out $<,$^) > xgen-vtbc \
+	$(AM_V_GEN) $(GLIB_MKENUMS) --template $< $(filter-out $<,$^) > xgen-vtbc \
 	&& (cmp -s xgen-vtbc vtetypebuiltins.c || cp xgen-vtbc vtetypebuiltins.c ) \
 	&& rm -f xgen-vtbc
 
 vteseq-2.c: vteseq-2.gperf
-	@echo creating $@
-	$(top_srcdir)/missing --run gperf -m 100 --no-strlen $< > $@.tmp && \
+	$(AM_V_GEN) $(top_srcdir)/missing --run gperf -m 100 --no-strlen $< > $@.tmp && \
 	mv -f $@.tmp $@
 
 vteseq-n.c: vteseq-n.gperf
-	@echo creating $@
-	$(top_srcdir)/missing --run gperf -m 100 $< > $@.tmp && \
+	$(AM_V_GEN) $(top_srcdir)/missing --run gperf -m 100 $< > $@.tmp && \
 	mv -f $@.tmp $@
 
 vteseq-list.h: vteseq-2.gperf vteseq-n.gperf
-	@echo creating $@
-	echo '/* Generated file.  Do not edit */' > $@.tmp && \
+	$(AM_V_GEN) echo '/* Generated file.  Do not edit */' > $@.tmp && \
 	cat $^ | grep -v '^#' | grep '\<VTE_SEQUENCE_HANDLER\>'| sed 's/.*, //' | LANG=C sort -u >> $@.tmp && \
 	mv -f $@.tmp $@
 
@@ -160,8 +163,8 @@ EXTRA_DIST += $(pkglib_SCRIPTS)
 TEST_SH = check-doc-syntax.sh
 EXTRA_DIST += $(TEST_SH)
 
-check_PROGRAMS = buffer dumpkeys iso2022 pty reaper reflect-text-view reflect-vte ring mev ssfe table trie xticker vteconv vtetc
-TESTS = buffer ring table trie $(TEST_SH)
+check_PROGRAMS = dumpkeys iso2022 pty reaper reflect-text-view reflect-vte mev ssfe table trie xticker vteconv vtetc
+TESTS = table trie $(TEST_SH)
 
 AM_CFLAGS = $(GLIB_CFLAGS) $(GOBJECT_CFLAGS)
 LDADD = $(GLIB_LIBS) $(GOBJECT_LIBS)
@@ -177,7 +180,6 @@ reflect_vte_SOURCES = reflect.c
 reflect_vte_LDADD = libvte.la $(VTE_LIBS)
 
 interpret_SOURCES = \
-	buffer.c \
 	buffer.h \
 	caps.c \
 	caps.h \
@@ -205,7 +207,6 @@ interpret_CFLAGS = $(GTK_CFLAGS)
 interpret_LDADD = $(GTK_LIBS)
 
 iso2022_SOURCES = \
-	buffer.c \
 	buffer.h \
 	caps.c \
 	caps.h \
@@ -229,14 +230,10 @@ iso2022_CPPFLAGS = -DISO2022_MAIN
 iso2022_CFLAGS = $(GTK_CFLAGS)
 iso2022_LDADD = $(GTK_LIBS)
 
-ring_SOURCES = ring.c ring.h debug.c debug.h
-ring_CPPFLAGS = -DRING_MAIN
-
 slowcat_SOURCES = \
 	slowcat.c
 
 table_SOURCES = \
-	buffer.c \
 	buffer.h \
 	caps.c \
 	caps.h \
@@ -259,7 +256,6 @@ table_LDADD = $(VTE_LIBS)
 trie_SOURCES = \
 	trie.c \
 	trie.h \
-	buffer.c \
 	buffer.h \
 	caps.c \
 	caps.h \
@@ -286,13 +282,10 @@ pty_CPPFLAGS = -DPTY_MAIN -DLIBEXECDIR='"$(libexecdir)"'
 reaper_SOURCES = reaper.c reaper.h debug.c debug.h marshal.c marshal.h
 reaper_CPPFLAGS =  -DREAPER_MAIN -DLOCALEDIR='"$(localedir)"'
 
-vteconv_SOURCES = buffer.c buffer.h debug.c debug.h vteconv.c vteconv.h
+vteconv_SOURCES = buffer.h debug.c debug.h vteconv.c vteconv.h
 vteconv_CPPFLAGS = -DVTECONV_MAIN
 vteconv_CFLAGS = $(VTE_CFLAGS)
 vteconv_LDADD = $(VTE_LIBS)
-
-buffer_SOURCES = buffer.c
-buffer_CPPFLAGS = -DBUFFER_MAIN
 
 dumpkeys_SOURCES = dumpkeys.c
 mev_SOURCES = mev.c
