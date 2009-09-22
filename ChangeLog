@@ -1,3 +1,526 @@
+commit b8c130b10aa5571a66fb961347791ad54809ee32
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 21 17:01:17 2009 -0400
+
+    Release 0.22.0
+
+ NEWS         |    4 ++++
+ configure.in |   10 +++++-----
+ 2 files changed, 9 insertions(+), 5 deletions(-)
+
+commit 8658f78fce0ffad86c81ea2502047cdbc2d32669
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Sep 18 02:18:07 2009 -0400
+
+    Release 0.21.7
+
+ NEWS         |    5 +++++
+ configure.in |    4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+commit 35cb9184e071c8629c953d5bf82542d88438552c
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Sep 18 02:07:57 2009 -0400
+
+    Bug 595494 - Build Failure in vte 0.21.6
+    
+    Revert "Do some symbol hiding"
+    This reverts commit 296a3cbaf6b69555f7d6cdc639dc57c51f2e2bba.
+
+ configure.in        |   11 ------
+ src/caps.c          |    4 +-
+ src/caps.h          |    6 ++--
+ src/debug.c         |    2 +-
+ src/debug.h         |    4 +-
+ src/iso2022.h       |   29 ++++++++-------
+ src/keymap.h        |   46 ++++++++++++------------
+ src/matcher.h       |   18 +++++-----
+ src/ring.h          |   20 +++++-----
+ src/table.c         |    2 +-
+ src/table.h         |   20 +++++-----
+ src/trie.c          |    2 +-
+ src/trie.h          |   26 +++++++-------
+ src/vte-private.h   |   64 +++++++++++++++++-----------------
+ src/vtebg.h         |   14 ++++----
+ src/vteconv.h       |   28 +++++++-------
+ src/vtedraw.c       |    2 +-
+ src/vtedraw.h       |   96 +++++++++++++++++++++++++-------------------------
+ src/vteint.h        |   12 +++---
+ src/vtepangocairo.c |    2 +-
+ src/vtepangocairo.h |    2 +-
+ src/vteregex.h      |    8 ++--
+ src/vterowdata.h    |   18 +++++-----
+ src/vteskel.c       |    2 +-
+ src/vteskel.h       |    2 +-
+ src/vtestream.h     |   15 ++++----
+ src/vtetc.c         |    2 -
+ src/vtetc.h         |   24 ++++++------
+ src/vtetree.c       |    2 -
+ src/vtetree.h       |    8 ++--
+ src/vteunistr.h     |    8 ++--
+ 31 files changed, 243 insertions(+), 256 deletions(-)
+
+commit e6e66d4c5733b4c2e5efa686566bde3c76be4212
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Sep 18 02:07:06 2009 -0400
+
+    [ring] Don't append fragment text
+
+ src/ring.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 2c0c2454deeef051f603dd32ef70d926f49b0b2f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Sep 18 02:04:26 2009 -0400
+
+    [ring] Fix fragment width
+
+ src/ring.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 63ba68fef08838159a5922534f77f89a304f6c03
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Sep 18 02:02:20 2009 -0400
+
+    Simplify tab handling
+
+ src/vteseq.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 09221372842d3954c10f69cd3c98680663c4d6d3
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Sep 17 11:19:29 2009 -0400
+
+    Release 0.21.6
+
+ NEWS         |    6 ++++++
+ configure.in |    4 ++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+commit 296a3cbaf6b69555f7d6cdc639dc57c51f2e2bba
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Sep 17 10:54:15 2009 -0400
+
+    Do some symbol hiding
+
+ configure.in        |   11 ++++++
+ src/caps.c          |    4 +-
+ src/caps.h          |    6 ++--
+ src/debug.c         |    2 +-
+ src/debug.h         |    4 +-
+ src/iso2022.h       |   29 +++++++--------
+ src/keymap.h        |   46 ++++++++++++------------
+ src/matcher.h       |   18 +++++-----
+ src/ring.h          |   20 +++++-----
+ src/table.c         |    2 +-
+ src/table.h         |   20 +++++-----
+ src/trie.c          |    2 +-
+ src/trie.h          |   26 +++++++-------
+ src/vte-private.h   |   64 +++++++++++++++++-----------------
+ src/vtebg.h         |   14 ++++----
+ src/vteconv.h       |   28 +++++++-------
+ src/vtedraw.c       |    2 +-
+ src/vtedraw.h       |   96 +++++++++++++++++++++++++-------------------------
+ src/vteint.h        |   12 +++---
+ src/vtepangocairo.c |    2 +-
+ src/vtepangocairo.h |    2 +-
+ src/vteregex.h      |    8 ++--
+ src/vterowdata.h    |   18 +++++-----
+ src/vteskel.c       |    2 +-
+ src/vteskel.h       |    2 +-
+ src/vtestream.h     |   15 ++++----
+ src/vtetc.c         |    2 +
+ src/vtetc.h         |   24 ++++++------
+ src/vtetree.c       |    2 +
+ src/vtetree.h       |    8 ++--
+ src/vteunistr.h     |    8 ++--
+ 31 files changed, 256 insertions(+), 243 deletions(-)
+
+commit e28d3818f3b22fbdf61d721183419a4a010c8a01
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 16 18:09:35 2009 -0400
+
+    Remove expensive assertion
+
+ src/vte.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit ed455c5413f04c4688fd072acfd121b97636e023
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 16 15:42:19 2009 -0400
+
+    [doc] Set LC_ALL instead of LANG for our check scripts
+
+ doc/reference/check-doc-coverage.sh |    4 +++-
+ doc/reference/check-doc-syntax.sh   |    3 ++-
+ git.mk                              |    2 +-
+ src/check-doc-syntax.sh             |    3 ++-
+ 4 files changed, 8 insertions(+), 4 deletions(-)
+
+commit 2c75e3d01f970cae3d0856b04d532bfc90cdbf14
+Author: Niels-Christoph Fiedler <linux@medienkompanie.de>
+Date:   Wed Sep 16 18:36:45 2009 +0200
+
+    Updated Low German translation
+
+ po/nds.po |   41 ++++++++++++++++++++---------------------
+ 1 files changed, 20 insertions(+), 21 deletions(-)
+
+commit 6946347f771d48393b4a1eb30dc52e40489582f1
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 15 21:26:22 2009 -0400
+
+    [ring] Fix assertion failure with resize
+
+ src/ring.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 109f77b663e4f87e4fb148ae26cd7a566de0cb61
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 15 21:22:53 2009 -0400
+
+    [ring] Simplify a bit
+
+ src/ring.c |   20 ++++++++++++++++----
+ 1 files changed, 16 insertions(+), 4 deletions(-)
+
+commit 5254710eb86008ab218f2ad0a61e631f3f6d6b39
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 15 21:17:51 2009 -0400
+
+    [ring/stream] Handle stream failure (out of space)
+
+ src/ring.c           |   19 ++++++++++++++-----
+ src/vtestream-base.h |    6 +++---
+ src/vtestream-file.h |   15 ++++++---------
+ src/vtestream.h      |    3 +--
+ 4 files changed, 24 insertions(+), 19 deletions(-)
+
+commit 40fef32bc16dc65a138fc7d46549e7ba14395159
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 15 20:10:05 2009 -0400
+
+    [ring] Store text as UTF-8 and RLE-encode the attrs
+
+ src/ring.c       |  190 ++++++++++++++++++++++++++++++++++++++++++------------
+ src/ring.h       |   10 +++-
+ src/vterowdata.h |    6 ++
+ 3 files changed, 164 insertions(+), 42 deletions(-)
+
+commit a1f8b0fb38291dd368b6a085aa2b6c5505024a2a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 15 15:47:39 2009 -0400
+
+    [stream] Fix bug in _head()
+
+ src/vtestream-file.h |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+commit f13c3b9f061d50b18475fdf05b54877031037b35
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 15 13:46:06 2009 -0400
+
+    [unistr] _vte_unistr_len()
+
+ src/vteunistr.c |    4 +---
+ src/vteunistr.h |    2 --
+ 2 files changed, 1 insertions(+), 5 deletions(-)
+
+commit 7cc48f44223ab69725f42399a58ebb0a26c9b2a5
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 14 16:09:40 2009 -0400
+
+    Add VteIntCell
+
+ src/vterowdata.h |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit d6330cf885ff25c6607e0624c03f00daf15bb68b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 14 16:07:17 2009 -0400
+
+    [stream] Add head()
+
+ src/vtestream-base.h |    7 +++++++
+ src/vtestream-file.h |   12 ++++++++++++
+ src/vtestream.h      |    1 +
+ 3 files changed, 20 insertions(+), 0 deletions(-)
+
+commit 338d4a485f5b7609be1861aed6558693f90955c1
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 14 15:30:04 2009 -0400
+
+    [ring] Fix resize too
+
+ src/ring.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit d1cec534d59399f057399b63dfb819b407174171
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 14 15:27:25 2009 -0400
+
+    [ring] Fix ring according to stream semantics
+
+ src/ring.c |  126 ++++++++++++++++++++++++++++++++++++++++-------------------
+ 1 files changed, 85 insertions(+), 41 deletions(-)
+
+commit ea7ee1b1cbfe58faab7903cf354b377190dfb144
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 14 15:24:57 2009 -0400
+
+    [stream] Fix new_page implementation
+
+ src/vtestream-file.h |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 1ea043ed2df31522c670b6bfba8cf1c9537ce61e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 14 15:12:43 2009 -0400
+
+    [stream] Handle eof situation
+
+ src/vtestream-file.h |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 68cce180dd903aacbbec11dca8f89be0cf278e92
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 14 15:04:51 2009 -0400
+
+    [stream] Add a reset() method
+
+ src/vtestream-base.h |    7 +++
+ src/vtestream-file.h |  104 ++++++++++++++++++++++++++++++--------------------
+ src/vtestream.h      |    1 +
+ 3 files changed, 71 insertions(+), 41 deletions(-)
+
+commit efe25381cca2767423f1c7061dcda1a0be87e59b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 14 13:31:27 2009 -0400
+
+    [stream] s/trunc/truncate/
+
+ src/vtestream-base.h |    6 +++---
+ src/vtestream-file.h |    4 ++--
+ src/vtestream.h      |    2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 2eefab893485bbea1d0e2fb62e6f6122314d1959
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 14 13:07:26 2009 -0400
+
+    [stream] Fix returned offset
+
+ src/vtestream-file.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a88338e07429a5ce1fc4cb081448333c699f7f23
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 12 19:40:02 2009 -0400
+
+    [ring] Port to VteStream
+    
+    Not optimized, simple file-based non-compact storage
+
+ src/ring.c           |  668 +++++++++++---------------------------------------
+ src/ring.h           |   48 ++---
+ src/vtestream-base.h |   31 +++-
+ src/vtestream-file.h |   17 +-
+ src/vtestream.h      |    8 +
+ 5 files changed, 201 insertions(+), 571 deletions(-)
+
+commit a63c3d687408a9e21535df84855e00564c4f0905
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 12 18:22:16 2009 -0400
+
+    [stream] Add file stream
+
+ src/Makefile.am      |    2 +
+ src/vtestream-base.h |   51 ++++++++++++
+ src/vtestream-file.h |  215 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/vtestream.c      |   31 +------
+ src/vtestream.h      |    6 +-
+ 5 files changed, 278 insertions(+), 27 deletions(-)
+
+commit 9de9d2de44d4723935176c71f8f09a90f15e678a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 12 17:15:04 2009 -0400
+
+    [stream] Start vte stream design
+    
+    New buffer coming!
+
+ src/Makefile.am |    2 ++
+ src/vtestream.c |   55 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/vtestream.h |   32 ++++++++++++++++++++++++++++++++
+ 3 files changed, 89 insertions(+), 0 deletions(-)
+
+commit 9ad227f5f57d93e86b8d7ecf5b73bdf3bdf6ced7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Sep 12 15:38:52 2009 -0400
+
+    [ring] Fix typo
+
+ src/ring.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a532b2950e748ca37b0b429a7255d95514e212c8
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Sep 10 15:59:50 2009 -0400
+
+    [ring] Move VteRowData into its own file
+
+ src/Makefile.am  |    2 +
+ src/ring.c       |  141 +---------------------------------------------
+ src/ring.h       |  138 +--------------------------------------------
+ src/vterowdata.c |  164 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/vterowdata.h |  167 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/vteunistr.c  |    3 +-
+ 6 files changed, 337 insertions(+), 278 deletions(-)
+
+commit 4e02748b395e2086a4a3f897868bc789875e770d
+Author: Carles Ferrando <carles.ferrando@gmail.com>
+Date:   Mon Sep 14 13:39:11 2009 +0200
+
+    Added Catalan (Valencian) translation
+
+ po/LINGUAS        |    1 +
+ po/ca@valencia.po |  157 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 158 insertions(+), 0 deletions(-)
+
+commit 6f8d5b1da087a741c6cf6bbbf27d5a46d66720c8
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Sep 10 12:37:07 2009 -0400
+
+    [ring] Limit line length to 0xFFFF
+    
+    Make rowdata structures a bit more compact
+
+ src/ring.c |   29 +++++++++++++++++++++--------
+ src/ring.h |    6 +++---
+ 2 files changed, 24 insertions(+), 11 deletions(-)
+
+commit d41ff743ec9bb287c3bd2d37f514f259503d03cc
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 22:13:36 2009 -0400
+
+    [ring] Add VteRingChunkWritable
+
+ src/ring.c |   96 ++++++++++++++++++++++++++++++------------------------------
+ src/ring.h |   18 ++++++-----
+ 2 files changed, 58 insertions(+), 56 deletions(-)
+
+commit c4c49bfa4e1e52d3653918d873ad64015e8e8bdf
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 21:59:56 2009 -0400
+
+    [ring] Remove more unused code
+
+ src/ring.c |   63 ++++++++++++++++++++----------------------------------------
+ 1 files changed, 21 insertions(+), 42 deletions(-)
+
+commit 20f57866d5b4d47ae1ee66cb9e0156d6d70e321e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 21:56:53 2009 -0400
+
+    [ring] More cleanup
+
+ src/ring.h |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+commit cea0b21adb11d59f2e1e4c649f6cbf5e1cfacfed
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 21:54:42 2009 -0400
+
+    [ring] Reshuffle a bit more
+
+ src/ring.c |   74 ++++++++++++++++++++++++++++++-----------------------------
+ 1 files changed, 38 insertions(+), 36 deletions(-)
+
+commit b367d568d57ae93b3e84c0a80302734aa2d2f0ee
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 21:33:00 2009 -0400
+
+    [ring] Shuffle code around
+
+ src/ring.c |  231 ++++++++++++++++++++++++++++++------------------------------
+ 1 files changed, 116 insertions(+), 115 deletions(-)
+
+commit fc9a6daf6394642e17e8aa76cbe661f0f08e8a68
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 21:26:46 2009 -0400
+
+    [ring] Separate VteRowData and VteCompactRowData
+
+ src/ring.c |   91 +++++++++++++++++++++++++++++++----------------------------
+ src/ring.h |   24 ++--------------
+ 2 files changed, 51 insertions(+), 64 deletions(-)
+
+commit 17840c4a141747c241fd3439b98e683a8f84737b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 21:11:29 2009 -0400
+
+    [ring] Remove stale comment
+
+ src/ring.h |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit d77e97e9cff572ba0e325335dd4a5654676bc5fb
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 21:10:33 2009 -0400
+
+    [ring] Rename vtecellattr to VteCellAttr
+
+ src/ring.h |   10 +++++-----
+ src/vte.c  |    2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+commit a24f3bd3a7f9830245d4382df48f7063fd2340ea
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 21:09:26 2009 -0400
+
+    [ring] Move row attrs into a struct
+
+ src/ring.h   |   11 ++++++++++-
+ src/vte.c    |    8 ++++----
+ src/vteseq.c |    8 ++++----
+ 3 files changed, 18 insertions(+), 9 deletions(-)
+
+commit d0b03824d508d078accdcba7b1cc17a94d18f5ed
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 21:04:15 2009 -0400
+
+    [ring] Further cleanup of cell array
+
+ src/ring.c |   28 ++++++++++++----------------
+ 1 files changed, 12 insertions(+), 16 deletions(-)
+
+commit 3b5177f934c4bba89165e46521192766f13ed655
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 20:56:40 2009 -0400
+
+    [ring] Rename
+
+ src/ring.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 7d4895e5ad9d3153086596e3109e871fa027aea6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 20:53:46 2009 -0400
+
+    [ring] Remove spare chunk caching
+
+ src/ring.c |   77 ++++-------------------------------------------------------
+ 1 files changed, 6 insertions(+), 71 deletions(-)
+
+commit c7ce2e2fc72c086352fe44508ac97db390cdd591
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Sep 9 20:48:54 2009 -0400
+
+    [ring] Remove custom cell array allocator
+
+ src/ring.c |  142 ++++++++----------------------------------------------------
+ 1 files changed, 18 insertions(+), 124 deletions(-)
+
 commit a37a6377089b5f856043b3660a8380326f8c89a8
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Tue Sep 8 11:34:36 2009 -0400

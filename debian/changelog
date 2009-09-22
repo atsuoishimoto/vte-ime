@@ -1,3 +1,14 @@
+vte (1:0.22.0-0ubuntu1) karmic; urgency=low
+
+  * New upstream version (LP: #434563)
+    - Fix tab and wide-char handling
+    - Another rewrite of the ring.  Stores ring data on tmp files on disk now.
+      Please report any regressions.
+  * Update DEB_DH_MAKESHLIBS_ARGS_ALL in debian/rules
+  * refresh debian/patches/90_autoreconf.patch
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 22 Sep 2009 11:59:16 +0200
+
 vte (1:0.21.5-0ubuntu1) karmic; urgency=low
 
   * New upstream version (LP: #419808)

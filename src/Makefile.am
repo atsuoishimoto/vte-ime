@@ -69,10 +69,16 @@ libvte_la_SOURCES = \
 	vtepangocairo.h \
 	vteregex.c \
 	vteregex.h \
+	vterowdata.c \
+	vterowdata.h \
 	vteseq.c \
 	vteseq-list.h \
 	vteskel.c \
 	vteskel.h \
+	vtestream.c \
+	vtestream.h \
+	vtestream-base.h \
+	vtestream-file.h \
 	vtetc.c \
 	vtetc.h \
 	vtetree.c \

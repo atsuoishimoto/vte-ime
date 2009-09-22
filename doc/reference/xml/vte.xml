@@ -1044,7 +1044,8 @@ color, an eight color palette, bold versions of the eight color palette,
 and a dim version of the the eight color palette.
 </para>
 <para>
-<parameter>palette_size</parameter> must be either 0, 8, 16, or 24.  If <parameter>foreground</parameter> is <link linkend="NULL--CAPS"><literal>NULL</literal></link> and
+<parameter>palette_size</parameter> must be either 0, 8, 16, or 24, or between 25 and 255 inclusive.
+If <parameter>foreground</parameter> is <link linkend="NULL--CAPS"><literal>NULL</literal></link> and
 <parameter>palette_size</parameter> is greater than 0, the new foreground color is taken from
 <parameter>palette</parameter>[7].  If <parameter>background</parameter> is <link linkend="NULL--CAPS"><literal>NULL</literal></link> and <parameter>palette_size</parameter> is greater than 0,
 the new background color is taken from <parameter>palette</parameter>[0].  If
