@@ -1,9 +1,24 @@
-vte (1:0.20.5-1ubuntu2) karmic; urgency=low
+vte (1:0.21.5-0ubuntu1) karmic; urgency=low
 
-  * debian/patches/30_fix_env.patch:
-    - make the envv paramter work again (LP: #388953)
+  * New upstream version (LP: #419808)
+    - Finish ring rewrite. Scrollback buffer consumes ten times less
+      memory now, and better, doesn't allocate from the heap, so closing
+      tabs actually releases memory.
+    - Remove another stale assert()
+    - Oops, use the right map decoding function is iso2022 code
+    - Really fix the ring this time
+    - Enable g_assert().  May trigger some bogus ones now.  Please report.
+    - gnome terminal crashes with glibc detected
+    - Redesigning the vte buffer ring is going on.  Please report any misbehavior
+    - gnome-terminal crashed with SIGSEGV after hiting ctrl+o (LP: #408745)
+    - text mode program rendering is strange in cjk locale.
+    - bashisms in shell scripts
+  * Update DEB_DH_MAKESHLIBS_ARGS_ALL in debian/rules 
+  * debian/patches:
+    - remove 01_bashisms.patch: taken upstream
+    - refresh 90_autoreconf.patch
 
- -- Michael Vogt <michael.vogt@ubuntu.com>  Mon, 06 Jul 2009 14:03:47 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 22 Sep 2009 10:32:48 +0200
 
 vte (1:0.20.5-1ubuntu1) karmic; urgency=low
 
@@ -27,7 +42,7 @@ vte (1:0.20.5-1ubuntu1) karmic; urgency=low
         or scrolling is restricted.
   * Closes LP: #314826 and LP: #369440.
    
- -- Chris Coulson <chrisccoulson@googlemail.com>  Tue, 16 Jun 2009 19:47:00 +0100
+ -- Chris Coulson <chrisccoulson@googlemail.com>  Wed, 17 Jun 2009 09:58:40 +0200
 
 vte (1:0.20.5-1) unstable; urgency=low
 

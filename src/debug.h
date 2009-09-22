@@ -21,6 +21,7 @@
 #ifndef vte_debug_h_included
 #define vte_debug_h_included
 
+#include <config.h>
 
 #include <glib.h>
 
@@ -76,7 +77,7 @@ _vte_debug_on(VteDebugFlags flags)
 #include <glib/gstdio.h>
 static void _vte_debug_print(guint flags, const char *fmt, ...)
 {
-	if (_vte_debug_on (flags)) {
+	_VTE_DEBUG_IF(flags) {
 		va_list  ap;
 		va_start (ap, fmt);
 		g_vfprintf (stderr, fmt, ap);
@@ -84,6 +85,10 @@ static void _vte_debug_print(guint flags, const char *fmt, ...)
 	}
 }
 #endif
+
+#define _ASSERT_STATIC1(_line, _cond) typedef int _static_assert_on_line_##_line##_failed[(_cond)?1:-1]
+#define _ASSERT_STATIC0(_line, _cond) _ASSERT_STATIC1 (_line, (_cond))
+#define ASSERT_STATIC(_cond) _ASSERT_STATIC0 (__LINE__, (_cond))
 
 G_END_DECLS
 

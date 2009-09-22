@@ -40,7 +40,7 @@ main(int argc, char **argv)
 	char *terminal = NULL;
 	struct _vte_matcher *matcher = NULL;
 	struct _vte_termcap *termcap = NULL;
-	struct _vte_buffer *buffer = NULL;
+	VteBuffer *buffer = NULL;
 	GArray *array;
 	unsigned int i, j;
 	int l;
@@ -87,7 +87,7 @@ main(int argc, char **argv)
 	while (fread(&b, 1, 1, infile) == 1) {
 		_vte_buffer_append(buffer, &b, 1);
 	}
-	_vte_iso2022_process(subst, buffer->bytes,
+	_vte_iso2022_process(subst, buffer->data,
 			_vte_buffer_length(buffer), array);
 
 	i = 0;
