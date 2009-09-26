@@ -1,3 +1,15 @@
+vte (1:0.22.1-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+    - Fix crash on terminal reset. Closes: #548319.
+  * debian/patches/01_background_ncurses.patch:
+    - Removed, the fix is in the new version.
+  * debian/patches/25_optional-ncurses.patch,
+    debian/patches/90_autoreconf.patch:
+    - Refreshed.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sat, 26 Sep 2009 00:01:19 +0200
+
 vte (1:0.22.0-2) unstable; urgency=low
 
   * 01_background_ncurses.patch: stolen upstream. Fix background color 
