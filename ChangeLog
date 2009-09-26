@@ -1,4 +1,95 @@
-commit b8c130b10aa5571a66fb961347791ad54809ee32
+commit 3e1738a4b962dc339cddd66a4504b198ae80fe38
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Sep 25 17:18:16 2009 -0400
+
+    Release 0.22.1
+
+ NEWS         |   10 ++++++++++
+ configure.in |    4 ++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+commit c87f6a7dc778bb75aa6defeceda3505028c0430e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Sep 25 17:03:31 2009 -0400
+
+    [ring] Clear ring on _init
+
+ src/ring.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 73aba0352cd8034f69178459fc58347cedc74ec7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Sep 25 16:55:08 2009 -0400
+
+    Bug 596365 - libvte crashes when issueing 'reset' in a terminal
+
+ src/vtestream-file.h |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+commit cc6df5b1ebeba74c8c96d897bb5e8400ba429407
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Sep 25 16:50:04 2009 -0400
+
+    [stream] Fix warnings
+
+ src/vtestream-base.h |    4 ++--
+ src/vtestream-file.h |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 6bafc718f231bac266c663724334999dfebac16e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Sep 24 23:15:07 2009 -0400
+
+    Bug 588033 - background tabs may lose lines off the bottom of the scrollback
+
+ src/vte.c |   33 ++++++++++++++++++---------------
+ 1 files changed, 18 insertions(+), 15 deletions(-)
+
+commit 3df8026931941ea6a5d41c932803f56ded862a00
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Sep 24 15:26:49 2009 -0400
+
+    Minor
+
+ src/vte-private.h |    1 +
+ src/vte.c         |    7 ++++++-
+ src/vteseq.c      |   14 +++++++-------
+ 3 files changed, 14 insertions(+), 8 deletions(-)
+
+commit 58d0affa8eea77353ef47c53923cd82c4203fe1a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Sep 24 15:22:30 2009 -0400
+
+    Bug 596163 - Doesn't display expected background color in ncurses apps
+    
+    Revert semantic change introduced in 08caf3b174e68ba3d02f04c2595ad552cd50db30
+
+ src/ring.c        |   25 +++----------------------
+ src/vte-private.h |    3 +++
+ src/vte.c         |   30 +++++++++++++++++++++++++-----
+ src/vteseq.c      |   31 +++++++++++--------------------
+ 4 files changed, 42 insertions(+), 47 deletions(-)
+
+commit 8ad12cd15ad4dc5e7eb40398e4b835af31f34c0f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Sep 24 14:25:47 2009 -0400
+
+    Bug 596011 -  Problem compiling vte 0.22.0 on Solaris
+
+ src/vterowdata.c |    2 +-
+ src/vterowdata.h |    1 -
+ 2 files changed, 1 insertions(+), 2 deletions(-)
+
+commit ebd4dac2028edd77b38edfd5595dae01c529670d
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Sep 24 14:22:53 2009 -0400
+
+    Fix warning
+
+ src/vtestream-base.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ca89fbb9d6fb8470d5e9150d8b4f35424893d1ca
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Mon Sep 21 17:01:17 2009 -0400
 
@@ -7,6 +98,16 @@ Date:   Mon Sep 21 17:01:17 2009 -0400
  NEWS         |    4 ++++
  configure.in |   10 +++++-----
  2 files changed, 9 insertions(+), 5 deletions(-)
+
+commit df0350b20f91305e8c330226dd50ea1bee501271
+Author: Rajesh Ranjan <rranjan@rranjan.csb>
+Date:   Sat Sep 19 00:11:04 2009 +0530
+
+    maithili update, translated by Sangeeta Kumari
+
+ po/LINGUAS |    1 +
+ po/mai.po  |   93 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 94 insertions(+), 0 deletions(-)
 
 commit 8658f78fce0ffad86c81ea2502047cdbc2d32669
 Author: Behdad Esfahbod <behdad@behdad.org>
