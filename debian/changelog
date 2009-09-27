@@ -1,3 +1,10 @@
+vte (1:0.22.1-2) unstable; urgency=low
+
+  * debian/patches/01_vte_sequence_handler_cd_crash.patch:
+    - Patch from Matijs van Zuijlen to fix a crash. Closes: #548388.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sun, 27 Sep 2009 00:45:48 +0200
+
 vte (1:0.22.1-1) unstable; urgency=low
 
   * New upstream bugfix release.

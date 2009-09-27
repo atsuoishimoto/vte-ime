@@ -1,3 +1,4 @@
+01_vte_sequence_handler_cd_crash.patch
 12_python_reaper.patch
 25_optional-ncurses.patch
 60_termcap-home-end.patch
