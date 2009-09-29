@@ -1,3 +1,14 @@
+vte (1:0.22.2-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+    - debian/patches/01_vte_sequence_handler_cd_crash.patch:
+      + Removed, applied upstream.
+    - debian/patches/90_autoreconf.patch:
+      + Refreshed.
+  * debian/watch: Don't uupdate.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Tue, 29 Sep 2009 14:06:41 +0200
+
 vte (1:0.22.1-2) unstable; urgency=low
 
   * debian/patches/01_vte_sequence_handler_cd_crash.patch:

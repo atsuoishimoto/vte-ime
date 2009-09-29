@@ -1,3 +1,45 @@
+commit 1fc66f918330a053b85080756d8be165eb9f2708
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 28 15:42:12 2009 -0400
+
+    Release 0.22.2
+
+ NEWS         |   10 ++++++++++
+ configure.in |    4 ++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+commit ea46cc66b0340dbe42b8b19b2691c824083ad033
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 28 14:25:42 2009 -0400
+
+    [a11y] Fix assertion failure
+    
+    Reported here:
+    https://bugs.launchpad.net/ubuntu/+source/gnome-terminal/+bug/435646
+
+ src/vteaccess.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 470030991fc3107e04934b1d3aa54d4428be7e2f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 28 13:57:26 2009 -0400
+
+    Bug 596444 - word-select includes \n when the word ends at the edge of the terminal
+
+ src/vte.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit b7083d3cdbe31305de2fa2974919b3d105f9b740
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sun Sep 27 17:06:22 2009 -0400
+
+    Bug 596460 - 0.22.1 kills vte based apps
+    
+    Oops
+
+ src/vteseq.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 3e1738a4b962dc339cddd66a4504b198ae80fe38
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Fri Sep 25 17:18:16 2009 -0400
