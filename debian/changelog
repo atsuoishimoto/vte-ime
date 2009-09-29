@@ -1,3 +1,13 @@
+vte (1:0.22.2-0ubuntu2) karmic; urgency=low
+  
+  * debian/patches/10_fix_pyenv.patch:
+    - fix environment passing in python to fork_command(), see
+      https://bugzilla.gnome.org/show_bug.cgi?id=587894
+    - This fixes gdebi-gtk and it can install packages again 
+      (LP: #438266)
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Tue, 29 Sep 2009 10:29:11 +0200
+
 vte (1:0.22.2-0ubuntu1) karmic; urgency=low
 
   [ Michael Vogt ]
