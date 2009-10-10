@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002 Red Hat, Inc.
+ * Copyright (C) 2002,2009 Red Hat, Inc.
  *
  * This is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License as published by
@@ -14,399 +14,549 @@
  * You should have received a copy of the GNU Library General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * Red Hat Author(s): Nalin Dahyabhai, Behdad Esfahbod
  */
 
 #include <config.h>
-#include <stdio.h>
-#include <string.h>
-#include <glib.h>
+
 #include "debug.h"
 #include "ring.h"
 
+#include <string.h>
+
+/*
+ * VteRing: A buffer ring
+ */
+
 #ifdef VTE_DEBUG
 static void
-_vte_ring_validate(VteRing * ring)
+_vte_ring_validate (VteRing * ring)
 {
-	long i, max;
 	g_assert(ring != NULL);
-	g_assert(ring->length <= ring->max);
-	max = ring->delta + ring->length;
-	for (i = ring->delta; i < max; i++) {
-		g_assert(_vte_ring_contains(ring, i));
-		g_assert(ring->array[i % ring->max] != NULL);
-	}
+	_vte_debug_print(VTE_DEBUG_RING,
+			" Delta = %u, Length = %u, Max = %u, Writable = %u.\n",
+			ring->start, ring->end - ring->start,
+			ring->max, ring->end - ring->writable);
+
+	g_assert (ring->start <= ring->writable);
+	g_assert (ring->writable <= ring->end);
+
+	g_assert (ring->end - ring->start <= ring->max);
+	g_assert (ring->end - ring->writable <= ring->mask);
 }
 #else
 #define _vte_ring_validate(ring) G_STMT_START {} G_STMT_END
 #endif
 
-/**
- * _vte_ring_new:
- * @max_elements: the maximum size the new ring will be allowed to reach
- * @free_func: a #VteRingFreeFunc
- * @data: user data for @free
- *
- * Allocates a new ring capable of holding up to @max_elements elements at a
- * time, using @free to free them when they are removed from the ring.  The
- * @data pointer is passed to the @free callback whenever it is called.
- *
- * Returns: a new ring
- */
-VteRing *
-_vte_ring_new(glong max_elements, VteRingFreeFunc free_func, gpointer data)
+
+void
+_vte_ring_init (VteRing *ring, guint max_rows)
 {
-	VteRing *ret = g_slice_new0(VteRing);
-	ret->user_data = data;
-	ret->cached_item = -1;
-	ret->max = MAX(max_elements, 2);
-	ret->array = g_malloc0(sizeof(gpointer) * ret->max);
-	ret->free = free_func;
-	return ret;
-}
+	_vte_debug_print(VTE_DEBUG_RING, "New ring %p.\n", ring);
 
-VteRing *
-_vte_ring_new_with_delta(glong max_elements, glong delta,
-			 VteRingFreeFunc free_func, gpointer data)
-{
-	VteRing *ret;
-	ret = _vte_ring_new(max_elements, free_func, data);
-	ret->delta = delta;
-	return ret;
-}
+	memset (ring, 0, sizeof (*ring));
 
-/**
- * _vte_ring_insert:
- * @ring: a #VteRing
- * @position: an index
- * @data: the new item
- *
- * Inserts a new item (@data) into @ring at the @position'th offset.  If @ring
- * already has an item stored at the desired location, it will be freed before
- * being replaced by the new @data.
- *
- */
-gpointer
-_vte_ring_insert(VteRing * ring, long position, gpointer data)
-{
-	gpointer old_data = NULL;
-	long point, i;
+	ring->max = MAX (max_rows, 3);
 
-	g_return_val_if_fail(ring != NULL, NULL);
-	g_return_val_if_fail(position >= ring->delta, NULL);
-	g_return_val_if_fail(position <= ring->delta + ring->length, NULL);
-	g_return_val_if_fail(data != NULL, NULL);
+	ring->mask = 31;
+	ring->array = g_malloc0 (sizeof (ring->array[0]) * (ring->mask + 1));
 
-	_vte_debug_print(VTE_DEBUG_RING,
-			"Inserting at position %ld.\n"
-			" Delta = %ld, Length = %ld, Max = %ld.\n",
-			position, ring->delta, ring->length, ring->max);
+	ring->attr_stream = _vte_file_stream_new ();
+	ring->text_stream = _vte_file_stream_new ();
+	ring->row_stream = _vte_file_stream_new ();
+
+	ring->last_attr.text_offset = 0;
+	ring->last_attr.attr.i = 0;
+	ring->utf8_buffer = g_string_sized_new (128);
+
+	_vte_row_data_init (&ring->cached_row);
+	ring->cached_row_num = (guint) -1;
+
 	_vte_ring_validate(ring);
+}
 
-	/* Initial insertion, or append. */
-	if (position == ring->length + ring->delta) {
-		i = position % ring->max;
-		old_data = ring->array[i];
-		/* Set the new item, and if the buffer wasn't "full", increase
-		 * our idea of how big it is, otherwise increase the delta so
-		 * that this becomes the "last" item and the previous item
-		 * scrolls off the *top*. */
-		ring->array[i] = data;
-		if (ring->length == ring->max) {
-			ring->delta++;
-			if (ring->delta > ring->cached_item) {
-				_vte_ring_set_cache (ring, -1, NULL);
+void
+_vte_ring_fini (VteRing *ring)
+{
+	guint i;
+
+	for (i = 0; i <= ring->mask; i++)
+		_vte_row_data_fini (&ring->array[i]);
+
+	g_free (ring->array);
+
+	g_object_unref (ring->attr_stream);
+	g_object_unref (ring->text_stream);
+	g_object_unref (ring->row_stream);
+
+	g_string_free (ring->utf8_buffer, TRUE);
+
+	_vte_row_data_fini (&ring->cached_row);
+}
+
+typedef struct _VteRowRecord {
+	gsize text_offset;
+	gsize attr_offset;
+} VteRowRecord;
+
+static gboolean
+_vte_ring_read_row_record (VteRing *ring, VteRowRecord *record, guint position)
+{
+	return _vte_stream_read (ring->row_stream, position * sizeof (*record), (char *) record, sizeof (*record));
+}
+
+static void
+_vte_ring_append_row_record (VteRing *ring, const VteRowRecord *record, guint position)
+{
+	_vte_stream_append (ring->row_stream, (const char *) record, sizeof (*record));
+}
+
+static void
+_vte_ring_freeze_row (VteRing *ring, guint position, const VteRowData *row)
+{
+	VteRowRecord record;
+	VteCell *cell;
+	GString *buffer = ring->utf8_buffer;
+	guint32 basic_attr = basic_cell.i.attr;
+	int i;
+
+	_vte_debug_print (VTE_DEBUG_RING, "Freezing row %d.\n", position);
+
+	record.text_offset = _vte_stream_head (ring->text_stream);
+	record.attr_offset = _vte_stream_head (ring->attr_stream);
+
+	g_string_set_size (buffer, 0);
+	for (i = 0, cell = row->cells; i < row->len; i++, cell++) {
+		VteIntCellAttr attr;
+		int num_chars;
+
+		/* Attr storage:
+		 *
+		 * 1. We don't store attrs for fragments.  They can be
+		 * reconstructed using the columns of their start cell.
+		 *
+		 * 2. We store one attr per vteunistr character starting
+		 * from the second character, with columns=0.
+		 *
+		 * That's enough to reconstruct the attrs, and to store
+		 * the text in real UTF-8.
+		 */
+		attr.s = cell->attr;
+		if (G_LIKELY (!attr.s.fragment)) {
+
+			attr.i ^= basic_attr;
+			if (ring->last_attr.attr.i != attr.i) {
+				ring->last_attr.text_offset = record.text_offset + buffer->len;
+				_vte_stream_append (ring->attr_stream, (const char *) &ring->last_attr, sizeof (ring->last_attr));
+				if (!buffer->len)
+					/* This row doesn't use last_attr, adjust */
+					record.attr_offset += sizeof (ring->last_attr);
+				ring->last_attr.attr = attr;
 			}
 
-		} else {
-			ring->length++;
+			num_chars = _vte_unistr_strlen (cell->c);
+			if (num_chars > 1) {
+				attr.s = cell->attr;
+				attr.s.columns = 0;
+				attr.i ^= basic_attr;
+				ring->last_attr.text_offset = record.text_offset + buffer->len
+							    + g_unichar_to_utf8 (_vte_unistr_get_base (cell->c), NULL);
+				_vte_stream_append (ring->attr_stream, (const char *) &ring->last_attr, sizeof (ring->last_attr));
+				ring->last_attr.attr = attr;
+			}
+
+			_vte_unistr_append_to_string (cell->c, buffer);
 		}
-		_vte_debug_print(VTE_DEBUG_RING,
-				" Delta = %ld, Length = %ld, "
-				"Max = %ld.\n",
-				ring->delta, ring->length, ring->max);
-		_vte_ring_validate(ring);
-		return old_data;
+	}
+	if (!row->attr.soft_wrapped)
+		g_string_append_c (buffer, '\n');
+
+	_vte_stream_append (ring->text_stream, buffer->str, buffer->len);
+	_vte_ring_append_row_record (ring, &record, position);
+}
+
+static void
+_vte_ring_thaw_row (VteRing *ring, guint position, VteRowData *row, gboolean truncate)
+{
+	VteRowRecord records[2], record;
+	VteIntCellAttr attr;
+	VteCellAttrChange attr_change;
+	VteCell cell;
+	const char *p, *q, *end;
+	GString *buffer = ring->utf8_buffer;
+	guint32 basic_attr = basic_cell.i.attr;
+
+	_vte_debug_print (VTE_DEBUG_RING, "Thawing row %d.\n", position);
+
+	_vte_row_data_clear (row);
+
+	attr_change.text_offset = 0;
+
+	if (!_vte_ring_read_row_record (ring, &records[0], position))
+		return;
+	if ((position + 1) * sizeof (records[0]) < _vte_stream_head (ring->row_stream)) {
+		if (!_vte_ring_read_row_record (ring, &records[1], position + 1))
+			return;
+	} else
+		records[1].text_offset = _vte_stream_head (ring->text_stream);
+
+	g_string_set_size (buffer, records[1].text_offset - records[0].text_offset);
+	if (!_vte_stream_read (ring->text_stream, records[0].text_offset, buffer->str, buffer->len))
+		return;
+
+	record = records[0];
+
+	if (G_LIKELY (buffer->len && buffer->str[buffer->len - 1] == '\n'))
+		buffer->len--;
+	else
+		row->attr.soft_wrapped = TRUE;
+
+	p = buffer->str;
+	end = p + buffer->len;
+	while (p < end) {
+
+		if (record.text_offset >= ring->last_attr.text_offset) {
+			attr = ring->last_attr.attr;
+		} else {
+			if (record.text_offset >= attr_change.text_offset) {
+				if (!_vte_stream_read (ring->attr_stream, record.attr_offset, (char *) &attr_change, sizeof (attr_change)))
+					return;
+				record.attr_offset += sizeof (attr_change);
+			}
+			attr = attr_change.attr;
+		}
+
+		attr.i ^= basic_attr;
+		cell.attr = attr.s;
+		cell.c = g_utf8_get_char (p);
+
+		q = g_utf8_next_char (p);
+		record.text_offset += q - p;
+		p = q;
+
+		if (G_UNLIKELY (cell.attr.columns == 0)) {
+			/* Combine it */
+			g_assert (row->len);
+			row->cells[row->len - 1].c = _vte_unistr_append_unichar (row->cells[row->len - 1].c, cell.c);
+		} else {
+			_vte_row_data_append (row, &cell);
+			if (cell.attr.columns > 1) {
+				/* Add the fragments */
+				int i, columns = cell.attr.columns;
+				cell.attr.fragment = 1;
+				cell.attr.columns = 1;
+				for (i = 1; i < columns; i++)
+					_vte_row_data_append (row, &cell);
+			}
+		}
 	}
 
-	if (position <= ring->cached_item) {
-		_vte_ring_set_cache (ring, -1, NULL);
+	if (truncate) {
+		if (records[0].text_offset < ring->last_attr.text_offset)
+			if (!_vte_stream_read (ring->attr_stream, records[0].attr_offset, (char *) &ring->last_attr, sizeof (ring->last_attr))) {
+				ring->last_attr.text_offset = 0;
+				ring->last_attr.attr.i = 0;
+			}
+		_vte_stream_truncate (ring->row_stream, position * sizeof (record));
+		_vte_stream_truncate (ring->attr_stream, records[0].attr_offset);
+		_vte_stream_truncate (ring->text_stream, records[0].text_offset);
+	}
+}
+
+static void
+_vte_ring_reset_streams (VteRing *ring, guint position)
+{
+	_vte_debug_print (VTE_DEBUG_RING, "Reseting streams to %d.\n", position);
+
+	_vte_stream_reset (ring->row_stream, position * sizeof (VteRowRecord));
+	_vte_stream_reset (ring->text_stream, 0);
+	_vte_stream_reset (ring->attr_stream, 0);
+
+	ring->last_attr.text_offset = 0;
+	ring->last_attr.attr.i = 0;
+
+	ring->last_page = position;
+}
+
+static void
+_vte_ring_new_page (VteRing *ring)
+{
+	_vte_debug_print (VTE_DEBUG_RING, "Starting new stream page at %d.\n", ring->writable);
+
+	_vte_stream_new_page (ring->attr_stream);
+	_vte_stream_new_page (ring->text_stream);
+	_vte_stream_new_page (ring->row_stream);
+
+	ring->last_page = ring->writable;
+}
+
+
+
+static inline VteRowData *
+_vte_ring_writable_index (VteRing *ring, guint position)
+{
+	return &ring->array[position & ring->mask];
+}
+
+const VteRowData *
+_vte_ring_index (VteRing *ring, guint position)
+{
+	if (G_LIKELY (position >= ring->writable))
+		return _vte_ring_writable_index (ring, position);
+
+	if (ring->cached_row_num != position) {
+		_vte_debug_print(VTE_DEBUG_RING, "Caching row %d.\n", position);
+		_vte_ring_thaw_row (ring, position, &ring->cached_row, FALSE);
+		ring->cached_row_num = position;
 	}
 
-	/* All other cases.  Calculate the location where the last "item" in the
-	 * buffer is going to end up in the array. */
-	point = ring->delta + ring->length - 1;
-	while (point < 0) {
-		point += ring->max;
+	return &ring->cached_row;
+}
+
+static void _vte_ring_ensure_writable (VteRing *ring, guint position);
+static void _vte_ring_ensure_writable_room (VteRing *ring);
+
+VteRowData *
+_vte_ring_index_writable (VteRing *ring, guint position)
+{
+	_vte_ring_ensure_writable (ring, position);
+	return _vte_ring_writable_index (ring, position);
+}
+
+static void
+_vte_ring_freeze_one_row (VteRing *ring)
+{
+	VteRowData *row;
+
+	if (G_UNLIKELY (ring->writable == ring->start))
+		_vte_ring_reset_streams (ring, ring->writable);
+
+	row = _vte_ring_writable_index (ring, ring->writable);
+	_vte_ring_freeze_row (ring, ring->writable, row);
+
+	ring->writable++;
+
+	if (G_UNLIKELY (ring->writable == ring->last_page || ring->writable - ring->last_page >= ring->max))
+		_vte_ring_new_page (ring);
+}
+
+static void
+_vte_ring_thaw_one_row (VteRing *ring)
+{
+	VteRowData *row;
+
+	g_assert (ring->start < ring->writable);
+
+	_vte_ring_ensure_writable_room (ring);
+
+	ring->writable--;
+
+	if (ring->writable == ring->cached_row_num)
+		ring->cached_row_num = (guint) -1; /* Invalidate cached row */
+
+	row = _vte_ring_writable_index (ring, ring->writable);
+
+	_vte_ring_thaw_row (ring, ring->writable, row, TRUE);
+}
+
+static void
+_vte_ring_discard_one_row (VteRing *ring)
+{
+	ring->start++;
+	if (G_UNLIKELY (ring->start == ring->writable)) {
+		_vte_ring_reset_streams (ring, 0);
 	}
+	if (ring->start > ring->writable)
+		ring->writable = ring->start;
+}
 
-	if (ring->length == ring->max) {
-		/* If the buffer's full, then the last item will have to be
-		 * "lost" to make room for the new item so that the buffer
-		 * doesn't grow (here we scroll off the *bottom*). */
-		old_data = ring->array[point % ring->max];
-	} else {
-		/* We don't want to discard the last item. */
-		point++;
-	}
+static void
+_vte_ring_maybe_freeze_one_row (VteRing *ring)
+{
+	if (G_LIKELY (ring->writable + ring->mask == ring->end))
+		_vte_ring_freeze_one_row (ring);
+}
 
-	/* We need to bubble the remaining valid elements down.  This isn't as
-	 * slow as you probably think it is due to the pattern of usage. */
-	for (i = point; i > position; i--) {
-		ring->array[i % ring->max] = ring->array[(i - 1) % ring->max];
-	}
+static void
+_vte_ring_maybe_discard_one_row (VteRing *ring)
+{
+	if (_vte_ring_length (ring) == ring->max)
+		_vte_ring_discard_one_row (ring);
+}
 
-	/* Store the new item and bump up the length, unless we've hit the
-	 * maximum length already. */
-	ring->array[position % ring->max] = data;
-	ring->length = CLAMP(ring->length + 1, 0, ring->max);
-	_vte_debug_print(VTE_DEBUG_RING,
-			" Delta = %ld, Length = %ld, Max = %ld.\n",
-			ring->delta, ring->length, ring->max);
-	_vte_ring_validate(ring);
+static void
+_vte_ring_ensure_writable_room (VteRing *ring)
+{
+	guint new_mask, old_mask, i, end;
+	VteRowData *old_array, *new_array;;
 
-	return old_data;
+	if (G_LIKELY (ring->writable + ring->mask > ring->end))
+		return;
+
+	_vte_debug_print(VTE_DEBUG_RING, "Enlarging writable array.\n");
+
+	old_mask = ring->mask;
+	old_array = ring->array;
+
+	ring->mask = (ring->mask << 1) + 1;
+	ring->array = g_malloc0 (sizeof (ring->array[0]) * (ring->mask + 1));
+
+	new_mask = ring->mask;
+	new_array = ring->array;
+
+	end = ring->writable + old_mask + 1;
+	for (i = ring->writable; i < end; i++)
+		new_array[i & new_mask] = old_array[i & old_mask];
+
+	g_free (old_array);
+}
+
+static void
+_vte_ring_ensure_writable (VteRing *ring, guint position)
+{
+	if (G_LIKELY (position >= ring->writable))
+		return;
+
+	_vte_debug_print(VTE_DEBUG_RING, "Ensure writable %d.\n", position);
+
+	while (position < ring->writable)
+		_vte_ring_thaw_one_row (ring);
 }
 
 /**
- * _vte_ring_insert_preserve:
+ * _vte_ring_resize:
  * @ring: a #VteRing
- * @position: an index
- * @data: the new item
+ * @max_rows: new maximum numbers of rows in the ring
  *
- * Inserts a new item (@data) into @ring at the @position'th offset.  If @ring
- * already has an item stored at the desired location, it (and any successive
- * items) will be moved down, items that need to be removed will be removed
- * from the *top*.
- *
+ * Changes the number of lines the ring can contain.
  */
-gpointer
-_vte_ring_insert_preserve(VteRing * ring, long position, gpointer data)
+void
+_vte_ring_resize (VteRing *ring, guint max_rows)
 {
-	long point, i;
-	gpointer **tmp, old_data = NULL;
-	gpointer *stack_tmp[128];
-
-	g_return_val_if_fail(position <= _vte_ring_next(ring), NULL);
-
-	_vte_debug_print(VTE_DEBUG_RING,
-			"Inserting+ at position %ld.\n"
-			" Delta = %ld, Length = %ld, Max = %ld.\n",
-			position, ring->delta, ring->length, ring->max);
+	_vte_debug_print(VTE_DEBUG_RING, "Resizing to %d.\n", max_rows);
 	_vte_ring_validate(ring);
 
-	if (position <= ring->cached_item) {
-		_vte_ring_set_cache (ring, -1, NULL);
-	}
-
-	/* Allocate space to save existing elements. */
-	point = _vte_ring_next(ring);
-	i = MAX(1, point - position);
-
-	/* Save existing elements. */
-	tmp = stack_tmp;
-	if ((guint) i > G_N_ELEMENTS (stack_tmp))
-		tmp = g_new0(gpointer *, i);
-	for (i = position; i < point; i++) {
-		tmp[i - position] = _vte_ring_index(ring, gpointer, i);
-	}
-
-	/* Remove the existing elements. */
-	for (i = point; i > position; i--) {
-		_vte_ring_remove(ring, i - 1, FALSE);
-	}
-
-	/* Append the new item. */
-	old_data = _vte_ring_append(ring, data);
-
-	/* Append the old items. */
-	for (i = position; i < point; i++) {
-		if (old_data && ring->free) {
-			ring->free (old_data, ring->user_data);
+	/* Adjust the start of tail chunk now */
+	if (_vte_ring_length (ring) > max_rows) {
+		ring->start = ring->end - max_rows;
+		if (ring->start >= ring->writable) {
+			_vte_ring_reset_streams (ring, 0);
+			ring->writable = ring->start;
 		}
-		old_data = _vte_ring_append(ring, tmp[i - position]);
 	}
 
-	/* Clean up. */
-	if (tmp != stack_tmp)
-		g_free(tmp);
+	ring->max = max_rows;
+}
 
-	return old_data;
+void
+_vte_ring_shrink (VteRing *ring, guint max_len)
+{
+	if (_vte_ring_length (ring) <= max_len)
+		return;
+
+	_vte_debug_print(VTE_DEBUG_RING, "Shrinking to %d.\n", max_len);
+	_vte_ring_validate(ring);
+
+	if (ring->writable - ring->start <= max_len)
+		ring->end = ring->start + max_len;
+	else {
+		while (ring->writable - ring->start > max_len) {
+			_vte_ring_ensure_writable (ring, ring->writable - 1);
+			ring->end = ring->writable;
+		}
+	}
+
+	/* TODO May want to shrink down ring->array */
+
+	_vte_ring_validate(ring);
+}
+
+/**
+ * _vte_ring_insert_internal:
+ * @ring: a #VteRing
+ * @position: an index
+ *
+ * Inserts a new, empty, row into @ring at the @position'th offset.
+ * The item at that position and any items after that are shifted down.
+ *
+ * Return: the newly added row.
+ */
+VteRowData *
+_vte_ring_insert (VteRing *ring, guint position)
+{
+	guint i;
+	VteRowData *row, tmp;
+
+	_vte_debug_print(VTE_DEBUG_RING, "Inserting at position %u.\n", position);
+	_vte_ring_validate(ring);
+
+	_vte_ring_maybe_discard_one_row (ring);
+
+	_vte_ring_ensure_writable (ring, position);
+	_vte_ring_ensure_writable_room (ring);
+
+	g_assert (position >= ring->writable && position <= ring->end);
+
+	tmp = *_vte_ring_writable_index (ring, ring->end);
+	for (i = ring->end; i > position; i--)
+		*_vte_ring_writable_index (ring, i) = *_vte_ring_writable_index (ring, i - 1);
+	*_vte_ring_writable_index (ring, position) = tmp;
+
+	row = _vte_ring_writable_index (ring, position);
+	_vte_row_data_clear (row);
+	ring->end++;
+
+	_vte_ring_maybe_freeze_one_row (ring);
+
+	_vte_ring_validate(ring);
+	return row;
 }
 
 /**
  * _vte_ring_remove:
  * @ring: a #VteRing
  * @position: an index
- * @free_element: %TRUE if the item should be freed
  *
- * Removes the @position'th item from @ring, freeing it only if @free_element is
- * %TRUE.
- *
+ * Removes the @position'th item from @ring.
  */
-gpointer
-_vte_ring_remove(VteRing * ring, long position, gboolean free_element)
+void
+_vte_ring_remove (VteRing * ring, guint position)
 {
-	long i;
-	gpointer old_data;
-	_vte_debug_print(VTE_DEBUG_RING,
-			"Removing item at position %ld.\n"
-			" Delta = %ld, Length = %ld, Max = %ld.\n",
-			position, ring->delta, ring->length, ring->max);
+	guint i;
+	VteRowData tmp;
+
+	_vte_debug_print(VTE_DEBUG_RING, "Removing item at position %u.\n", position);
 	_vte_ring_validate(ring);
 
-	if (position <= ring->cached_item) {
-		_vte_ring_set_cache (ring, -1, NULL);
-	}
+	g_assert (_vte_ring_contains (ring, position));
 
-	i = position % ring->max;
-	/* Remove the data at this position. */
-	old_data = ring->array[i];
-	if (free_element && old_data && ring->free) {
-		_vte_debug_print(VTE_DEBUG_RING,
-				"Freeing item at position %ld.\n", position);
-		ring->free(old_data, ring->user_data);
-		old_data = NULL;
-	}
-	ring->array[i] = NULL;
+	_vte_ring_ensure_writable (ring, position);
 
-	/* Bubble the rest of the buffer up one notch.  This is also less
-	 * of a problem than it might appear, again due to usage patterns. */
-	for (i = position; i < ring->delta + ring->length - 1; i++) {
-		ring->array[i % ring->max] = ring->array[(i + 1) % ring->max];
-	}
+	tmp = *_vte_ring_writable_index (ring, position);
+	for (i = position; i < ring->end - 1; i++)
+		*_vte_ring_writable_index (ring, i) = *_vte_ring_writable_index (ring, i + 1);
+	*_vte_ring_writable_index (ring, ring->end - 1) = tmp;
 
-	/* Store a NULL in the position at the end of the buffer and decrement
-	 * its length (got room for one more now). */
-	ring->array[(ring->delta + ring->length - 1) % ring->max] = NULL;
-	if (ring->length > 0) {
-		ring->length--;
-	}
-	_vte_debug_print(VTE_DEBUG_RING,
-			" Delta = %ld, Length = %ld, Max = %ld.\n",
-			ring->delta, ring->length, ring->max);
+	if (ring->end > ring->writable)
+		ring->end--;
+
 	_vte_ring_validate(ring);
-
-	return old_data;
 }
+
 
 /**
  * _vte_ring_append:
  * @ring: a #VteRing
  * @data: the new item
  *
- * Appends a new item to the ring.  If an item must be removed to make room for
- * the new item, it is freed.
+ * Appends a new item to the ring.
  *
+ * Return: the newly added row.
  */
-gpointer
-_vte_ring_append(VteRing * ring, gpointer data)
+VteRowData *
+_vte_ring_append (VteRing * ring)
 {
-	g_assert(data != NULL);
-	return _vte_ring_insert(ring, ring->delta + ring->length, data);
+	return _vte_ring_insert (ring, _vte_ring_next (ring));
 }
 
-/**
- * _vte_ring_free:
- * @ring: a #VteRing
- * @free_elements: %TRUE if items in the ring should be freed
- *
- * Frees the ring and, optionally, each of the items it contains.
- *
- */
-void
-_vte_ring_free(VteRing * ring, gboolean free_elements)
-{
-	long i;
-	if (free_elements && ring->free) {
-		for (i = 0; i < ring->max; i++) {
-			/* Remove this item. */
-			if (ring->array[i] != NULL) {
-				ring->free(ring->array[i], ring->user_data);
-			}
-		}
-	}
-	g_free(ring->array);
-	g_slice_free(VteRing, ring);
-}
-
-#ifdef RING_MAIN
-static void
-scrolled_off(gpointer freed, gpointer data)
-{
-	long *l = (long *)freed;
-	char *fmt = data;
-	g_printerr(fmt, *l);
-}
-
-int
-main(int argc, char **argv)
-{
-	long i, j, k, bias;
-	const int size = 8;
-	long values[40];
-	long lone = 42;
-	long *value;
-	VteRing *ring;
-
-	for (i = 0; i < G_N_ELEMENTS(values); i++) {
-		values[i] = i;
-	}
-
-	ring = _vte_ring_new(size, scrolled_off, "Lost value %ld.\n");
-	bias = 0;
-	g_printerr("Initializing.\n");
-	for (i = 0; i + bias <= G_N_ELEMENTS(values); i++) {
-		k = 0;
-		g_printerr("[%ld] ", i);
-		for (j = 0; j < G_N_ELEMENTS(values); j++) {
-			if (_vte_ring_contains(ring, j)) {
-				value = _vte_ring_index(ring, long *, j);
-			} else {
-				value = NULL;
-			}
-			if (value) {
-				g_printerr("%s%ld->%ld",
-					(k > 0) ? ", " : "", j, *value);
-				k++;
-			}
-		}
-		g_printerr("\n");
-		g_printerr("[%ld] max %ld, delta %ld, length %ld = {",
-			i, ring->max, ring->delta, ring->length);
-		for (j = 0; j < size; j++) {
-			value = ring->array[j];
-			if (j > 0) {
-				g_printerr(", ");
-			}
-			if (value) {
-				g_printerr("%ld", *value);
-			}
-		}
-		g_printerr("}\n");
-		if (i == 3) {
-			g_printerr("Removing item at 4.\n");
-			_vte_ring_remove(ring, 4, TRUE);
-			bias--;
-		} else if (i == 10) {
-			g_printerr("Inserting item at 7.\n");
-			_vte_ring_insert(ring, 7, &lone);
-			bias--;
-		} else if (i == 20) {
-			g_printerr("Inserting item at 13.\n");
-			_vte_ring_insert(ring, 13, &lone);
-			bias--;
-		} else if (i == 30) {
-			g_printerr("Inserting item at 23.\n");
-			_vte_ring_insert_preserve(ring, 23, &lone);
-			bias--;
-		} else if (i < G_N_ELEMENTS(values)) {
-			g_printerr("Appending item.\n");
-			_vte_ring_append(ring, &values[i + bias]);
-		}
-	}
-
-	_vte_ring_free(ring, TRUE);
-
-	return 0;
-}
-#endif

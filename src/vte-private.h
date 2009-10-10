@@ -41,7 +41,6 @@
 #include <unistd.h>
 #include <glib/gi18n-lib.h>
 
-#include "vteunistr.h"
 #include "vte.h"
 #include "buffer.h"
 #include "debug.h"
@@ -62,15 +61,10 @@ G_BEGIN_DECLS
 #define VTE_COLOR_PLAIN_OFFSET		0
 #define VTE_COLOR_BRIGHT_OFFSET		8
 #define VTE_COLOR_DIM_OFFSET		16
-#define VTE_DEF_FG			256
-#define VTE_DEF_BG			257
-#define VTE_BOLD_FG			258
-#define VTE_DIM_FG			259
-#define VTE_DEF_HL                      260
-#define VTE_CUR_BG			261
+/* More color defines in ring.h */
 
-#define VTE_SATURATION_MAX		10000
 #define VTE_SCROLLBACK_INIT		100
+#define VTE_SATURATION_MAX		10000
 #define VTE_DEFAULT_CURSOR		GDK_XTERM
 #define VTE_MOUSING_CURSOR		GDK_LEFT_PTR
 #define VTE_TAB_MAX			999
@@ -95,39 +89,6 @@ G_BEGIN_DECLS
 
 #define I_(string) (g_intern_static_string(string))
 
-
-/* The structure we use to hold characters we're supposed to display -- this
- * includes any supported visible attributes. */
-struct vte_charcell {
-	vteunistr c;		/* The Unicode string for the cell. */
-
-	struct vte_charcell_attr {
-		guint32 columns: 4;	/* Number of visible columns
-					   (as determined by g_unicode_iswide(c)).
-					   Also abused for tabs; bug 353610
-					   Keep at least 4 for tabs to work
-					   */
-		guint32 fore: 9;	/* Index into color palette */
-		guint32 back: 9;	/* Index into color palette. */
-
-		guint32 fragment: 1;	/* A continuation cell. */
-		guint32 standout: 1;	/* Single-bit attributes. */
-		guint32 underline: 1;
-		guint32 strikethrough: 1;
-
-		guint32 reverse: 1;
-		guint32 blink: 1;
-		guint32 half: 1;
-		guint32 bold: 1;
-
-		guint32 invisible: 1;
-		/* unused; bug 499893
-		guint32 protect: 1;
-		 */
-
-		/* 31 bits */
-	} attr;
-};
 
 typedef enum {
         VTE_REGEX_GREGEX,
@@ -183,11 +144,6 @@ typedef struct _VteWordCharRange {
 	gunichar start, end;
 } VteWordCharRange;
 
-typedef struct _VteRowData {
-	GArray *cells;
-	guchar soft_wrapped: 1;
-} VteRowData;
-
 /* Terminal private data. */
 struct _VteTerminalPrivate {
 	/* Emulation setup data. */
@@ -241,17 +197,16 @@ struct _VteTerminalPrivate {
 	glong max_input_bytes;
 
 	/* Output data queue. */
-	struct _vte_buffer *outgoing;	/* pending input characters */
+	VteBuffer *outgoing;	/* pending input characters */
 	VteConv outgoing_conv;
 
 	/* IConv buffer. */
-	struct _vte_buffer *conv_buffer;
+	VteBuffer *conv_buffer;
 
 	/* Screen data.  We support the normal screen, and an alternate
 	 * screen, which seems to be a DEC-specific feature. */
 	struct _VteScreen {
-		VteRing *row_data;	/* row data, arranged as a GArray of
-					   vte_charcell structures */
+		VteRing row_data[1];	/* buffer contents */
 		struct vte_cursor_position {
 			long row, col;
 		} cursor_current, cursor_saved;
@@ -270,23 +225,21 @@ struct _VteTerminalPrivate {
 		gboolean scrolling_restricted;
 		long scroll_delta;	/* scroll offset */
 		long insert_delta;	/* insertion offset */
-		struct vte_charcell defaults;	/* default characteristics
+		VteCell defaults;	/* default characteristics
 						   for insertion of any new
 						   characters */
-		struct vte_charcell color_defaults;	/* original defaults
+		VteCell color_defaults;	/* original defaults
 							   plus the current
 							   fore/back */
-		struct vte_charcell fill_defaults;	/* original defaults
+		VteCell fill_defaults;	/* original defaults
 							   plus the current
 							   fore/back with no
 							   character data */
-		struct vte_charcell basic_defaults;	/* original defaults */
 		gboolean alternate_charset;
 		gboolean status_line;
 		GString *status_line_contents;
 		gboolean status_line_changed;
 	} normal_screen, alternate_screen, *screen;
-	VteRowData *free_row;
 
 	/* Selection information. */
 	GArray *word_chars;
@@ -380,7 +333,7 @@ struct _VteTerminalPrivate {
 	gboolean cursor_color_set;
 	struct vte_palette_entry {
 		guint16 red, green, blue;
-	} palette[VTE_CUR_BG + 1];
+	} palette[VTE_PALETTE_SIZE];
 
 	/* Mouse cursors. */
 	gboolean mouse_cursor_visible;
@@ -441,9 +394,6 @@ void _vte_invalidate_cells(VteTerminal *terminal,
 void _vte_invalidate_cell(VteTerminal *terminal, glong col, glong row);
 void _vte_invalidate_cursor_once(VteTerminal *terminal, gboolean periodic);
 VteRowData * _vte_new_row_data(VteTerminal *terminal);
-VteRowData * _vte_new_row_data_sized(VteTerminal *terminal, gboolean fill);
-VteRowData * _vte_reset_row_data (VteTerminal *terminal, VteRowData *row, gboolean fill);
-void _vte_free_row_data(VteRowData *row);
 void _vte_terminal_adjust_adjustments(VteTerminal *terminal);
 void _vte_terminal_queue_contents_changed(VteTerminal *terminal);
 void _vte_terminal_emit_text_deleted(VteTerminal *terminal);
@@ -465,6 +415,10 @@ void _vte_terminal_visible_beep(VteTerminal *terminal);
 void _vte_terminal_beep(VteTerminal *terminal);
 
 void _vte_terminal_inline_error_message(VteTerminal *terminal, const char *format, ...) G_GNUC_PRINTF(2,3);
+
+VteRowData *_vte_terminal_ring_insert (VteTerminal *terminal, guint position, gboolean fill);
+VteRowData *_vte_terminal_ring_append (VteTerminal *terminal, gboolean fill);
+void _vte_terminal_ring_remove (VteTerminal *terminal, guint position);
 
 /* vteseq.c: */
 void _vte_terminal_handle_sequence(VteTerminal *terminal,

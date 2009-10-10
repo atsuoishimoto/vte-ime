@@ -1,3 +1,57 @@
+vte (1:0.22.2-2) unstable; urgency=low
+
+  * debian/patches/70_python_env.patch:
+    - Fix Python environment passing, GNOME #587894.
+
+ -- Luca Falavigna <dktrkranz@debian.org>  Sat, 10 Oct 2009 13:43:27 +0200
+
+vte (1:0.22.2-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+    - debian/patches/01_vte_sequence_handler_cd_crash.patch:
+      + Removed, applied upstream.
+    - debian/patches/90_autoreconf.patch:
+      + Refreshed.
+  * debian/watch: Don't uupdate.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Tue, 29 Sep 2009 14:06:41 +0200
+
+vte (1:0.22.1-2) unstable; urgency=low
+
+  * debian/patches/01_vte_sequence_handler_cd_crash.patch:
+    - Patch from Matijs van Zuijlen to fix a crash. Closes: #548388.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sun, 27 Sep 2009 00:45:48 +0200
+
+vte (1:0.22.1-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+    - Fix crash on terminal reset. Closes: #548319.
+  * debian/patches/01_background_ncurses.patch:
+    - Removed, the fix is in the new version.
+  * debian/patches/25_optional-ncurses.patch,
+    debian/patches/90_autoreconf.patch:
+    - Refreshed.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sat, 26 Sep 2009 00:01:19 +0200
+
+vte (1:0.22.0-2) unstable; urgency=low
+
+  * 01_background_ncurses.patch: stolen upstream. Fix background color 
+    in ncurses applications. Closes: #548241.
+
+ -- Josselin Mouette <joss@debian.org>  Thu, 24 Sep 2009 22:49:17 +0200
+
+vte (1:0.22.0-1) unstable; urgency=low
+
+  [ Emilio Pozuelo Monfort ]
+  * debian/patches/01_bashisms.patch: forwarded, add header.
+
+  [ Sebastian Dröge ]
+  * New upstream stable release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 22 Sep 2009 13:34:21 +0200
+
 vte (1:0.20.5-1) unstable; urgency=low
 
   * New upstream bugfix release, undoing the unintended

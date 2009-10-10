@@ -49,7 +49,7 @@ The major version number of the VTE library used at compile time.  (e.g. in VTE 
 </para><para role="since">Since 0.16.15</para></refsect2>
 <refsect2 id="VTE-MINOR-VERSION--CAPS" role="macro" condition="since:0.16.15">
 <title>VTE_MINOR_VERSION</title>
-<indexterm zone="VTE-MINOR-VERSION--CAPS" role="0.16.15"><primary sortas="VTE_MINOR_VERSION">VTE_MINOR_VERSION</primary></indexterm><programlisting>#define VTE_MINOR_VERSION (20)
+<indexterm zone="VTE-MINOR-VERSION--CAPS" role="0.16.15"><primary sortas="VTE_MINOR_VERSION">VTE_MINOR_VERSION</primary></indexterm><programlisting>#define VTE_MINOR_VERSION (22)
 </programlisting>
 <para>
 The minor version number of the VTE library used at compile time.  (e.g. in VTE version
@@ -57,7 +57,7 @@ The minor version number of the VTE library used at compile time.  (e.g. in VTE 
 </para><para role="since">Since 0.16.15</para></refsect2>
 <refsect2 id="VTE-MICRO-VERSION--CAPS" role="macro" condition="since:0.16.15">
 <title>VTE_MICRO_VERSION</title>
-<indexterm zone="VTE-MICRO-VERSION--CAPS" role="0.16.15"><primary sortas="VTE_MICRO_VERSION">VTE_MICRO_VERSION</primary></indexterm><programlisting>#define VTE_MICRO_VERSION (4)
+<indexterm zone="VTE-MICRO-VERSION--CAPS" role="0.16.15"><primary sortas="VTE_MICRO_VERSION">VTE_MICRO_VERSION</primary></indexterm><programlisting>#define VTE_MICRO_VERSION (0)
 </programlisting>
 <para>
 The micro version number of the VTE library used at compile time.  (e.g. in VTE version

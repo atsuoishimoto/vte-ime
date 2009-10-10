@@ -1,3 +1,67 @@
+0.22.2
+=======
+- Fix crash introduced in previous release
+- Fix a11y assertion failure
+- Improve selection at the end of row
+- Bugs fixed in this release:
+    https://bugs.launchpad.net/ubuntu/+source/gnome-terminal/+bug/435646
+    Bug 596444 - word-select includes \n when the word ends at the edge of the terminal
+    Bug 596460 - 0.22.1 kills vte based apps
+
+0.22.1
+=======
+- Fix crash on terminal reset
+- Fix build on Solaris
+- Bugs fixed in this release:
+    Bug 596365 - libvte crashes when issueing 'reset' in a terminal
+    Bug 588033 - background tabs may lose lines off the bottom of the scrollback
+    Bug 596163 - Doesn't display expected background color in ncurses apps
+    Bug 596011 - Problem compiling vte 0.22.0 on Solaris
+
+0.22.0
+=======
+- New stable release series
+
+0.21.7
+=======
+- Fix tab and wide-char handling
+- Revert symbol-hiding that was breaking build in some cases
+
+0.21.6
+=======
+- Another rewrite of the ring.  Stores ring data on tmp files on disk now.
+  Please report any regressions.
+- Mark library-internal symbols as such
+
+0.21.5
+=======
+- Finish ring rewrite.  Scrollback buffer consumes ten times less
+  memory now, and better, doesn't allocate from the heap, so closing
+  tabs actually releases memory.
+
+0.21.4
+=======
+- Remove another stale assert()
+- Oops, use the right map decoding function is iso2022 code
+
+0.21.3
+=======
+- Really fix the ring this time
+- Enable g_assert().  May trigger some bogus ones now.  Please report.
+
+0.21.2
+=======
+- Bugs fixed in this release:
+    Bug 592990 - gnome terminal crashes with glibc detected
+
+0.21.1
+=======
+- Redesigning the vte buffer ring is going on.  Please report any misbehavior
+- Bugs fixed in this release:
+    Bug 590824 - gnome-terminal crashed with SIGSEGV after hiting ctrl+o
+    Bug 572230 - text mode program rendering is strange in cjk locale.
+    Bug 588200 - bashisms in shell scripts
+
 0.20.5
 =======
 - Followup release to undo unintentded .soname bump

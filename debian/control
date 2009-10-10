@@ -2,8 +2,8 @@ Source: vte
 Section: libs
 Priority: optional
 Maintainer: Guilherme de S. Pastore <gpastore@debian.org>
-Uploaders: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>, Josselin Mouette <joss@debian.org>, Loic Minier <lool@dooz.org>, Sebastian Dröge <slomo@debian.org>
-Standards-Version: 3.8.1
+Uploaders: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>, Emilio Pozuelo Monfort <pochu@debian.org>, Josselin Mouette <joss@debian.org>, Luca Falavigna <dktrkranz@debian.org>, Sebastian Dröge <slomo@debian.org>
+Standards-Version: 3.8.3
 XS-Python-Version: >= 2.3
 Build-Depends: cdbs (>= 0.4.43),
                debhelper (>= 5.0.37.2),
