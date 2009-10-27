@@ -1301,7 +1301,13 @@ will use the <link linkend="GtkSettings-gtk-cursor-blink"><type>"gtk-cursor-blin
 Sets the length of the scrollback buffer used by the terminal.  The size of
 the scrollback buffer will be set to the larger of this value and the number
 of visible rows the widget can display, so 0 can safely be used to disable
-scrollback.  Note that this setting only affects the normal screen buffer.
+scrollback.
+</para>
+<para>
+A negative value means "infinite scrollback".
+</para>
+<para>
+Note that this setting only affects the normal screen buffer.
 For terminal types which have an alternate screen buffer, no scrollback is
 allowed on the alternate screen buffer.</para>
 <para>

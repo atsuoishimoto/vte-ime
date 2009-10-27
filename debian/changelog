@@ -1,3 +1,13 @@
+vte (1:0.22.3-1) unstable; urgency=low
+
+  * New upstream bugfix release:
+    + debian/patches/70_python_env.patch:
+      - Dropped, merged upstream.
+    - debian/patches/90_autoreconf.patch:
+      + Refreshed.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 27 Oct 2009 09:35:46 +0100
+
 vte (1:0.22.2-2) unstable; urgency=low
 
   * debian/patches/70_python_env.patch:

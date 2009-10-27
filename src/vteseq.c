@@ -821,12 +821,6 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 	case 47:
 	case 1047:
 	case 1049:
-		/* Clear the alternate screen if we're switching
-		 * to it, and home the cursor. */
-		if (set) {
-			_vte_terminal_clear_screen (terminal);
-			_vte_terminal_home_cursor (terminal);
-		}
 		/* Reset scrollbars and repaint everything. */
 		terminal->adjustment->value =
 			terminal->pvt->screen->scroll_delta;
@@ -2015,7 +2009,7 @@ static void
 vte_sequence_handler_ta (VteTerminal *terminal, GValueArray *params)
 {
 	VteScreen *screen;
-	long newcol, col;
+	long old_len, newcol, col;
 
 	/* Calculate which column is the next tab stop. */
 	screen = terminal->pvt->screen;
@@ -2053,47 +2047,46 @@ vte_sequence_handler_ta (VteTerminal *terminal, GValueArray *params)
 		 * as a space each.
 		 */
 
-		/* Get rid of trailing empty cells: bug 545924 */
-		if ((glong) _vte_row_data_length (rowdata) > col)
+		old_len = _vte_row_data_length (rowdata);
+		_vte_row_data_fill (rowdata, &screen->fill_defaults, newcol);
+
+		/* Insert smart tab if there's nothing in the line after
+		 * us.  Though, there may be empty cells (with non-default
+		 * background color for example.
+		 *
+		 * Notable bugs here: 545924 and 597242 */
 		{
-			const VteCell *cell;
-			guint i;
-			for (i = _vte_row_data_length (rowdata); (glong) i > col; i--) {
-				cell = _vte_row_data_get (rowdata, i - 1);
-				if (cell->attr.fragment || cell->c != 0)
+			glong i;
+			gboolean found = FALSE;
+			for (i = old_len; i > col; i--) {
+				const VteCell *cell = _vte_row_data_get (rowdata, i - 1);
+				if (cell->attr.fragment || cell->c != 0) {
+					found = TRUE;
 					break;
+				}
 			}
-			_vte_row_data_shrink (rowdata, i);
+			/* Nothing found on the line after us, turn this into
+			 * a smart tab */
+			if (!found) {
+				VteCell *cell = _vte_row_data_get_writable (rowdata, col);
+				VteCell tab = *cell;
+				tab.attr.invisible = 1; /* FIXME: bug 499944 */
+				tab.attr.columns = newcol - col;
+				tab.c = '\t';
+				/* Check if it fits in columns */
+				if (tab.attr.columns == newcol - col) {
+					/* Save tab char */
+					*cell = tab;
+					/* And adjust the fragments */
+					for (i = col + 1; i < newcol; i++) {
+						cell = _vte_row_data_get_writable (rowdata, i);
+						cell->c = '\t';
+						cell->attr.columns = 1;
+						cell->attr.fragment = 1;
+					}
+				}
+			}
 		}
-
-		if ((glong) _vte_row_data_length (rowdata) <= col)
-		  {
-		    VteCell cell;
-
-		    _vte_row_data_fill (rowdata, &screen->fill_defaults, col);
-
-		    cell.attr = screen->fill_defaults.attr;
-		    cell.attr.invisible = 1; /* FIXME: bug 499944 */
-		    cell.attr.columns = newcol - col;
-		    if (cell.attr.columns != newcol - col)
-		      {
-		        /* number of columns doesn't fit one cell. skip
-			 * fancy tabs
-			 */
-		       goto fallback_tab;
-		      }
-		    cell.c = '\t';
-		    _vte_row_data_append (rowdata, &cell);
-
-		    cell.attr.columns = 1;
-		    cell.attr.fragment = 1;
-		    _vte_row_data_fill (rowdata, &cell, newcol);
-		  }
-		else
-		  {
-		  fallback_tab:
-		    _vte_row_data_fill (rowdata, &screen->fill_defaults, newcol);
-		  }
 
 		_vte_invalidate_cells (terminal,
 				screen->cursor_current.col,

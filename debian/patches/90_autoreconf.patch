@@ -1,5 +1,6 @@
---- a/aclocal.m4
-+++ b/aclocal.m4
+diff -Naur vte-0.22.3.old/aclocal.m4 vte-0.22.3/aclocal.m4
+--- vte-0.22.3.old/aclocal.m4	2009-10-27 02:25:01.000000000 +0100
++++ vte-0.22.3/aclocal.m4	2009-10-27 09:38:12.000000000 +0100
 @@ -13,8 +13,8 @@
  
  m4_ifndef([AC_AUTOCONF_VERSION],
@@ -11,7 +12,25 @@
  You have another version of autoconf.  It may work, but is not guaranteed to.
  If you have problems, you may need to regenerate the build system entirely.
  To do so, use the procedure documented by the package, typically `autoreconf'.])])
-@@ -3200,13 +3200,10 @@
+@@ -492,11 +492,14 @@
+ [
+ 	AC_REQUIRE([AM_MAINTAINER_MODE])
+ 
++	DISABLE_DEPRECATED=""
+ 	if test $USE_MAINTAINER_MODE = yes; then
+-		DISABLE_DEPRECATED="-DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED -DPANGO_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -DGCONF_DISABLE_DEPRECATED -DBONOBO_DISABLE_DEPRECATED -DBONOBO_UI_DISABLE_DEPRECATED -DGNOME_VFS_DISABLE_DEPRECATED -DGNOME_DISABLE_DEPRECATED -DLIBGLADE_DISABLE_DEPRECATED -DWNCK_DISABLE_DEPRECATED -DLIBSOUP_DISABLE_DEPRECATED"
+-	else
+-		DISABLE_DEPRECATED=""
++	        DOMAINS="G ATK PANGO GDK GDK_PIXBUF GTK GCONF BONOBO BONOBO_UI GNOME LIBGLADE VTE GNOME_VFS WNCK LIBSOUP"
++	        for DOMAIN in $DOMAINS; do
++	               DISABLE_DEPRECATED="$DISABLE_DEPRECATED -D${DOMAIN}_DISABLE_DEPRECATED -D${DOMAIN}_DISABLE_SINGLE_INCLUDES"
++	        done
+ 	fi
++
+ 	AC_SUBST(DISABLE_DEPRECATED)
+ ])
+ 
+@@ -3200,13 +3203,10 @@
    # before this can be enabled.
    hardcode_into_libs=yes
  
@@ -26,7 +45,7 @@
    fi
  
    # We used to test for /lib/ld.so.1 and disable shared libraries on
-@@ -3218,6 +3215,18 @@
+@@ -3218,6 +3218,18 @@
    dynamic_linker='GNU/Linux ld.so'
    ;;
  
@@ -45,7 +64,7 @@
  netbsd*)
    version_type=sunos
    need_lib_prefix=no
-@@ -3809,7 +3818,7 @@
+@@ -3809,7 +3821,7 @@
    lt_cv_deplibs_check_method=pass_all
    ;;
  
@@ -54,7 +73,7 @@
    if echo __ELF__ | $CC -E - | $GREP __ELF__ > /dev/null; then
      lt_cv_deplibs_check_method='match_pattern /lib[[^/]]+(\.so\.[[0-9]]+\.[[0-9]]+|_pic\.a)$'
    else
-@@ -4490,7 +4499,7 @@
+@@ -4490,7 +4502,7 @@
  	    ;;
  	esac
  	;;
@@ -63,7 +82,7 @@
  	;;
        *qnx* | *nto*)
          # QNX uses GNU C++, but need to define -shared option too, otherwise
-@@ -4915,6 +4924,9 @@
+@@ -4915,6 +4927,9 @@
    cygwin* | mingw* | cegcc*)
      _LT_TAGVAR(export_symbols_cmds, $1)='$NM $libobjs $convenience | $global_symbol_pipe | $SED -e '\''/^[[BCDGRS]][[ ]]/s/.*[[ ]]\([[^ ]]*\)/\1 DATA/;/^.*[[ ]]__nm__/s/^.*[[ ]]__nm__\([[^ ]]*\)[[ ]][[^ ]]*/\1 DATA/;/^I[[ ]]/d;/^[[AITW]][[ ]]/s/.* //'\'' | sort | uniq > $export_symbols'
    ;;
@@ -73,7 +92,7 @@
    *)
      _LT_TAGVAR(export_symbols_cmds, $1)='$NM $libobjs $convenience | $global_symbol_pipe | $SED '\''s/.* //'\'' | sort | uniq > $export_symbols'
    ;;
-@@ -4979,6 +4991,9 @@
+@@ -4979,6 +4994,9 @@
    openbsd*)
      with_gnu_ld=no
      ;;
@@ -83,7 +102,7 @@
    esac
  
    _LT_TAGVAR(ld_shlibs, $1)=yes
-@@ -5161,7 +5176,7 @@
+@@ -5161,7 +5179,7 @@
        fi
        ;;
  
@@ -92,7 +111,7 @@
        if echo __ELF__ | $CC -E - | $GREP __ELF__ >/dev/null; then
  	_LT_TAGVAR(archive_cmds, $1)='$LD -Bshareable $libobjs $deplibs $linker_flags -o $lib'
  	wlarc=
-@@ -5336,6 +5351,7 @@
+@@ -5336,6 +5354,7 @@
  	if test "$aix_use_runtimelinking" = yes; then
  	  shared_flag="$shared_flag "'${wl}-G'
  	fi
@@ -100,7 +119,7 @@
        else
  	# not using gcc
  	if test "$host_cpu" = ia64; then
-@@ -5574,7 +5590,7 @@
+@@ -5574,7 +5593,7 @@
        _LT_TAGVAR(link_all_deplibs, $1)=yes
        ;;
  
@@ -109,7 +128,7 @@
        if echo __ELF__ | $CC -E - | $GREP __ELF__ >/dev/null; then
  	_LT_TAGVAR(archive_cmds, $1)='$LD -Bshareable -o $lib $libobjs $deplibs $linker_flags'  # a.out
        else
-@@ -8783,14 +8799,16 @@
+@@ -8783,14 +8802,16 @@
  # _PKG_CONFIG([VARIABLE], [COMMAND], [MODULES])
  # ---------------------------------------------
  m4_define([_PKG_CONFIG],
@@ -134,7 +153,7 @@
  fi[]dnl
  ])# _PKG_CONFIG
  
-@@ -8834,9 +8852,9 @@
+@@ -8834,9 +8855,9 @@
  if test $pkg_failed = yes; then
          _PKG_SHORT_ERRORS_SUPPORTED
          if test $_pkg_short_errors_supported = yes; then
@@ -146,8 +165,9 @@
          fi
  	# Put the nasty error message in config.log where it belongs
  	echo "$$1[]_PKG_ERRORS" >&AS_MESSAGE_LOG_FD
---- a/config.h.in
-+++ b/config.h.in
+diff -Naur vte-0.22.3.old/config.h.in vte-0.22.3/config.h.in
+--- vte-0.22.3.old/config.h.in	2009-10-27 02:25:24.000000000 +0100
++++ vte-0.22.3/config.h.in	2009-10-27 09:38:14.000000000 +0100
 @@ -209,6 +209,9 @@
  /* Define to the one symbol short name of this package. */
  #undef PACKAGE_TARNAME
@@ -158,13 +178,14 @@
  /* Define to the version of this package. */
  #undef PACKAGE_VERSION
  
---- a/configure
-+++ b/configure
+diff -Naur vte-0.22.3.old/configure vte-0.22.3/configure
+--- vte-0.22.3.old/configure	2009-10-27 02:25:08.000000000 +0100
++++ vte-0.22.3/configure	2009-10-27 09:38:14.000000000 +0100
 @@ -1,20 +1,22 @@
  #! /bin/sh
  # Guess values for system-dependent variables and create Makefiles.
--# Generated by GNU Autoconf 2.63 for vte 0.22.2.
-+# Generated by GNU Autoconf 2.64 for vte 0.22.2.
+-# Generated by GNU Autoconf 2.63 for vte 0.22.3.
++# Generated by GNU Autoconf 2.64 for vte 0.22.3.
  #
  # Report bugs to <http://bugzilla.gnome.org/enter_bug.cgi?product=vte>.
  #
@@ -958,8 +979,8 @@
  # Identity of this package.
  PACKAGE_NAME='vte'
 @@ -748,6 +702,7 @@
- PACKAGE_VERSION='0.22.2'
- PACKAGE_STRING='vte 0.22.2'
+ PACKAGE_VERSION='0.22.3'
+ PACKAGE_STRING='vte 0.22.3'
  PACKAGE_BUGREPORT='http://bugzilla.gnome.org/enter_bug.cgi?product=vte'
 +PACKAGE_URL=''
  
@@ -1115,7 +1136,7 @@
 @@ -1798,21 +1746,471 @@
  if $ac_init_version; then
    cat <<\_ACEOF
- vte configure 0.22.2
+ vte configure 0.22.3
 -generated by GNU Autoconf 2.63
 +generated by GNU Autoconf 2.64
  
@@ -1582,7 +1603,7 @@
  This file contains any messages produced by compilers while
  running configure, to aid debugging if configure makes a mistake.
  
- It was created by vte $as_me 0.22.2, which was
+ It was created by vte $as_me 0.22.3, which was
 -generated by GNU Autoconf 2.63.  Invocation command line was
 +generated by GNU Autoconf 2.64.  Invocation command line was
  
@@ -15667,7 +15688,7 @@
  # report actual input values of CONFIG_FILES etc. instead of their
  # values after options handling.
  ac_log="
- This file was extended by vte $as_me 0.22.2, which was
+ This file was extended by vte $as_me 0.22.3, which was
 -generated by GNU Autoconf 2.63.  Invocation command line was
 +generated by GNU Autoconf 2.64.  Invocation command line was
  
@@ -15698,7 +15719,7 @@
  _ACEOF
  cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
  ac_cs_version="\\
- vte config.status 0.22.2
+ vte config.status 0.22.3
 -configured by $0, generated by GNU Autoconf 2.63,
 +configured by $0, generated by GNU Autoconf 2.64,
    with options \\"`$as_echo "$ac_configure_args" | sed 's/^ //; s/[\\""\`\$]/\\\\&/g'`\\"
@@ -16237,8 +16258,9 @@
  $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
  fi
  
---- a/doc/Makefile.in
-+++ b/doc/Makefile.in
+diff -Naur vte-0.22.3.old/doc/Makefile.in vte-0.22.3/doc/Makefile.in
+--- vte-0.22.3.old/doc/Makefile.in	2009-10-27 02:25:05.000000000 +0100
++++ vte-0.22.3/doc/Makefile.in	2009-10-27 09:38:15.000000000 +0100
 @@ -179,6 +179,7 @@
  PACKAGE_NAME = @PACKAGE_NAME@
  PACKAGE_STRING = @PACKAGE_STRING@
@@ -16247,8 +16269,9 @@
  PACKAGE_VERSION = @PACKAGE_VERSION@
  PATH_SEPARATOR = @PATH_SEPARATOR@
  PKG_CONFIG = @PKG_CONFIG@
---- a/doc/openi18n/Makefile.in
-+++ b/doc/openi18n/Makefile.in
+diff -Naur vte-0.22.3.old/doc/openi18n/Makefile.in vte-0.22.3/doc/openi18n/Makefile.in
+--- vte-0.22.3.old/doc/openi18n/Makefile.in	2009-10-27 02:25:05.000000000 +0100
++++ vte-0.22.3/doc/openi18n/Makefile.in	2009-10-27 09:38:15.000000000 +0100
 @@ -170,6 +170,7 @@
  PACKAGE_NAME = @PACKAGE_NAME@
  PACKAGE_STRING = @PACKAGE_STRING@
@@ -16257,8 +16280,9 @@
  PACKAGE_VERSION = @PACKAGE_VERSION@
  PATH_SEPARATOR = @PATH_SEPARATOR@
  PKG_CONFIG = @PKG_CONFIG@
---- a/doc/reference/Makefile.in
-+++ b/doc/reference/Makefile.in
+diff -Naur vte-0.22.3.old/doc/reference/Makefile.in vte-0.22.3/doc/reference/Makefile.in
+--- vte-0.22.3.old/doc/reference/Makefile.in	2009-10-27 02:25:05.000000000 +0100
++++ vte-0.22.3/doc/reference/Makefile.in	2009-10-27 09:38:15.000000000 +0100
 @@ -149,6 +149,7 @@
  PACKAGE_NAME = @PACKAGE_NAME@
  PACKAGE_STRING = @PACKAGE_STRING@
@@ -16267,8 +16291,9 @@
  PACKAGE_VERSION = @PACKAGE_VERSION@
  PATH_SEPARATOR = @PATH_SEPARATOR@
  PKG_CONFIG = @PKG_CONFIG@
---- a/glade/Makefile.in
-+++ b/glade/Makefile.in
+diff -Naur vte-0.22.3.old/glade/Makefile.in vte-0.22.3/glade/Makefile.in
+--- vte-0.22.3.old/glade/Makefile.in	2009-10-27 02:25:05.000000000 +0100
++++ vte-0.22.3/glade/Makefile.in	2009-10-27 09:38:15.000000000 +0100
 @@ -163,6 +163,7 @@
  PACKAGE_NAME = @PACKAGE_NAME@
  PACKAGE_STRING = @PACKAGE_STRING@
@@ -16277,8 +16302,9 @@
  PACKAGE_VERSION = @PACKAGE_VERSION@
  PATH_SEPARATOR = @PATH_SEPARATOR@
  PKG_CONFIG = @PKG_CONFIG@
---- a/gnome-pty-helper/aclocal.m4
-+++ b/gnome-pty-helper/aclocal.m4
+diff -Naur vte-0.22.3.old/gnome-pty-helper/aclocal.m4 vte-0.22.3/gnome-pty-helper/aclocal.m4
+--- vte-0.22.3.old/gnome-pty-helper/aclocal.m4	2009-08-01 08:18:35.000000000 +0200
++++ vte-0.22.3/gnome-pty-helper/aclocal.m4	2009-10-27 09:38:07.000000000 +0100
 @@ -13,8 +13,8 @@
  
  m4_ifndef([AC_AUTOCONF_VERSION],
@@ -16290,8 +16316,9 @@
  You have another version of autoconf.  It may work, but is not guaranteed to.
  If you have problems, you may need to regenerate the build system entirely.
  To do so, use the procedure documented by the package, typically `autoreconf'.])])
---- a/gnome-pty-helper/config.h.in
-+++ b/gnome-pty-helper/config.h.in
+diff -Naur vte-0.22.3.old/gnome-pty-helper/config.h.in vte-0.22.3/gnome-pty-helper/config.h.in
+--- vte-0.22.3.old/gnome-pty-helper/config.h.in	2009-09-14 20:35:31.000000000 +0200
++++ vte-0.22.3/gnome-pty-helper/config.h.in	2009-10-27 09:38:08.000000000 +0100
 @@ -180,6 +180,9 @@
  /* Define to the one symbol short name of this package. */
  #undef PACKAGE_TARNAME
@@ -16302,8 +16329,9 @@
  /* Define to the version of this package. */
  #undef PACKAGE_VERSION
  
---- a/gnome-pty-helper/configure
-+++ b/gnome-pty-helper/configure
+diff -Naur vte-0.22.3.old/gnome-pty-helper/configure vte-0.22.3/gnome-pty-helper/configure
+--- vte-0.22.3.old/gnome-pty-helper/configure	2009-09-14 20:34:45.000000000 +0200
++++ vte-0.22.3/gnome-pty-helper/configure	2009-10-27 09:38:08.000000000 +0100
 @@ -1,20 +1,22 @@
  #! /bin/sh
  # Guess values for system-dependent variables and create Makefiles.
@@ -23978,8 +24006,9 @@
  $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
  fi
  
---- a/gnome-pty-helper/Makefile.in
-+++ b/gnome-pty-helper/Makefile.in
+diff -Naur vte-0.22.3.old/gnome-pty-helper/Makefile.in vte-0.22.3/gnome-pty-helper/Makefile.in
+--- vte-0.22.3.old/gnome-pty-helper/Makefile.in	2009-09-14 20:35:32.000000000 +0200
++++ vte-0.22.3/gnome-pty-helper/Makefile.in	2009-10-27 09:38:09.000000000 +0100
 @@ -118,6 +118,7 @@
  PACKAGE_NAME = @PACKAGE_NAME@
  PACKAGE_STRING = @PACKAGE_STRING@
@@ -23988,8 +24017,9 @@
  PACKAGE_VERSION = @PACKAGE_VERSION@
  PATH_SEPARATOR = @PATH_SEPARATOR@
  SET_MAKE = @SET_MAKE@
---- a/ltmain.sh
-+++ b/ltmain.sh
+diff -Naur vte-0.22.3.old/ltmain.sh vte-0.22.3/ltmain.sh
+--- vte-0.22.3.old/ltmain.sh	2009-09-14 20:35:21.000000000 +0200
++++ vte-0.22.3/ltmain.sh	2009-10-27 09:38:09.000000000 +0100
 @@ -65,7 +65,7 @@
  #       compiler:		$LTCC
  #       compiler flags:		$LTCFLAGS
@@ -24068,8 +24098,9 @@
  	  esac
  	  ;;
  	no)
---- a/Makefile.in
-+++ b/Makefile.in
+diff -Naur vte-0.22.3.old/Makefile.in vte-0.22.3/Makefile.in
+--- vte-0.22.3.old/Makefile.in	2009-10-27 02:25:07.000000000 +0100
++++ vte-0.22.3/Makefile.in	2009-10-27 09:38:16.000000000 +0100
 @@ -222,6 +222,7 @@
  PACKAGE_NAME = @PACKAGE_NAME@
  PACKAGE_STRING = @PACKAGE_STRING@
@@ -24078,8 +24109,9 @@
  PACKAGE_VERSION = @PACKAGE_VERSION@
  PATH_SEPARATOR = @PATH_SEPARATOR@
  PKG_CONFIG = @PKG_CONFIG@
---- a/perf/Makefile.in
-+++ b/perf/Makefile.in
+diff -Naur vte-0.22.3.old/perf/Makefile.in vte-0.22.3/perf/Makefile.in
+--- vte-0.22.3.old/perf/Makefile.in	2009-10-27 02:25:05.000000000 +0100
++++ vte-0.22.3/perf/Makefile.in	2009-10-27 09:38:15.000000000 +0100
 @@ -139,6 +139,7 @@
  PACKAGE_NAME = @PACKAGE_NAME@
  PACKAGE_STRING = @PACKAGE_STRING@
@@ -24088,8 +24120,9 @@
  PACKAGE_VERSION = @PACKAGE_VERSION@
  PATH_SEPARATOR = @PATH_SEPARATOR@
  PKG_CONFIG = @PKG_CONFIG@
---- a/po/Makefile.in.in
-+++ b/po/Makefile.in.in
+diff -Naur vte-0.22.3.old/po/Makefile.in.in vte-0.22.3/po/Makefile.in.in
+--- vte-0.22.3.old/po/Makefile.in.in	2009-09-14 20:35:21.000000000 +0200
++++ vte-0.22.3/po/Makefile.in.in	2009-10-27 09:38:10.000000000 +0100
 @@ -129,7 +129,7 @@
  	done
  
@@ -24099,8 +24132,9 @@
  
  # Define this as empty until I found a useful application.
  install-exec installcheck:
---- a/python/Makefile.in
-+++ b/python/Makefile.in
+diff -Naur vte-0.22.3.old/python/Makefile.in vte-0.22.3/python/Makefile.in
+--- vte-0.22.3.old/python/Makefile.in	2009-10-27 02:25:05.000000000 +0100
++++ vte-0.22.3/python/Makefile.in	2009-10-27 09:38:15.000000000 +0100
 @@ -210,6 +210,7 @@
  PACKAGE_NAME = @PACKAGE_NAME@
  PACKAGE_STRING = @PACKAGE_STRING@
@@ -24109,8 +24143,9 @@
  PACKAGE_VERSION = @PACKAGE_VERSION@
  PATH_SEPARATOR = @PATH_SEPARATOR@
  PKG_CONFIG = @PKG_CONFIG@
---- a/src/Makefile.in
-+++ b/src/Makefile.in
+diff -Naur vte-0.22.3.old/src/Makefile.in vte-0.22.3/src/Makefile.in
+--- vte-0.22.3.old/src/Makefile.in	2009-10-27 02:25:06.000000000 +0100
++++ vte-0.22.3/src/Makefile.in	2009-10-27 09:38:16.000000000 +0100
 @@ -332,6 +332,7 @@
  PACKAGE_NAME = @PACKAGE_NAME@
  PACKAGE_STRING = @PACKAGE_STRING@
@@ -24119,8 +24154,9 @@
  PACKAGE_VERSION = @PACKAGE_VERSION@
  PATH_SEPARATOR = @PATH_SEPARATOR@
  PKG_CONFIG = @PKG_CONFIG@
---- a/termcaps/Makefile.in
-+++ b/termcaps/Makefile.in
+diff -Naur vte-0.22.3.old/termcaps/Makefile.in vte-0.22.3/termcaps/Makefile.in
+--- vte-0.22.3.old/termcaps/Makefile.in	2009-10-27 02:25:06.000000000 +0100
++++ vte-0.22.3/termcaps/Makefile.in	2009-10-27 09:38:16.000000000 +0100
 @@ -164,6 +164,7 @@
  PACKAGE_NAME = @PACKAGE_NAME@
  PACKAGE_STRING = @PACKAGE_STRING@
