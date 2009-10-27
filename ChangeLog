@@ -1,3 +1,277 @@
+commit 16275c6829b1e8755958545547f03d5b152958e7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Oct 26 21:16:43 2009 -0400
+
+    Release 0.22.3
+
+ NEWS         |   22 ++++++++++++++++++++++
+ configure.in |    4 ++--
+ 2 files changed, 24 insertions(+), 2 deletions(-)
+
+commit 9310dfee0b6e74e891132396a00f2c74f12e1ddb
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Oct 26 21:15:35 2009 -0400
+
+    Don't chain motion-notify events up in the 0.22 stable series
+    
+    That change only remains in 0.23 on.
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a91d1adf8cbc3bf9755d1c211f490366ac47782c
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Oct 26 19:54:28 2009 -0400
+
+    Handle out-of-history remove's gracefully
+    
+    They happen at times of resizing the terminal, etc.
+    
+    Bug 597604 - gnome-terminal assert failure:
+    Vte:ERROR:/build/buildd/vte-0.22.0/./src/ring.c:530:_vte_ring_remove:
+    assertion failed: (_vte_ring_contains (ring, position))
+
+ src/ring.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit c621a6e8c4beffb2faf70404b843cf93def8cc1b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Oct 26 19:54:08 2009 -0400
+
+    [ring] Remove one assertion
+    
+    Better dealing with corrupt history file, etc.
+
+ src/ring.c |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
+
+commit 572f86ce2faf7532c30751e5c5f9893468550eba
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Oct 26 19:53:33 2009 -0400
+
+    Cosmetic
+
+ src/vte.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit af5726e0c546f9a4914dd80c03e11e1aadc034f2
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Oct 26 19:19:16 2009 -0400
+
+    Finish selection rework
+    
+    Bug 598124 - The selection does not only change when the mousebutton is released
+    
+    Only update selection when mouse-button is released (or focus lost).
+    Also, update PRIMARY when _select_all() is called.
+
+ src/vte.c |   27 +++++++++------------------
+ 1 files changed, 9 insertions(+), 18 deletions(-)
+
+commit de1bd5a05102d26f211d4f636aea2662c6b4e7fc
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Oct 26 17:01:55 2009 -0400
+
+    Bug 598090 - LMB Mouse up event not registered when opining context popup menu
+
+ src/vte.c |  101 ++++++++++++++++++++++++++++---------------------------------
+ 1 files changed, 46 insertions(+), 55 deletions(-)
+
+commit 471d90f670416fc2947b73637c549387eddb9435
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 21:01:49 2009 -0400
+
+    Bug 587463 - "select all"+copy from gnome-terminal includes lines no longer in scrollback
+    
+    Previously it used to include lines that have fallen out of the history
+    buffer.  Also, included one extra line at the end.
+
+ src/vte.c |   17 +++++++----------
+ 1 files changed, 7 insertions(+), 10 deletions(-)
+
+commit 370b72ba4759850b1fc9721d2afc0eb7b5383a5e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 20:54:26 2009 -0400
+
+    Bug 585370 - Incomplete disabling of python
+    
+    Don't install python support files if python is disabled.
+
+ python/Makefile.am |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit eb11c5a2e5ec98c3ce1643ecc1b0274eff490a7e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 20:49:47 2009 -0400
+
+    Bug 597242 - libvte color and cursor glitches
+    
+    Don't clear line when inserting smart tab
+
+ src/vteseq.c |   75 ++++++++++++++++++++++++++++-----------------------------
+ 1 files changed, 37 insertions(+), 38 deletions(-)
+
+commit c6d9bf421f12911298d921314ced64661f6b63bd
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 20:18:50 2009 -0400
+
+    Bug 591648 - Don't clear the screen when switching to the alternate screen
+
+ src/vteseq.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+
+commit 94c78423fca44652e9c837e00cf932e0cadb50de
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 20:12:14 2009 -0400
+
+    Bug 595445 - Motion notify events are not propagated to parent widget
+    
+    Propagate motion-notify event to parent if not selecting.
+
+ src/vte.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 03250451173cdc63aeb10f2f43ec7fe203082be1
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 20:07:06 2009 -0400
+
+    Revert "Copy PRIMARY only on button release"
+    
+    This reverts commit ab66ce5ca7bc9948ffb5303156c3a2764656c3b7.
+    We need to fix bug 598090 before this can go in.
+
+ src/vte.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit ab66ce5ca7bc9948ffb5303156c3a2764656c3b7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 19:43:06 2009 -0400
+
+    Copy PRIMARY only on button release
+    
+    Bug 598124 - The selection does not only change when the mousebutton is released
+
+ src/vte.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+commit 7f2f2f6622e253d6ae623c310bc0be9079ba9cc6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 19:12:26 2009 -0400
+
+    Bug 569184 - vte generates unnecessary ioctl(I_FIND) kernel warnings
+
+ src/pty.c |   26 ++++++++++++++------------
+ 1 files changed, 14 insertions(+), 12 deletions(-)
+
+commit efaf2668d21f53ada2884157fde91c0b61025fc7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 19:01:38 2009 -0400
+
+    Fix even more warnings.  We're mostly warning-clean now
+
+ src/pty.c       |    3 +--
+ src/vteaccess.c |    4 ++--
+ src/vtedraw.c   |    2 +-
+ 3 files changed, 4 insertions(+), 5 deletions(-)
+
+commit ac0722271e2f5e192e7be4000ba2ca7a2388954e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 18:54:59 2009 -0400
+
+    Fix more warnings
+
+ src/vte.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+commit 592ba42cbfa3e9e948226bcef832e7fd30f5fae7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 18:37:42 2009 -0400
+
+    Interpret and document negative number of scrollback lines as infinite
+
+ src/vte.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+commit 723aec79c9aa7c05b86278d0f304d0640ba9ee5e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 23 18:19:40 2009 -0400
+
+    [ring] Use gulong instead of guint for row/col indices
+    
+    Bug 599444 - Scrollback index type mess
+
+ src/buffer.h      |    2 +-
+ src/ring.c        |   68 ++++++++++++++++++++++++++--------------------------
+ src/ring.h        |   34 +++++++++++++-------------
+ src/vte-private.h |    4 +-
+ src/vte.c         |   10 ++++---
+ src/vterowdata.c  |   20 +++++++-------
+ src/vterowdata.h  |   12 ++++----
+ 7 files changed, 76 insertions(+), 74 deletions(-)
+
+commit 3e523aa2db487828a332703461e84d6a2cf4ef04
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Oct 22 14:07:51 2009 -0400
+
+    Bug 598814 - text.getText(0, -1) triggers assertion in vteaccess.c
+
+ src/vteaccess.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b933212a00bf4f7437d5741b1eb9132d66b263fd
+Author: Nils-Christoph Fiedler <linux@medienkompanie.de>
+Date:   Thu Oct 22 20:07:03 2009 +0200
+
+    Updated Low German translation
+
+ po/nds.po |   28 ++++++++++++++--------------
+ 1 files changed, 14 insertions(+), 14 deletions(-)
+
+commit 54f397c65855d015ffc71e646c55fb4b49208038
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Oct 22 00:20:59 2009 +0200
+
+    Ignore .pot files too
+
+ git.mk |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 90799855f499c4ab7dd66896bdde73ccc9e63253
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Aug 31 18:26:45 2009 +0200
+
+    Use AM_V_GEN here too
+
+ git.mk |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit fa3508f4957a8cfb6f6f22ef904d5c89f9d54f4a
+Author: Benjamin Berg <benjamin@sipsolutions.net>
+Date:   Mon Oct 5 17:41:49 2009 +0200
+
+    Fix memory leaks in python bindings (bug #596739).
+
+ python/vte.override |  131 ++++++++++++++++++++++-----------------------------
+ 1 files changed, 56 insertions(+), 75 deletions(-)
+
+commit 7b30cf831aa9ae3e90ca99f016f11d6f6833ad2f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Oct 3 19:50:21 2009 -0400
+
+    Bug 597165 - void return in vte.c
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 3c22f5997c7e11f371c606520daff279d9b613e4
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 29 14:54:30 2009 -0400
+
+    Bug 587894 - the environment passing with python does no longer work
+
+ python/vte.override |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
 commit 1fc66f918330a053b85080756d8be165eb9f2708
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Mon Sep 28 15:42:12 2009 -0400

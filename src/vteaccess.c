@@ -935,7 +935,7 @@ vte_terminal_accessible_get_text(AtkText *text,
 	gchar *ret;
 
         /* Swap around if start is greater than end */
-        if (start_offset > end_offset) {
+        if (start_offset > end_offset && end_offset != -1) {
                 gint tmp;
 
                 tmp = start_offset;
@@ -1022,7 +1022,7 @@ vte_terminal_accessible_get_text_somewhere(AtkText *text,
 	if (offset >= (int) priv->snapshot_characters->len) {
 		return g_strdup("");
 	}
-	g_assert(offset < priv->snapshot_characters->len);
+	g_assert(offset < (int) priv->snapshot_characters->len);
 	g_assert(offset >= 0);
 
 	switch (boundary_type) {
@@ -1302,7 +1302,7 @@ vte_terminal_accessible_get_character_at_offset(AtkText *text, gint offset)
 	priv = g_object_get_data(G_OBJECT(text),
 				 VTE_TERMINAL_ACCESSIBLE_PRIVATE_DATA);
 
-	g_assert(offset < priv->snapshot_characters->len);
+	g_assert(offset < (int) priv->snapshot_characters->len);
 
 	mapped = g_array_index(priv->snapshot_characters, int, offset);
 
