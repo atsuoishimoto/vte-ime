@@ -1,3 +1,48 @@
+commit 48ba09a4239c026ef3f0a02c8a9952003fa9e33e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sun Nov 8 14:56:04 2009 -0500
+
+    Release 0.22.4
+
+ NEWS         |    6 ++++++
+ configure.in |    4 ++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+commit 498e33c14e5d887cb356eceaa94c2f96460e8719
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sun Nov 8 12:04:16 2009 -0500
+
+    Revert "Bug 591648 - Don't clear the screen when switching to the alternate screen"
+    
+    This reverts commit c6d9bf421f12911298d921314ced64661f6b63bd.
+    That commit introduced issues with less.   Xterm doesn't have those
+    problems.  Need to figure out what's going on  before committing this
+    again.
+
+ src/vteseq.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 20a23659abce12b6fbccd8d4f9e77f5718cc28a1
+Author: Thomas Thurman <tthurman@gnome.org>
+Date:   Sun Nov 1 15:46:08 2009 -0500
+
+    Shavian translation
+
+ po/LINGUAS    |    1 +
+ po/en@shaw.po |   90 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 91 insertions(+), 0 deletions(-)
+
+commit 9a6f31808a44c21249f62116bf27d9a86cb719f0
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Oct 29 18:59:52 2009 +0100
+
+    Use right modifier to printf gulong
+    
+    Fixes a compiler warning.
+
+ src/ring.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 16275c6829b1e8755958545547f03d5b152958e7
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Mon Oct 26 21:16:43 2009 -0400
