@@ -206,18 +206,20 @@ vte_pty_child_setup (gpointer arg)
 #endif
 
 #ifdef HAVE_STROPTS_H
-	if ((ioctl(fd, I_FIND, "ptem") == 0) &&
-			(ioctl(fd, I_PUSH, "ptem") == -1)) {
-		_exit (127);
-	}
-	if ((ioctl(fd, I_FIND, "ldterm") == 0) &&
-			(ioctl(fd, I_PUSH, "ldterm") == -1)) {
-		_exit (127);
-	}
-	if ((ioctl(fd, I_FIND, "ttcompat") == 0) &&
-			(ioctl(fd, I_PUSH, "ttcompat") == -1)) {
-		perror ("ioctl (fd, I_PUSH, \"ttcompat\")");
-		_exit (127);
+	if (isastream (fd) == 1) {
+		if ((ioctl(fd, I_FIND, "ptem") == 0) &&
+				(ioctl(fd, I_PUSH, "ptem") == -1)) {
+			_exit (127);
+		}
+		if ((ioctl(fd, I_FIND, "ldterm") == 0) &&
+				(ioctl(fd, I_PUSH, "ldterm") == -1)) {
+			_exit (127);
+		}
+		if ((ioctl(fd, I_FIND, "ttcompat") == 0) &&
+				(ioctl(fd, I_PUSH, "ttcompat") == -1)) {
+			perror ("ioctl (fd, I_PUSH, \"ttcompat\")");
+			_exit (127);
+		}
 	}
 #endif
 
@@ -996,8 +998,7 @@ _vte_pty_open(pid_t *child_pid, char **env_add,
 	if (wtmp) {
 		op += 4;
 	}
-	g_assert(op >= 0);
-	g_assert(op < G_N_ELEMENTS(opmap));
+	g_assert(op >= 0 && op < (int) G_N_ELEMENTS(opmap));
 	if (ret == -1 && op != 0) {
 		ret = _vte_pty_open_with_helper(&child, env_add, command, argv,
 						directory,

@@ -286,7 +286,7 @@ vte_g_array_fill(GArray *array, gconstpointer item, guint final_size)
 
 
 VteRowData *
-_vte_terminal_ring_insert (VteTerminal *terminal, guint position, gboolean fill)
+_vte_terminal_ring_insert (VteTerminal *terminal, glong position, gboolean fill)
 {
 	VteRowData *row;
 	VteRing *ring = terminal->pvt->screen->row_data;
@@ -307,9 +307,9 @@ _vte_terminal_ring_append (VteTerminal *terminal, gboolean fill)
 }
 
 void
-_vte_terminal_ring_remove (VteTerminal *terminal, guint position)
+_vte_terminal_ring_remove (VteTerminal *terminal, glong position)
 {
-	return _vte_ring_remove (terminal->pvt->screen->row_data, position);
+	_vte_ring_remove (terminal->pvt->screen->row_data, position);
 }
 
 /* Reset defaults for character insertion. */
@@ -555,7 +555,7 @@ find_start_column (VteTerminal *terminal, glong col, glong row)
 		return col;
 	if (row_data != NULL) {
 		const VteCell *cell = _vte_row_data_get (row_data, col);
-		while (cell != NULL && cell->attr.fragment && col > 0) {
+		while (col > 0 && cell != NULL && cell->attr.fragment) {
 			cell = _vte_row_data_get (row_data, --col);
 		}
 	}
@@ -570,7 +570,7 @@ find_end_column (VteTerminal *terminal, glong col, glong row)
 		return col;
 	if (row_data != NULL) {
 		const VteCell *cell = _vte_row_data_get (row_data, col);
-		while (cell != NULL && cell->attr.fragment && col > 0) {
+		while (col > 0 && cell != NULL && cell->attr.fragment) {
 			cell = _vte_row_data_get (row_data, --col);
 		}
 		if (cell) {
@@ -3098,7 +3098,7 @@ _vte_terminal_insert_char(VteTerminal *terminal, gunichar c,
 	if (G_LIKELY (col > 0)) {
 		glong col2 = col - 1;
 		VteCell *cell = _vte_row_data_get_writable (row, col2);
-		while (cell != NULL && cell->attr.fragment && col2 > 0)
+		while (col2 > 0 && cell != NULL && cell->attr.fragment)
 			cell = _vte_row_data_get_writable (row, --col2);
 		cell->attr.columns = col - col2;
 	}
@@ -5408,10 +5408,8 @@ static void
 vte_terminal_maybe_send_mouse_button(VteTerminal *terminal,
 				     GdkEventButton *event)
 {
-	/* Read the modifiers. */
 	vte_terminal_read_modifiers (terminal, (GdkEvent*) event);
 
-	/* Decide whether or not to do anything. */
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (terminal->pvt->mouse_tracking_mode < MOUSE_TRACKING_SEND_XY_ON_CLICK) {
@@ -5784,7 +5782,7 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 					  GArray *attributes,
 					  gboolean include_trailing_spaces)
 {
-	long col, row, last_empty, last_emptycol, last_nonempty, last_nonemptycol;
+	glong col, row, last_empty, last_emptycol, last_nonempty, last_nonemptycol;
 	VteScreen *screen;
 	const VteCell *pcell = NULL;
 	GString *string;
@@ -5801,7 +5799,7 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 
 	palette = terminal->pvt->palette;
 	col = start_col;
-	for (row = start_row; row <= end_row; row++, col = 0) {
+	for (row = start_row; row < end_row + 1; row++, col = 0) {
 		const VteRowData *row_data = _vte_terminal_find_row_data (terminal, row);
 		last_empty = last_nonempty = string->len;
 		last_emptycol = last_nonemptycol = -1;
@@ -6164,6 +6162,27 @@ vte_terminal_start_selection(VteTerminal *terminal, GdkEventButton *event,
 
 	/* Temporarily stop caring about input from the child. */
 	_vte_terminal_disconnect_pty_read(terminal);
+}
+
+static gboolean
+_vte_terminal_maybe_end_selection (VteTerminal *terminal)
+{
+	if (terminal->pvt->selecting) {
+		/* Copy only if something was selected. */
+		if (terminal->pvt->has_selection &&
+		    !terminal->pvt->selecting_restart &&
+		    terminal->pvt->selecting_had_delta) {
+			vte_terminal_copy_primary(terminal);
+			vte_terminal_emit_selection_changed(terminal);
+		}
+		terminal->pvt->selecting = FALSE;
+
+		/* Reconnect to input from the child if we paused it. */
+		_vte_terminal_connect_pty_read(terminal);
+
+		return TRUE;
+	}
+	return FALSE;
 }
 
 static long
@@ -6618,9 +6637,6 @@ vte_terminal_extend_selection(VteTerminal *terminal, long x, long y,
 			"Selection changed to "
 			"(%ld,%ld) to (%ld,%ld).\n",
 			sc->col, sc->row, ec->col, ec->row);
-
-	vte_terminal_copy_primary(terminal);
-	vte_terminal_emit_selection_changed(terminal);
 }
 
 static void
@@ -6630,7 +6646,7 @@ vte_terminal_set_selection_block_mode (VteTerminal *terminal,
 	if (G_LIKELY (!terminal->pvt->has_selection))
 		return;
 
-	if (G_LIKELY (terminal->pvt->mouse_last_button != 1))
+	if (G_LIKELY (!terminal->pvt->selecting))
 		return;
 
 	selection_block_mode = !!selection_block_mode;
@@ -6658,34 +6674,22 @@ vte_terminal_set_selection_block_mode (VteTerminal *terminal,
 void
 vte_terminal_select_all (VteTerminal *terminal)
 {
-	long delta;
-
 	g_return_if_fail (VTE_IS_TERMINAL (terminal));
 
 	vte_terminal_deselect_all (terminal);
-
-	delta = terminal->pvt->screen->scroll_delta;
 
 	terminal->pvt->has_selection = TRUE;
 	terminal->pvt->selecting_had_delta = TRUE;
 	terminal->pvt->selecting_restart = FALSE;
 
+	terminal->pvt->selection_start.row = _vte_ring_delta (terminal->pvt->screen->row_data);
 	terminal->pvt->selection_start.col = 0;
-	terminal->pvt->selection_start.row = 0;
-	terminal->pvt->selection_end.col = terminal->column_count;
-	terminal->pvt->selection_end.row = delta + terminal->row_count;
+	terminal->pvt->selection_end.row = terminal->pvt->screen->scroll_delta + terminal->row_count;
+	terminal->pvt->selection_end.col = 0;
 
 	_vte_debug_print(VTE_DEBUG_SELECTION, "Selecting *all* text.\n");
 
-	g_free (terminal->pvt->selection);
-	terminal->pvt->selection =
-		vte_terminal_get_text_range (terminal,
-				0, 0,
-				delta + terminal->row_count,
-				terminal->column_count,
-				vte_cell_is_selected,
-				NULL, NULL);
-
+	vte_terminal_copy_primary(terminal);
 	vte_terminal_emit_selection_changed (terminal);
 	_vte_invalidate_all (terminal);
 }
@@ -6801,10 +6805,11 @@ vte_terminal_motion_notify(GtkWidget *widget, GdkEventMotion *event)
 	VteTerminal *terminal;
 	int width, height;
 	long x, y;
+	gboolean handled = FALSE;
 
 	/* check to see if it matters */
 	if (!GTK_WIDGET_DRAWABLE(widget)) {
-		return TRUE;
+		return handled;
 	}
 
 	terminal = VTE_TERMINAL(widget);
@@ -6818,7 +6823,6 @@ vte_terminal_motion_notify(GtkWidget *widget, GdkEventMotion *event)
 			x, y,
 			x / width, y / height + terminal->pvt->screen->scroll_delta);
 
-	/* Read the modifiers. */
 	vte_terminal_read_modifiers (terminal, (GdkEvent*) event);
 
 	if (terminal->pvt->mouse_last_button) {
@@ -6832,45 +6836,33 @@ vte_terminal_motion_notify(GtkWidget *widget, GdkEventMotion *event)
 
 	switch (event->type) {
 	case GDK_MOTION_NOTIFY:
-		switch (terminal->pvt->mouse_last_button) {
-		case 1:
+		if (terminal->pvt->selecting &&
+		    ((terminal->pvt->modifiers & GDK_SHIFT_MASK) ||
+		      !terminal->pvt->mouse_tracking_mode))
+		{
 			_vte_debug_print(VTE_DEBUG_EVENTS, "Mousing drag 1.\n");
-			if ((terminal->pvt->modifiers & GDK_SHIFT_MASK) ||
-			    !terminal->pvt->mouse_tracking_mode) {
-				vte_terminal_extend_selection(terminal,
-							      x, y, FALSE, FALSE);
-			} else {
-				vte_terminal_maybe_send_mouse_drag(terminal,
-								   event);
-			}
-			break;
-		default:
-			vte_terminal_maybe_send_mouse_drag(terminal, event);
-			break;
-		}
-		break;
-	default:
-		break;
-	}
+			vte_terminal_extend_selection(terminal,
+						      x, y, FALSE, FALSE);
 
-	/* Start scrolling if we need to. */
-	if (event->y < VTE_PAD_WIDTH ||
-	    event->y >= terminal->row_count * height + VTE_PAD_WIDTH) {
-		switch (terminal->pvt->mouse_last_button) {
-		case 1:
-			if (!terminal->pvt->mouse_tracking_mode) {
+			/* Start scrolling if we need to. */
+			if (event->y < VTE_PAD_WIDTH ||
+			    event->y >= terminal->row_count * height + VTE_PAD_WIDTH)
+			{
 				/* Give mouse wigglers something. */
 				vte_terminal_autoscroll(terminal);
 				/* Start a timed autoscroll if we're not doing it
 				 * already. */
 				vte_terminal_start_autoscroll(terminal);
 			}
-			break;
-		case 2:
-		case 3:
-		default:
-			break;
+
+			handled = TRUE;
 		}
+
+		if (!handled)
+			vte_terminal_maybe_send_mouse_drag(terminal, event);
+		break;
+	default:
+		break;
 	}
 
 	/* Save the pointer coordinates for later use. */
@@ -6899,12 +6891,10 @@ vte_terminal_button_press(GtkWidget *widget, GdkEventButton *event)
 	width = terminal->char_width;
 	delta = terminal->pvt->screen->scroll_delta;
 
-	/* Hilite any matches. */
 	vte_terminal_match_hilite(terminal, x, y);
 
 	_vte_terminal_set_pointer_visible(terminal, TRUE);
 
-	/* Read the modifiers. */
 	vte_terminal_read_modifiers (terminal, (GdkEvent*) event);
 
 	/* Convert the event coordinates to cell coordinates. */
@@ -7050,15 +7040,12 @@ vte_terminal_button_release(GtkWidget *widget, GdkEventButton *event)
 
 	terminal = VTE_TERMINAL(widget);
 
-	/* Hilite any matches. */
 	vte_terminal_match_hilite(terminal, x, y);
 
 	_vte_terminal_set_pointer_visible(terminal, TRUE);
 
-	/* Disconnect from autoscroll requests. */
 	vte_terminal_stop_autoscroll(terminal);
 
-	/* Read the modifiers. */
 	vte_terminal_read_modifiers (terminal, (GdkEvent*) event);
 
 	switch (event->type) {
@@ -7070,18 +7057,9 @@ vte_terminal_button_release(GtkWidget *widget, GdkEventButton *event)
 		case 1:
 			/* If Shift is held down, or we're not in events mode,
 			 * copy the selected text. */
-			if (terminal->pvt->selecting || !terminal->pvt->mouse_tracking_mode) {
-				/* Copy only if something was selected. */
-				if (terminal->pvt->has_selection &&
-				    !terminal->pvt->selecting_restart &&
-				    terminal->pvt->selecting_had_delta) {
-					vte_terminal_copy_primary(terminal);
-				}
-				terminal->pvt->selecting = FALSE;
-				handled = TRUE;
-			}
-			/* Reconnect to input from the child if we paused it. */
-			_vte_terminal_connect_pty_read(terminal);
+			if ((terminal->pvt->modifiers & GDK_SHIFT_MASK) ||
+			    !terminal->pvt->mouse_tracking_mode)
+				handled = _vte_terminal_maybe_end_selection (terminal);
 			break;
 		case 2:
 			if ((terminal->pvt->modifiers & GDK_SHIFT_MASK) ||
@@ -7093,7 +7071,7 @@ vte_terminal_button_release(GtkWidget *widget, GdkEventButton *event)
 		default:
 			break;
 		}
-		if (handled == FALSE) {
+		if (!handled) {
 			vte_terminal_maybe_send_mouse_button(terminal, event);
 			handled = TRUE;
 		}
@@ -7152,6 +7130,8 @@ vte_terminal_focus_out(GtkWidget *widget, GdkEventFocus *event)
 	/* We only have an IM context when we're realized, and there's not much
 	 * point to painting ourselves if we don't have a window. */
 	if (GTK_WIDGET_REALIZED(widget)) {
+		_vte_terminal_maybe_end_selection (terminal);
+
 		gtk_im_context_focus_out(terminal->pvt->im_context);
 		_vte_invalidate_cursor_once(terminal, FALSE);
 
@@ -7582,8 +7562,7 @@ vte_terminal_set_size(VteTerminal *terminal, glong columns, glong rows)
 			old_columns != terminal->column_count) {
 		VteScreen *screen = terminal->pvt->screen;
 		if (screen) {
-			glong visible_rows = MIN (old_rows,
-					_vte_ring_length (screen->row_data));
+			glong visible_rows = MIN (old_rows, _vte_ring_length (screen->row_data));
 			if (terminal->row_count < visible_rows) {
 				glong delta = visible_rows - terminal->row_count;
 				screen->insert_delta += delta;
@@ -8073,13 +8052,15 @@ vte_terminal_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 
 	if (width != terminal->column_count
 			|| height != terminal->row_count
-			|| update_scrollback) {
+			|| update_scrollback)
+	{
+		VteScreen *screen = terminal->pvt->screen;
+
 		/* Set the size of the pseudo-terminal. */
 		vte_terminal_set_size(terminal, width, height);
 
 		/* Adjust scrolling area in case our boundaries have just been
 		 * redefined to be invalid. */
-		VteScreen *screen = terminal->pvt->screen;
 		if (screen->scrolling_restricted) {
 			screen->scrolling_region.start =
 				MIN(screen->scrolling_region.start,
@@ -8784,7 +8765,7 @@ vte_terminal_draw_graphic(VteTerminal *terminal, vteunistr c,
 			  gboolean bold)
 {
 	gboolean ret;
-	gint xcenter, xright, ycenter, ybottom, i, j, draw;
+	gint xcenter, xright, ycenter, ybottom, i;
 	struct _vte_draw_text_request request;
 	GdkColor color;
 
@@ -9487,8 +9468,8 @@ vte_terminal_draw_graphic(VteTerminal *terminal, vteunistr c,
 					    VTE_LINE_WIDTH * 2);
 		break;
 	case 0x2592:  /* a */
-		for (i = x; i <= xright; i++) {
-			draw = ((i - x) & 1) == 0;
+		for (i = x; i < xright + 1; i++) {
+			gint j, draw = ((i - x) & 1) == 0;
 			for (j = y; j < ybottom; j++) {
 				if (draw) {
 					vte_terminal_draw_point(terminal,
@@ -12988,7 +12969,11 @@ vte_terminal_get_cursor_shape(VteTerminal *terminal)
  * Sets the length of the scrollback buffer used by the terminal.  The size of
  * the scrollback buffer will be set to the larger of this value and the number
  * of visible rows the widget can display, so 0 can safely be used to disable
- * scrollback.  Note that this setting only affects the normal screen buffer.
+ * scrollback.
+ *
+ * A negative value means "infinite scrollback".
+ *
+ * Note that this setting only affects the normal screen buffer.
  * For terminal types which have an alternate screen buffer, no scrollback is
  * allowed on the alternate screen buffer.
  *
@@ -13002,6 +12987,9 @@ vte_terminal_set_scrollback_lines(VteTerminal *terminal, glong lines)
 	VteScreen *screen;
 
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+
+	if (lines < 0)
+		lines = G_MAXLONG;
 
         object = G_OBJECT(terminal);
         pvt = terminal->pvt;
@@ -13766,12 +13754,13 @@ _vte_terminal_select_text(VteTerminal *terminal,
 	terminal->pvt->selection_end.col = end_col;
 	terminal->pvt->selection_end.row = end_row;
 	vte_terminal_copy_primary(terminal);
+	vte_terminal_emit_selection_changed(terminal);
+
 	_vte_invalidate_region (terminal,
 			MIN (start_col, start_row), MAX (start_col, start_row),
 			MIN (start_row, end_row),   MAX (start_row, end_row),
 			FALSE);
 
-	vte_terminal_emit_selection_changed(terminal);
 }
 
 void
