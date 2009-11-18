@@ -57,7 +57,7 @@ The minor version number of the VTE library used at compile time.  (e.g. in VTE 
 </para><para role="since">Since 0.16.15</para></refsect2>
 <refsect2 id="VTE-MICRO-VERSION--CAPS" role="macro" condition="since:0.16.15">
 <title>VTE_MICRO_VERSION</title>
-<indexterm zone="VTE-MICRO-VERSION--CAPS" role="0.16.15"><primary sortas="VTE_MICRO_VERSION">VTE_MICRO_VERSION</primary></indexterm><programlisting>#define VTE_MICRO_VERSION (0)
+<indexterm zone="VTE-MICRO-VERSION--CAPS" role="0.16.15"><primary sortas="VTE_MICRO_VERSION">VTE_MICRO_VERSION</primary></indexterm><programlisting>#define VTE_MICRO_VERSION (5)
 </programlisting>
 <para>
 The micro version number of the VTE library used at compile time.  (e.g. in VTE version

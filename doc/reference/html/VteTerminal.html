@@ -2218,7 +2218,13 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong"
 Sets the length of the scrollback buffer used by the terminal.  The size of
 the scrollback buffer will be set to the larger of this value and the number
 of visible rows the widget can display, so 0 can safely be used to disable
-scrollback.  Note that this setting only affects the normal screen buffer.
+scrollback.
+</p>
+<p>
+A negative value means "infinite scrollback".
+</p>
+<p>
+Note that this setting only affects the normal screen buffer.
 For terminal types which have an alternate screen buffer, no scrollback is
 allowed on the alternate screen buffer.</p>
 <p>
