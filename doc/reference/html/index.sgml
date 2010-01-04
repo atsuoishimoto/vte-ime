@@ -3,6 +3,7 @@
 <ANCHOR id="VteTerminal.object-hierarchy" href="vte/VteTerminal.html#VteTerminal.object-hierarchy">
 <ANCHOR id="VteTerminal.implemented-interfaces" href="vte/VteTerminal.html#VteTerminal.implemented-interfaces">
 <ANCHOR id="VteTerminal.properties" href="vte/VteTerminal.html#VteTerminal.properties">
+<ANCHOR id="VteTerminal.style-properties" href="vte/VteTerminal.html#VteTerminal.style-properties">
 <ANCHOR id="VteTerminal.signals" href="vte/VteTerminal.html#VteTerminal.signals">
 <ANCHOR id="VteTerminal.description" href="vte/VteTerminal.html#VteTerminal.description">
 <ANCHOR id="VteTerminal.details" href="vte/VteTerminal.html#VteTerminal.details">
@@ -125,6 +126,8 @@
 <ANCHOR id="VteTerminal--visible-bell" href="vte/VteTerminal.html#VteTerminal--visible-bell">
 <ANCHOR id="VteTerminal--window-title" href="vte/VteTerminal.html#VteTerminal--window-title">
 <ANCHOR id="VteTerminal--word-chars" href="vte/VteTerminal.html#VteTerminal--word-chars">
+<ANCHOR id="VteTerminal.style-property-details" href="vte/VteTerminal.html#VteTerminal.style-property-details">
+<ANCHOR id="VteTerminal--s-inner-border" href="vte/VteTerminal.html#VteTerminal--s-inner-border">
 <ANCHOR id="VteTerminal.signal-details" href="vte/VteTerminal.html#VteTerminal.signal-details">
 <ANCHOR id="VteTerminal-beep" href="vte/VteTerminal.html#VteTerminal-beep">
 <ANCHOR id="VteTerminal-char-size-changed" href="vte/VteTerminal.html#VteTerminal-char-size-changed">

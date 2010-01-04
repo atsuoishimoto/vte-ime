@@ -1,3 +1,25 @@
+vte (1:0.23.2-0ubuntu1) lucid; urgency=low
+
+  * New upstream version (LP: #502775):
+    - Fix overflow with unlimited scrollback lines
+    - Require glib >= 2.22.0
+    - Deprecate vte_terminal_get_padding
+    - Add VteTerminal::inner-border style property
+    - vteapp: Add --cursor-shape option
+    - Rework mouse selection to be more robust.  In particular, PRIMARY selection
+      now only changes when mouse button is released, not upon every motion when
+      selecting
+    - Interpret and document negative number of scrollback lines as infinite
+    - We now chain unhandled motion-notify events up such that the parent widget
+      can give them a shot
+    - Various crash and bug fixes
+  * debian/control: bump libglib2.0-dev build-dep to >=2.22
+  * debian/patches:
+    - 10_fix_pyenv.patch: dropped fixed in this version
+    - 60_termcap-home-end.patch, 99_autoreconf.patch: refreshed
+
+ -- Martin Peeks <martinp23@googlemail.com>  Mon, 04 Jan 2010 12:34:41 +0000
+
 vte (1:0.22.2-0ubuntu2) karmic; urgency=low
   
   * debian/patches/10_fix_pyenv.patch:

@@ -800,10 +800,12 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 		vte_terminal_emit_resize_window(terminal,
 						(set ? 132 : 80) *
 						terminal->char_width +
-						VTE_PAD_WIDTH * 2,
+						terminal->pvt->inner_border.left +
+                                                terminal->pvt->inner_border.right,
 						terminal->row_count *
 						terminal->char_height +
-						VTE_PAD_WIDTH * 2);
+						terminal->pvt->inner_border.top +
+                                                terminal->pvt->inner_border.bottom);
 		/* Request a resize and redraw. */
 		_vte_invalidate_all(terminal);
 		break;
@@ -1225,8 +1227,7 @@ vte_sequence_handler_cs (VteTerminal *terminal, GValueArray *params)
 	    screen->scrolling_region.end == rows - 1) {
 		screen->scrolling_restricted = FALSE;
 	}
-	screen->cursor_current.row = screen->insert_delta + start;
-	screen->cursor_current.col = 0;
+	_vte_terminal_home_cursor (terminal);
 }
 
 /* Restrict scrolling and updates to a subset of the visible lines, because
@@ -2015,7 +2016,7 @@ static void
 vte_sequence_handler_ta (VteTerminal *terminal, GValueArray *params)
 {
 	VteScreen *screen;
-	long newcol, col;
+	long old_len, newcol, col;
 
 	/* Calculate which column is the next tab stop. */
 	screen = terminal->pvt->screen;
@@ -2053,47 +2054,46 @@ vte_sequence_handler_ta (VteTerminal *terminal, GValueArray *params)
 		 * as a space each.
 		 */
 
-		/* Get rid of trailing empty cells: bug 545924 */
-		if ((glong) _vte_row_data_length (rowdata) > col)
+		old_len = _vte_row_data_length (rowdata);
+		_vte_row_data_fill (rowdata, &screen->fill_defaults, newcol);
+
+		/* Insert smart tab if there's nothing in the line after
+		 * us.  Though, there may be empty cells (with non-default
+		 * background color for example.
+		 *
+		 * Notable bugs here: 545924 and 597242 */
 		{
-			const VteCell *cell;
-			guint i;
-			for (i = _vte_row_data_length (rowdata); (glong) i > col; i--) {
-				cell = _vte_row_data_get (rowdata, i - 1);
-				if (cell->attr.fragment || cell->c != 0)
+			glong i;
+			gboolean found = FALSE;
+			for (i = old_len; i > col; i--) {
+				const VteCell *cell = _vte_row_data_get (rowdata, i - 1);
+				if (cell->attr.fragment || cell->c != 0) {
+					found = TRUE;
 					break;
+				}
 			}
-			_vte_row_data_shrink (rowdata, i);
+			/* Nothing found on the line after us, turn this into
+			 * a smart tab */
+			if (!found) {
+				VteCell *cell = _vte_row_data_get_writable (rowdata, col);
+				VteCell tab = *cell;
+				tab.attr.invisible = 1; /* FIXME: bug 499944 */
+				tab.attr.columns = newcol - col;
+				tab.c = '\t';
+				/* Check if it fits in columns */
+				if (tab.attr.columns == newcol - col) {
+					/* Save tab char */
+					*cell = tab;
+					/* And adjust the fragments */
+					for (i = col + 1; i < newcol; i++) {
+						cell = _vte_row_data_get_writable (rowdata, i);
+						cell->c = '\t';
+						cell->attr.columns = 1;
+						cell->attr.fragment = 1;
+					}
+				}
+			}
 		}
-
-		if ((glong) _vte_row_data_length (rowdata) <= col)
-		  {
-		    VteCell cell;
-
-		    _vte_row_data_fill (rowdata, &screen->fill_defaults, col);
-
-		    cell.attr = screen->fill_defaults.attr;
-		    cell.attr.invisible = 1; /* FIXME: bug 499944 */
-		    cell.attr.columns = newcol - col;
-		    if (cell.attr.columns != newcol - col)
-		      {
-		        /* number of columns doesn't fit one cell. skip
-			 * fancy tabs
-			 */
-		       goto fallback_tab;
-		      }
-		    cell.c = '\t';
-		    _vte_row_data_append (rowdata, &cell);
-
-		    cell.attr.columns = 1;
-		    cell.attr.fragment = 1;
-		    _vte_row_data_fill (rowdata, &cell, newcol);
-		  }
-		else
-		  {
-		  fallback_tab:
-		    _vte_row_data_fill (rowdata, &screen->fill_defaults, newcol);
-		  }
 
 		_vte_invalidate_cells (terminal,
 				screen->cursor_current.col,
@@ -3058,9 +3058,11 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 						arg2, arg1);
 				vte_terminal_emit_resize_window(terminal,
 								arg2 +
-								VTE_PAD_WIDTH * 2,
+								terminal->pvt->inner_border.left +
+								terminal->pvt->inner_border.right,
 								arg1 +
-								VTE_PAD_WIDTH * 2);
+								terminal->pvt->inner_border.top +
+								terminal->pvt->inner_border.bottom);
 				i += 2;
 			}
 			break;
@@ -3086,9 +3088,11 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 						arg2, arg1);
 				vte_terminal_emit_resize_window(terminal,
 								arg2 * terminal->char_width +
-								VTE_PAD_WIDTH * 2,
+								terminal->pvt->inner_border.left +
+								terminal->pvt->inner_border.right,
 								arg1 * terminal->char_height +
-								VTE_PAD_WIDTH * 2);
+								terminal->pvt->inner_border.top +
+								terminal->pvt->inner_border.bottom);
 				i += 2;
 			}
 			break;
@@ -3126,7 +3130,8 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 					      &width, &height);
 			g_snprintf(buf, sizeof(buf),
 				   _VTE_CAP_CSI "3;%d;%dt",
-				   width + VTE_PAD_WIDTH, height + VTE_PAD_WIDTH);
+				   width + terminal->pvt->inner_border.left,
+                                   height + terminal->pvt->inner_border.top);
 			_vte_debug_print(VTE_DEBUG_PARSE,
 					"Reporting window location"
 					"(%d++,%d++).\n",
@@ -3137,13 +3142,17 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 			/* Send window size, in pixels. */
 			g_snprintf(buf, sizeof(buf),
 				   _VTE_CAP_CSI "4;%d;%dt",
-				   widget->allocation.height - 2 * VTE_PAD_WIDTH,
-				   widget->allocation.width - 2 * VTE_PAD_WIDTH);
+				   widget->allocation.height -
+                                       (terminal->pvt->inner_border.top +
+                                        terminal->pvt->inner_border.bottom),
+				   widget->allocation.width -
+                                       (terminal->pvt->inner_border.left +
+                                        terminal->pvt->inner_border.right));
 			_vte_debug_print(VTE_DEBUG_PARSE,
 					"Reporting window size "
 					"(%dx%dn",
-					width - 2 * VTE_PAD_WIDTH,
-					height - 2 * VTE_PAD_WIDTH);
+					width - (terminal->pvt->inner_border.left + terminal->pvt->inner_border.right),
+					height - (terminal->pvt->inner_border.top + terminal->pvt->inner_border.bottom));
 			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		case 18:
@@ -3195,9 +3204,11 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 				 * rows. */
 				vte_terminal_emit_resize_window(terminal,
 								terminal->column_count * terminal->char_width +
-								VTE_PAD_WIDTH * 2,
+                                                                terminal->pvt->inner_border.left +
+                                                                terminal->pvt->inner_border.right,
 								param * terminal->char_height +
-								VTE_PAD_WIDTH * 2);
+								terminal->pvt->inner_border.top +
+                                                                terminal->pvt->inner_border.bottom);
 			}
 			break;
 		}

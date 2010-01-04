@@ -1,3 +1,44 @@
+0.23.2
+=======
+- Fix overflow with unlimited scrollback lines
+- Require glib >= 2.22.0
+- Deprecate vte_terminal_get_padding
+- Add VteTerminal::inner-border style property
+- vteapp: Add --cursor-shape option
+- Bugs fixed in this release:
+    Bug 604966 - Fix "select all" to include text occurring after the visible region
+    Bug 604135 - [PATCH] fix behaviour of set-scrolling-region
+    Bug 603733 - Remove deprecated Glib symbol
+    Bug 603713 - ibeam/underline cursor broken with large inner-border
+    Bug 471920 - Expose the border width property
+    Bug 601265 -  gnome-terminal assert failure: table.c:723:_vte_table_match
+    Revert "Bug 591648 - Don't clear the screen when switching to the alternate screen"
+
+0.23.1
+=======
+- Various crash and bug fixes
+- Rework mouse selection to be more robust.  In particular, PRIMARY selection
+  now only changes when mouse button is released, not upon every motion when
+  selecting.
+- Interpret and document negative number of scrollback lines as infinite
+- We now chain unhandled motion-notify events up such that the parent widget
+  can give them a shot.
+- Bugs fixed in this release:
+    Bug 597604 - assertion failed: (_vte_ring_contains (ring, position))
+    Bug 598124 - The selection does not only change when the mousebutton is released
+    Bug 598090 - LMB Mouse up event not registered when opining context popup menu
+    Bug 587463 - "select all"+copy from gnome-terminal includes lines no longer in scrollback
+    Bug 585370 - Incomplete disabling of python
+    Bug 597242 - libvte color and cursor glitches
+    Bug 591648 - Don't clear the screen when switching to the alternate screen
+    Bug 595445 - Motion notify events are not propagated to parent widget
+    Bug 569184 - vte generates unnecessary ioctl(I_FIND) kernel warnings
+    Bug 599444 - Scrollback index type mess
+    Bug 598814 - text.getText(0, -1) triggers assertion in vteaccess.c
+    Bug 596739 - Python bindings leak memory
+    Bug 597165 - void return in vte.c
+    Bug 587894 - the environment passing with python does no longer work
+
 0.22.2
 =======
 - Fix crash introduced in previous release
