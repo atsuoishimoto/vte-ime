@@ -126,6 +126,7 @@
     <function name="The &quot;visible-bell&quot; property" link="VteTerminal.html#VteTerminal--visible-bell"/>
     <function name="The &quot;window-title&quot; property" link="VteTerminal.html#VteTerminal--window-title"/>
     <function name="The &quot;word-chars&quot; property" link="VteTerminal.html#VteTerminal--word-chars"/>
+    <function name="The &quot;inner-border&quot; style property" link="VteTerminal.html#VteTerminal--s-inner-border"/>
     <function name="The &quot;beep&quot; signal" link="VteTerminal.html#VteTerminal-beep"/>
     <function name="The &quot;char-size-changed&quot; signal" link="VteTerminal.html#VteTerminal-char-size-changed"/>
     <function name="The &quot;child-exited&quot; signal" link="VteTerminal.html#VteTerminal-child-exited"/>

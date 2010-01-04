@@ -49,6 +49,7 @@
 <indexentry><primaryie linkends="VteTerminal--encoding"><link linkend="VteTerminal--encoding">VteTerminal:encoding</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminal--font-desc"><link linkend="VteTerminal--font-desc">VteTerminal:font-desc</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminal--icon-title"><link linkend="VteTerminal--icon-title">VteTerminal:icon-title</link></primaryie></indexentry>
+<indexentry><primaryie linkends="VteTerminal--s-inner-border"><link linkend="VteTerminal--s-inner-border">VteTerminal:inner-border</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminal--pointer-autohide"><link linkend="VteTerminal--pointer-autohide">VteTerminal:pointer-autohide</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminal--pty"><link linkend="VteTerminal--pty">VteTerminal:pty</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminal--scroll-background"><link linkend="VteTerminal--scroll-background">VteTerminal:scroll-background</link></primaryie></indexentry>
