@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001,2002,2003 Red Hat, Inc.
+ * Copyright (C) 2001,2002,2003,2009,2010 Red Hat, Inc.
  *
  * This is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License as published by
@@ -20,8 +20,9 @@
 #define vte_vte_h_included
 
 #include <glib.h>
-#include <gtk/gtk.h>
+#include <gio/gio.h>
 #include <pango/pango.h>
+#include <gtk/gtk.h>
 
 #include <sys/types.h> /* for pid_t */
 
@@ -396,8 +397,10 @@ const char *vte_terminal_get_encoding(VteTerminal *terminal);
 /* Get the contents of the status line. */
 const char *vte_terminal_get_status_line(VteTerminal *terminal);
 
+#ifndef VTE_DISABLE_DEPRECATED
 /* Get the padding the widget is using. */
 void vte_terminal_get_padding(VteTerminal *terminal, int *xpad, int *ypad);
+#endif
 
 /* Attach an existing PTY master side to the terminal widget.  Use
  * instead of vte_terminal_fork_command(). */
@@ -414,6 +417,20 @@ const char *vte_terminal_get_window_title(VteTerminal *terminal);
 const char *vte_terminal_get_icon_title(VteTerminal *terminal);
 
 int vte_terminal_get_child_exit_status(VteTerminal *terminal);
+
+
+/* Writing contents out */
+
+typedef enum {
+  VTE_TERMINAL_WRITE_DEFAULT = 0
+} VteTerminalWriteFlags;
+
+gboolean vte_terminal_write_contents (VteTerminal *terminal,
+				      GOutputStream *stream,
+				      VteTerminalWriteFlags flags,
+				      GCancellable *cancellable,
+				      GError **error);
+
 
 #ifndef VTE_DISABLE_DEPRECATED
 

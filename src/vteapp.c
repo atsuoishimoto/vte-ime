@@ -130,29 +130,49 @@ char_size_realized(GtkWidget *widget, gpointer data)
 				      GDK_HINT_MIN_SIZE);
 }
 
-static void
-deleted_and_quit(GtkWidget *widget, GdkEvent *event, gpointer data)
-{
-	gtk_widget_destroy(GTK_WIDGET(data));
-	gtk_main_quit();
-}
 
 static void
-destroy_and_quit(GtkWidget *widget, gpointer data)
+destroy_and_quit(VteTerminal *terminal, GtkWidget *window)
 {
-	gtk_widget_destroy(GTK_WIDGET(data));
-	gtk_main_quit();
+	const char *output_file = g_object_get_data (G_OBJECT (terminal), "output_file");
+
+	if (output_file) {
+		GFile *file;
+		GOutputStream *stream;
+		GError *error = NULL;
+
+		file = g_file_new_for_commandline_arg (output_file);
+		stream = G_OUTPUT_STREAM (g_file_replace (file, NULL, FALSE, G_FILE_CREATE_NONE, NULL, &error));
+
+		if (stream) {
+			vte_terminal_write_contents (terminal, stream,
+						     VTE_TERMINAL_WRITE_DEFAULT,
+						     NULL, &error);
+			g_object_unref (stream);
+		}
+
+		if (error) {
+			g_printerr ("%s\n", error->message);
+			g_error_free (error);
+		}
+
+		g_object_unref (file);
+	}
+
+	gtk_widget_destroy (window);
+	gtk_main_quit ();
 }
 static void
-destroy_and_quit_eof(GtkWidget *widget, gpointer data)
+delete_event(GtkWidget *window, GdkEvent *event, gpointer terminal)
 {
-	_vte_debug_print(VTE_DEBUG_MISC, "Detected EOF.\n");
+	destroy_and_quit(VTE_TERMINAL (terminal), window);
 }
 static void
-destroy_and_quit_exited(GtkWidget *widget, gpointer data)
+child_exited(GtkWidget *terminal, gpointer window)
 {
-	_vte_debug_print(VTE_DEBUG_MISC, "Detected child exit.\n");
-	destroy_and_quit(widget, data);
+	_vte_debug_print(VTE_DEBUG_MISC, "Child exited with status %x\n",
+			 vte_terminal_get_child_exit_status (VTE_TERMINAL (terminal)));
+	destroy_and_quit(VTE_TERMINAL (terminal), GTK_WIDGET (window));
 }
 
 static void
@@ -438,7 +458,6 @@ static void
 child_exit_cb(VteTerminal *terminal,
                  gpointer user_data)
 {
-  _vte_debug_print(VTE_DEBUG_MISC, "Child exited with status %x\n", vte_terminal_get_child_exit_status(terminal));
 }
 
 int
@@ -450,7 +469,7 @@ main(int argc, char **argv)
 	VteTerminal *terminal;
 	char *env_add[] = {
 #ifdef VTE_DEBUG
-		"FOO=BAR", "BOO=BIZ",
+		(char *) "FOO=BAR", (char *) "BOO=BIZ",
 #endif
 		NULL};
 	const char *background = NULL;
@@ -469,6 +488,8 @@ main(int argc, char **argv)
 	const char *termcap = NULL;
 	const char *command = NULL;
 	const char *working_directory = NULL;
+	const char *output_file = NULL;
+        char *cursor_shape = NULL;
 	GdkColor fore, back, tint, highlight, cursor;
 	const GOptionEntry options[]={
 		{
@@ -563,6 +584,11 @@ main(int argc, char **argv)
 			"Enable a colored cursor", NULL
 		},
 		{
+			"cursor-shape", 0, 0,
+			G_OPTION_ARG_STRING, &cursor_shape,
+			"Set cursor shape (block, underline, ibeam)", NULL
+		},
+		{
 			"scroll-background", 's', 0,
 			G_OPTION_ARG_NONE, &scroll,
 			"Enable a scrolling background", NULL
@@ -606,6 +632,11 @@ main(int argc, char **argv)
 			G_OPTION_ARG_NONE, &show_object_notifications,
 			"Print VteTerminal object notifications",
 			NULL
+		},
+		{
+			"output-file", 0, 0,
+			G_OPTION_ARG_STRING, &output_file,
+			"Save terminal contents to file at exit", NULL
 		},
 		{ NULL }
 	};
@@ -652,8 +683,6 @@ main(int argc, char **argv)
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_resize_mode(GTK_CONTAINER(window),
 				      GTK_RESIZE_IMMEDIATE);
-	g_signal_connect(window, "delete-event",
-			 G_CALLBACK(deleted_and_quit), window);
 
 	/* Set ARGB colormap */
 	screen = gtk_widget_get_screen (window);
@@ -706,12 +735,6 @@ main(int argc, char **argv)
 		g_signal_connect(widget, "icon-title-changed",
 				 G_CALLBACK(icon_title_changed), window);
 	}
-
-	/* Connect to the "eof" signal to quit when the session ends. */
-	g_signal_connect(widget, "eof",
-			 G_CALLBACK(destroy_and_quit_eof), window);
-	g_signal_connect(widget, "child-exited",
-			 G_CALLBACK(destroy_and_quit_exited), window);
 
 	/* Connect to the "status-line-changed" signal. */
 	g_signal_connect(widget, "status-line-changed",
@@ -780,6 +803,13 @@ main(int argc, char **argv)
 	if (cursor_set) {
 		vte_terminal_set_color_cursor(terminal, &cursor);
 	}
+        if (g_strcmp0(cursor_shape, "underline") == 0) {
+                vte_terminal_set_cursor_shape(terminal, VTE_CURSOR_SHAPE_UNDERLINE);
+        } else if (g_strcmp0(cursor_shape, "ibeam") == 0) {
+                vte_terminal_set_cursor_shape(terminal, VTE_CURSOR_SHAPE_IBEAM);
+        } else {
+                vte_terminal_set_cursor_shape(terminal, VTE_CURSOR_SHAPE_BLOCK);
+        }
 	if (termcap != NULL) {
 		vte_terminal_set_emulation(terminal, termcap);
 	}
@@ -900,7 +930,12 @@ main(int argc, char **argv)
 		}
 	}
 
+	g_object_set_data (G_OBJECT (widget), "output_file", (gpointer) output_file);
+
 	/* Go for it! */
+	g_signal_connect(widget, "child-exited", G_CALLBACK(child_exited), window);
+	g_signal_connect(window, "delete-event", G_CALLBACK(delete_event), widget);
+
 	add_weak_pointer(G_OBJECT(widget), &widget);
 	add_weak_pointer(G_OBJECT(window), &window);
 
@@ -912,7 +947,6 @@ main(int argc, char **argv)
         }
 
 	gtk_widget_show_all(window);
-
 
 	gtk_main();
 

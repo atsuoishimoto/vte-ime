@@ -12,13 +12,14 @@ include /usr/share/cdbs/1/rules/patchsys-quilt.mk
 include /usr/share/cdbs/1/rules/utils.mk
 include /usr/share/cdbs/1/class/gnome.mk
 include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
+include /usr/share/gnome-pkg-tools/1/rules/check-dist.mk
 -include /usr/share/gnome-pkg-tools/1/rules/gnome-get-source.mk
 
 PY_VERSIONS = $(shell pyversions --requested debian/control)
 
 DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/$(libvteN)
 DEB_FIXPERMS_EXCLUDE += gnome-pty-helper
-DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.20.4)' --add-udeb=$(udeb)
+DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.23.5)' --add-udeb=$(udeb)
 
 DEB_CONFIGURE_EXTRA_FLAGS += \
 	--enable-glade-catalogue

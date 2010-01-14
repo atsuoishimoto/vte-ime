@@ -24,7 +24,7 @@
 #define vte_vteversion_h_included
 
 #define VTE_MAJOR_VERSION (0)
-#define VTE_MINOR_VERSION (22)
+#define VTE_MINOR_VERSION (23)
 #define VTE_MICRO_VERSION (5)
 
 #define VTE_CHECK_VERSION(major,minor,micro) \
