@@ -63,6 +63,7 @@
 <indexentry><primaryie linkends="VteTerminalCursorBlinkMode"><link linkend="VteTerminalCursorBlinkMode">VteTerminalCursorBlinkMode</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminalCursorShape"><link linkend="VteTerminalCursorShape">VteTerminalCursorShape</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VteTerminalEraseBinding"><link linkend="VteTerminalEraseBinding">VteTerminalEraseBinding</link></primaryie></indexentry>
+<indexentry><primaryie linkends="VteTerminalWriteFlags"><link linkend="VteTerminalWriteFlags">VteTerminalWriteFlags</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VTE-CHECK-VERSION--CAPS"><link linkend="VTE-CHECK-VERSION--CAPS">VTE_CHECK_VERSION</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VTE-MAJOR-VERSION--CAPS"><link linkend="VTE-MAJOR-VERSION--CAPS">VTE_MAJOR_VERSION</link></primaryie></indexentry>
 <indexentry><primaryie linkends="VTE-MICRO-VERSION--CAPS"><link linkend="VTE-MICRO-VERSION--CAPS">VTE_MICRO_VERSION</link></primaryie></indexentry>
@@ -156,5 +157,6 @@
 <indexentry><primaryie linkends="vte-terminal-set-size"><link linkend="vte-terminal-set-size">vte_terminal_set_size</link></primaryie></indexentry>
 <indexentry><primaryie linkends="vte-terminal-set-visible-bell"><link linkend="vte-terminal-set-visible-bell">vte_terminal_set_visible_bell</link></primaryie></indexentry>
 <indexentry><primaryie linkends="vte-terminal-set-word-chars"><link linkend="vte-terminal-set-word-chars">vte_terminal_set_word_chars</link></primaryie></indexentry>
+<indexentry><primaryie linkends="vte-terminal-write-contents"><link linkend="vte-terminal-write-contents">vte_terminal_write_contents</link></primaryie></indexentry>
 </indexdiv>
 </indexdiv>

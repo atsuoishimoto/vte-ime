@@ -53,6 +53,19 @@
 enum                <a class="link" href="VteTerminal.html#VteTerminalEraseBinding" title="enum VteTerminalEraseBinding">VteTerminalEraseBinding</a>;
 enum                <a class="link" href="VteTerminal.html#VteTerminalCursorShape" title="enum VteTerminalCursorShape">VteTerminalCursorShape</a>;
 enum                <a class="link" href="VteTerminal.html#VteTerminalCursorBlinkMode" title="enum VteTerminalCursorBlinkMode">VteTerminalCursorBlinkMode</a>;
+enum                <a class="link" href="VteTerminal.html#VteTerminalWriteFlags" title="enum VteTerminalWriteFlags">VteTerminalWriteFlags</a>;
+<a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a class="link" href="VteTerminal.html#VteSelectionFunc" title="VteSelectionFunc ()">*VteSelectionFunc</a>)                 (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong"
+>glong</a> column,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong"
+>glong</a> row,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
 <a
 href="http://library.gnome.org/devel/gtk/unstable/GtkWidget.html"
 >GtkWidget</a> *         <a class="link" href="VteTerminal.html#vte-terminal-new" title="vte_terminal_new ()">vte_terminal_new</a>                    (void);
@@ -316,18 +329,6 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
                                                          <a
 href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray"
 >GArray</a> *attributes);
-<a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            (<a class="link" href="VteTerminal.html#VteSelectionFunc" title="VteSelectionFunc ()">*VteSelectionFunc</a>)                 (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong"
->glong</a> column,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong"
->glong</a> row,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> data);
 void                <a class="link" href="VteTerminal.html#vte-terminal-get-cursor-position" title="vte_terminal_get_cursor_position ()">vte_terminal_get_cursor_position</a>    (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          <a
 href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong"
@@ -379,6 +380,19 @@ const char *        <a class="link" href="VteTerminal.html#vte-terminal-get-stat
 void                <a class="link" href="VteTerminal.html#vte-terminal-get-padding" title="vte_terminal_get_padding ()">vte_terminal_get_padding</a>            (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
                                                          int *xpad,
                                                          int *ypad);
+<a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a class="link" href="VteTerminal.html#vte-terminal-write-contents" title="vte_terminal_write_contents ()">vte_terminal_write_contents</a>         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GOutputStream.html"
+>GOutputStream</a> *stream,
+                                                         <a class="link" href="VteTerminal.html#VteTerminalWriteFlags" title="enum VteTerminalWriteFlags">VteTerminalWriteFlags</a> flags,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
+>GCancellable</a> *cancellable,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+>GError</a> **error);
 
 
 <a
@@ -761,6 +775,77 @@ for the terminal.
 <tr>
 <td><p><a name="VTE-CURSOR-BLINK-OFF--CAPS"></a><span class="term"><code class="literal">VTE_CURSOR_BLINK_OFF</code></span></p></td>
 <td>Cursor does not blink.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="enum VteTerminalWriteFlags">
+<a name="VteTerminalWriteFlags"></a><h3>enum VteTerminalWriteFlags</h3>
+<pre class="programlisting">typedef enum {
+  VTE_TERMINAL_WRITE_DEFAULT = 0
+} VteTerminalWriteFlags;
+</pre>
+<p>
+A flag type to determine how terminal contents should be written
+to an output stream.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><a name="VTE-TERMINAL-WRITE-DEFAULT--CAPS"></a><span class="term"><code class="literal">VTE_TERMINAL_WRITE_DEFAULT</code></span></p></td>
+<td>Write contents as UTF-8 text.  This is the default.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="VteSelectionFunc ()">
+<a name="VteSelectionFunc"></a><h3>VteSelectionFunc ()</h3>
+<pre class="programlisting"><a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*VteSelectionFunc)                 (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong"
+>glong</a> column,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong"
+>glong</a> row,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
+<p>
+Specifies the type of a selection function used to check whether
+a cell has to be selected or not.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>terminal</code></em> :</span></p></td>
+<td> terminal in which the cell is.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>column</code></em> :</span></p></td>
+<td> column in which the cell is.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>row</code></em> :</span></p></td>
+<td> row in which the cell is.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
+<td> user data.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <code class="literal">TRUE</code> if cell has to be selected; <code class="literal">FALSE</code> if otherwise.
 </td>
 </tr>
 </tbody>
@@ -2824,57 +2909,6 @@ contents of the buffer using this function.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="VteSelectionFunc ()">
-<a name="VteSelectionFunc"></a><h3>VteSelectionFunc ()</h3>
-<pre class="programlisting"><a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
->gboolean</a>            (*VteSelectionFunc)                 (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong"
->glong</a> column,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#glong"
->glong</a> row,
-                                                         <a
-href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
->gpointer</a> data);</pre>
-<p>
-Specifies the type of a selection function used to check whether
-a cell has to be selected or not.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>terminal</code></em> :</span></p></td>
-<td> terminal in which the cell is.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>column</code></em> :</span></p></td>
-<td> column in which the cell is.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>row</code></em> :</span></p></td>
-<td> row in which the cell is.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td> user data.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <code class="literal">TRUE</code> if cell has to be selected; <code class="literal">FALSE</code> if otherwise.
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
 <div class="refsect2" title="vte_terminal_get_cursor_position ()">
 <a name="vte-terminal-get-cursor-position"></a><h3>vte_terminal_get_cursor_position ()</h3>
 <pre class="programlisting">void                vte_terminal_get_cursor_position    (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
@@ -3413,6 +3447,81 @@ each direction, and do not need to be doubled.
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2" title="vte_terminal_write_contents ()">
+<a name="vte-terminal-write-contents"></a><h3>vte_terminal_write_contents ()</h3>
+<pre class="programlisting"><a
+href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"
+>gboolean</a>            vte_terminal_write_contents         (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *terminal,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GOutputStream.html"
+>GOutputStream</a> *stream,
+                                                         <a class="link" href="VteTerminal.html#VteTerminalWriteFlags" title="enum VteTerminalWriteFlags">VteTerminalWriteFlags</a> flags,
+                                                         <a
+href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
+>GCancellable</a> *cancellable,
+                                                         <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre>
+<p>
+Write contents of the current contents of <em class="parameter"><code>terminal</code></em> (including any
+scrollback history) to <em class="parameter"><code>stream</code></em> according to <em class="parameter"><code>flags</code></em>.
+</p>
+<p>
+If <em class="parameter"><code>cancellable</code></em> is not <code class="literal">NULL</code>, then the operation can be cancelled by triggering
+the cancellable object from another thread. If the operation was cancelled,
+the error <code class="literal">G_IO_ERROR_CANCELLED</code> will be returned in <em class="parameter"><code>error</code></em>.
+</p>
+<p>
+This is a synchronous operation and will make the widget (and input
+processing) during the write operation, which may take a long time
+depending on scrollback history and <em class="parameter"><code>stream</code></em> availability for writing.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>terminal</code></em> :</span></p></td>
+<td> a <a class="link" href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stream</code></em> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/gio/unstable/GOutputStream.html"
+><span class="type">GOutputStream</span></a> to write to
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>flags</code></em> :</span></p></td>
+<td> a set of <a class="link" href="VteTerminal.html#VteTerminalWriteFlags" title="enum VteTerminalWriteFlags"><span class="type">VteTerminalWriteFlags</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td> optional <a
+href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"
+><span class="type">GCancellable</span></a> object, <code class="literal">NULL</code> to ignore
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
+<td> a <a
+href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> location to store the error occuring, or <code class="literal">NULL</code> to ignore
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> <code class="literal">TRUE</code> on success, <code class="literal">FALSE</code> if there was an error
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.24</p>
 </div>
 <hr>
 <div class="refsect2" title="vte_terminal_get_adjustment ()">
@@ -4544,13 +4653,15 @@ Emitted at the child application's request.</p>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
                                                         <a
 href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a>        arg1,
+>guint</a>        x,
                                                         <a
 href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a>        arg2,
+>guint</a>        y,
                                                         <a
 href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
 >gpointer</a>     user_data)        : Run Last</pre>
+<p>
+Emitted at the child application's request.</p>
 <p>
 </p>
 <div class="variablelist"><table border="0">
@@ -4558,17 +4669,17 @@ href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointe
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>vteterminal</code></em> :</span></p></td>
-<td>
+<td> the object which received the signal.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
+<td> the terminal's desired location, X coordinate.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>arg2</code></em> :</span></p></td>
-<td>
+<td><p><span class="term"><em class="parameter"><code>y</code></em> :</span></p></td>
+<td> the terminal's desired location, Y coordinate.
 </td>
 </tr>
 <tr>
@@ -4662,10 +4773,10 @@ Emitted at the child application's request.</p>
 <pre class="programlisting">void                user_function                      (<a class="link" href="VteTerminal.html" title="VteTerminal">VteTerminal</a> *vteterminal,
                                                         <a
 href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a>        x,
+>guint</a>        width,
                                                         <a
 href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"
->guint</a>        y,
+>guint</a>        height,
                                                         <a
 href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"
 >gpointer</a>     user_data)        : Run Last</pre>
@@ -4682,13 +4793,13 @@ Emitted at the child application's request.</p>
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> the terminal's desired location, X coordinate.
+<td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
+<td> the desired width in pixels, including padding.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>y</code></em> :</span></p></td>
-<td> the terminal's desired location, Y coordinate.
+<td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
+<td> the desired height in pixels, including padding.
 </td>
 </tr>
 <tr>

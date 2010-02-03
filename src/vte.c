@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001-2004 Red Hat, Inc.
+ * Copyright (C) 2001-2004,2009,2010 Red Hat, Inc.
  *
  * This is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License as published by
@@ -2423,7 +2423,7 @@ static void
 vte_terminal_set_color_internal(VteTerminal *terminal, int entry,
 				const GdkColor *proposed)
 {
-	struct vte_palette_entry *color;
+	PangoColor *color;
 
 	color = &terminal->pvt->palette[entry];
 
@@ -2461,8 +2461,8 @@ vte_terminal_set_color_internal(VteTerminal *terminal, int entry,
 }
 
 static void
-vte_terminal_generate_bold(const struct vte_palette_entry *foreground,
-			   const struct vte_palette_entry *background,
+vte_terminal_generate_bold(const PangoColor *foreground,
+			   const PangoColor *background,
 			   double factor,
 			   GdkColor *bold)
 {
@@ -2498,6 +2498,7 @@ vte_terminal_generate_bold(const struct vte_palette_entry *foreground,
 			"Calculated bold (%d, %d, %d) = (%lf,%lf,%lf)",
 			foreground->red, foreground->green, foreground->blue,
 			r, g, b);
+	bold->pixel = 0;
 	bold->red = CLAMP(r, 0, 0xffff);
 	bold->green = CLAMP(g, 0, 0xffff);
 	bold->blue = CLAMP(b, 0, 0xffff);
@@ -5351,7 +5352,11 @@ vte_terminal_paste_cb(GtkClipboard *clipboard, const gchar *text, gpointer data)
 				p++;
 			}
 		}
+		if (terminal->pvt->screen->bracketed_paste_mode)
+			vte_terminal_feed_child(terminal, "\e[200~", -1);
 		vte_terminal_feed_child(terminal, paste, length);
+		if (terminal->pvt->screen->bracketed_paste_mode)
+			vte_terminal_feed_child(terminal, "\e[201~", -1);
 		g_free(paste);
 	}
 }
@@ -5819,7 +5824,7 @@ vte_terminal_get_text_range_maybe_wrapped(VteTerminal *terminal,
 	const VteCell *pcell = NULL;
 	GString *string;
 	struct _VteCharAttributes attr;
-	struct vte_palette_entry fore, back, *palette;
+	PangoColor fore, back, *palette;
 
 	screen = terminal->pvt->screen;
 
@@ -7592,20 +7597,17 @@ vte_terminal_set_size(VteTerminal *terminal, glong columns, glong rows)
 		terminal->row_count = rows;
 		terminal->column_count = columns;
 	}
-	if (old_rows != terminal->row_count ||
-			old_columns != terminal->column_count) {
+	if (old_rows != terminal->row_count || old_columns != terminal->column_count) {
 		VteScreen *screen = terminal->pvt->screen;
-		if (screen) {
-			glong visible_rows = MIN (old_rows, _vte_ring_length (screen->row_data));
-			if (terminal->row_count < visible_rows) {
-				glong delta = visible_rows - terminal->row_count;
-				screen->insert_delta += delta;
-				vte_terminal_queue_adjustment_value_changed (
-						terminal,
-						screen->scroll_delta + delta);
-			}
+		glong visible_rows = MIN (old_rows, _vte_ring_length (screen->row_data));
+		if (terminal->row_count < visible_rows) {
+			glong delta = visible_rows - terminal->row_count;
+			screen->insert_delta += delta;
+			vte_terminal_queue_adjustment_value_changed (
+					terminal,
+					screen->scroll_delta + delta);
 		}
-		gtk_widget_queue_resize (&terminal->widget);
+		gtk_widget_queue_resize_no_redraw (&terminal->widget);
 		/* Our visible text changed. */
 		vte_terminal_emit_text_modified(terminal);
 	}
@@ -7902,6 +7904,19 @@ vte_terminal_init(VteTerminal *terminal)
 
 	/* We allocated zeroed memory, just fill in non-zero stuff. */
 
+	/* Initialize the screens and histories. */
+	_vte_ring_init (pvt->alternate_screen.row_data, terminal->row_count);
+	pvt->alternate_screen.sendrecv_mode = TRUE;
+	pvt->alternate_screen.status_line_contents = g_string_new(NULL);
+	pvt->screen = &terminal->pvt->alternate_screen;
+	_vte_terminal_set_default_attributes(terminal);
+
+	_vte_ring_init (pvt->normal_screen.row_data,  VTE_SCROLLBACK_INIT);
+	pvt->normal_screen.sendrecv_mode = TRUE;
+	pvt->normal_screen.status_line_contents = g_string_new(NULL);
+	pvt->screen = &terminal->pvt->normal_screen;
+	_vte_terminal_set_default_attributes(terminal);
+
 	/* Set up I/O encodings. */
 	pvt->iso2022 = _vte_iso2022_state_new(pvt->encoding,
 					      &_vte_terminal_codeset_changed_cb,
@@ -7935,19 +7950,6 @@ vte_terminal_init(VteTerminal *terminal)
 	pvt->pty_output_source = 0;
 	pvt->pty_pid = -1;
         pvt->child_exit_status = 0;
-
-	/* Initialize the screens and histories. */
-	_vte_ring_init (pvt->alternate_screen.row_data, terminal->row_count);
-	pvt->alternate_screen.sendrecv_mode = TRUE;
-	pvt->alternate_screen.status_line_contents = g_string_new(NULL);
-	pvt->screen = &terminal->pvt->alternate_screen;
-	_vte_terminal_set_default_attributes(terminal);
-
-	_vte_ring_init (pvt->normal_screen.row_data,  VTE_SCROLLBACK_INIT);
-	pvt->normal_screen.sendrecv_mode = TRUE;
-	pvt->normal_screen.status_line_contents = g_string_new(NULL);
-	pvt->screen = &terminal->pvt->normal_screen;
-	_vte_terminal_set_default_attributes(terminal);
 
 	/* Scrolling options. */
 	pvt->scroll_on_keystroke = TRUE;
@@ -8511,9 +8513,8 @@ vte_terminal_realize(GtkWidget *widget)
 	attributes.width = widget->allocation.width;
 	attributes.height = widget->allocation.height;
 	attributes.wclass = GDK_INPUT_OUTPUT;
-	attributes.visual = _vte_draw_get_visual(terminal->pvt->draw);
-	attributes.colormap = _vte_draw_get_colormap(terminal->pvt->draw,
-						     FALSE);
+	attributes.visual = gtk_widget_get_visual (widget);
+	attributes.colormap = gtk_widget_get_colormap (widget);
 	attributes.event_mask = gtk_widget_get_events(widget) |
 				GDK_EXPOSURE_MASK |
 				GDK_VISIBILITY_NOTIFY_MASK |
@@ -8717,70 +8718,58 @@ vte_terminal_unichar_is_local_graphic(VteTerminal *terminal, vteunistr c, gboole
 
 static void
 vte_terminal_fill_rectangle(VteTerminal *terminal,
-			    struct vte_palette_entry *entry,
+			    const PangoColor *color,
 			    gint x,
 			    gint y,
 			    gint width,
 			    gint height)
 {
-	GdkColor color;
-	gboolean wasdrawing;
-
-	wasdrawing = terminal->pvt->draw->started;
-	if (!wasdrawing) {
-		_vte_draw_start(terminal->pvt->draw);
-	}
-	color.red = entry->red;
-	color.green = entry->green;
-	color.blue = entry->blue;
+	_vte_draw_start(terminal->pvt->draw);
 	_vte_draw_fill_rectangle(terminal->pvt->draw,
 				 x + terminal->pvt->inner_border.left,
                                  y + terminal->pvt->inner_border.top,
 				 width, height,
-				 &color, VTE_DRAW_OPAQUE);
-	if (!wasdrawing) {
-		_vte_draw_end(terminal->pvt->draw);
-	}
+				 color, VTE_DRAW_OPAQUE);
+	_vte_draw_end(terminal->pvt->draw);
 }
 
 static void
 vte_terminal_draw_line(VteTerminal *terminal,
-		       struct vte_palette_entry *entry,
+		       const PangoColor *color,
 		       gint x,
 		       gint y,
 		       gint xp,
 		       gint yp)
 {
-	vte_terminal_fill_rectangle(terminal, entry,
+	vte_terminal_fill_rectangle(terminal, color,
 				    x, y,
 				    MAX(VTE_LINE_WIDTH, xp - x + 1), MAX(VTE_LINE_WIDTH, yp - y + 1));
 }
 
 static void
 vte_terminal_draw_rectangle(VteTerminal *terminal,
-			    struct vte_palette_entry *entry,
+			    const PangoColor *color,
 			    gint x,
 			    gint y,
 			    gint width,
 			    gint height)
 {
-	vte_terminal_draw_line(terminal, entry,
-			       x, y, x, y + height);
-	vte_terminal_draw_line(terminal, entry,
-			       x + width, y, x + width, y + height);
-	vte_terminal_draw_line(terminal, entry,
-			       x, y, x + width, y);
-	vte_terminal_draw_line(terminal, entry,
-			       x, y + height, x + width, y + height);
+	_vte_draw_start(terminal->pvt->draw);
+	_vte_draw_draw_rectangle(terminal->pvt->draw,
+				 x + terminal->pvt->inner_border.left,
+                                 y + terminal->pvt->inner_border.top,
+				 width, height,
+				 color, VTE_DRAW_OPAQUE);
+	_vte_draw_end(terminal->pvt->draw);
 }
 
 static void
 vte_terminal_draw_point(VteTerminal *terminal,
-			struct vte_palette_entry *entry,
+			const PangoColor *color,
 			gint x,
 			gint y)
 {
-	vte_terminal_fill_rectangle(terminal, entry, x, y, 1, 1);
+	vte_terminal_fill_rectangle(terminal, color, x, y, 1, 1);
 }
 
 /* Draw the graphic representation of a line-drawing or special graphics
@@ -8795,16 +8784,12 @@ vte_terminal_draw_graphic(VteTerminal *terminal, vteunistr c,
 	gboolean ret;
 	gint xcenter, xright, ycenter, ybottom, i;
 	struct _vte_draw_text_request request;
-	GdkColor color;
 
 	request.c = c;
 	request.x = x + terminal->pvt->inner_border.left;
 	request.y = y + terminal->pvt->inner_border.top;
 	request.columns = columns;
 
-	color.red = terminal->pvt->palette[fore].red;
-	color.green = terminal->pvt->palette[fore].green;
-	color.blue = terminal->pvt->palette[fore].blue;
 	xright = x + column_width * columns;
 	ybottom = y + row_height;
 	xcenter = (x + xright) / 2;
@@ -8818,7 +8803,7 @@ vte_terminal_draw_graphic(VteTerminal *terminal, vteunistr c,
 	}
 
 	if (_vte_draw_char(terminal->pvt->draw, &request,
-			   &color, VTE_DRAW_OPAQUE, bold)) {
+			   &terminal->pvt->palette[fore], VTE_DRAW_OPAQUE, bold)) {
 		/* We were able to draw with actual fonts. */
 		return TRUE;
 	}
@@ -9560,8 +9545,7 @@ vte_terminal_draw_cells(VteTerminal *terminal,
 {
 	int i, x, y, ascent;
 	gint columns = 0;
-	GdkColor color = {0,};
-	struct vte_palette_entry *fg, *bg, *defbg;
+	PangoColor *fg, *bg, *defbg;
 
 	g_assert(n > 0);
 	_VTE_DEBUG_IF(VTE_DEBUG_CELLS) {
@@ -9584,9 +9568,6 @@ vte_terminal_draw_cells(VteTerminal *terminal,
 	defbg = &terminal->pvt->palette[VTE_DEF_BG];
 	ascent = terminal->char_ascent;
 
-	color.red = bg->red;
-	color.blue = bg->blue;
-	color.green = bg->green;
 	i = 0;
 	do {
 		columns = 0;
@@ -9604,15 +9585,12 @@ vte_terminal_draw_cells(VteTerminal *terminal,
                                         y + terminal->pvt->inner_border.top,
 					columns * column_width + bold,
 					row_height,
-					&color, VTE_DRAW_OPAQUE);
+					bg, VTE_DRAW_OPAQUE);
 		}
 	} while (i < n);
-	color.red = fg->red;
-	color.blue = fg->blue;
-	color.green = fg->green;
 	_vte_draw_text(terminal->pvt->draw,
 			items, n,
-			&color, VTE_DRAW_OPAQUE, bold);
+			fg, VTE_DRAW_OPAQUE, bold);
 	for (i = 0; i < n; i++) {
 		/* Deadjust for the border. */
 		items[i].x -= terminal->pvt->inner_border.left;
@@ -9656,8 +9634,8 @@ vte_terminal_draw_cells(VteTerminal *terminal,
 				vte_terminal_draw_rectangle(terminal,
 						&terminal->pvt->palette[fore],
 						x, y,
-						MAX(0, (columns * column_width) - 1),
-						MAX(0, row_height - 1));
+						MAX(0, (columns * column_width)),
+						MAX(0, row_height));
 			}
 		}while (i < n);
 	}
@@ -9668,12 +9646,11 @@ static guint
 _vte_terminal_map_pango_color(VteTerminal *terminal, PangoColor *color)
 {
 	long distance[G_N_ELEMENTS(terminal->pvt->palette)];
-	struct vte_palette_entry *entry;
 	guint i, ret;
 
 	/* Calculate a "distance" value.  Could stand to be improved a bit. */
 	for (i = 0; i < G_N_ELEMENTS(distance); i++) {
-		entry = &terminal->pvt->palette[i];
+		const PangoColor *entry = &terminal->pvt->palette[i];
 		distance[i] = 0;
 		distance[i] += ((entry->red >> 8) - (color->red >> 8)) *
 			       ((entry->red >> 8) - (color->red >> 8));
@@ -10019,18 +9996,13 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 					j += cell ? cell->attr.columns : 1;
 				}
 				if (back != VTE_DEF_BG) {
-					GdkColor color;
-					const struct vte_palette_entry *bg = &terminal->pvt->palette[back];
-					color.red = bg->red;
-					color.blue = bg->blue;
-					color.green = bg->green;
 					_vte_draw_fill_rectangle (
 							terminal->pvt->draw,
 							x + i * column_width,
 							y,
 							(j - i) * column_width + bold,
 							row_height,
-							&color, VTE_DRAW_OPAQUE);
+							&terminal->pvt->palette[back], VTE_DRAW_OPAQUE);
 				}
 				/* We'll need to continue at the first cell which didn't
 				 * match the first one in this set. */
@@ -10053,18 +10025,12 @@ vte_terminal_draw_rows(VteTerminal *terminal,
 						FALSE,
 						&fore, &back);
 				if (back != VTE_DEF_BG) {
-					GdkColor color;
-					const struct vte_palette_entry *bg = &terminal->pvt->palette[back];
-					color.red = bg->red;
-					color.blue = bg->blue;
-					color.green = bg->green;
-					_vte_draw_fill_rectangle (
-							terminal->pvt->draw,
-							x + i *column_width,
-							y,
-							(j - i)  * column_width,
-							row_height,
-							&color, VTE_DRAW_OPAQUE);
+					_vte_draw_fill_rectangle (terminal->pvt->draw,
+								  x + i *column_width,
+								  y,
+								  (j - i)  * column_width,
+								  row_height,
+								  &terminal->pvt->palette[back], VTE_DRAW_OPAQUE);
 				}
 				i = j;
 			} while (i < end_column);
@@ -10428,7 +10394,6 @@ static void
 vte_terminal_paint_cursor(VteTerminal *terminal)
 {
 	VteScreen *screen;
-	GdkColor color;
 	const VteCell *cell;
 	struct _vte_draw_text_request item;
 	int row, drow, col;
@@ -10504,23 +10469,12 @@ vte_terminal_paint_cursor(VteTerminal *terminal)
 
 		case VTE_CURSOR_SHAPE_BLOCK:
 
-			x += terminal->pvt->inner_border.left;
-			y += terminal->pvt->inner_border.top;
-
-			color.red = terminal->pvt->palette[back].red;
-			color.green = terminal->pvt->palette[back].green;
-			color.blue = terminal->pvt->palette[back].blue;
-
 			if (focus) {
 				/* just reverse the character under the cursor */
-
-				_vte_draw_fill_rectangle(terminal->pvt->draw,
-							 x,
-							 y,
-							 cursor_width,
-							 height,
-							 &color,
-							 VTE_DRAW_OPAQUE);
+				vte_terminal_fill_rectangle (terminal,
+							     &terminal->pvt->palette[back],
+							     x, y,
+							     cursor_width, height);
 
 				if (!vte_terminal_unichar_is_local_graphic(terminal, item.c, cell ? cell->attr.bold : FALSE) ||
 				    !vte_terminal_draw_graphic(terminal,
@@ -10559,13 +10513,12 @@ vte_terminal_paint_cursor(VteTerminal *terminal)
 			} else {
 				/* draw a box around the character */
 
-				_vte_draw_draw_rectangle(terminal->pvt->draw,
-							 x - VTE_LINE_WIDTH,
-							 y - VTE_LINE_WIDTH,
-							 cursor_width + 2*VTE_LINE_WIDTH,
-							 height + 2*VTE_LINE_WIDTH,
-							 &color,
-							 VTE_DRAW_OPAQUE);
+				vte_terminal_draw_rectangle (terminal,
+							    &terminal->pvt->palette[back],
+							     x - VTE_LINE_WIDTH,
+							     y - VTE_LINE_WIDTH,
+							     cursor_width + 2*VTE_LINE_WIDTH,
+							     height + 2*VTE_LINE_WIDTH);
 			}
 
 			break;
@@ -11546,7 +11499,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_UINT);
 
         /**
-         * VteTerminal::resize-window:
+         * VteTerminal::move-window:
          * @vteterminal: the object which received the signal.
          * @x: the terminal's desired location, X coordinate.
          * @y: the terminal's desired location, Y coordinate.
@@ -12501,9 +12454,8 @@ vte_terminal_im_append_menuitems(VteTerminal *terminal, GtkMenuShell *menushell)
 static gboolean
 vte_terminal_background_update(VteTerminal *terminal)
 {
-	GdkColormap *colormap;
-	GdkColor bgcolor;
 	double saturation;
+	const PangoColor *entry;
 
 	/* If we're not realized yet, don't worry about it, because we get
 	 * called when we realize. */
@@ -12517,23 +12469,16 @@ vte_terminal_background_update(VteTerminal *terminal)
 	_vte_debug_print(VTE_DEBUG_MISC|VTE_DEBUG_EVENTS,
 			"Updating background image.\n");
 
-	/* Set the default background color. */
-	bgcolor.red = terminal->pvt->palette[VTE_DEF_BG].red;
-	bgcolor.green = terminal->pvt->palette[VTE_DEF_BG].green;
-	bgcolor.blue = terminal->pvt->palette[VTE_DEF_BG].blue;
-	bgcolor.pixel = 0;
-	gtk_widget_ensure_style(&terminal->widget);
-	/*colormap = gdk_gc_get_colormap(terminal->widget.style->fg_gc[GTK_WIDGET_STATE(terminal)]);*/
-	colormap = gtk_widget_get_colormap (&terminal->widget);
-	if (colormap) {
-		gdk_rgb_find_color(colormap, &bgcolor);
-	}
+	entry = &terminal->pvt->palette[VTE_DEF_BG];
 	_vte_debug_print(VTE_DEBUG_MISC,
-			"Setting background color to (%d, %d, %d) cmap index=%d.\n",
-			bgcolor.red, bgcolor.green, bgcolor.blue,
-			bgcolor.pixel);
-	gdk_window_set_background(terminal->widget.window, &bgcolor);
-	_vte_draw_set_background_solid (terminal->pvt->draw, &bgcolor, terminal->pvt->bg_opacity);
+			"Setting background color to (%d, %d, %d).\n",
+			entry->red, entry->green, entry->blue);
+
+	_vte_draw_set_background_solid (terminal->pvt->draw, 
+					entry->red / 65535.,
+					entry->green / 65535.,
+					entry->blue / 65535.,
+					terminal->pvt->bg_opacity / 65535.);
 
 	/* If we're transparent, and either have no root image or are being
 	 * told to update it, get a new copy of the root window. */
@@ -12667,6 +12612,7 @@ vte_terminal_set_background_tint_color(VteTerminal *terminal,
 				       const GdkColor *color)
 {
         VteTerminalPrivate *pvt;
+	PangoColor *tint;
 
 	g_return_if_fail(VTE_IS_TERMINAL(terminal));
 	g_return_if_fail(color != NULL);
@@ -12678,12 +12624,16 @@ vte_terminal_set_background_tint_color(VteTerminal *terminal,
 			terminal->pvt->bg_tint_color.red >> 8,
 			terminal->pvt->bg_tint_color.green >> 8,
 			terminal->pvt->bg_tint_color.blue >> 8);
-	if (color->red == terminal->pvt->bg_tint_color.red &&
-            color->green == terminal->pvt->bg_tint_color.green &&
-            color->blue == terminal->pvt->bg_tint_color.blue)
+        tint = &pvt->bg_tint_color;
+	if (color->red == tint->red &&
+            color->green == tint->green &&
+            color->blue == tint->blue)
                 return;
 
-        pvt->bg_tint_color = *color;
+	tint->red = color->red;
+	tint->green = color->green;
+	tint->blue = color->blue;
+
         g_object_notify(G_OBJECT (terminal), "background-tint-color");
 
         vte_terminal_queue_background_update(terminal);
@@ -13406,12 +13356,14 @@ vte_terminal_reset(VteTerminal *terminal, gboolean full, gboolean clear_history)
 	pvt->normal_screen.linefeed_mode = FALSE;
 	pvt->normal_screen.origin_mode = FALSE;
 	pvt->normal_screen.reverse_mode = FALSE;
+	pvt->normal_screen.bracketed_paste_mode = FALSE;
 	pvt->alternate_screen.scrolling_restricted = FALSE;
 	pvt->alternate_screen.sendrecv_mode = TRUE;
 	pvt->alternate_screen.insert_mode = FALSE;
 	pvt->alternate_screen.linefeed_mode = FALSE;
 	pvt->alternate_screen.origin_mode = FALSE;
 	pvt->alternate_screen.reverse_mode = FALSE;
+	pvt->alternate_screen.bracketed_paste_mode = FALSE;
 	pvt->cursor_visible = TRUE;
 	/* Reset the encoding. */
 	vte_terminal_set_encoding(terminal, NULL);
@@ -14317,4 +14269,40 @@ update_timeout (gpointer data)
 	GDK_THREADS_LEAVE();
 
 	return FALSE;
+}
+
+
+
+/**
+ * vte_terminal_write_contents:
+ * @terminal: a #VteTerminal
+ * @stream: a #GOutputStream to write to
+ * @flags: a set of #VteTerminalWriteFlags
+ * @cancellable: optional #GCancellable object, %NULL to ignore
+ * @error: a #GError location to store the error occuring, or %NULL to ignore
+ *
+ * Write contents of the current contents of @terminal (including any
+ * scrollback history) to @stream according to @flags.
+ *
+ * If @cancellable is not %NULL, then the operation can be cancelled by triggering
+ * the cancellable object from another thread. If the operation was cancelled,
+ * the error %G_IO_ERROR_CANCELLED will be returned in @error.
+ *
+ * This is a synchronous operation and will make the widget (and input
+ * processing) during the write operation, which may take a long time
+ * depending on scrollback history and @stream availability for writing.
+ *
+ * Returns: %TRUE on success, %FALSE if there was an error
+ *
+ * Since: 0.24
+ */
+gboolean vte_terminal_write_contents (VteTerminal *terminal,
+				      GOutputStream *stream,
+				      VteTerminalWriteFlags flags,
+				      GCancellable *cancellable,
+				      GError **error)
+{
+	return _vte_ring_write_contents (terminal->pvt->screen->row_data,
+					 stream, flags,
+					 cancellable, error);
 }

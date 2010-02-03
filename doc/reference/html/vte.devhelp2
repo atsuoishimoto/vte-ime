@@ -12,6 +12,8 @@
     <keyword type="enum" name="enum VteTerminalEraseBinding" link="VteTerminal.html#VteTerminalEraseBinding"/>
     <keyword type="enum" name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
     <keyword type="enum" name="enum VteTerminalCursorBlinkMode" link="VteTerminal.html#VteTerminalCursorBlinkMode"/>
+    <keyword type="enum" name="enum VteTerminalWriteFlags" link="VteTerminal.html#VteTerminalWriteFlags"/>
+    <keyword type="function" name="VteSelectionFunc ()" link="VteTerminal.html#VteSelectionFunc"/>
     <keyword type="function" name="vte_terminal_new ()" link="VteTerminal.html#vte-terminal-new"/>
     <keyword type="function" name="vte_terminal_im_append_menuitems ()" link="VteTerminal.html#vte-terminal-im-append-menuitems"/>
     <keyword type="function" name="vte_terminal_fork_command ()" link="VteTerminal.html#vte-terminal-fork-command"/>
@@ -75,7 +77,6 @@
     <keyword type="function" name="vte_terminal_get_text ()" link="VteTerminal.html#vte-terminal-get-text"/>
     <keyword type="function" name="vte_terminal_get_text_include_trailing_spaces ()" link="VteTerminal.html#vte-terminal-get-text-include-trailing-spaces" since="0.11.11"/>
     <keyword type="function" name="vte_terminal_get_text_range ()" link="VteTerminal.html#vte-terminal-get-text-range"/>
-    <keyword type="function" name="VteSelectionFunc ()" link="VteTerminal.html#VteSelectionFunc"/>
     <keyword type="function" name="vte_terminal_get_cursor_position ()" link="VteTerminal.html#vte-terminal-get-cursor-position"/>
     <keyword type="function" name="vte_terminal_match_clear_all ()" link="VteTerminal.html#vte-terminal-match-clear-all"/>
     <keyword type="function" name="vte_terminal_match_add ()" link="VteTerminal.html#vte-terminal-match-add" deprecated=""/>
@@ -92,6 +93,7 @@
     <keyword type="function" name="vte_terminal_get_encoding ()" link="VteTerminal.html#vte-terminal-get-encoding"/>
     <keyword type="function" name="vte_terminal_get_status_line ()" link="VteTerminal.html#vte-terminal-get-status-line"/>
     <keyword type="function" name="vte_terminal_get_padding ()" link="VteTerminal.html#vte-terminal-get-padding" deprecated=""/>
+    <keyword type="function" name="vte_terminal_write_contents ()" link="VteTerminal.html#vte-terminal-write-contents" since="0.24"/>
     <keyword type="function" name="vte_terminal_get_adjustment ()" link="VteTerminal.html#vte-terminal-get-adjustment"/>
     <keyword type="function" name="vte_terminal_get_char_ascent ()" link="VteTerminal.html#vte-terminal-get-char-ascent" deprecated="0.19.1"/>
     <keyword type="function" name="vte_terminal_get_char_descent ()" link="VteTerminal.html#vte-terminal-get-char-descent" deprecated="0.19.1"/>
@@ -171,5 +173,6 @@
     <keyword type="constant" name="VTE_CURSOR_BLINK_SYSTEM" link="VteTerminal.html#VTE-CURSOR-BLINK-SYSTEM--CAPS"/>
     <keyword type="constant" name="VTE_CURSOR_BLINK_ON" link="VteTerminal.html#VTE-CURSOR-BLINK-ON--CAPS"/>
     <keyword type="constant" name="VTE_CURSOR_BLINK_OFF" link="VteTerminal.html#VTE-CURSOR-BLINK-OFF--CAPS"/>
+    <keyword type="constant" name="VTE_TERMINAL_WRITE_DEFAULT" link="VteTerminal.html#VTE-TERMINAL-WRITE-DEFAULT--CAPS"/>
   </functions>
 </book>
