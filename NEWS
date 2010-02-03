@@ -1,3 +1,20 @@
+0.23.5
+=======
+- Fix unintented soversion bump
+
+0.23.4
+=======
+- Add public API vte_terminal_write_contents()
+- Update docs
+
+0.23.3
+=======
+- Disable symbol deprecation stuff since they were broken
+- Merge pangocairo draw impl into vtedraw (Kristian Høgsberg)
+- Bugs fixed in this release:
+    Bug 534526 - Flickering when resizing a vte widget
+    Bug 605299 - Please support xterm bracketed paste mode
+
 0.23.2
 =======
 - Fix overflow with unlimited scrollback lines

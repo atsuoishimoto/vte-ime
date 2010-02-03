@@ -11,6 +11,8 @@
 <ANCHOR id="VteTerminalEraseBinding" href="vte/VteTerminal.html#VteTerminalEraseBinding">
 <ANCHOR id="VteTerminalCursorShape" href="vte/VteTerminal.html#VteTerminalCursorShape">
 <ANCHOR id="VteTerminalCursorBlinkMode" href="vte/VteTerminal.html#VteTerminalCursorBlinkMode">
+<ANCHOR id="VteTerminalWriteFlags" href="vte/VteTerminal.html#VteTerminalWriteFlags">
+<ANCHOR id="VteSelectionFunc" href="vte/VteTerminal.html#VteSelectionFunc">
 <ANCHOR id="vte-terminal-new" href="vte/VteTerminal.html#vte-terminal-new">
 <ANCHOR id="vte-terminal-im-append-menuitems" href="vte/VteTerminal.html#vte-terminal-im-append-menuitems">
 <ANCHOR id="vte-terminal-fork-command" href="vte/VteTerminal.html#vte-terminal-fork-command">
@@ -74,7 +76,6 @@
 <ANCHOR id="vte-terminal-get-text" href="vte/VteTerminal.html#vte-terminal-get-text">
 <ANCHOR id="vte-terminal-get-text-include-trailing-spaces" href="vte/VteTerminal.html#vte-terminal-get-text-include-trailing-spaces">
 <ANCHOR id="vte-terminal-get-text-range" href="vte/VteTerminal.html#vte-terminal-get-text-range">
-<ANCHOR id="VteSelectionFunc" href="vte/VteTerminal.html#VteSelectionFunc">
 <ANCHOR id="vte-terminal-get-cursor-position" href="vte/VteTerminal.html#vte-terminal-get-cursor-position">
 <ANCHOR id="vte-terminal-match-clear-all" href="vte/VteTerminal.html#vte-terminal-match-clear-all">
 <ANCHOR id="vte-terminal-match-add" href="vte/VteTerminal.html#vte-terminal-match-add">
@@ -91,6 +92,7 @@
 <ANCHOR id="vte-terminal-get-encoding" href="vte/VteTerminal.html#vte-terminal-get-encoding">
 <ANCHOR id="vte-terminal-get-status-line" href="vte/VteTerminal.html#vte-terminal-get-status-line">
 <ANCHOR id="vte-terminal-get-padding" href="vte/VteTerminal.html#vte-terminal-get-padding">
+<ANCHOR id="vte-terminal-write-contents" href="vte/VteTerminal.html#vte-terminal-write-contents">
 <ANCHOR id="vte-terminal-get-adjustment" href="vte/VteTerminal.html#vte-terminal-get-adjustment">
 <ANCHOR id="vte-terminal-get-char-ascent" href="vte/VteTerminal.html#vte-terminal-get-char-ascent">
 <ANCHOR id="vte-terminal-get-char-descent" href="vte/VteTerminal.html#vte-terminal-get-char-descent">

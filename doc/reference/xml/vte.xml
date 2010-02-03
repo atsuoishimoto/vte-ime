@@ -18,6 +18,11 @@
 enum                <link linkend="VteTerminalEraseBinding">VteTerminalEraseBinding</link>;
 enum                <link linkend="VteTerminalCursorShape">VteTerminalCursorShape</link>;
 enum                <link linkend="VteTerminalCursorBlinkMode">VteTerminalCursorBlinkMode</link>;
+enum                <link linkend="VteTerminalWriteFlags">VteTerminalWriteFlags</link>;
+<link linkend="gboolean">gboolean</link>            (<link linkend="VteSelectionFunc">*VteSelectionFunc</link>)                 (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                                         <link linkend="glong">glong</link> column,
+                                                         <link linkend="glong">glong</link> row,
+                                                         <link linkend="gpointer">gpointer</link> data);
 <link linkend="GtkWidget">GtkWidget</link> *         <link linkend="vte-terminal-new">vte_terminal_new</link>                    (void);
 <link linkend="void">void</link>                <link linkend="vte-terminal-im-append-menuitems">vte_terminal_im_append_menuitems</link>    (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="GtkMenuShell">GtkMenuShell</link> *menushell);
@@ -163,10 +168,6 @@ const <link linkend="PangoFontDescription">PangoFontDescription</link> * <link l
                                                          <link linkend="VteSelectionFunc">VteSelectionFunc</link> is_selected,
                                                          <link linkend="gpointer">gpointer</link> data,
                                                          <link linkend="GArray">GArray</link> *attributes);
-<link linkend="gboolean">gboolean</link>            (<link linkend="VteSelectionFunc">*VteSelectionFunc</link>)                 (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-                                                         <link linkend="glong">glong</link> column,
-                                                         <link linkend="glong">glong</link> row,
-                                                         <link linkend="gpointer">gpointer</link> data);
 <link linkend="void">void</link>                <link linkend="vte-terminal-get-cursor-position">vte_terminal_get_cursor_position</link>    (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="glong">glong</link> *column,
                                                          <link linkend="glong">glong</link> *row);
@@ -202,6 +203,11 @@ const <link linkend="char">char</link> *        <link linkend="vte-terminal-get-
 <link linkend="void">void</link>                <link linkend="vte-terminal-get-padding">vte_terminal_get_padding</link>            (<link linkend="VteTerminal">VteTerminal</link> *terminal,
                                                          <link linkend="int">int</link> *xpad,
                                                          <link linkend="int">int</link> *ypad);
+<link linkend="gboolean">gboolean</link>            <link linkend="vte-terminal-write-contents">vte_terminal_write_contents</link>         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                                         <link linkend="GOutputStream">GOutputStream</link> *stream,
+                                                         <link linkend="VteTerminalWriteFlags">VteTerminalWriteFlags</link> flags,
+                                                         <link linkend="GCancellable">GCancellable</link> *cancellable,
+                                                         <link linkend="GError">GError</link> **error);
 
 
 <link linkend="GtkAdjustment">GtkAdjustment</link> *     <link linkend="vte-terminal-get-adjustment">vte_terminal_get_adjustment</link>         (<link linkend="VteTerminal">VteTerminal</link> *terminal);
@@ -489,6 +495,48 @@ for the terminal.
 <listitem><simpara>Cursor does not blink.
 </simpara></listitem>
 </varlistentry>
+</variablelist></refsect2>
+<refsect2 id="VteTerminalWriteFlags" role="enum">
+<title>enum VteTerminalWriteFlags</title>
+<indexterm zone="VteTerminalWriteFlags"><primary sortas="VteTerminalWriteFlags">VteTerminalWriteFlags</primary></indexterm><programlisting>typedef enum {
+  VTE_TERMINAL_WRITE_DEFAULT = 0
+} VteTerminalWriteFlags;
+</programlisting>
+<para>
+A flag type to determine how terminal contents should be written
+to an output stream.
+</para><variablelist role="enum">
+<varlistentry id="VTE-TERMINAL-WRITE-DEFAULT--CAPS" role="constant">
+<term><literal>VTE_TERMINAL_WRITE_DEFAULT</literal></term>
+<listitem><simpara>Write contents as UTF-8 text.  This is the default.
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="VteSelectionFunc" role="function">
+<title>VteSelectionFunc ()</title>
+<indexterm zone="VteSelectionFunc"><primary sortas="VteSelectionFunc">VteSelectionFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*VteSelectionFunc)                 (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                                         <link linkend="glong">glong</link> column,
+                                                         <link linkend="glong">glong</link> row,
+                                                         <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+Specifies the type of a selection function used to check whether
+a cell has to be selected or not.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>terminal</parameter>&#160;:</term>
+<listitem><simpara> terminal in which the cell is.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>column</parameter>&#160;:</term>
+<listitem><simpara> column in which the cell is.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&#160;:</term>
+<listitem><simpara> row in which the cell is.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&#160;:</term>
+<listitem><simpara> user data.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="TRUE--CAPS"><literal>TRUE</literal></link> if cell has to be selected; <link linkend="FALSE--CAPS"><literal>FALSE</literal></link> if otherwise.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="vte-terminal-new" role="function">
 <title>vte_terminal_new ()</title>
@@ -1693,32 +1741,6 @@ contents of the buffer using this function.</para>
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> a text string which must be freed by the caller, or <link linkend="NULL--CAPS"><literal>NULL</literal></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2 id="VteSelectionFunc" role="function">
-<title>VteSelectionFunc ()</title>
-<indexterm zone="VteSelectionFunc"><primary sortas="VteSelectionFunc">VteSelectionFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            (*VteSelectionFunc)                 (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-                                                         <link linkend="glong">glong</link> column,
-                                                         <link linkend="glong">glong</link> row,
-                                                         <link linkend="gpointer">gpointer</link> data);</programlisting>
-<para>
-Specifies the type of a selection function used to check whether
-a cell has to be selected or not.</para>
-<para>
-</para><variablelist role="params">
-<varlistentry><term><parameter>terminal</parameter>&#160;:</term>
-<listitem><simpara> terminal in which the cell is.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>column</parameter>&#160;:</term>
-<listitem><simpara> column in which the cell is.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>row</parameter>&#160;:</term>
-<listitem><simpara> row in which the cell is.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>data</parameter>&#160;:</term>
-<listitem><simpara> user data.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="TRUE--CAPS"><literal>TRUE</literal></link> if cell has to be selected; <link linkend="FALSE--CAPS"><literal>FALSE</literal></link> if otherwise.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
 <refsect2 id="vte-terminal-get-cursor-position" role="function">
 <title>vte_terminal_get_cursor_position ()</title>
 <indexterm zone="vte-terminal-get-cursor-position"><primary sortas="vte_terminal_get_cursor_position">vte_terminal_get_cursor_position</primary></indexterm><programlisting><link linkend="void">void</link>                vte_terminal_get_cursor_position    (<link linkend="VteTerminal">VteTerminal</link> *terminal,
@@ -2035,6 +2057,47 @@ each direction, and do not need to be doubled.
 <listitem><simpara> address in which to store top/bottom-edge ypadding
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2 id="vte-terminal-write-contents" role="function" condition="since:0.24">
+<title>vte_terminal_write_contents ()</title>
+<indexterm zone="vte-terminal-write-contents" role="0.24"><primary sortas="vte_terminal_write_contents">vte_terminal_write_contents</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            vte_terminal_write_contents         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
+                                                         <link linkend="GOutputStream">GOutputStream</link> *stream,
+                                                         <link linkend="VteTerminalWriteFlags">VteTerminalWriteFlags</link> flags,
+                                                         <link linkend="GCancellable">GCancellable</link> *cancellable,
+                                                         <link linkend="GError">GError</link> **error);</programlisting>
+<para>
+Write contents of the current contents of <parameter>terminal</parameter> (including any
+scrollback history) to <parameter>stream</parameter> according to <parameter>flags</parameter>.
+</para>
+<para>
+If <parameter>cancellable</parameter> is not <link linkend="NULL--CAPS"><literal>NULL</literal></link>, then the operation can be cancelled by triggering
+the cancellable object from another thread. If the operation was cancelled,
+the error <link linkend="G-IO-ERROR-CANCELLED--CAPS"><literal>G_IO_ERROR_CANCELLED</literal></link> will be returned in <parameter>error</parameter>.
+</para>
+<para>
+This is a synchronous operation and will make the widget (and input
+processing) during the write operation, which may take a long time
+depending on scrollback history and <parameter>stream</parameter> availability for writing.</para>
+<para>
+</para><variablelist role="params">
+<varlistentry><term><parameter>terminal</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="VteTerminal"><type>VteTerminal</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>stream</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="GOutputStream"><type>GOutputStream</type></link> to write to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&#160;:</term>
+<listitem><simpara> a set of <link linkend="VteTerminalWriteFlags"><type>VteTerminalWriteFlags</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellable</parameter>&#160;:</term>
+<listitem><simpara> optional <link linkend="GCancellable"><type>GCancellable</type></link> object, <link linkend="NULL--CAPS"><literal>NULL</literal></link> to ignore
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&#160;:</term>
+<listitem><simpara> a <link linkend="GError"><type>GError</type></link> location to store the error occuring, or <link linkend="NULL--CAPS"><literal>NULL</literal></link> to ignore
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> <link linkend="TRUE--CAPS"><literal>TRUE</literal></link> on success, <link linkend="FALSE--CAPS"><literal>FALSE</literal></link> if there was an error
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since 0.24</para></refsect2>
 <refsect2 id="vte-terminal-get-adjustment" role="function">
 <title>vte_terminal_get_adjustment ()</title>
 <indexterm zone="vte-terminal-get-adjustment"><primary sortas="vte_terminal_get_adjustment">vte_terminal_get_adjustment</primary></indexterm><programlisting><link linkend="GtkAdjustment">GtkAdjustment</link> *     vte_terminal_get_adjustment         (<link linkend="VteTerminal">VteTerminal</link> *terminal);</programlisting>
@@ -2669,19 +2732,21 @@ Emitted at the child application's request.</para>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2 id="VteTerminal-move-window" role="signal"><title>The <literal>&quot;move-window&quot;</literal> signal</title>
 <indexterm zone="VteTerminal-move-window"><primary sortas="VteTerminal::move-window">VteTerminal::move-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
-                                                        <link linkend="guint">guint</link>        arg1,
-                                                        <link linkend="guint">guint</link>        arg2,
+                                                        <link linkend="guint">guint</link>        x,
+                                                        <link linkend="guint">guint</link>        y,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
+<para>
+Emitted at the child application's request.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>vteterminal</parameter>&#160;:</term>
-<listitem><simpara>
+<listitem><simpara> the object which received the signal.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>
+<varlistentry><term><parameter>x</parameter>&#160;:</term>
+<listitem><simpara> the terminal's desired location, X coordinate.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg2</parameter>&#160;:</term>
-<listitem><simpara>
+<varlistentry><term><parameter>y</parameter>&#160;:</term>
+<listitem><simpara> the terminal's desired location, Y coordinate.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
@@ -2723,8 +2788,8 @@ Emitted at the child application's request.</para>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2 id="VteTerminal-resize-window" role="signal"><title>The <literal>&quot;resize-window&quot;</literal> signal</title>
 <indexterm zone="VteTerminal-resize-window"><primary sortas="VteTerminal::resize-window">VteTerminal::resize-window</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="VteTerminal">VteTerminal</link> *vteterminal,
-                                                        <link linkend="guint">guint</link>        x,
-                                                        <link linkend="guint">guint</link>        y,
+                                                        <link linkend="guint">guint</link>        width,
+                                                        <link linkend="guint">guint</link>        height,
                                                         <link linkend="gpointer">gpointer</link>     user_data)        : Run Last</programlisting>
 <para>
 Emitted at the child application's request.</para>
@@ -2733,11 +2798,11 @@ Emitted at the child application's request.</para>
 <varlistentry><term><parameter>vteterminal</parameter>&#160;:</term>
 <listitem><simpara> the object which received the signal.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x</parameter>&#160;:</term>
-<listitem><simpara> the terminal's desired location, X coordinate.
+<varlistentry><term><parameter>width</parameter>&#160;:</term>
+<listitem><simpara> the desired width in pixels, including padding.
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y</parameter>&#160;:</term>
-<listitem><simpara> the terminal's desired location, Y coordinate.
+<varlistentry><term><parameter>height</parameter>&#160;:</term>
+<listitem><simpara> the desired height in pixels, including padding.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>

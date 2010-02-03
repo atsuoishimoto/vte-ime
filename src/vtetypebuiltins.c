@@ -70,6 +70,25 @@ vte_terminal_cursor_shape_get_type (void)
 }
 
 GType
+vte_terminal_write_flags_get_type (void)
+{
+  static volatile gsize g_define_type_id__volatile = 0;
+ 
+  if (g_once_init_enter (&g_define_type_id__volatile)) {
+    static const GEnumValue values[] = {
+      { VTE_TERMINAL_WRITE_DEFAULT, "VTE_TERMINAL_WRITE_DEFAULT", "default" },
+      { 0, NULL, NULL }
+    };
+    GType g_define_type_id = \
+       g_enum_register_static (g_intern_static_string ("VteTerminalWriteFlags"), values);
+      
+    g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
+  }
+    
+  return g_define_type_id__volatile;
+}
+
+GType
 vte_terminal_anti_alias_get_type (void)
 {
   static volatile gsize g_define_type_id__volatile = 0;
