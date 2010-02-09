@@ -1,3 +1,18 @@
+vte (1:0.22.5-2) unstable; urgency=low
+
+  [ Luca Falavigna ]
+  * debian/watch:
+    - Do not consider development versions.
+
+  [ Emilio Pozuelo Monfort ]
+  * debian/python-vte.install:
+    - s/site-packages/*-packages/ for the Python 2.6 transition.
+      This makes python-vte ship the extension for Python 2.6.
+      Closes: #568972.
+  * Standards-Version is 3.8.4, no changes needed.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Tue, 09 Feb 2010 08:53:15 +0100
+
 vte (1:0.22.5-1) unstable; urgency=low
 
   * New upstream release.
