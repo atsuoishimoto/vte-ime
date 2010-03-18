@@ -40,15 +40,7 @@ DEB_DH_INSTALL_ARGS = --sourcedir=$(if $(findstring $(udeb),$(cdbs_curpkg)),$(DE
 # udeb rules
 configure/$(udeb):: $(DEB_BUILDDIR_$(udeb))/config.status
 $(DEB_BUILDDIR_$(udeb))/config.status:
-	# paint me ugly: Gtk 2.8 mixes the pkg-config files from both builds
-	# (x11/shared and directfb), so the gtk+2.0.pc from the directfb can't
-	# be used; we cheat and create a fake one higher in the PKG_CONFIG_PATH
-	# which is a symlink to the gtk+-directfb-2.0.pc
-	mkdir -p $(DEB_BUILDDIR_$(udeb))/pkg-config
-	cd $(DEB_BUILDDIR_$(udeb))/pkg-config && \
-		ln -sf /usr/lib/pkgconfig/gtk+-directfb-2.0.pc gtk+-2.0.pc
 	cd $(DEB_BUILDDIR_$(udeb)) && \
-		PKG_CONFIG_PATH=pkg-config \
 		$(DEB_CONFIGURE_SCRIPT_ENV) \
 		CFLAGS="$(CFLAGS_$(udeb))" \
 			$(DEB_CONFIGURE_SCRIPT) \

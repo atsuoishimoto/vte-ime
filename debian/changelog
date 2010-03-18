@@ -1,3 +1,20 @@
+vte (1:0.22.5-3) unstable; urgency=low
+
+  [ Cyril Brulebois ]
+  * Switch udeb from DirectFB to Xlib to prepare the move to an X11-based
+    graphical installer. Closes: #573882.
+     - Drop the B-D on libgtk-directfb-2.0-dev.
+     - Bump the B-D on libgtk2.0-dev to make sure the udeb gets its
+       dependency on the (recently-added) udeb rather than on the library.
+
+  [ Emilio Pozuelo Monfort ]
+  * debian/rules:
+    - Remove hack that was needed to build the udeb against the DirectFB
+      GTK+ library, since the default one was the X11. We build against
+      the X11 one now.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Thu, 18 Mar 2010 18:01:11 +0100
+
 vte (1:0.22.5-2) unstable; urgency=low
 
   [ Luca Falavigna ]
