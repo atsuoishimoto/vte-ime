@@ -1,8 +1,0 @@
-<indexdiv>
-<indexdiv><title>V</title>
-<indexentry><primaryie linkends="VTE-CHECK-VERSION--CAPS"><link linkend="VTE-CHECK-VERSION--CAPS">VTE_CHECK_VERSION</link></primaryie></indexentry>
-<indexentry><primaryie linkends="VTE-MAJOR-VERSION--CAPS"><link linkend="VTE-MAJOR-VERSION--CAPS">VTE_MAJOR_VERSION</link></primaryie></indexentry>
-<indexentry><primaryie linkends="VTE-MICRO-VERSION--CAPS"><link linkend="VTE-MICRO-VERSION--CAPS">VTE_MICRO_VERSION</link></primaryie></indexentry>
-<indexentry><primaryie linkends="VTE-MINOR-VERSION--CAPS"><link linkend="VTE-MINOR-VERSION--CAPS">VTE_MINOR_VERSION</link></primaryie></indexentry>
-</indexdiv>
-</indexdiv>
