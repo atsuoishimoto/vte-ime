@@ -1,0 +1,29 @@
+GNOME #614910; set_background_image does not accept None in Python bindings
+Debian #576624; Segfault when loading the background pixbuf failed
+Patch author: Tetralet <tetralet AT gmail DOT com>
+
+--- vte-0.24.0.orig/src/vtebg.c
++++ vte-0.24.0/src/vtebg.c
+@@ -469,6 +469,8 @@
+ 			item->source_file = g_strdup(source_file);
+ 			pixbuf = gdk_pixbuf_new_from_file(source_file, NULL);
+ 		}
++		if (!pixbuf)
++			return NULL;
+ 		break;
+ 	default:
+ 		g_assert_not_reached();
+@@ -479,8 +481,11 @@
+ 		width = gdk_pixbuf_get_width(pixbuf);
+ 		height = gdk_pixbuf_get_height(pixbuf);
+ 	} else {
+-		width = cairo_xlib_surface_get_width(bg->root_surface);
+-		height = cairo_xlib_surface_get_height(bg->root_surface);
++		if (bg->root_surface) {
++			width = cairo_xlib_surface_get_width(bg->root_surface);
++			height = cairo_xlib_surface_get_height(bg->root_surface);
++		} else
++			return NULL;
+ 	}
+ 
+ 	item->surface =

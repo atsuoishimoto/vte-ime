@@ -1,3 +1,11 @@
+vte (1:0.24.0-2) unstable; urgency=low
+
+  * 01_transparent_crash.patch: patch by Tetralet to fix a crash when 
+    the background file is missing, or when the transparent background 
+    has no root window. Closes: #576624.
+
+ -- Josselin Mouette <joss@debian.org>  Fri, 09 Apr 2010 18:23:02 +0200
+
 vte (1:0.24.0-1) unstable; urgency=low
 
   * New upstream stable release:
