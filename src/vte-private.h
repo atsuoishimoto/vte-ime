@@ -52,7 +52,6 @@
 
 G_BEGIN_DECLS
 
-#define VTE_PAD_WIDTH			1
 #define VTE_TAB_WIDTH			8
 #define VTE_LINE_WIDTH			1
 #define VTE_ROWS			24
@@ -219,6 +218,7 @@ struct _VteTerminalPrivate {
 		gboolean sendrecv_mode;	/* sendrecv mode */
 		gboolean insert_mode;	/* insert mode */
 		gboolean linefeed_mode;	/* linefeed mode */
+		gboolean bracketed_paste_mode;
 		struct vte_scrolling_region {
 			int start, end;
 		} scrolling_region;	/* the region we scroll in */
@@ -331,9 +331,7 @@ struct _VteTerminalPrivate {
 	gboolean palette_initialized;
 	gboolean highlight_color_set;
 	gboolean cursor_color_set;
-	struct vte_palette_entry {
-		guint16 red, green, blue;
-	} palette[VTE_PALETTE_SIZE];
+	PangoColor palette[VTE_PALETTE_SIZE];
 
 	/* Mouse cursors. */
 	gboolean mouse_cursor_visible;
@@ -367,7 +365,7 @@ struct _VteTerminalPrivate {
 	gboolean bg_transparent;
 	GdkPixbuf *bg_pixbuf;
 	char *bg_file;
-	GdkColor bg_tint_color;
+	PangoColor bg_tint_color;
 	guint16 bg_saturation;	/* out of VTE_SATURATION_MAX */
 	guint16 bg_opacity;
 
@@ -382,6 +380,9 @@ struct _VteTerminalPrivate {
 	glong line_thickness;
 	glong underline_position;
 	glong strikethrough_position;
+
+        /* Style stuff */
+        GtkBorder inner_border;
 };
 
 

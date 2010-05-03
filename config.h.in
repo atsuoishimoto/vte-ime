@@ -1,46 +1,16 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
-/* Disable deprecated features */
-#undef ATK_DISABLE_DEPRECATED
-
-/* Disable single includes */
-#undef ATK_DISABLE_SINGLE_INCLUDES
-
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
-
-/* Disable deprecated features */
-#undef GDK_DISABLE_DEPRECATED
-
-/* Disable single includes */
-#undef GDK_DISABLE_SINGLE_INCLUDES
 
 /* Force use of GDK's multihead-safe APIs. */
 #undef GDK_MULTIHEAD_SAFE
 
-/* Disable deprecated features */
-#undef GDK_PIXBUF_DISABLE_DEPRECATED
-
-/* Disable single includes */
-#undef GDK_PIXBUF_DISABLE_SINGLE_INCLUDES
-
 /* Package translatable messages domain name. */
 #undef GETTEXT_PACKAGE
 
-/* Disable deprecated features */
-#undef GTK_DISABLE_DEPRECATED
-
-/* Disable single includes */
-#undef GTK_DISABLE_SINGLE_INCLUDES
-
 /* Define to 1 if `TIOCGWINSZ' requires <sys/ioctl.h>. */
 #undef GWINSZ_IN_SYS_IOCTL
-
-/* Disable deprecated features */
-#undef G_DISABLE_DEPRECATED
-
-/* Disable single includes */
-#undef G_DISABLE_SINGLE_INCLUDES
 
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
@@ -209,14 +179,11 @@
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
 
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
-
-/* Disable deprecated features */
-#undef PANGO_DISABLE_DEPRECATED
-
-/* Disable single includes */
-#undef PANGO_DISABLE_SINGLE_INCLUDES
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
