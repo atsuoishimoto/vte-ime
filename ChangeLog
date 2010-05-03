@@ -1,14 +1,716 @@
-commit 1c7586456fc9fadb3b3c54be89bbd98cf63a8741
-Author: Behdad Esfahbod <behdad@behdad.org>
-Date:   Tue Nov 17 13:48:25 2009 -0500
+commit 10430cbf79306a3f7dc11798e5146b33c0c05448
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Apr 26 13:16:16 2010 +0200
 
-    Release 0.22.5
+    Version 0.24.1
+
+ NEWS         |    5 +++++
+ configure.in |    4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+commit d86f723c76212eabd22c0622072f6f0cb9b733d1
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 10 01:42:24 2010 +0200
+
+    We also depend on cairo-xlib on gdk-x11
+    (cherry picked from commit 39b7a1f74dc7044d1fd6cd9df7abceffa7e99349)
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ac9813af66c110fae31db02114a7904cdf9547e5
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Apr 20 11:59:28 2010 +0200
+
+    Backport VteBg fixes from master
+    
+    Fixes bug #615417, bug #614469.
+
+ src/debug.c   |    3 +-
+ src/debug.h   |    3 +-
+ src/vtebg.c   |  320 +++++++++++++++++++++++++++++----------------------------
+ src/vtebg.h   |   35 +++----
+ src/vtedraw.c |    2 +-
+ src/vtedraw.h |    2 +-
+ 6 files changed, 187 insertions(+), 178 deletions(-)
+
+commit a784d8d2dd79f7f4eba24aea4ea5f129a095ce0f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Apr 8 13:15:00 2010 +0200
+
+    Print the GDK target during configure
+    
+    For checking purposes.
+    (cherry picked from commit b72c2a7df25e5fdfefbd437505f9f71b7d675da8)
+
+ configure.in |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 0ed604d8a8f83e6fdb5444be0305abeb7b0d1f7f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Apr 4 17:03:24 2010 +0200
+
+    Add x11 to pkg-config dep list on gdk-x11
+    
+    Bug #613525.
+    (cherry picked from commit be41faea3651c2a90012648490ebf346eac82d04)
+
+ configure.in |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
+
+commit 4c8cd732f506d529f15dc07cb1b9be8f5886057f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Mar 29 15:11:44 2010 +0200
+
+    Remove failing doc check test
+    
+    Bug #613192.
+
+ src/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 90ca5afc7ec6c97c089e2648bab10e0ebda976eb
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Mar 29 14:16:29 2010 +0200
+
+    Prepare 0.24.0
 
  NEWS         |    6 ++++++
- configure.in |    4 ++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ configure.in |   10 +++++-----
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
-commit 29c64a88d5e0b7415ce9eb45f12794b6076a0e96
+commit 36a80fc68ebd213c374121043a48b87f618e8b79
+Author: Jamil Ahmed <itsjamil@gmail.com>
+Date:   Sun Mar 28 00:31:22 2010 +0600
+
+    Updated Bengali translation
+
+ po/bn.po |  127 +++++++++++++++++++++++++++++--------------------------------
+ 1 files changed, 60 insertions(+), 67 deletions(-)
+
+commit 953625f24173318ba1a553866a9b8c7cb83aac01
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Mar 13 00:02:57 2010 -0500
+
+    [git.mk] Update from pango
+
+ git.mk |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit bcb4b775af73cf9da76a79083cd446122bd5c97f
+Author: Marek Černocký <marek@manet.cz>
+Date:   Sat Mar 6 19:14:08 2010 +0100
+
+    Update Czech translation
+
+ po/cs.po |  102 +++++++++++++++++++++++++++++---------------------------------
+ 1 files changed, 48 insertions(+), 54 deletions(-)
+
+commit 41c42c121b89eeb6c73b6deb9c71c4661f12a858
+Author: Piotr Drąg <piotrdrag@gmail.com>
+Date:   Thu Feb 25 13:47:36 2010 +0100
+
+    Updated Polish translation
+
+ po/pl.po |  152 +++++++++++++++++--------------------------------------------
+ 1 files changed, 43 insertions(+), 109 deletions(-)
+
+commit 17c16e6babd0be2a40cf2faa745295c9b47b6655
+Author: Fran Diéguez <frandieguez@ubuntu.com>
+Date:   Mon Feb 15 17:19:27 2010 +0100
+
+    Updated Galician Translation
+
+ po/gl.po |   60 +++++++++++++++++++++++++++++++-----------------------------
+ 1 files changed, 31 insertions(+), 29 deletions(-)
+
+commit 11c0cd96e0614a96aebc0bc64e3c9a9fe357c4e3
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 26 14:39:18 2010 -0500
+
+    Improve debug message
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5f4f67f579c9530af716573d6aaafc9cdb060e09
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Tue Jan 12 10:57:45 2010 -0500
+
+    vtebg: Cache backgrounds as cairo surfaces
+
+ src/vtebg.c   |  385 +++++++++++++++++----------------------------------------
+ src/vtebg.h   |   15 ++-
+ src/vtedraw.c |   33 ++----
+ 3 files changed, 134 insertions(+), 299 deletions(-)
+
+commit d8e791be89f38e168faf078268be8bdee4a6715d
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Jan 14 18:42:06 2010 +0100
+
+    Modernise the API docs
+    
+    Update to gtk-doc 0.13. Drop tmpl use, use <xi:include>, add object
+    hierarchy, index, deprecated symbols index, and indices for new symbols
+    in 0.20 and 0.24.
+
+ autogen.sh                         |    3 +-
+ configure.in                       |    9 +-
+ doc/reference/Makefile.am          |  163 ++++--
+ doc/reference/tmpl/internals.sgml  |   20 -
+ doc/reference/tmpl/pty.sgml        |   18 -
+ doc/reference/tmpl/reaper.sgml     |   25 -
+ doc/reference/tmpl/vte-unused.sgml |  516 ---------------
+ doc/reference/tmpl/vte.sgml        | 1287 ------------------------------------
+ doc/reference/tmpl/vteaccess.sgml  |   37 -
+ doc/reference/tmpl/vteversion.sgml |   59 --
+ doc/reference/version.xml.in       |    1 +
+ doc/reference/vte-docs.sgml        |   25 -
+ doc/reference/vte-docs.xml         |  127 ++++
+ doc/reference/vte-sections.txt     |   70 +-
+ doc/reference/vte.types            |   12 +-
+ src/reaper.c                       |   26 +
+ src/reaper.h                       |    8 +
+ src/vte.c                          |   32 +-
+ src/vte.h                          |   98 +++-
+ src/vteaccess.c                    |   10 +-
+ src/vteaccess.h                    |   52 +-
+ src/vteversion.h.in                |   47 ++
+ 22 files changed, 524 insertions(+), 2121 deletions(-)
+
+commit e8594f159ef206bbd357db6bf28f659eccfefc9a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 13 20:32:09 2010 -0500
+
+    Release 0.23.5
+
+ NEWS         |    4 ++++
+ configure.in |    6 +++---
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+commit 08ee96f50c5053721c31a1eefa05bd6e92a368a7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 13 20:21:38 2010 -0500
+
+    Release 0.23.4
+
+ NEWS         |    5 +++++
+ configure.in |    6 +++---
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+commit d9f1a47a2f14dd0404a7fc9bab7b24a3916922e8
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 13 19:48:59 2010 -0500
+
+    [doc] Update list of symbols
+
+ doc/reference/tmpl/vte.sgml    |   45 +++++++++++++-----
+ doc/reference/vte-sections.txt |  105 +++++++++-------------------------------
+ src/vte.c                      |    2 +-
+ 3 files changed, 57 insertions(+), 95 deletions(-)
+
+commit ce4f4bc7e0157ff3fc3ce03ce7efb7ba5d4f9bd0
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 13 19:41:12 2010 -0500
+
+    [doc] Update list of header files
+
+ doc/reference/Makefile.am |   18 ++++++------------
+ 1 files changed, 6 insertions(+), 12 deletions(-)
+
+commit 13000e1938ef4c0968f03503e892b939acfec3e2
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 13 19:40:49 2010 -0500
+
+    Fix doc typo
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 38b6a46d413247d7acda50f7729048c635ffe23b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 13 19:33:34 2010 -0500
+
+    [ring] Only write_contents() the part of history that fits in the num rows
+
+ src/ring.c           |   12 ++++++++++--
+ src/vtestream-base.h |   12 +++++++++---
+ src/vtestream-file.h |   19 +++++++++++++++----
+ src/vtestream.h      |    4 +++-
+ 4 files changed, 37 insertions(+), 10 deletions(-)
+
+commit 9d18ff3de3ff4ca36570d6872a079b8cd09d889d
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 13 19:33:21 2010 -0500
+
+    [app] Fix signal connection
+
+ src/vteapp.c |   30 +++++++++++++-----------------
+ 1 files changed, 13 insertions(+), 17 deletions(-)
+
+commit f7920a159918b81286d5345ed83a7b5ce2c5668f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 13 18:13:30 2010 -0500
+
+    Initial implementation of vte_terminal_write_contents()
+    
+    Currently is buggy in that it writes parts of history still in the ring but
+    before set number of history lines.  Fix coming.
+
+ configure.in         |    5 +--
+ src/Makefile.am      |    4 +-
+ src/ring.c           |   64 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ src/ring.h           |   12 ++++++++-
+ src/vte.c            |   38 +++++++++++++++++++++++++++++-
+ src/vte.h            |   19 +++++++++++++-
+ src/vteapp.c         |   55 +++++++++++++++++++++++++++++++-----------
+ src/vtestream-base.h |   10 +++++++-
+ src/vtestream-file.h |   31 +++++++++++++++++++++++-
+ src/vtestream.c      |    7 ++---
+ src/vtestream.h      |    4 ++-
+ 11 files changed, 217 insertions(+), 32 deletions(-)
+
+commit 2e612fbb78b5a30ca57c4721743dc4d1a3f2884a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 13 16:43:16 2010 -0500
+
+    [ring] Don't xor attrs with basic_attrs
+    
+    Before we did that to better handle failed reads.  Now we explicitly handle
+    read failure, so no need to do it anymore.
+
+ src/ring.c |   12 +++---------
+ 1 files changed, 3 insertions(+), 9 deletions(-)
+
+commit 3ea88f06dbe753cf1884000354f6555be92af1e8
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 13 12:19:59 2010 -0500
+
+    Release 0.23.3
+
+ NEWS         |    8 ++++++++
+ configure.in |    4 ++--
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+commit 598d7ef7300d94888068a89eaf02f80e4a0a27be
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 13 12:09:14 2010 -0500
+
+    Disable deprecation stuff since they were broken
+    
+    Needs proper fixing later.
+
+ configure.in |   40 ++++++++++++++++++++--------------------
+ 1 files changed, 20 insertions(+), 20 deletions(-)
+
+commit 38b2a632d1a1e86fee82eb460201fb3d3b547ab3
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 12 03:12:13 2010 -0500
+
+    [draw] Rename a bit
+
+ src/vtedraw.c |   27 +++++++++++++--------------
+ 1 files changed, 13 insertions(+), 14 deletions(-)
+
+commit 7d9f0294f6ea52bb2525863350fbbac12f9d1459
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 12 03:09:45 2010 -0500
+
+    [draw] Update comments
+
+ src/vtedraw.c |   13 ++++++-------
+ 1 files changed, 6 insertions(+), 7 deletions(-)
+
+commit c36b81bbee7addf15cf57ca8401ac9245affe678
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 12 02:47:25 2010 -0500
+
+    Fix debug info
+
+ src/vte.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 5311d24f0382fbfaac117a46b45f1163f370bfbd
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 12 02:44:16 2010 -0500
+
+    Fix deprecation enabling logic
+
+ configure.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 884527cf0a37728d53cff21d0ce4f07911f2049e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 12 02:39:33 2010 -0500
+
+    Bug 534526 - Flickering when resizing a vte widget
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit c31361e5ef7a255e4ce96fa884bf71daafc86dbe
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 12 02:31:13 2010 -0500
+
+    Use PangoColor to unify mixed use of GdkColor and vte_palette_entry
+
+ src/vte-private.h |    6 +--
+ src/vte.c         |   97 +++++++++++++++++++----------------------------------
+ src/vtebg.c       |   12 +++---
+ src/vtebg.h       |    2 +-
+ src/vtedraw.c     |   14 ++++----
+ src/vtedraw.h     |   10 +++---
+ 6 files changed, 56 insertions(+), 85 deletions(-)
+
+commit 1608eb418aeb23c7fd27814ba7148ae2708c8017
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 12 02:08:51 2010 -0500
+
+    Add const to GdkColor
+
+ src/vtedraw.c |   10 +++++-----
+ src/vtedraw.h |    8 ++++----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+commit 3c4380448abf647fe7ff93745c9def5f5e2ec326
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 12 02:07:47 2010 -0500
+
+    Draw rectangles in one shot
+
+ src/vte.c     |   22 ++++++++++++----------
+ src/vtedraw.c |    4 ++--
+ 2 files changed, 14 insertions(+), 12 deletions(-)
+
+commit 1ad50e4873fe5c9029e7ea2ad9dc554bce2edfb9
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 12 01:54:54 2010 -0500
+
+    Cleanup cursor drawing
+
+ src/vte.c |   41 +++++++++++++++--------------------------
+ 1 files changed, 15 insertions(+), 26 deletions(-)
+
+commit 146b8bc6e2acd34fec8f98a3946f1b1e9e316a21
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 12 01:36:52 2010 -0500
+
+    [draw] Cleanup ->started counting
+
+ src/vtedraw.c |   18 ++++++++----------
+ 1 files changed, 8 insertions(+), 10 deletions(-)
+
+commit 8ab0bb6d55824b7a7728d7e5d4dd782785b21540
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 12 01:10:45 2010 -0500
+
+    Reorder code such that screen can never be NULL
+
+ src/vte.c |   45 +++++++++++++++++++++------------------------
+ 1 files changed, 21 insertions(+), 24 deletions(-)
+
+commit 3b5c1662f9215d66a56506a3858b14ed03d5061b
+Merge: 422519d 021e4a5
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Wed Jan 6 10:54:16 2010 -0500
+
+    Merge branch 'backend-cleanup'
+
+commit 422519de06c76c89a6df5cea7c344a1d32c4b856
+Author: Xandru Armesto Fernandez <xandru@softastur.org>
+Date:   Mon Jan 4 09:38:52 2010 +0100
+
+    Added asturian language
+
+ po/LINGUAS |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 1483c1ca64cfdebf893ef16c225b3395595d4436
+Author: Xandru Armesto Fernandez <xandru@softastur.org>
+Date:   Mon Jan 4 09:38:32 2010 +0100
+
+    Updated asturian language
+
+ po/ast.po |   95 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 95 insertions(+), 0 deletions(-)
+
+commit 4db015d59e80a992c86827e612e06c7df1c901f0
+Author: Josh Triplett <josh@joshtriplett.org>
+Date:   Mon Dec 28 03:22:48 2009 +0100
+
+    Bug 605299 - Please support xterm bracketed paste mode
+
+ src/vte-private.h |    1 +
+ src/vte.c         |    6 ++++++
+ src/vteseq.c      |    5 +++++
+ 3 files changed, 12 insertions(+), 0 deletions(-)
+
+commit 021e4a5082c46ffdf6998beaacca948749079b15
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Wed Dec 23 12:18:32 2009 -0500
+
+    Pass rgba as doubles to _vte_draw_set_background_solid()
+
+ src/vte.c     |   27 ++++++++++-----------------
+ src/vtedraw.c |   14 ++++++++------
+ src/vtedraw.h |    6 ++++--
+ 3 files changed, 22 insertions(+), 25 deletions(-)
+
+commit 0edf9e87b374488c502c9c8157f07fcf64692593
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Wed Dec 23 11:28:36 2009 -0500
+
+    Drop _vte_draw_get_visual() and _vte_draw_get_colormap()
+
+ src/vte.c     |    5 ++---
+ src/vtedraw.c |   26 +-------------------------
+ src/vtedraw.h |    7 -------
+ 3 files changed, 3 insertions(+), 35 deletions(-)
+
+commit a7ce6af6a780f95d2725f3084808c0d09745e566
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Wed Dec 23 11:11:48 2009 -0500
+
+    Make struct struct _vte_draw private to vtedraw.c
+    
+    Merge in struct _vte_pangocairo_data.
+
+ src/vtedraw.c |  174 +++++++++++++++++++++++----------------------------------
+ src/vtedraw.h |   11 ----
+ 2 files changed, 71 insertions(+), 114 deletions(-)
+
+commit c7c5b1ee0c31736b2a02634da9822d1988e5fdfc
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Wed Dec 23 11:06:27 2009 -0500
+
+    Make _vte_draw_start() recursive
+
+ src/vte.c     |   10 ++--------
+ src/vtedraw.c |   14 ++++++++------
+ src/vtedraw.h |    2 +-
+ 3 files changed, 11 insertions(+), 15 deletions(-)
+
+commit 7676930c7e1bddd33455a6421fc335027ba50891
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Wed Dec 23 10:31:08 2009 -0500
+
+    Merge vtepangocairo.c into vtedraw.c
+
+ src/Makefile.am     |    1 -
+ src/vtedraw.c       | 1218 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ src/vtepangocairo.c | 1232 ---------------------------------------------------
+ 3 files changed, 1210 insertions(+), 1241 deletions(-)
+
+commit 77ea73bf2ae87c35fe24b49af61d9e6b58e2c551
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Wed Dec 23 10:26:59 2009 -0500
+
+    Drop struct _vte_draw_impl
+
+ src/Makefile.am     |    3 --
+ src/vtedraw.c       |   14 +-------
+ src/vtedraw.h       |   44 --------------------------
+ src/vtepangocairo.c |   41 +++---------------------
+ src/vtepangocairo.h |   33 -------------------
+ src/vteskel.c       |   86 ---------------------------------------------------
+ src/vteskel.h       |   33 -------------------
+ 7 files changed, 8 insertions(+), 246 deletions(-)
+
+commit 58689c06e1d15d645c1181f0f8288fefa52f967e
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Wed Dec 23 10:20:50 2009 -0500
+
+    Merge pangocairo draw into remaining vte_draw functions
+
+ src/vtedraw.c       |  233 --------------------------------------------------
+ src/vtepangocairo.c |  236 +++++++++++++++++++++++++++++++++++---------------
+ 2 files changed, 165 insertions(+), 304 deletions(-)
+
+commit 02e5dd66a5bd4bbaa8a0c4bab46c1341af3d9f36
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Wed Dec 23 09:50:10 2009 -0500
+
+    Make _vte_draw_new always create a pangocairo implementation
+
+ src/vtedraw.c       |  121 ---------------------------------------------------
+ src/vtepangocairo.c |   36 +++++++++++++---
+ 2 files changed, 30 insertions(+), 127 deletions(-)
+
+commit 718b6f1d1707a4397098cab0ec3bc4980cb7d1bf
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Dec 22 15:27:01 2009 +0100
+
+    Release 0.23.2
+
+ NEWS         |   16 ++++++++++++++++
+ configure.in |    6 +++---
+ 2 files changed, 19 insertions(+), 3 deletions(-)
+
+commit 7f017f27ff254995c1ad4fbe4947b929c4c6046f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Dec 19 13:50:04 2009 +0100
+
+    Bug 604966 - Fix "select all" to include text occurring after the visible region
+
+ src/vte.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 3c99618132e8f5924f7a865ce595593889000211
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Dec 15 00:30:37 2009 -0500
+
+    Fix overflow with unlimited scrollback lines
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 31ba6a0a615c9b5d61bb335f756c7c02e701ef5e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Dec 9 01:29:27 2009 -0500
+
+    Bug 604135 - [PATCH] fix behaviour of set-scrolling-region
+
+ src/vteseq.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit fa070a0ebdfab5e33e550e4561179498752a29c6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Dec 9 00:57:01 2009 -0500
+
+    Bug 603733 - Remove deprecated Glib symbol
+    
+    Require glib >= 2.22.0
+
+ configure.in |    2 +-
+ src/vtetc.c  |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 47406a81f737f6f01fd148ab004de4eac641d571
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Dec 3 13:26:25 2009 -0500
+
+    Bug 603713 - ibeam/underline cursor broken with large inner-border
+
+ src/vte.c |   46 +++++++++++++++++-----------------------------
+ 1 files changed, 17 insertions(+), 29 deletions(-)
+
+commit e72d7ed4da9d065afc494da304741ca5484b1f9b
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Dec 3 18:35:50 2009 +0100
+
+    vteapp: Fix --cursor-shape thinko
+
+ src/vteapp.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 7d755a30393124319d3406efb98a5f612538501b
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Dec 3 18:32:35 2009 +0100
+
+    vteapp: Add --cursor-shape option
+    
+    Use --cursor-shape=block|ibeam|underline to test cursor shapes.
+
+ src/vteapp.c |   15 ++++++++++++++-
+ 1 files changed, 14 insertions(+), 1 deletions(-)
+
+commit f100847c373f8bfd881d0c9dae213c312334578c
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Dec 1 16:01:01 2009 +0100
+
+    Fix deprecation versions
+
+ src/vte.c |   58 +++++++++++++++++++++++++++++-----------------------------
+ 1 files changed, 29 insertions(+), 29 deletions(-)
+
+commit bbb00399fce8008fee378d31aa18a6b7c89d6c2b
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Dec 1 15:59:12 2009 +0100
+
+    Fix deprecation version of vte_terminal_get_padding
+    
+    It's 0.24, not 0.22.
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a34ea6198748e1621b8f148d81b424ca5312f818
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Dec 1 00:21:43 2009 +0100
+
+    Deprecate vte_terminal_get_padding
+    
+    Part of bug #471920.
+
+ src/vte.c |   13 ++++++++++++-
+ src/vte.h |    2 ++
+ 2 files changed, 14 insertions(+), 1 deletions(-)
+
+commit 25a0fa44c92044b51296be94b9e1680d83270adc
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Nov 30 23:32:33 2009 +0100
+
+    Replace VTE_PAD_WIDTH with inner-border
+    
+    Part of bug #471920.
+
+ src/vte-private.h |    1 -
+ src/vte.c         |  123 ++++++++++++++++++++++++++++-------------------------
+ src/vteseq.c      |   39 +++++++++++------
+ 3 files changed, 91 insertions(+), 72 deletions(-)
+
+commit a327292cbb073e7fb1a1298f614f980447f474fe
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Nov 30 23:06:01 2009 +0100
+
+    Add VteTerminal::inner-border style property
+    
+    Part of bug #471920.
+
+ doc/reference/tmpl/vte.sgml |    5 ++++
+ src/vte-private.h           |    3 ++
+ src/vte.c                   |   51 ++++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 58 insertions(+), 1 deletions(-)
+
+commit 320902d84b99c58ab7d6ae82b65bb1311288fe75
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Nov 30 22:46:53 2009 +0100
+
+    Remove early return from style-set on non-realized widget
+    
+    vte_terminal_set_font_full_internal copes just fine with this.
+
+ src/vte.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+
+commit 66d729e0b6d84d7cce204d5a3c9b8e6b98087f07
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Nov 30 22:39:55 2009 +0100
+
+    Chain up to style-set on parent class
+
+ src/vte.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit e42c9ce6035d1b38dce3ad815f1241c8d658acf2
+Author: Adi Roiban <adi@roiban.ro>
+Date:   Fri Nov 27 04:41:22 2009 +0200
+
+    Update Romanian translations
+
+ po/ro.po |   35 ++++++++++++++++-------------------
+ 1 files changed, 16 insertions(+), 19 deletions(-)
+
+commit e25247345d6c075a131a90cb2c65471811a89c64
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sun Nov 22 15:24:28 2009 -0500
+
+    [interpret] Make the interpret app interactive
+
+ src/interpret.c |  147 ++++++++++++++++++++++++++++---------------------------
+ 1 files changed, 75 insertions(+), 72 deletions(-)
+
+commit 91448540f68235c7e1975fa604842b7872bc0f7a
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Mon Nov 9 19:53:08 2009 -0500
 
@@ -20,7 +722,7 @@ Date:   Mon Nov 9 19:53:08 2009 -0500
  src/table.c |    5 ++++-
  1 files changed, 4 insertions(+), 1 deletions(-)
 
-commit 92320a2b87e7abe4e92c3e7c1aa2844afc82b5fd
+commit 59d08fab676cccbed8df7f8e9d9a39bab6e5413d
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Mon Nov 9 19:04:46 2009 -0500
 
@@ -29,7 +731,7 @@ Date:   Mon Nov 9 19:04:46 2009 -0500
  src/iso2022.c |   10 +++++-----
  1 files changed, 5 insertions(+), 5 deletions(-)
 
-commit 0ab5f86d837c960cd314826834b358e531c6232d
+commit 7556c58a6f21f846b97351ee2002e0b1d9236824
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Mon Nov 9 18:55:16 2009 -0500
 
@@ -38,7 +740,7 @@ Date:   Mon Nov 9 18:55:16 2009 -0500
  src/vtetc.c |    3 ++-
  1 files changed, 2 insertions(+), 1 deletions(-)
 
-commit c3ce709c8729269c22fc3ac46090651b549c8d15
+commit bdc0cca890297a44c86395e27ee51cdfef5f3961
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Mon Nov 9 18:52:47 2009 -0500
 
@@ -48,7 +750,7 @@ Date:   Mon Nov 9 18:52:47 2009 -0500
  src/caps.h |    3 ---
  2 files changed, 2 insertions(+), 3 deletions(-)
 
-commit 3246e23d2f81a45e061cc3902c4ba624f5c411a8
+commit 2035eb905aed8905e44781f3f64786fc84cd51c7
 Author: Peteris Krisjanis <pecisk@gmail.com>
 Date:   Sun Nov 8 20:36:09 2009 +0200
 
@@ -57,17 +759,7 @@ Date:   Sun Nov 8 20:36:09 2009 +0200
  po/lv.po |  119 ++++++++++++++++++++++++++++++--------------------------------
  1 files changed, 58 insertions(+), 61 deletions(-)
 
-commit 48ba09a4239c026ef3f0a02c8a9952003fa9e33e
-Author: Behdad Esfahbod <behdad@behdad.org>
-Date:   Sun Nov 8 14:56:04 2009 -0500
-
-    Release 0.22.4
-
- NEWS         |    6 ++++++
- configure.in |    4 ++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
-commit 498e33c14e5d887cb356eceaa94c2f96460e8719
+commit 9120f5ebfb9da0d74698f187ebb3046877b48c19
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Sun Nov 8 12:04:16 2009 -0500
 
@@ -81,7 +773,7 @@ Date:   Sun Nov 8 12:04:16 2009 -0500
  src/vteseq.c |    6 ++++++
  1 files changed, 6 insertions(+), 0 deletions(-)
 
-commit 20a23659abce12b6fbccd8d4f9e77f5718cc28a1
+commit d45fdfa66452427ddf2a28fcaff148b0ead9d815
 Author: Thomas Thurman <tthurman@gnome.org>
 Date:   Sun Nov 1 15:46:08 2009 -0500
 
@@ -91,7 +783,7 @@ Date:   Sun Nov 1 15:46:08 2009 -0500
  po/en@shaw.po |   90 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  2 files changed, 91 insertions(+), 0 deletions(-)
 
-commit 9a6f31808a44c21249f62116bf27d9a86cb719f0
+commit be0f71823453ef07b6a8c4b6072bdd6b772c74b1
 Author: Christian Persch <chpe@gnome.org>
 Date:   Thu Oct 29 18:59:52 2009 +0100
 
@@ -102,26 +794,15 @@ Date:   Thu Oct 29 18:59:52 2009 +0100
  src/ring.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-commit 16275c6829b1e8755958545547f03d5b152958e7
+commit 16db4039b0ea75454c6d51c1a685f3c9d16ffb11
 Author: Behdad Esfahbod <behdad@behdad.org>
-Date:   Mon Oct 26 21:16:43 2009 -0400
+Date:   Mon Oct 26 20:15:21 2009 -0400
 
-    Release 0.22.3
+    Released 0.23.1
 
- NEWS         |   22 ++++++++++++++++++++++
- configure.in |    4 ++--
- 2 files changed, 24 insertions(+), 2 deletions(-)
-
-commit 9310dfee0b6e74e891132396a00f2c74f12e1ddb
-Author: Behdad Esfahbod <behdad@behdad.org>
-Date:   Mon Oct 26 21:15:35 2009 -0400
-
-    Don't chain motion-notify events up in the 0.22 stable series
-    
-    That change only remains in 0.23 on.
-
- src/vte.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ NEWS         |   25 +++++++++++++++++++++++++
+ configure.in |   10 +++++-----
+ 2 files changed, 30 insertions(+), 5 deletions(-)
 
 commit a91d1adf8cbc3bf9755d1c211f490366ac47782c
 Author: Behdad Esfahbod <behdad@behdad.org>
