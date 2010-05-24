@@ -3,22 +3,10 @@ Upstream: http://bugzilla.gnome.org/show_bug.cgi?id=518405
 Description: Handle scrolling differently when using alternate screen or
  scrolling is restricted.
 
-diff -Nur -x '*.orig' -x '*~' vte/doc/reference/xml/vte.xml vte.new/doc/reference/xml/vte.xml
---- vte/doc/reference/xml/vte.xml	2009-03-15 06:57:27.000000000 -0700
-+++ vte.new/doc/reference/xml/vte.xml	2009-03-27 20:02:48.000000000 -0700
-@@ -71,6 +71,9 @@
- <link linkend="void">void</link>                <link linkend="vte-terminal-set-scroll-on-keystroke">vte_terminal_set_scroll_on_keystroke</link>
-                                                         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-                                                          <link linkend="gboolean">gboolean</link> scroll);
-+<link linkend="void">void</link>                <link linkend="vte-terminal-set-scroll-on-keystroke">vte_terminal_set_alternate_screen_scroll</link>
-+                                                        (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-+                                                         <link linkend="gboolean">gboolean</link> scroll);
- <link linkend="void">void</link>                <link linkend="vte-terminal-set-color-bold">vte_terminal_set_color_bold</link>         (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-                                                          const <link linkend="GdkColor">GdkColor</link> *bold);
- <link linkend="void">void</link>                <link linkend="vte-terminal-set-color-foreground">vte_terminal_set_color_foreground</link>   (<link linkend="VteTerminal">VteTerminal</link> *terminal,
-diff -Nur -x '*.orig' -x '*~' vte/python/vte.defs vte.new/python/vte.defs
---- vte/python/vte.defs	2009-03-27 20:02:47.000000000 -0700
-+++ vte.new/python/vte.defs	2009-03-27 20:03:37.000000000 -0700
+Index: vte-0.24.0/python/vte.defs
+===================================================================
+--- vte-0.24.0.orig/python/vte.defs	2010-04-01 11:31:07.206688886 +1100
++++ vte-0.24.0/python/vte.defs	2010-04-01 11:31:17.946687619 +1100
 @@ -210,6 +210,15 @@
    (return-type "gboolean")
  )
@@ -35,10 +23,11 @@ diff -Nur -x '*.orig' -x '*~' vte/python/vte.defs vte.new/python/vte.defs
  (define-method set_scroll_background
    (of-object "VteTerminal")
    (c-name "vte_terminal_set_scroll_background")
-diff -Nur -x '*.orig' -x '*~' vte/src/vte.c vte.new/src/vte.c
---- vte/src/vte.c	2009-03-15 05:52:49.000000000 -0700
-+++ vte.new/src/vte.c	2009-03-27 20:02:48.000000000 -0700
-@@ -10988,8 +10988,9 @@
+Index: vte-0.24.0/src/vte.c
+===================================================================
+--- vte-0.24.0.orig/src/vte.c	2010-03-30 00:06:53.000000000 +1100
++++ vte-0.24.0/src/vte.c	2010-04-01 11:31:17.946687619 +1100
+@@ -10787,8 +10787,9 @@
  		return FALSE;
  	}
  
@@ -50,7 +39,7 @@ diff -Nur -x '*.orig' -x '*~' vte/src/vte.c vte.new/src/vte.c
  		char *normal;
  		gssize normal_length;
  		const gchar *special;
-@@ -12294,6 +12295,22 @@
+@@ -12353,6 +12354,22 @@
          g_object_notify (G_OBJECT (terminal), "scroll-on-keystroke");
  }
  
@@ -73,10 +62,11 @@ diff -Nur -x '*.orig' -x '*~' vte/src/vte.c vte.new/src/vte.c
  static void
  vte_terminal_real_copy_clipboard(VteTerminal *terminal)
  {
-diff -Nur -x '*.orig' -x '*~' vte/src/vte.h vte.new/src/vte.h
---- vte/src/vte.h	2009-03-05 06:06:07.000000000 -0800
-+++ vte.new/src/vte.h	2009-03-27 20:02:48.000000000 -0700
-@@ -252,6 +252,8 @@
+Index: vte-0.24.0/src/vte.h
+===================================================================
+--- vte-0.24.0.orig/src/vte.h	2010-03-30 00:06:53.000000000 +1100
++++ vte-0.24.0/src/vte.h	2010-04-01 11:31:17.946687619 +1100
+@@ -310,6 +310,8 @@
  void vte_terminal_set_scroll_on_output(VteTerminal *terminal, gboolean scroll);
  void vte_terminal_set_scroll_on_keystroke(VteTerminal *terminal,
  					  gboolean scroll);
@@ -85,10 +75,11 @@ diff -Nur -x '*.orig' -x '*~' vte/src/vte.h vte.new/src/vte.h
  
  /* Set the color scheme. */
  void vte_terminal_set_color_dim(VteTerminal *terminal,
-diff -Nur -x '*.orig' -x '*~' vte/src/vte-private.h vte.new/src/vte-private.h
---- vte/src/vte-private.h	2009-03-05 06:06:07.000000000 -0800
-+++ vte.new/src/vte-private.h	2009-03-27 20:02:48.000000000 -0700
-@@ -328,6 +328,7 @@
+Index: vte-0.24.0/src/vte-private.h
+===================================================================
+--- vte-0.24.0.orig/src/vte-private.h	2010-03-30 00:06:53.000000000 +1100
++++ vte-0.24.0/src/vte-private.h	2010-04-01 11:31:17.946687619 +1100
+@@ -281,6 +281,7 @@
  	gboolean scroll_on_output;
  	gboolean scroll_on_keystroke;
  	long scrollback_lines;

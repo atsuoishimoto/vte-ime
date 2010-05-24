@@ -44,7 +44,7 @@
 #include <termcap.h>
 #define VTE_TERMCAP_NAME "termcap"
 #else
-#error No termcap??
+#undef VTE_TERMCAP_NAME
 #endif
 
 #ifdef VTE_DEBUG
@@ -1008,8 +1008,10 @@ _vte_keymap_map(guint keyval,
 	enum _vte_fkey_mode fkey_mode;
 	char *cap, *tmp;
 	const char *termcap_special = NULL;
+#ifdef VTE_TERMCAP_NAME
 	char ncurses_buffer[4096];
 	char ncurses_area[512];
+#endif
 
 	g_return_if_fail(normal != NULL);
 	g_return_if_fail(normal_length != NULL);
@@ -1163,6 +1165,7 @@ _vte_keymap_map(guint keyval,
 			}
 		}
 	}
+#ifdef VTE_TERMCAP_NAME
 	if (termcap_special != NULL) {
 		tmp = g_strdup(terminal);
 		cap = NULL;
@@ -1203,6 +1206,7 @@ _vte_keymap_map(guint keyval,
 			return;
 		}
 	}
+#endif
 
 	_vte_debug_print(VTE_DEBUG_KEYBOARD,
 			" (ignoring, no match for modifier state).\n");

@@ -1,3 +1,183 @@
+commit 10430cbf79306a3f7dc11798e5146b33c0c05448
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Apr 26 13:16:16 2010 +0200
+
+    Version 0.24.1
+
+ NEWS         |    5 +++++
+ configure.in |    4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+commit d86f723c76212eabd22c0622072f6f0cb9b733d1
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 10 01:42:24 2010 +0200
+
+    We also depend on cairo-xlib on gdk-x11
+    (cherry picked from commit 39b7a1f74dc7044d1fd6cd9df7abceffa7e99349)
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit ac9813af66c110fae31db02114a7904cdf9547e5
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Apr 20 11:59:28 2010 +0200
+
+    Backport VteBg fixes from master
+    
+    Fixes bug #615417, bug #614469.
+
+ src/debug.c   |    3 +-
+ src/debug.h   |    3 +-
+ src/vtebg.c   |  320 +++++++++++++++++++++++++++++----------------------------
+ src/vtebg.h   |   35 +++----
+ src/vtedraw.c |    2 +-
+ src/vtedraw.h |    2 +-
+ 6 files changed, 187 insertions(+), 178 deletions(-)
+
+commit a784d8d2dd79f7f4eba24aea4ea5f129a095ce0f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Apr 8 13:15:00 2010 +0200
+
+    Print the GDK target during configure
+    
+    For checking purposes.
+    (cherry picked from commit b72c2a7df25e5fdfefbd437505f9f71b7d675da8)
+
+ configure.in |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 0ed604d8a8f83e6fdb5444be0305abeb7b0d1f7f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Apr 4 17:03:24 2010 +0200
+
+    Add x11 to pkg-config dep list on gdk-x11
+    
+    Bug #613525.
+    (cherry picked from commit be41faea3651c2a90012648490ebf346eac82d04)
+
+ configure.in |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
+
+commit 4c8cd732f506d529f15dc07cb1b9be8f5886057f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Mar 29 15:11:44 2010 +0200
+
+    Remove failing doc check test
+    
+    Bug #613192.
+
+ src/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 90ca5afc7ec6c97c089e2648bab10e0ebda976eb
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Mar 29 14:16:29 2010 +0200
+
+    Prepare 0.24.0
+
+ NEWS         |    6 ++++++
+ configure.in |   10 +++++-----
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+
+commit 36a80fc68ebd213c374121043a48b87f618e8b79
+Author: Jamil Ahmed <itsjamil@gmail.com>
+Date:   Sun Mar 28 00:31:22 2010 +0600
+
+    Updated Bengali translation
+
+ po/bn.po |  127 +++++++++++++++++++++++++++++--------------------------------
+ 1 files changed, 60 insertions(+), 67 deletions(-)
+
+commit 953625f24173318ba1a553866a9b8c7cb83aac01
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sat Mar 13 00:02:57 2010 -0500
+
+    [git.mk] Update from pango
+
+ git.mk |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit bcb4b775af73cf9da76a79083cd446122bd5c97f
+Author: Marek Černocký <marek@manet.cz>
+Date:   Sat Mar 6 19:14:08 2010 +0100
+
+    Update Czech translation
+
+ po/cs.po |  102 +++++++++++++++++++++++++++++---------------------------------
+ 1 files changed, 48 insertions(+), 54 deletions(-)
+
+commit 41c42c121b89eeb6c73b6deb9c71c4661f12a858
+Author: Piotr Drąg <piotrdrag@gmail.com>
+Date:   Thu Feb 25 13:47:36 2010 +0100
+
+    Updated Polish translation
+
+ po/pl.po |  152 +++++++++++++++++--------------------------------------------
+ 1 files changed, 43 insertions(+), 109 deletions(-)
+
+commit 17c16e6babd0be2a40cf2faa745295c9b47b6655
+Author: Fran Diéguez <frandieguez@ubuntu.com>
+Date:   Mon Feb 15 17:19:27 2010 +0100
+
+    Updated Galician Translation
+
+ po/gl.po |   60 +++++++++++++++++++++++++++++++-----------------------------
+ 1 files changed, 31 insertions(+), 29 deletions(-)
+
+commit 11c0cd96e0614a96aebc0bc64e3c9a9fe357c4e3
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Jan 26 14:39:18 2010 -0500
+
+    Improve debug message
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5f4f67f579c9530af716573d6aaafc9cdb060e09
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Tue Jan 12 10:57:45 2010 -0500
+
+    vtebg: Cache backgrounds as cairo surfaces
+
+ src/vtebg.c   |  385 +++++++++++++++++----------------------------------------
+ src/vtebg.h   |   15 ++-
+ src/vtedraw.c |   33 ++----
+ 3 files changed, 134 insertions(+), 299 deletions(-)
+
+commit d8e791be89f38e168faf078268be8bdee4a6715d
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Jan 14 18:42:06 2010 +0100
+
+    Modernise the API docs
+    
+    Update to gtk-doc 0.13. Drop tmpl use, use <xi:include>, add object
+    hierarchy, index, deprecated symbols index, and indices for new symbols
+    in 0.20 and 0.24.
+
+ autogen.sh                         |    3 +-
+ configure.in                       |    9 +-
+ doc/reference/Makefile.am          |  163 ++++--
+ doc/reference/tmpl/internals.sgml  |   20 -
+ doc/reference/tmpl/pty.sgml        |   18 -
+ doc/reference/tmpl/reaper.sgml     |   25 -
+ doc/reference/tmpl/vte-unused.sgml |  516 ---------------
+ doc/reference/tmpl/vte.sgml        | 1287 ------------------------------------
+ doc/reference/tmpl/vteaccess.sgml  |   37 -
+ doc/reference/tmpl/vteversion.sgml |   59 --
+ doc/reference/version.xml.in       |    1 +
+ doc/reference/vte-docs.sgml        |   25 -
+ doc/reference/vte-docs.xml         |  127 ++++
+ doc/reference/vte-sections.txt     |   70 +-
+ doc/reference/vte.types            |   12 +-
+ src/reaper.c                       |   26 +
+ src/reaper.h                       |    8 +
+ src/vte.c                          |   32 +-
+ src/vte.h                          |   98 +++-
+ src/vteaccess.c                    |   10 +-
+ src/vteaccess.h                    |   52 +-
+ src/vteversion.h.in                |   47 ++
+ 22 files changed, 524 insertions(+), 2121 deletions(-)
+
 commit e8594f159ef206bbd357db6bf28f659eccfefc9a
 Author: Behdad Esfahbod <behdad@behdad.org>
 Date:   Wed Jan 13 20:32:09 2010 -0500

@@ -1,4 +1,7 @@
 GNOME #112172; move VteReaper down the library stack
+GNOME #320127; WONTFIX upstream, we'll need to remove this eventually,
+but we need to take care that nothing in Debian uses it:
+gdebi: #574168
 
 diff -urN vte-0.20.0.orig/python/vte.defs vte-0.20.0/python/vte.defs
 --- vte-0.20.0.orig/python/vte.defs	2009-03-05 15:06:07.000000000 +0100

@@ -38,7 +38,7 @@
 #include <termcap.h>
 #define VTE_TERMCAP_NAME "termcap"
 #else
-#error No termcap??
+#undef VTE_TERMCAP_NAME
 #endif
 
 #include <sys/types.h>

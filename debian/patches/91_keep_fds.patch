@@ -1,10 +1,11 @@
 Upstream: http://bugzilla.gnome.org/show_bug.cgi?id=320128
 Description: Keep file descriptors open on vte_fork_pty().
 
-diff -Nur vte-0.16.0/src/pty.c vte-0.16.0.new/src/pty.c
---- vte-0.16.0/src/pty.c	2007-02-26 22:05:14.000000000 +0100
-+++ vte-0.16.0.new/src/pty.c	2007-03-16 10:15:20.000000000 +0100
-@@ -160,7 +160,27 @@
+Index: vte-0.24.0/src/pty.c
+===================================================================
+--- vte-0.24.0.orig/src/pty.c	2010-03-30 00:06:52.000000000 +1100
++++ vte-0.24.0/src/pty.c	2010-04-01 11:31:14.046681191 +1100
+@@ -153,7 +153,27 @@
  		const char *name;
  		int fd;
  	} tty;
@@ -32,7 +33,7 @@ diff -Nur vte-0.16.0/src/pty.c vte-0.16.0.new/src/pty.c
  static void
  vte_pty_child_setup (gpointer arg)
  {
-@@ -185,7 +205,6 @@
+@@ -178,7 +198,6 @@
  			"Setting up child pty: name = %s, fd = %d\n",
  				tty ? tty : "(none)", fd);
  
@@ -40,7 +41,7 @@ diff -Nur vte-0.16.0/src/pty.c vte-0.16.0.new/src/pty.c
  	/* Start a new session and become process-group leader. */
  #if defined(HAVE_SETSID) && defined(HAVE_SETPGID)
  	_vte_debug_print (VTE_DEBUG_PTY, "Starting new session\n");
-@@ -253,6 +272,20 @@
+@@ -248,6 +267,20 @@
  		close(fd);
  	}
  
@@ -61,7 +62,7 @@ diff -Nur vte-0.16.0/src/pty.c vte-0.16.0.new/src/pty.c
  
  	/* Reset our signals -- our parent may have done any number of
  	 * weird things to them. */
-@@ -345,13 +378,16 @@
+@@ -341,13 +374,16 @@
  			g_printerr ("    directory: %s\n",
  					directory ? directory : "(none)");
  		}
@@ -84,7 +85,7 @@ diff -Nur vte-0.16.0/src/pty.c vte-0.16.0.new/src/pty.c
  				vte_pty_child_setup, data,
  				pid,
  				NULL, NULL, NULL,
-@@ -407,6 +443,10 @@
+@@ -403,6 +439,10 @@
  	return ret;
  }
  
@@ -95,7 +96,7 @@ diff -Nur vte-0.16.0/src/pty.c vte-0.16.0.new/src/pty.c
  /* Open the named PTY slave, fork off a child (storing its PID in child),
   * and exec the named command in its own session as a process group leader */
  static gboolean
-@@ -419,6 +459,7 @@
+@@ -415,6 +455,7 @@
  
  	data.mode = TTY_OPEN_BY_NAME;
  	data.tty.name = path;
@@ -103,7 +104,7 @@ diff -Nur vte-0.16.0/src/pty.c vte-0.16.0.new/src/pty.c
  
  	if (!_vte_pty_run_on_pty(&data,
  			command, argv, envp, directory,
-@@ -443,6 +484,7 @@
+@@ -439,6 +480,7 @@
  
  	data.mode = TTY_OPEN_BY_FD;
  	data.tty.fd = fd;

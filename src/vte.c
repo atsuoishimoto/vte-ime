@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2001-2004,2009,2010 Red Hat, Inc.
+ * Copyright © 2009, 2010 Christian Persch
  *
  * This is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License as published by
@@ -14,6 +15,13 @@
  * You should have received a copy of the GNU Library General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+/**
+ * SECTION: vte-terminal
+ * @short_description: A terminal widget implementation
+ *
+ * A VteTerminal is a terminal emulator implemented as a GTK2 widget.
  */
 
 #include <config.h>
@@ -1682,7 +1690,7 @@ vte_terminal_match_check_internal_gregex(VteTerminal *terminal,
         GMatchInfo *match_info;
 
 	_vte_debug_print(VTE_DEBUG_EVENTS,
-			"Checking for match at (%ld,%ld).\n", row, column);
+			"Checking for gregex match at (%ld,%ld).\n", row, column);
 	*tag = -1;
 	if (start != NULL) {
 		*start = 0;
@@ -7378,7 +7386,7 @@ vte_terminal_ensure_font (VteTerminal *terminal)
  *
  * Since: 0.11.11
  * 
- * Deprecated: 0.19.1
+ * Deprecated: 0.20
  */
 void
 vte_terminal_set_font_full(VteTerminal *terminal,
@@ -7498,7 +7506,7 @@ vte_terminal_set_font_from_string_full_internal(VteTerminal *terminal,
  *
  * Since: 0.11.11
  *
- * Deprecated: 0.19.1
+ * Deprecated: 0.20
  */
 void
 vte_terminal_set_font_from_string_full(VteTerminal *terminal, const char *name,
@@ -10779,8 +10787,9 @@ vte_terminal_scroll(GtkWidget *widget, GdkEventScroll *event)
 		return FALSE;
 	}
 
-	if (terminal->pvt->screen == &terminal->pvt->alternate_screen ||
-		terminal->pvt->normal_screen.scrolling_restricted) {
+	if (terminal->pvt->alternate_screen_scroll &&
+		(terminal->pvt->screen == &terminal->pvt->alternate_screen ||
+		terminal->pvt->normal_screen.scrolling_restricted)) {
 		char *normal;
 		gssize normal_length;
 		const gchar *special;
@@ -12345,6 +12354,22 @@ vte_terminal_set_scroll_on_keystroke(VteTerminal *terminal, gboolean scroll)
         g_object_notify (G_OBJECT (terminal), "scroll-on-keystroke");
 }
 
+/**
+ * vte_terminal_set_alternate_screen_scroll:
+ * @terminal: a #VteTerminal
+ * @scroll: %TRUE if the terminal should send keystrokes for scrolling when using alternate screen
+ *
+ * Controls whether or not the terminal will send keystrokes for scrolling
+ * when using alternate screen or scrolling is restricted.
+ *
+ */
+void
+vte_terminal_set_alternate_screen_scroll(VteTerminal *terminal, gboolean scroll)
+{
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+	terminal->pvt->alternate_screen_scroll = scroll;
+}
+
 static void
 vte_terminal_real_copy_clipboard(VteTerminal *terminal)
 {
@@ -12810,7 +12835,7 @@ vte_terminal_get_has_selection(VteTerminal *terminal)
  *
  * Returns: %TRUE
  *
- * Deprecated: 0.19.1
+ * Deprecated: 0.20
  */
 gboolean
 vte_terminal_get_using_xft(VteTerminal *terminal)
@@ -13502,7 +13527,7 @@ vte_terminal_get_char_height(VteTerminal *terminal)
  *
  * Returns: the contents of @terminal's char_descent field
  *
- * Deprecated: 0.19.1
+ * Deprecated: 0.20
  */
 glong
 vte_terminal_get_char_descent(VteTerminal *terminal)
@@ -13520,7 +13545,7 @@ vte_terminal_get_char_descent(VteTerminal *terminal)
  *
  * Returns: the contents of @terminal's char_ascent field
  *
- * Deprecated: 0.19.1
+ * Deprecated: 0.20
  */
 glong
 vte_terminal_get_char_ascent(VteTerminal *terminal)
@@ -14271,8 +14296,6 @@ update_timeout (gpointer data)
 	return FALSE;
 }
 
-
-
 /**
  * vte_terminal_write_contents:
  * @terminal: a #VteTerminal
@@ -14296,12 +14319,14 @@ update_timeout (gpointer data)
  *
  * Since: 0.24
  */
-gboolean vte_terminal_write_contents (VteTerminal *terminal,
-				      GOutputStream *stream,
-				      VteTerminalWriteFlags flags,
-				      GCancellable *cancellable,
-				      GError **error)
+gboolean
+vte_terminal_write_contents (VteTerminal *terminal,
+                             GOutputStream *stream,
+                             VteTerminalWriteFlags flags,
+                             GCancellable *cancellable,
+                             GError **error)
 {
+        g_return_val_if_fail(VTE_IS_TERMINAL(terminal), FALSE);
 	return _vte_ring_write_contents (terminal->pvt->screen->row_data,
 					 stream, flags,
 					 cancellable, error);

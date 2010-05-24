@@ -153,7 +153,27 @@ struct vte_pty_child_setup_data {
 		const char *name;
 		int fd;
 	} tty;
+	int keep_fd;
 };
+
+static int
+_vte_pty_keep_fd(char **env_add)
+{
+   int i, res = -1;
+   if(env_add == NULL)
+      return res;
+
+   const gchar *needle="VTE_PTY_KEEP_FD=";
+   for(i=0; env_add[i] != NULL; i++) {
+      gchar *s = strstr(env_add[i],needle);
+      if(s != NULL) {
+	 res = atoi(&s[strlen(needle)]);
+	 break;
+      }
+   }
+   return res;
+}
+
 static void
 vte_pty_child_setup (gpointer arg)
 {
@@ -177,7 +197,6 @@ vte_pty_child_setup (gpointer arg)
 	_vte_debug_print (VTE_DEBUG_PTY,
 			"Setting up child pty: name = %s, fd = %d\n",
 				tty ? tty : "(none)", fd);
-
 
 	/* Start a new session and become process-group leader. */
 #if defined(HAVE_SETSID) && defined(HAVE_SETPGID)
@@ -248,6 +267,20 @@ vte_pty_child_setup (gpointer arg)
 		close(fd);
 	}
 
+	int i;
+	int keep_fd = data->keep_fd;
+	if(keep_fd > 0) {
+	   /* Close most descriptors. */
+	   for (i = 0; i < sysconf(_SC_OPEN_MAX); i++) {
+	      if (i != keep_fd &&
+		  i != fd && 
+		  i != STDOUT_FILENO && 
+		  i != STDIN_FILENO && 
+		  i != STDERR_FILENO) {
+		 close(i);
+	      }
+	   }
+	}
 
 	/* Reset our signals -- our parent may have done any number of
 	 * weird things to them. */
@@ -341,13 +374,16 @@ _vte_pty_run_on_pty (struct vte_pty_child_setup_data *data,
 			g_printerr ("    directory: %s\n",
 					directory ? directory : "(none)");
 		}
-
+ 		GSpawnFlags flags = (G_SPAWN_CHILD_INHERITS_STDIN |
+  				     G_SPAWN_FILE_AND_ARGV_ZERO |
+  				     G_SPAWN_SEARCH_PATH |
+  				     G_SPAWN_DO_NOT_REAP_CHILD);
+		if(argv)
+		   flags |= G_SPAWN_FILE_AND_ARGV_ZERO;
+  		if (data->keep_fd > 0)
+  		   flags |= G_SPAWN_LEAVE_DESCRIPTORS_OPEN;
 		ret = g_spawn_async_with_pipes (directory,
-				arg2, envp2,
-				G_SPAWN_CHILD_INHERITS_STDIN |
-				G_SPAWN_SEARCH_PATH |
-				G_SPAWN_DO_NOT_REAP_CHILD |
-				(argv ? G_SPAWN_FILE_AND_ARGV_ZERO : 0),
+				arg2, envp2, flags,
 				vte_pty_child_setup, data,
 				pid,
 				NULL, NULL, NULL,
@@ -403,6 +439,10 @@ _vte_pty_run_on_pty (struct vte_pty_child_setup_data *data,
 	return ret;
 }
 
+
+
+
+
 /* Open the named PTY slave, fork off a child (storing its PID in child),
  * and exec the named command in its own session as a process group leader */
 static gboolean
@@ -415,6 +455,7 @@ _vte_pty_fork_on_pty_name (const char *path, int parent_fd, char **envp,
 
 	data.mode = TTY_OPEN_BY_NAME;
 	data.tty.name = path;
+	data.keep_fd = _vte_pty_keep_fd(envp);
 
 	if (!_vte_pty_run_on_pty(&data,
 			command, argv, envp, directory,
@@ -439,6 +480,7 @@ _vte_pty_fork_on_pty_fd (int fd, char **envp,
 
 	data.mode = TTY_OPEN_BY_FD;
 	data.tty.fd = fd;
+	data.keep_fd = _vte_pty_keep_fd(envp);
 
 	if (!_vte_pty_run_on_pty(&data,
 				command, argv, envp, directory,

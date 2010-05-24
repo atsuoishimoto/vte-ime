@@ -1,132 +1,186 @@
-vte (1:0.23.5-0ubuntu1) lucid; urgency=low
+vte (1:0.24.1-1ubuntu1) maverick; urgency=low
 
-  * New upstream version (LP: #516770):
-    - Fix unintented soversion bump
-    - Add public API vte_terminal_write_contents()
-    - Update docs
-    - Disable symbol deprecation stuff since they were broken
-    - Merge pangocairo draw impl into vtedraw
-    - Bugs fixed in this release:
-    - Flickering when resizing a vte widget
-    - Support xterm bracketed paste mode
-  * debian/patches/90_autoreconf.patch: refreshed
+  * Merge with Debian unstable, remaining Ubuntu changes:
+  * debian/control.in:
+    - Add Vcs-Bzr info.
+    - Build depend on gnome-common to run autoreconf
+  * debian/rules:
+    - Run autoreconf on build, replacing 90_autoreconf.patch
+    - Link documentation from each package to copy in libvte-common
+  * debian/patches/91_keep_fds.patch:
+    - Keep file descriptors open on vte_fork_pty().
+  * debian/patches/93_add_alt_screen_scroll_toggle.patch:
+    - Handle scrolling differently when using alternate screen 
+      or scrolling is restricted.
 
- -- Baptiste Mille-Mathias <baptiste.millemathias@gmail.com>  Wed, 03 Feb 2010 21:37:20 +0100
+ -- Robert Ancell <robert.ancell@canonical.com>  Mon, 24 May 2010 14:23:41 +1000
 
-vte (1:0.23.2-0ubuntu1) lucid; urgency=low
+vte (1:0.24.1-1) unstable; urgency=low
 
-  * New upstream version (LP: #502775):
-    - Fix overflow with unlimited scrollback lines
-    - Require glib >= 2.22.0
-    - Deprecate vte_terminal_get_padding
-    - Add VteTerminal::inner-border style property
-    - vteapp: Add --cursor-shape option
-    - Rework mouse selection to be more robust.  In particular, PRIMARY selection
-      now only changes when mouse button is released, not upon every motion when
-      selecting
-    - Interpret and document negative number of scrollback lines as infinite
-    - We now chain unhandled motion-notify events up such that the parent widget
-      can give them a shot
-    - Various crash and bug fixes
-  * debian/control: bump libglib2.0-dev build-dep to >=2.22
-  * debian/patches:
-    - 10_fix_pyenv.patch: dropped fixed in this version
-    - 60_termcap-home-end.patch, 99_autoreconf.patch: refreshed
+  * New upstream bugfix release:
+    + debian/patches/01_transparent_crash.patch:
+      - Dropped, fixed upstream.
+    + debian/patches/25_optional-ncurses.patch:
+      - Updated to apply cleanly again.
+    + debian/patches/90_autoreconf.patch:
+      - Regenerated for the new version.
+    + debian/control.in:
+      - Update build dependencies and dependencies of the -dev package.
 
- -- Martin Peeks <martinp23@googlemail.com>  Mon, 04 Jan 2010 12:34:41 +0000
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 03 May 2010 20:11:29 +0200
 
-vte (1:0.22.2-0ubuntu2) karmic; urgency=low
-  
-  * debian/patches/10_fix_pyenv.patch:
-    - fix environment passing in python to fork_command(), see
-      https://bugzilla.gnome.org/show_bug.cgi?id=587894
-    - This fixes gdebi-gtk and it can install packages again 
-      (LP: #438266)
+vte (1:0.24.0-3) unstable; urgency=low
 
- -- Michael Vogt <michael.vogt@ubuntu.com>  Tue, 29 Sep 2009 10:29:11 +0200
+  * debian/python-vte.install:
+    - Also install bindings for python2.6 (don't hardcode site-packages).
+  * debian/control.in,
+    debian/rules,
+    debian/source/format,
+    - Switch to source format 3.0 (quilt).
+  * debian/patches/25_optional-ncurses.patch:
+    - Updated to apply cleanly.
+  * debian/control.in:
+    - Bump Standards-Version to 3.8.4, no changes needed.
 
-vte (1:0.22.2-0ubuntu1) karmic; urgency=low
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Wed, 21 Apr 2010 14:18:44 +0200
 
-  [ Michael Vogt ]
-  * new upstream version:
-   - Fix crash on terminal reset
-    - Fix build on Solaris
-    - Bugs fixed in this release:
-        Bug 596365 - libvte crashes when issueing 'reset' in a terminal
-        Bug 588033 - background tabs may lose lines off the bottom of  
-                     the scrollback
-        Bug 596163 - Doesn't display expected background color in ncurses apps
-        Bug 596011 - Problem compiling vte 0.22.0 on Solaris
+vte (1:0.24.0-2) unstable; urgency=low
 
-  [ Luke Yelavich ]
-  * new upstream version, 0.22.2:
-    - Fix crash introduced in previous release
-    - Fix a11y assertion failure LP: #435646
-    - Improve selection at the end of row
-    - Bugs fixed in this release:
-        Bug 596444 - word-select includes \n when the word ends at the edge of
-                     the terminal
-        Bug 596460 - 0.22.1 kills vte based apps
-  * debian/patches/90_autoreconf.patch: refreshed
+  * 01_transparent_crash.patch: patch by Tetralet to fix a crash when 
+    the background file is missing, or when the transparent background 
+    has no root window. Closes: #576624.
 
- -- Luke Yelavich <themuso@ubuntu.com>  Tue, 29 Sep 2009 10:34:42 +1000
+ -- Josselin Mouette <joss@debian.org>  Fri, 09 Apr 2010 18:23:02 +0200
 
-vte (1:0.22.0-0ubuntu1) karmic; urgency=low
+vte (1:0.24.0-1) unstable; urgency=low
 
-  * New upstream version (LP: #434563)
-    - Fix tab and wide-char handling
-    - Another rewrite of the ring.  Stores ring data on tmp files on disk now.
-      Please report any regressions.
-  * Update DEB_DH_MAKESHLIBS_ARGS_ALL in debian/rules
-  * refresh debian/patches/90_autoreconf.patch
+  * New upstream stable release:
+    + debian/rules:
+      - Update shlibs version because of new API.
+      - Remove X_DISPLAY_MISSING from udeb CFLAGS.
+    + debian/patches/90_autoreconf.patch:
+      - Updated for the new version.
 
- -- Didier Roche <didrocks@ubuntu.com>  Tue, 22 Sep 2009 11:59:16 +0200
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 31 Mar 2010 11:11:22 +0200
 
-vte (1:0.21.5-0ubuntu1) karmic; urgency=low
+vte (1:0.23.5-4) experimental; urgency=low
 
-  * New upstream version (LP: #419808)
-    - Finish ring rewrite. Scrollback buffer consumes ten times less
-      memory now, and better, doesn't allocate from the heap, so closing
-      tabs actually releases memory.
-    - Remove another stale assert()
-    - Oops, use the right map decoding function is iso2022 code
-    - Really fix the ring this time
-    - Enable g_assert().  May trigger some bogus ones now.  Please report.
-    - gnome terminal crashes with glibc detected
-    - Redesigning the vte buffer ring is going on.  Please report any misbehavior
-    - gnome-terminal crashed with SIGSEGV after hiting ctrl+o (LP: #408745)
-    - text mode program rendering is strange in cjk locale.
-    - bashisms in shell scripts
-  * Update DEB_DH_MAKESHLIBS_ARGS_ALL in debian/rules 
-  * debian/patches:
-    - remove 01_bashisms.patch: taken upstream
-    - refresh 90_autoreconf.patch
+  [ Cyril Brulebois ]
+  * Switch udeb from DirectFB to Xlib to prepare the move to an X11-based
+    graphical installer
+     - Drop the B-D on libgtk-directfb-2.0-dev.
+     - Bump the B-D on libgtk2.0-dev to make sure the udeb gets its
+       dependency on the (recently-added) udeb rather than on the library.
 
- -- Didier Roche <didrocks@ubuntu.com>  Tue, 22 Sep 2009 10:32:48 +0200
+  [ Emilio Pozuelo Monfort ]
+  * debian/rules:
+    - Remove hack that was needed to build the udeb against the DirectFB
+      GTK+ library, since the default one was the X11. We build against
+      the X11 one now.
+  * debian/patches/12_python_reaper.patch:
+    - Mention that this is WONTFIX upstream and that we should eventually
+      remove it.
 
-vte (1:0.20.5-1ubuntu1) karmic; urgency=low
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Tue, 16 Mar 2010 22:20:16 +0100
 
-  * Merge from debian unstable (LP: #388046), remaining changes:
-    - debian/control{.in}:
-      + Build-depend on python-all-dbg.
-      + Build-depend on libgtk-directfb-2.0-0 2.15.4-0ubuntu4, to 
-        correct a wrong dependency in libvte9-udeb.
-      + Add Vcs-Bzr info.
-      + Add python-vte-dbg package.
-    - debian/python-vte.install: 
-      + Make it build against python 2.6 new FS layout
-    - debian/rules:
-      + Build a python-vte-dbg package.
-      + Clean .a and .la files from package to keep .install file easy
-        to read.
-    - debian/patches/91_keep_fds.patch:
-      + Keep file descriptors open on vte_fork_pty().
-    - debian/patches/93_add_alt_screen_scroll_toggle.patch:
-      + Handle scrolling differently when using alternate screen 
-        or scrolling is restricted.
-  * Closes LP: #314826 and LP: #369440.
-   
- -- Chris Coulson <chrisccoulson@googlemail.com>  Wed, 17 Jun 2009 09:58:40 +0200
+vte (1:0.23.5-3) experimental; urgency=low
+
+  * debian/rules:
+    + Update shlibs version to >= 0.23.5.
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 14 Jan 2010 09:02:23 +0100
+
+vte (1:0.23.5-2) experimental; urgency=low
+
+  * New upstream development release:
+    + debian/patches/90_autoreconf.patch:
+      - Refreshed.
+    + debian/rules:
+      - Include check-dist.mk to prevent accidental uploads to unstable.
+    + debian/control.in:
+      - Build depend on GLib >= 2.22.0.
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 14 Jan 2010 08:17:53 +0100
+
+vte (1:0.22.5-1) unstable; urgency=low
+
+  * New upstream release.
+    - debian/patches/90_autoreconf.patch:
+      + Refreshed.
+
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 18 Nov 2009 07:40:57 +0100
+
+vte (1:0.22.4-1) unstable; urgency=low
+
+  * New upstream release.
+    - debian/patches/90_autoreconf.patch:
+      + Refreshed.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sun, 08 Nov 2009 21:44:54 +0100
+
+vte (1:0.22.3-1) unstable; urgency=low
+
+  * New upstream bugfix release:
+    + debian/patches/70_python_env.patch:
+      - Dropped, merged upstream.
+    - debian/patches/90_autoreconf.patch:
+      + Refreshed.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 27 Oct 2009 09:35:46 +0100
+
+vte (1:0.22.2-2) unstable; urgency=low
+
+  * debian/patches/70_python_env.patch:
+    - Fix Python environment passing, GNOME #587894.
+
+ -- Luca Falavigna <dktrkranz@debian.org>  Sat, 10 Oct 2009 13:43:27 +0200
+
+vte (1:0.22.2-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+    - debian/patches/01_vte_sequence_handler_cd_crash.patch:
+      + Removed, applied upstream.
+    - debian/patches/90_autoreconf.patch:
+      + Refreshed.
+  * debian/watch: Don't uupdate.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Tue, 29 Sep 2009 14:06:41 +0200
+
+vte (1:0.22.1-2) unstable; urgency=low
+
+  * debian/patches/01_vte_sequence_handler_cd_crash.patch:
+    - Patch from Matijs van Zuijlen to fix a crash. Closes: #548388.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sun, 27 Sep 2009 00:45:48 +0200
+
+vte (1:0.22.1-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+    - Fix crash on terminal reset. Closes: #548319.
+  * debian/patches/01_background_ncurses.patch:
+    - Removed, the fix is in the new version.
+  * debian/patches/25_optional-ncurses.patch,
+    debian/patches/90_autoreconf.patch:
+    - Refreshed.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sat, 26 Sep 2009 00:01:19 +0200
+
+vte (1:0.22.0-2) unstable; urgency=low
+
+  * 01_background_ncurses.patch: stolen upstream. Fix background color 
+    in ncurses applications. Closes: #548241.
+
+ -- Josselin Mouette <joss@debian.org>  Thu, 24 Sep 2009 22:49:17 +0200
+
+vte (1:0.22.0-1) unstable; urgency=low
+
+  [ Emilio Pozuelo Monfort ]
+  * debian/patches/01_bashisms.patch: forwarded, add header.
+
+  [ Sebastian Dröge ]
+  * New upstream stable release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 22 Sep 2009 13:34:21 +0200
 
 vte (1:0.20.5-1) unstable; urgency=low
 
@@ -158,41 +212,6 @@ vte (1:0.20.4-1) unstable; urgency=low
       - Regenerated for the new version.
 
  -- Sebastian Dröge <slomo@debian.org>  Tue, 02 Jun 2009 07:01:29 +0200
-
-vte (1:0.20.1-1ubuntu3) karmic; urgency=low
-
-  * No-change rebuild against directfb 1.2.
-
- -- Colin Watson <cjwatson@ubuntu.com>  Fri, 05 Jun 2009 20:05:46 +0100
-
-vte (1:0.20.1-1ubuntu2) karmic; urgency=low
-
-  * debian/rules:
-    - add a -dbg bin-install target to call dh_pysupport, needed for
-      installing properly python-vte dbg library in the right place.
-      (thanks DktrKranz for the hint)
-
- -- Didier Roche <didrocks@ubuntu.com>  Tue, 12 May 2009 14:22:33 +0200
-
-vte (1:0.20.1-1ubuntu1) karmic; urgency=low
-
-  * Merge from debian unstable, remaining changes: (LP: #373582)
-    - debian/patches:
-      + 91_keep_fds.patch: Keep file descriptors open on vte_fork_pty()
-      + 93_add_alt_screen_scroll_toggle.patch: Handle scrolling differently
-        when using alternate screen or scrolling is restricted.
-      + add them to series file (no use quilt)
-    - debian/python-vte.install: make it build against python 2.6 new FS layout
-    - debian/rules:
-      + Build a python-vte-dbg package
-      + Clean .a and .la files from package to keep .install file easy
-        to read
-    - debian/control.in:
-      + depends on libgtk-directfb-2.0-0 2.15.4-0ubuntu4, to correct a 
-        wrong dependency in libvte9-udeb
-      + Re-generate debian/control
-
- -- Didier Roche <didrocks@ubuntu.com>  Fri, 08 May 2009 10:03:29 +0200
 
 vte (1:0.20.1-1) unstable; urgency=low
 
@@ -243,125 +262,6 @@ vte (1:0.20.1-1) unstable; urgency=low
 
  -- Josselin Mouette <joss@debian.org>  Thu, 23 Apr 2009 00:41:20 +0200
 
-vte (1:0.20.1-0ubuntu1) karmic; urgency=low
-
-  * New upstream release: (LP: #361055)
-    Bugs fixed in this release:
-      - Bug 574491 – gnome-pty-helper can prevent volumes from being unmounted
-      - Bug 576504 – vte does not pass its testsuite.
-      - Bug 573674 – reset resets width to 80 chars
-      - Bug 576797 – Double-click sometimes stops working
-  * Refresh debian/patches/90_autoreconf.patch
-
- -- Didier Roche <didrocks@ubuntu.com>  Tue, 14 Apr 2009 14:31:39 +0200
-
-vte (1:0.20.0-0ubuntu2) jaunty; urgency=low
-
-  * Update 93_add_alt_screen_scroll_toggle.patch to include Python
-    bindings (LP: #348708), thanks to Jordan Callicoat.
-
- -- Kees Cook <kees@ubuntu.com>  Sat, 28 Mar 2009 09:40:37 -0700
-
-vte (1:0.20.0-0ubuntu1) jaunty; urgency=low
-
-  * New upstream release (LP: #344049)
-    - Support using a real bold font instead of pseudo-bolding
-    - Respond to fontconfig configuration changes
-    - Bugs fixed in this release:
-    - Bug 54926 – Should try bold version of font before 
-      pseudo-bolding
-    - Bug 570208 – vte fails to build outside source tree
-    - Bug 548272 – Fix output of CSI 13,14, 18-21 (LP: #208837)
-    - Bug 565688 – [gnome-pty-helper] using openpty in a bad way
-    - Bug 566795 – VTE fails to build in trunk
-    - Bug 524170 – Support initc terminfo capability and 
-      change-cursor-color
-    - Bug 566730 – vte_terminal_set_color_cursor() calls invalidate_all but
-      it doesn't have to
-    - Bug 565679 – alloca is discouraged
-    - Bug 565675 – typo in configure.in cause ncurses checking fail
-    - Bug 565663 – compile failure because use static function in another .h
-      file
-    - Bug 575398 – configure warns about term.h under OpenSolaris
-    - Bug 574616 – "real" transparency not working from python bindings
-    - Bug 574025 – Crash in _vte_terminal_insert_char
-  * debian/patches/92_pangocairo_full_bold_fonts.patch:
-    - Dropped, merged upstream
-  * debian/patches/90_autoreconf.patch:
-    - Refreshed for the new release
-  * debian/patches/94_hardcode_gtkdoc_rebase.patch:
-    - Temp workaround to prevent FTBFS
-
- -- Pedro Fragoso <ember@ubuntu.com>  Mon, 16 Mar 2009 15:21:59 +0000
-
-vte (1:0.19.4-0ubuntu5) jaunty; urgency=low
-
-  * Rebuild against libgtk-directfb-2.0-0 2.15.4-0ubuntu4, to correct a 
-    wrong dependency in libvte9-udeb.
-
- -- Steve Langasek <steve.langasek@ubuntu.com>  Wed, 25 Feb 2009 01:41:15 +0000
-
-vte (1:0.19.4-0ubuntu4) jaunty; urgency=low
-
-  * Rebuild for python2.6, fix installation path.
-
- -- Matthias Klose <doko@ubuntu.com>  Sun, 22 Feb 2009 14:29:33 +0100
-
-vte (1:0.19.4-0ubuntu3) jaunty; urgency=low
-
-  * debian/patches/92_pangocairo_full_bold_fonts.patch: update from
-    upstream bug tracker with better fallback double-strike support.
-
- -- Kees Cook <kees@ubuntu.com>  Wed, 11 Feb 2009 10:32:58 -0800
-
-vte (1:0.19.4-0ubuntu2) jaunty; urgency=low
-
-  * 25_optional-ncurses.patch: If --without-ncurses is given, disable
-    ncurses/termcap entirely (LP: #321848).
-  * 90_autoreconf.patch: Update.
-
- -- Colin Watson <cjwatson@ubuntu.com>  Tue, 27 Jan 2009 18:42:49 +0000
-
-vte (1:0.19.4-0ubuntu1) jaunty; urgency=low
-
-  * New upstream version (LP: #316601):
-    - New, PangoCairo, rendering backend.
-    - All other backends are removed.
-    - Configurable cursor shape (block, underline, I-beam).
-    - Preliminary object properties added to VteTerminal.
-    - API that will be removed in vte 1.0 has been marked deprecated in 
-      this release.
-    - General code maintenance and cleanup.
-    - Bug fixes.
-  * debian/rules:
-    - Bump shlibs to 0.19.1.
-    - Removed obsolete flags from UDEB_CONFIGURE_EXTRA_FLAGS:
-      (--without-xft2, --without-ft2, --without-pangox, --without-glX)
-  * debian/control{.in}:
-    - Bumped libglib2.0-dev build-dependency to 2.18.0.
-    - Bumped libgtk2.0-dev build-dependency to 2.12.0.
-  * Patches dropped due to obsolete upstream code:
-    - 04_dsp_non_alias.patch
-    - 20_make_ft2_optional.patch
-    - 92_full_bold_fonts.patch
-  * Patches updated for new version:
-    - 12_python_reaper.patch
-    - 25_optional-ncurses.patch
-    - 90_autoreconf.patch
-    - 93_add_alt_screen_scroll_toggle.patch
-  * debian/patches/92_pangocairo_full_bold_fonts.patch:
-    - Replacement for the dropped 92_full_bold_fonts.patch, which
-      was applicable to the deprecated xft backend. This patch applies
-      to the PangoCairo backend, and was submitted by Kees Cook to
-      http://bugzilla.gnome.org/show_bug.cgi?id=54926
-  * Dropped debian/patches/94_no_nul_backspace.patch:
-    - Merged upstream.
-  * debian/patches/26_optional-x.patch:
-    - Add option to build without X Window System. This flag
-      was dropped from the new upstream version.
-
- -- Chris Coulson <chrisccoulson@googlemail.com>  Tue, 13 Jan 2009 00:16:52 +0000
-
 vte (1:0.17.4-2) unstable; urgency=low
 
   * Upload to unstable.
@@ -391,102 +291,6 @@ vte (1:0.17.4-1) experimental; urgency=low
     + Updated for new versions.
 
  -- Sebastian Dröge <slomo@debian.org>  Mon, 24 Nov 2008 10:15:11 +0100
-
-vte (1:0.17.4-0ubuntu3) jaunty; urgency=low
-
-  * 94_no_nul_backspace.patch: Avoid sending NUL character for
-    backspace, when the termios's erase character is undefined and
-    backspace is bound to VTE_ERASE_AUTO. (LP: #29787)
-	
- -- Micah Cowan <micah@cowan.name>  Thu, 17 Jul 2008 02:06:29 -0700
-
-vte (1:0.17.4-0ubuntu2) jaunty; urgency=low
-
-  * Resynchronise with Debian 1:0.16.14-4. Remaining packaging changes:
-    - Newer upstream version:
-      + 01_anjuta_hang.patch, 29_add_am_prog_cc_c_o_for_buffer_c.patch:
-        Removed; obsolete.
-      + 20_make_ft2_optional.patch: Adjust to apply cleanly.
-      + 90_autoreconf.patch: Regenerate.
-      + Bump glib requirement to 2.14.
-      + Bump shlibs to 0.17.1.
-    - Set minimum Python version to 2.4.
-    - Build a python-vte-dbg package.
-    - Install python-vte examples.
-    - 91_keep_fds.patch: Keep file descriptors open on vte_fork_pty().
-    - 92_full_bold_fonts.patch: Fix bold font handling.
-    - 93_add_alt_screen_scroll_toggle.patch: Handle scrolling differently
-      when using alternate screen or scrolling is restricted.
-  * Tag Ubuntu patches per UbuntuDevelopment/PatchTaggingGuidelines.
-  * Drop XS- from Vcs-Bzr control field, now official.
-
- -- Colin Watson <cjwatson@ubuntu.com>  Tue, 18 Nov 2008 13:36:23 +0000
-
-vte (1:0.17.4-0ubuntu1) intrepid; urgency=low
-
-  * New upstream release:
-    - translation updates
-
- -- Michael Vogt <michael.vogt@ubuntu.com>  Tue, 23 Sep 2008 09:54:42 +0200
-
-vte (1:0.17.3-0ubuntu1) intrepid; urgency=low
-
-  * New upstream release
-    - Update python bindings to bind new API from 0.17.1
-    - Bug 538344 – Anjuta hangs when program is executed in terminal
-
- -- Pedro Fragoso <ember@ubuntu.com>  Tue, 09 Sep 2008 14:37:58 +0100
-
-vte (1:0.17.2-0ubuntu2) intrepid; urgency=low
-
-  * Add 93_add_alt_screen_scroll_toggle.patch to solve scrolling-in-screen
-    bug (http://bugzilla.gnome.org/show_bug.cgi?id=538195).  Thanks to
-    Heath Caldwell (LP: #106995).
-
- -- Kees Cook <kees@ubuntu.com>  Thu, 28 Aug 2008 09:24:06 -0700
-
-vte (1:0.17.2-0ubuntu1) intrepid; urgency=low
-
-  * New upstream release:
-    - Fix crasher on 64bit systems
-    - Fix a bunch of warnings
-    - Bugs fixed in this release:
-      Bug 546940 – Crash when selecting text (LP: #256769)
-
- -- Michael Vogt <michael.vogt@ubuntu.com>  Thu, 14 Aug 2008 16:56:15 +0200
-
-vte (1:0.17.1-0ubuntu1) intrepid; urgency=low
-
-  * New upstream release
-    New API to:
-    - Make the cursor blinking follow the gtk setting by default, with a
-      possible override.
-    - Set named cursors on matches.
-    - Do GRegex matching, to be used alternatively to the old vteregex matching.
-    - Add set-scroll-adjustments signal, needed to allow adding a VteTerminal
-      into a GtkScrolledWindow.
-    - Add version check macro.
-    Misc bug fixes.
-    - Bug 546366 – hard to select last tab char on a line
-    - Bug 545924 – tab characters not handled correctly after ncurses clear
-      Patch from Patryk Zawadzki
-    - Bug 542795 – VTE_CJK_WIDTH don't work
-    - Bug 399744 – Hide more font-aa implementation details
-    - Bug 510903 – use gtk-cursor-blink setting
-    - Bug 539130 – building g-t fails due to GtkType etc. deprecation
-    - Bug 540182 – crash in geany with vte trunk
-    - Bug 535552 – vte_terminal_set_allow_bold doesn't queue redraw
-    - Bug 535469 – support named cursors on matches
-    - Bug 418918 – Switch to GRegex
-    - Bug 535467 – implement set-scroll-adjustments signal
-    - Bug 535468 – need version check macros
-    - Bug 515972 – Bold black is black in vte's default palette
-  * debian/control.in:
-    - Bump glib requirement to 2.14
-  * debian/rules:
-    - Bump shlibs to 0.17.1
-    
- -- Pedro Fragoso <ember@ubuntu.com>  Wed, 06 Aug 2008 03:39:17 +0100
 
 vte (1:0.16.14-4) unstable; urgency=low
 
@@ -540,45 +344,11 @@ vte (1:0.16.14-2) experimental; urgency=low
 
  -- Loic Minier <lool@dooz.org>  Thu, 26 Jun 2008 20:44:36 +0200
 
-vte (1:0.16.14-1ubuntu2) intrepid; urgency=low
-
-  * Add debian/patches/92_full_bold_fonts.patch: fix bold font handling,
-    backported from the fixes in Gnome Bug 54926.
-
- -- Kees Cook <kees@ubuntu.com>  Sun, 13 Jul 2008 21:50:18 -0700
-
-vte (1:0.16.14-1ubuntu1) intrepid; urgency=low
-
-  * Merge from Debian unstable (LP: #237806), Ubuntu remaining changes:
-    - debian/control.in:
-      + maintainer field
-      + Vcs-Bzr header
-      + minimal python version is 2.4
-      + build-depend on python-all-dbg
-      + build python-vte-dbg
-    - debian/patches/91_keep_fds.patch:
-      + add support to keep file descriptors open on vte_fork_pty()
-    - debian/rules:
-      + python-dbg changes
-
- -- Pedro Fragoso <emberez@gmail.com>  Fri, 06 Jun 2008 02:07:27 +0100
-
 vte (1:0.16.14-1) unstable; urgency=low
 
   * New upstream bugfix release.
 
  -- Sebastian Dröge <slomo@debian.org>  Thu, 05 Jun 2008 12:21:06 +0200
-
-vte (1:0.16.13-1ubuntu1) hardy; urgency=low
-
-  * new upstream release:
-    - Minor optimization.
-    - Bugs fixed in this release:
-       Bug 517709 – VTE's pty.c makes 4096 getrlimit calls when it only needs
-       one
-       Bug 449131 – Wrong gettext domain
-
- -- Michael Vogt <michael.vogt@ubuntu.com>  Tue, 11 Mar 2008 19:00:27 +0100
 
 vte (1:0.16.13-1) unstable; urgency=low
 
@@ -603,37 +373,6 @@ vte (1:0.16.12-1) unstable; urgency=low
 
  -- Sebastian Dröge <slomo@debian.org>  Wed, 09 Jan 2008 19:42:18 +0100
 
-vte (1:0.16.12-0ubuntu1) hardy; urgency=low
-
-  * New upstream release (LP: #181136)
-    - More work around Gdk backends that don't issue GdkVisibilityNotify.
-    - Bugs fixed in this release:
-        Bug 503164 – Drawing problems for VTE with gtk+-quartz
-        Bug 449131 – Wrong gettext domain
-  * debian/control{.in};
-    - Bump Standars-Version 3.7.3
-    - Fix binary:Version on dbg
-  * Fixed wrong email in changelog
-  * Modify Maintainer value to match Debian-Maintainer-Field Spec
-
- -- Pedro Fragoso <emberez@gmail.com>  Mon, 07 Jan 2008 22:37:17 +0000
-
-vte (1:0.16.11-1ubuntu1) hardy; urgency=low
-
-  * Merge from Debian unstable, Ubuntu remaining changes: (LP: #177234)
-    - debian/control.in:
-      + maintainer field
-      + Vcs-Bzr header
-      + minimal python version is 2.4
-      + build-depend on python-all-dbg
-      + build python-vte-dbg
-    - debian/patches/91_keep_fds.patch:
-      + add support to keep file descriptors open on vte_fork_pty()
-    - debian/rules:
-      + python-dbg changes
-
- -- Pedro Fragoso <emberez@gmail.com>  Tue, 18 Dec 2007 10:46:03 +0000
-
 vte (1:0.16.11-1) unstable; urgency=low
 
   [ Loic Minier ]
@@ -643,22 +382,6 @@ vte (1:0.16.11-1) unstable; urgency=low
   * New upstream bugfix release.
 
  -- Sebastian Dröge <slomo@debian.org>  Mon, 17 Dec 2007 21:52:05 +0100
-
-vte (1:0.16.10-1ubuntu1) hardy; urgency=low
-
-  * merge with debian, remaining changes:
-    - debian/control.in: 
-      + maintainer field
-      + Vcs-Bzr header
-      + minimal python version is 2.4
-      + build-depend on python-all-dbg
-      + build python-vte-dbg
-    - debian/patches/91_keep_fds.patch:
-      + add support to keep file descriptors open on vte_fork_pty()
-    - debian/rules:
-      + python-dbg changes
-
- -- Michael Vogt <michael.vogt@ubuntu.com>  Wed, 05 Dec 2007 11:53:21 +0100
 
 vte (1:0.16.10-1) unstable; urgency=low
 
@@ -674,35 +397,6 @@ vte (1:0.16.9-1) unstable; urgency=low
 
  -- Sebastian Dröge <slomo@debian.org>  Tue, 18 Sep 2007 10:28:08 +0200
 
-vte (1:0.16.9-0ubuntu3) gutsy; urgency=low
-
-  * Explicitely remove the doc directories on upgrade for the now symlinked
-    doc directories.
-
- -- Matthias Klose <doko@ubuntu.com>  Fri, 05 Oct 2007 17:07:14 +0000
-
-vte (1:0.16.9-0ubuntu2) gutsy; urgency=low
-
-  * Symlink doc directories to avoid duplicate files.
-
- -- Matthias Klose <doko@ubuntu.com>  Thu, 04 Oct 2007 16:20:40 +0200
-
-vte (1:0.16.9-0ubuntu1) gutsy; urgency=low
-
-  * New upstream release:
-    - Slightly improved pango backend
-    - Misc bug fixes.
-    - Fixed Bug "Handling of wrapped links in gnome-terminal is broken"
-    - Fixed Bug "troubles with pad"
-    - Fixed Bug "Handle Sun Cut, Copy, Paste keys"
-    - Fixed Bug "vteapp resize weirdness"
-    - Fixed Bug "Spaces are not underlined"
-    - Fixed Bug "vte crash on removing a terminal tab"
-  * debian/rules: bumped shlibs.
-  * debian/patches/93_eof_emission.patch: dropped, fixed upstream.
-
- -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue, 18 Sep 2007 10:53:12 +0200
-
 vte (1:0.16.8-1) unstable; urgency=low
 
   [ Alan Baghumian ]
@@ -715,30 +409,6 @@ vte (1:0.16.8-1) unstable; urgency=low
   * New upstream stable release; no API change.
 
  -- Loic Minier <lool@dooz.org>  Mon, 30 Jul 2007 20:25:31 +0200
-
-vte (1:0.16.8-0ubuntu1) gutsy; urgency=low
-
-  * New upstream release:
-    - Quick followup release with no code changes, to fix missing
-      documentation index in the tarball.
-
- -- Aron Sisak <aron@ubuntu.hu>  Mon, 30 Jul 2007 19:51:56 +0200
-
-vte (1:0.16.7-0ubuntu1) gutsy; urgency=low
-
-  * New upstream release:
-    - Misc bug fixes.
-    - Bugs fixed in this release:
-      - Bug 337252 – ALT + Arrow keys don't work in irssi through gnome-terminal
-      - Bug 448259 – Mapping for Ctrl-_
-      - Bug 449809 – use python-config to get python includes
-      - Bug 450745 – VTE's response to CSI 2 1 t incorrectly formatted
-  * debian/patches/80_changes_for_python_vte_dbg.patch
-    - Dropped, got fixed upstream
-  * debian/patches/90_autoconf.patch:
-    - Dropped for being empty after running autoconf
-	
- -- Aron Sisak <aron@ubuntu.hu>  Mon, 30 Jul 2007 12:20:38 +0200
 
 vte (1:0.16.6-3) unstable; urgency=low
 
@@ -772,22 +442,6 @@ vte (1:0.16.6-1) unstable; urgency=low
 
  -- Loic Minier <lool@dooz.org>  Tue, 19 Jun 2007 11:08:11 +0200
 
-vte (1:0.16.6-0ubuntu2) gutsy; urgency=low
-
-  * Patch to fix EOF emission issue (LP: #121689)
-
- -- Aron Sisak <aron@ubuntu.hu>  Mon, 25 Jun 2007 11:26:24 +0200
-
-vte (1:0.16.6-0ubuntu1) gutsy; urgency=low
-
-  * New upstream release (bug fix):
-    - Misc bug fixes.
-    - Bugs fixed in this release:
-        Bug 445620 – Some characters shows different in different locales.
-        Bug 372743 – vte_terminal_set_colors doesn't work as advertised
-
- -- Aron Sisak <aron@ubuntu.hu>  Tue, 19 Jun 2007 11:00:55 +0200
-
 vte (1:0.16.5-2) experimental; urgency=low
 
   * Add a new libvte9-udeb package.
@@ -801,18 +455,6 @@ vte (1:0.16.5-1) unstable; urgency=low
 
  -- Alan Baghumian <alan@technotux.org>  Wed, 06 Jun 2007 11:05:11 +0330
 
-vte (1:0.16.5-0ubuntu1) gutsy; urgency=low
-
-  * New upstream release (bug fix):
-    - Fix issue with 'some strange "underline" line where cursor is
-      located and blinking'.
-  * debian/patches/05_from_svn_fix_underline_issue.patch:
-    - Dropped, fixed.  
-  * debian/patches/90_autoconf.patch:
-    - Updated (autoconf)
-
- -- Martin Peeks <martinp23@googlemail.com>  Tue, 05 Jun 2007 15:07:40 +0100
-
 vte (1:0.16.4-1) unstable; urgency=low
 
   * New upstream release
@@ -824,63 +466,11 @@ vte (1:0.16.4-1) unstable; urgency=low
 
  -- Alan Baghumian <alan@technotux.org>  Sun, 03 Jun 2007 17:25:27 +0330
 
-vte (1:0.16.4-0ubuntu2) gutsy; urgency=low
-
-  * debian/patches/05_from_svn_fix_underline_issue.patch:
-    - SVN revision 1904: "catch a couple more locations where we need to skip 
-      past the end of the line. The problem in this case was we tried to use 
-      some uninitialised variables whilst trying to draw the cell attributes."
-
- -- Daniel Holbach <daniel.holbach@ubuntu.com>  Mon, 04 Jun 2007 11:04:32 +0200
-
-vte (1:0.16.4-0ubuntu1) gutsy; urgency=low
-
-  * New upstream release:
-    - Misc bug fixes.
-    - Bugs fixed in this release:
-        Bug 429278 – Cursor drawn strangely in joe
-        Bug 439247 – Vim scrolling issues
-        Bug 440475 – Display glitch with transparent background (Fixes LP: #113878)
-        Bug 375112 – ctrl-key combinations yeilding just key
-        Bug 440377 – refresh gnome-terminal when accessibility enabled
-        Bug 433776 – crash when opening preedit area
-  * debian/patches/81_from_upstream_fix_nvi_scrolling.patch:
-    - removed; fixed in this release.
-  * debian/patches/80_changes_for_python_vte_dbg.patch:
-    - updated and split autoconf regeneration into:
-        debian/patches/90_autoconf.patch
-
- -- Martin Peeks <martinp23@googlemail.com>  Fri,  1 Jun 2007 17:22:01 +0100
-
 vte (1:0.16.3-1) unstable; urgency=low
 
   * New upstream release; no API change.
 
  -- Loic Minier <lool@dooz.org>  Fri, 27 Apr 2007 23:29:59 +0200
-
-vte (1:0.16.3-0ubuntu1) gutsy; urgency=low
-
-  * New upstream release:
-    - Remove false warnings about missing glyphs in the Xft backend.
-    - Rename --enable-debugging configure option to --enable-debug to
-      match other modules.
-    - Fix some of refresh issue where terminals stopped updating after
-      changing workspaces.
-    - Bugs fixed in this release:
-        Bug 429189 – Vte-WARNING's
-        Bug 415044 – Use --enable-debug rather than --enable-debugging
-        Bug 414716 – Refresh issue after changing workspaces
-    - Consider ambiguous-width chars if VTE_CJK_WIDTH env var is set and we
-      are under a CJK locale.
-    - Minor optimization
-    - Bugs fixed in this release:
-        Bug 431799 – Regex highlighting is broken
-  * debian/patches/71_from_bugzilla_fix_refresh_on_workspace_change.patch:
-    - removed
-  * debian/patches/80_changes_for_python_vte_dbg.patch:
-    - updated  (re-run autoconf)
-  
- -- Michael Vogt <michael.vogt@ubuntu.com>  Fri,  4 May 2007 10:56:19 +0200
 
 vte (1:0.16.2-1) unstable; urgency=low
 
@@ -899,52 +489,6 @@ vte (1:0.16.1-1) experimental; urgency=low
   * Drop debian/pyversions and set XB and XS-Python-Version.
 
  -- Loic Minier <lool@dooz.org>  Tue, 10 Apr 2007 17:31:28 +0200
-
-vte (1:0.16.1-0ubuntu1) feisty; urgency=low
-
-  * New upstream version:
-    - Lots of bug fixes by Chris Wilson
-    - New feature: mouse scroll-wheel now feeds three arrow-up/down keys to the
-      terminal if in the "alternate" mode.  The alternate mode is used by apps
-      like vim, less, emacs, screen, etc.  This makes the scroll-wheel usable
-      in a state that it was of no use before.
-    - Bugs fixed in this release:
-      - vte often passes NUL to functions requiring valid unichar
-      - Links do not get highlighted anymore
-      - URL matching doesn't work with PCRE
-      - crash on IRM escape code (Ubuntu: #103095)
-      - Make scroll wheel send Page Up/Down when it makes sense
-      - vte_terminal_set_color_highlight should test for 
-        NULL before _vte_debug_print
-      - vte appears at the top of the root window even when
-        packed at the bottom of it
-      - glyph can be cropped with not fitting in a cell
-      - Does not handle expose events whilst processing unseen incoming data
-      - Improve performance of vte_terminal_insert_char()
-      - Opacity ignored for vtexft
-      - Asymmetric scrolling with mouse wheel
-      - Rendering glitch as autowrapped chars are outside invalidated bbox
-      - Rendering glitch: double draw of line below exposed region
-      - Invalid read when drawing preedit cursor
-      - Scrolling bug exposed by nvi
-  * debian/patches/80_changes_for_python_vte_dbg.patch:
-    - updated
-  * debian/rules:
-    - update translations template
-
- -- Sebastien Bacher <seb128@canonical.com>  Mon,  9 Apr 2007 23:39:55 +0200
-
-vte (1:0.16.0svn20070403-0ubuntu1) feisty; urgency=low
-
-  * Update with SVN snapshot
-  * debian/patches/70_fix_transparency_bug.patch,
-    debian/patches/90_from_svn_fix_double_text_rendering.patch,
-    debian/patches/95_segfault_with_unicode_input.patch:
-    - dropped, fixed with the new version
-  * debian/patches/80_changes_for_python_vte_dbg.patch:
-    - updated
-
- -- Sebastien Bacher <seb128@canonical.com>  Tue,  3 Apr 2007 12:41:31 +0200
 
 vte (1:0.16.0-2) experimental; urgency=low
 
@@ -966,194 +510,6 @@ vte (1:0.16.0-1) experimental; urgency=low
     patch from Chris Wilson; Launchpad: #91017; found in the Ubuntu package.
 
  -- Loic Minier <lool@dooz.org>  Sun, 18 Mar 2007 11:08:13 +0100
-
-vte (1:0.16.0-0ubuntu4) feisty; urgency=low
-
-  * debian/patches/71_from_bugzilla_fix_refresh_on_workspace_change.patch:
-    - patch from bugzilla, fix refresh bug when changing workspace
-      (Ubuntu: #92405)
-  * debian/patches/90_from_svn_fix_double_text_rendering.patch:
-    - patch from SVN, fix double text rendering (Ubuntu: #93481)
-
-  [ Johan Kiviniemi ]
-  * debian/patches/95_segfault_with_unicode_input.patch:
-    - Fix segfault when typing a Unicode character with Ctrl-Shift-Unnnn.
-      Thanks to Chris Wilson for the patch, which was downloaded from
-      http://bugzilla.gnome.org/show_bug.cgi?id=418588 (LP: #89524)
-
- -- Sebastien Bacher <seb128@canonical.com>  Mon, 19 Mar 2007 12:17:20 +0100
-
-vte (1:0.16.0-0ubuntu3) feisty; urgency=low
-
-  * debian/patches/91_keep_fds.patch:
-    - fixed bug in keep_fd detection code
-
- -- Michael Vogt <michael.vogt@ubuntu.com>  Fri, 16 Mar 2007 10:16:43 +0100
-
-vte (1:0.16.0-0ubuntu2) feisty; urgency=low
-
-  * debian/patches/70_fix_transparency_bug.patch:
-    - workaround transparency bug, 
-      thank to Nicolas Bruguier for working on that and Chris Wilson
-      who confirmed the change (Ubuntu: #91985)
-  * debian/patches/81_from_upstream_fix_nvi_scrolling.patch:
-    - patch from Chris Wilson, fix scrolling when using nvi (Ubuntu: #91017)
-
- -- Sebastien Bacher <seb128@canonical.com>  Tue, 13 Mar 2007 23:05:02 +0100
-
-vte (1:0.16.0-0ubuntu1) feisty; urgency=low
-
-  * New upstream version:
-    - Fix some minor bugs.  More regressions to be fixed later.
-    - Bugs fixed in this release:
-      Bug 414716 - gnome-terminal-2.17.92: terminal window dies...
-      Bug 414586 - Terminal screen blinks when menu is opened for the first time
-      Bug 413068 - new line added to tab when opened
-  * debian/patches/80_changes_for_python_vte_dbg.patch:
-    - updated
-  * debian/rules:
-    - updated shlibs version
-
- -- Sebastien Bacher <seb128@canonical.com>  Tue, 13 Mar 2007 09:58:03 +0100
-
-vte (1:0.15.6-0ubuntu1) feisty; urgency=low
-
-  * New upstream version:
-    - Fix various bugs introduced in last couple of releases.
-    - Bugs fixed in this release:
-      Bug 410534 - Slow content scrolling, takes 100% of CPU. (Ubuntu: #78343)
-      Bug 413068 - new line added to tab when opened
-      Bug 413262 - Incorrectly coloured tabs
-      Bug 413102 - Incorrect highlighting in vim
-      Bug 413158 - Cursor trails
-      Bug 413078 - Crash during opening a new tab whilst scrolling
-      (Ubuntu: #88602)
-      Bug 412717 - Crash when opening a new tab with window maximized
-  * debian/patches/90_from_svn_fix_crasher.patch:
-    - dropped, fixed with the new version
-
- -- Sebastien Bacher <seb128@canonical.com>  Thu,  1 Mar 2007 22:00:17 +0100
-
-vte (1:0.15.5-0ubuntu2) feisty; urgency=low
-
-  * debian/patches/90_from_svn_fix_crasher.patch:
-    - patch from SVN, fix crasher when using the geometry option for example
-      (Ubuntu: #88489)
-
- -- Sebastien Bacher <seb128@canonical.com>  Wed, 28 Feb 2007 11:44:57 +0100
-
-vte (1:0.15.5-0ubuntu1) feisty; urgency=low
-
-  * New upstream version:
-    - Fix a newly-introduced crasher
-    - Do not link to libpython in the python bindings (Ubuntu: #88405)
-    - Bugs fixed in this release:
-      Bug 412562 - Crash in vte_terminal_match_hilite_update
-      Bug 410986 - Fails to build with -z defs
-  * debian/control.in:
-    - use "XS-Python-Version: >= 2.4"
-  * debian/patches/01-from-svn-fix-412562.patch:
-    - dropped, fixed with the new version
-  * debian/patches/80_changes_for_python_vte_dbg.patch:
-    - changes required for the dbg package build
-
- -- Sebastien Bacher <seb128@canonical.com>  Tue, 27 Feb 2007 22:23:10 +0100
-
-vte (1:0.15.4-0ubuntu1) feisty; urgency=low
-
-  * New upstream release:
-    - Fixes Bug "Yet another mouse selection regression...",
-    - Fixes Bug "Orca repeats old text in gnome-terminal",
-    - Fixes Bug "Slow content scrolling, takes 100% of CPU.",
-    - Fixes Bug "Poor interactive performance with multiple terminals",
-    - Fixes Bug "slow highlight",
-    - Fixes Bug "SVN trunk compilation error",
-    - Fixes Bug "Fails to build with -z defs"
-    - Fixes Bug "slider not correctly positioned after calling less" (LP:
-      #87024)
-    - Fixes Bug "Poor interactive performance with multiple terminals",
-    - Fixes Bug "First line displayed incorrectly if prompt changes background
-      color",
-    - Fixes Bug "gnome-terminal not parsing cursor position escape sequence
-      properly",
-    - Fixes Bug "Terminal stays blank" (LP: #85437),
-    - Fixes Bug "gnome-terminal crashed with SIGSEGV in
-      vte_terminal_draw_graphic()" (LP: #85956),
-    - Fixes Bug '"GNOME" Terminal" regression after "vte" update when using
-      "csh"',
-    - Fixes Bug "trouble compiling vte 0.15.3",
-    - Fixes Bug "vte automagic hyperlinks",
-    - Fixes Bug "Use of environ breaks build on Solaris",
-    - Fixes Bug "regression in mouse selection".
-  * debian/patches/01_fix_scrolling.patch:
-    - dropped, fixed upstream.
-  * debian/patches/01-from-svn-fix-412562.patch:
-    - Fixup a few 64bit-isms, notably format strings and an undesired 
-      unsigned integer promotion causing this crash.
-
- -- Daniel Holbach <daniel.holbach@ubuntu.com>  Tue, 27 Feb 2007 08:00:03 +0100
-
-vte (1:0.15.3-0ubuntu3) feisty; urgency=low
-
-  * Build a python-vte-dbg package.
-  * acinclude.m4: Fix PYTHON_INCLUDES macro; run autoconf.
-  * debian/rules: Don't remove intermediate stamp files, don't create
-    stamps for the install targets.
-  * Install python-vte examples.
-  * Set Ubuntu maintainer address.
-
- -- Matthias Klose <doko@ubuntu.com>  Tue, 20 Feb 2007 15:57:04 +0100
-
-vte (1:0.15.3-0ubuntu2) feisty; urgency=low
-
-  * Add 'debian/patches/01_fix_scrolling.patch': taken from upstream:
-    "scrolling inside screen with a status line was broken" (LP: #85023).
-    Thanks to Mika Fischer for tracking this down.
-
- -- Kees Cook <kees@ubuntu.com>  Wed, 14 Feb 2007 11:23:32 -0800
-
-vte (1:0.15.3-0ubuntu1) feisty; urgency=low
-
-  * New upstream release
-  * debian/patches/90_fix_envv.patch:
-    - removed, taken upstream
-  * debian/patches/30_pkg-config-private-field-for-freetype.patch:
-    - removed, taken upstream
-  * debian/patches/91_keep_fds.patch:
-    - updated
-
- -- Michael Vogt <michael.vogt@ubuntu.com>  Tue, 13 Feb 2007 09:37:18 +0100
-
-vte (1:0.15.2-0ubuntu1) feisty; urgency=low
-
-  [Daniel Holbach]
-  * New upstream release.
-  * debian/patches/10-from-cvs-fix-crasher-394890.patch:
-    - dropped, included in release.
-  [Michael Vogt]
-  * debian/patches/90_fix_envp.patch:
-    - fix for gnome #407091 (envp in fork_command() changed meaning)
-  * debian/patches/91_keep_fds.patch:
-    - ported to the new code
-
- -- Michael Vogt <michael.vogt@ubuntu.com>  Mon, 12 Feb 2007 16:50:01 +0100
-
-vte (1:0.15.1-0ubuntu3) feisty; urgency=low
-
-  * Sync with Debian, Ubuntu changes are:
-  * debian/control.in:
-    - use "XB-Python-Version: ${python:Versions}"
-  * debian/pyversions:
-    - use "2.4-" to build for the different python versions (Ubuntu: #79420)
-  * debian/rules:
-    - build with --enable-gtk-doc
-    - don't install the ".a" or ".la" files
-  * debian/patches/10-from-cvs-fix-crasher-394890.patch:
-    - apply http://svn.gnome.org/viewcvs/vte/trunk/src/vtetc.c?r1=1421&r2=1426
-  * debian/patches/91_keep_fds.patch:
-    - ubuntu patch
-
- -- Sebastien Bacher <seb128@canonical.com>  Tue, 16 Jan 2007 13:54:48 +0100
 
 vte (1:0.14.2-1) experimental; urgency=low
 

@@ -7,6 +7,7 @@ headers
 #include <pygobject.h>
 #include <gtk/gtk.h>
 #include "../src/vte.h"
+#include "../src/reaper.h"
 
 void pyvte_add_constants(PyObject *module, const gchar *strip_prefix);
 void pyvte_register_classes(PyObject *d);
@@ -16,6 +17,7 @@ modulename vte
 import gtk.gdk.Pixbuf as PyGdkPixbuf_Type
 import gtk.MenuShell as PyGtkMenuShell_Type
 import gtk.Widget as PyGtkWidget_Type
+import gobject.GObject as PyGObject_Type
 %%
 override vte_terminal_feed kwargs
 static PyObject *
