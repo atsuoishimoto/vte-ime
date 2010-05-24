@@ -2,16 +2,33 @@
 <!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
 <book xmlns="http://www.devhelp.net/book" title="VTE Reference Manual" link="index.html" author="" name="vte">
   <chapters>
-    <sub name="VTE" link="ch01.html">
-      <sub name="VteTerminal" link="VteTerminal.html"/>
-      <sub name="VteTerminalAccessible" link="VteTerminalAccessible.html"/>
+    <sub name="API Reference" link="pt01.html">
+      <sub name="" link="ch01.html">
+        <sub name="VteTerminal" link="VteTerminal.html"/>
+      </sub>
+      <sub name="" link="ch02.html">
+        <sub name="Version Information" link="vte-Version-Information.html"/>
+      </sub>
+      <sub name="Interna" link="internal-objects.html">
+        <sub name="VteTerminalAccessible" link="VteTerminalAccessible.html"/>
+      </sub>
+      <sub name="Deprecated" link="deprecated-objects.html">
+        <sub name="VteReaper" link="VteReaper.html"/>
+      </sub>
     </sub>
+    <sub name="Object Hierarchy" link="object-hierarchy.html"/>
+    <sub name="Index" link="api-index-full.html"/>
+    <sub name="Index of deprecated symbols" link="api-index-deprecated.html"/>
+    <sub name="Index of new symbols in 0.20" link="api-index-0-20.html"/>
+    <sub name="Index of new symbols in 0.24" link="api-index-0-24.html"/>
+    <sub name="Licence" link="licence.html"/>
   </chapters>
   <functions>
     <function name="VteTerminal" link="VteTerminal.html#VteTerminal-struct"/>
-    <function name="enum VteTerminalEraseBinding" link="VteTerminal.html#VteTerminalEraseBinding"/>
-    <function name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
+    <function name="enum VteTerminalAntiAlias" link="VteTerminal.html#VteTerminalAntiAlias"/>
     <function name="enum VteTerminalCursorBlinkMode" link="VteTerminal.html#VteTerminalCursorBlinkMode"/>
+    <function name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
+    <function name="enum VteTerminalEraseBinding" link="VteTerminal.html#VteTerminalEraseBinding"/>
     <function name="enum VteTerminalWriteFlags" link="VteTerminal.html#VteTerminalWriteFlags"/>
     <function name="VteSelectionFunc ()" link="VteTerminal.html#VteSelectionFunc"/>
     <function name="vte_terminal_new ()" link="VteTerminal.html#vte-terminal-new"/>
@@ -160,7 +177,15 @@
     <function name="The &quot;text-modified&quot; signal" link="VteTerminal.html#VteTerminal-text-modified"/>
     <function name="The &quot;text-scrolled&quot; signal" link="VteTerminal.html#VteTerminal-text-scrolled"/>
     <function name="The &quot;window-title-changed&quot; signal" link="VteTerminal.html#VteTerminal-window-title-changed"/>
+    <function name="VTE_MAJOR_VERSION" link="vte-Version-Information.html#VTE-MAJOR-VERSION:CAPS"/>
+    <function name="VTE_MINOR_VERSION" link="vte-Version-Information.html#VTE-MINOR-VERSION:CAPS"/>
+    <function name="VTE_MICRO_VERSION" link="vte-Version-Information.html#VTE-MICRO-VERSION:CAPS"/>
+    <function name="VTE_CHECK_VERSION()" link="vte-Version-Information.html#VTE-CHECK-VERSION:CAPS"/>
     <function name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <function name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
+    <function name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
+    <function name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child"/>
+    <function name="vte_reaper_get ()" link="VteReaper.html#vte-reaper-get"/>
+    <function name="The &quot;child-exited&quot; signal" link="VteReaper.html#VteReaper-child-exited"/>
   </functions>
 </book>

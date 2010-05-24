@@ -2,16 +2,33 @@
 <!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
 <book xmlns="http://www.devhelp.net/book" title="VTE Reference Manual" link="index.html" author="" name="vte" version="2" language="c">
   <chapters>
-    <sub name="VTE" link="ch01.html">
-      <sub name="VteTerminal" link="VteTerminal.html"/>
-      <sub name="VteTerminalAccessible" link="VteTerminalAccessible.html"/>
+    <sub name="API Reference" link="pt01.html">
+      <sub name="" link="ch01.html">
+        <sub name="VteTerminal" link="VteTerminal.html"/>
+      </sub>
+      <sub name="" link="ch02.html">
+        <sub name="Version Information" link="vte-Version-Information.html"/>
+      </sub>
+      <sub name="Interna" link="internal-objects.html">
+        <sub name="VteTerminalAccessible" link="VteTerminalAccessible.html"/>
+      </sub>
+      <sub name="Deprecated" link="deprecated-objects.html">
+        <sub name="VteReaper" link="VteReaper.html"/>
+      </sub>
     </sub>
+    <sub name="Object Hierarchy" link="object-hierarchy.html"/>
+    <sub name="Index" link="api-index-full.html"/>
+    <sub name="Index of deprecated symbols" link="api-index-deprecated.html"/>
+    <sub name="Index of new symbols in 0.20" link="api-index-0-20.html"/>
+    <sub name="Index of new symbols in 0.24" link="api-index-0-24.html"/>
+    <sub name="Licence" link="licence.html"/>
   </chapters>
   <functions>
     <keyword type="struct" name="VteTerminal" link="VteTerminal.html#VteTerminal-struct"/>
-    <keyword type="enum" name="enum VteTerminalEraseBinding" link="VteTerminal.html#VteTerminalEraseBinding"/>
-    <keyword type="enum" name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
+    <keyword type="enum" name="enum VteTerminalAntiAlias" link="VteTerminal.html#VteTerminalAntiAlias" deprecated=""/>
     <keyword type="enum" name="enum VteTerminalCursorBlinkMode" link="VteTerminal.html#VteTerminalCursorBlinkMode"/>
+    <keyword type="enum" name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
+    <keyword type="enum" name="enum VteTerminalEraseBinding" link="VteTerminal.html#VteTerminalEraseBinding"/>
     <keyword type="enum" name="enum VteTerminalWriteFlags" link="VteTerminal.html#VteTerminalWriteFlags"/>
     <keyword type="function" name="VteSelectionFunc ()" link="VteTerminal.html#VteSelectionFunc"/>
     <keyword type="function" name="vte_terminal_new ()" link="VteTerminal.html#vte-terminal-new"/>
@@ -62,10 +79,10 @@
     <keyword type="function" name="vte_terminal_set_scrollback_lines ()" link="VteTerminal.html#vte-terminal-set-scrollback-lines"/>
     <keyword type="function" name="vte_terminal_set_font ()" link="VteTerminal.html#vte-terminal-set-font"/>
     <keyword type="function" name="vte_terminal_set_font_from_string ()" link="VteTerminal.html#vte-terminal-set-font-from-string"/>
-    <keyword type="function" name="vte_terminal_set_font_from_string_full ()" link="VteTerminal.html#vte-terminal-set-font-from-string-full" deprecated="0.19.1" since="0.11.11"/>
-    <keyword type="function" name="vte_terminal_set_font_full ()" link="VteTerminal.html#vte-terminal-set-font-full" deprecated="0.19.1" since="0.11.11"/>
+    <keyword type="function" name="vte_terminal_set_font_from_string_full ()" link="VteTerminal.html#vte-terminal-set-font-from-string-full" deprecated="0.20" since="0.11.11"/>
+    <keyword type="function" name="vte_terminal_set_font_full ()" link="VteTerminal.html#vte-terminal-set-font-full" deprecated="0.20" since="0.11.11"/>
     <keyword type="function" name="vte_terminal_get_font ()" link="VteTerminal.html#vte-terminal-get-font"/>
-    <keyword type="function" name="vte_terminal_get_using_xft ()" link="VteTerminal.html#vte-terminal-get-using-xft" deprecated="0.19.1"/>
+    <keyword type="function" name="vte_terminal_get_using_xft ()" link="VteTerminal.html#vte-terminal-get-using-xft" deprecated="0.20"/>
     <keyword type="function" name="vte_terminal_get_has_selection ()" link="VteTerminal.html#vte-terminal-get-has-selection"/>
     <keyword type="function" name="vte_terminal_set_word_chars ()" link="VteTerminal.html#vte-terminal-set-word-chars"/>
     <keyword type="function" name="vte_terminal_is_word_char ()" link="VteTerminal.html#vte-terminal-is-word-char"/>
@@ -95,8 +112,8 @@
     <keyword type="function" name="vte_terminal_get_padding ()" link="VteTerminal.html#vte-terminal-get-padding" deprecated=""/>
     <keyword type="function" name="vte_terminal_write_contents ()" link="VteTerminal.html#vte-terminal-write-contents" since="0.24"/>
     <keyword type="function" name="vte_terminal_get_adjustment ()" link="VteTerminal.html#vte-terminal-get-adjustment"/>
-    <keyword type="function" name="vte_terminal_get_char_ascent ()" link="VteTerminal.html#vte-terminal-get-char-ascent" deprecated="0.19.1"/>
-    <keyword type="function" name="vte_terminal_get_char_descent ()" link="VteTerminal.html#vte-terminal-get-char-descent" deprecated="0.19.1"/>
+    <keyword type="function" name="vte_terminal_get_char_ascent ()" link="VteTerminal.html#vte-terminal-get-char-ascent" deprecated="0.20"/>
+    <keyword type="function" name="vte_terminal_get_char_descent ()" link="VteTerminal.html#vte-terminal-get-char-descent" deprecated="0.20"/>
     <keyword type="function" name="vte_terminal_get_char_height ()" link="VteTerminal.html#vte-terminal-get-char-height"/>
     <keyword type="function" name="vte_terminal_get_char_width ()" link="VteTerminal.html#vte-terminal-get-char-width"/>
     <keyword type="function" name="vte_terminal_get_column_count ()" link="VteTerminal.html#vte-terminal-get-column-count"/>
@@ -160,19 +177,30 @@
     <keyword type="signal" name="The &quot;text-modified&quot; signal" link="VteTerminal.html#VteTerminal-text-modified"/>
     <keyword type="signal" name="The &quot;text-scrolled&quot; signal" link="VteTerminal.html#VteTerminal-text-scrolled"/>
     <keyword type="signal" name="The &quot;window-title-changed&quot; signal" link="VteTerminal.html#VteTerminal-window-title-changed"/>
+    <keyword type="macro" name="VTE_MAJOR_VERSION" link="vte-Version-Information.html#VTE-MAJOR-VERSION:CAPS" since="0.16.15"/>
+    <keyword type="macro" name="VTE_MINOR_VERSION" link="vte-Version-Information.html#VTE-MINOR-VERSION:CAPS" since="0.16.15"/>
+    <keyword type="macro" name="VTE_MICRO_VERSION" link="vte-Version-Information.html#VTE-MICRO-VERSION:CAPS" since="0.16.15"/>
+    <keyword type="macro" name="VTE_CHECK_VERSION()" link="vte-Version-Information.html#VTE-CHECK-VERSION:CAPS" since="0.16.15"/>
     <keyword type="struct" name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <keyword type="function" name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
-    <keyword type="constant" name="VTE_ERASE_AUTO" link="VteTerminal.html#VTE-ERASE-AUTO--CAPS"/>
-    <keyword type="constant" name="VTE_ERASE_ASCII_BACKSPACE" link="VteTerminal.html#VTE-ERASE-ASCII-BACKSPACE--CAPS"/>
-    <keyword type="constant" name="VTE_ERASE_ASCII_DELETE" link="VteTerminal.html#VTE-ERASE-ASCII-DELETE--CAPS"/>
-    <keyword type="constant" name="VTE_ERASE_DELETE_SEQUENCE" link="VteTerminal.html#VTE-ERASE-DELETE-SEQUENCE--CAPS"/>
-    <keyword type="constant" name="VTE_ERASE_TTY" link="VteTerminal.html#VTE-ERASE-TTY--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_SHAPE_BLOCK" link="VteTerminal.html#VTE-CURSOR-SHAPE-BLOCK--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_SHAPE_IBEAM" link="VteTerminal.html#VTE-CURSOR-SHAPE-IBEAM--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_SHAPE_UNDERLINE" link="VteTerminal.html#VTE-CURSOR-SHAPE-UNDERLINE--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_BLINK_SYSTEM" link="VteTerminal.html#VTE-CURSOR-BLINK-SYSTEM--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_BLINK_ON" link="VteTerminal.html#VTE-CURSOR-BLINK-ON--CAPS"/>
-    <keyword type="constant" name="VTE_CURSOR_BLINK_OFF" link="VteTerminal.html#VTE-CURSOR-BLINK-OFF--CAPS"/>
-    <keyword type="constant" name="VTE_TERMINAL_WRITE_DEFAULT" link="VteTerminal.html#VTE-TERMINAL-WRITE-DEFAULT--CAPS"/>
+    <keyword type="struct" name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
+    <keyword type="function" name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child" deprecated=""/>
+    <keyword type="function" name="vte_reaper_get ()" link="VteReaper.html#vte-reaper-get" deprecated=""/>
+    <keyword type="signal" name="The &quot;child-exited&quot; signal" link="VteReaper.html#VteReaper-child-exited"/>
+    <keyword type="constant" name="VTE_ANTI_ALIAS_USE_DEFAULT" link="VteTerminal.html#VTE-ANTI-ALIAS-USE-DEFAULT:CAPS"/>
+    <keyword type="constant" name="VTE_ANTI_ALIAS_FORCE_ENABLE" link="VteTerminal.html#VTE-ANTI-ALIAS-FORCE-ENABLE:CAPS"/>
+    <keyword type="constant" name="VTE_ANTI_ALIAS_FORCE_DISABLE" link="VteTerminal.html#VTE-ANTI-ALIAS-FORCE-DISABLE:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_BLINK_SYSTEM" link="VteTerminal.html#VTE-CURSOR-BLINK-SYSTEM:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_BLINK_ON" link="VteTerminal.html#VTE-CURSOR-BLINK-ON:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_BLINK_OFF" link="VteTerminal.html#VTE-CURSOR-BLINK-OFF:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_SHAPE_BLOCK" link="VteTerminal.html#VTE-CURSOR-SHAPE-BLOCK:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_SHAPE_IBEAM" link="VteTerminal.html#VTE-CURSOR-SHAPE-IBEAM:CAPS"/>
+    <keyword type="constant" name="VTE_CURSOR_SHAPE_UNDERLINE" link="VteTerminal.html#VTE-CURSOR-SHAPE-UNDERLINE:CAPS"/>
+    <keyword type="constant" name="VTE_ERASE_AUTO" link="VteTerminal.html#VTE-ERASE-AUTO:CAPS"/>
+    <keyword type="constant" name="VTE_ERASE_ASCII_BACKSPACE" link="VteTerminal.html#VTE-ERASE-ASCII-BACKSPACE:CAPS"/>
+    <keyword type="constant" name="VTE_ERASE_ASCII_DELETE" link="VteTerminal.html#VTE-ERASE-ASCII-DELETE:CAPS"/>
+    <keyword type="constant" name="VTE_ERASE_DELETE_SEQUENCE" link="VteTerminal.html#VTE-ERASE-DELETE-SEQUENCE:CAPS"/>
+    <keyword type="constant" name="VTE_ERASE_TTY" link="VteTerminal.html#VTE-ERASE-TTY:CAPS"/>
+    <keyword type="constant" name="VTE_TERMINAL_WRITE_DEFAULT" link="VteTerminal.html#VTE-TERMINAL-WRITE-DEFAULT:CAPS"/>
   </functions>
 </book>
