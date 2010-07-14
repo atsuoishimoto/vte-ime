@@ -3183,29 +3183,21 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		case 20:
-			/* Report a static icon title, since the real
-			   icon title should NEVER be reported, as it
-			   creates a security vulnerability.  See
-			   http://marc.info/?l=bugtraq&m=104612710031920&w=2
-			   and CVE-2003-0070. */
+			/* Report the icon title. */
 			_vte_debug_print(VTE_DEBUG_PARSE,
-				"Reporting fake icon title.\n");
-			/* never use terminal->icon_title here! */
+				"Reporting icon title.\n");
 			g_snprintf (buf, sizeof (buf),
-				    _VTE_CAP_OSC "LTerminal" _VTE_CAP_ST);
+				    _VTE_CAP_OSC "L%s" _VTE_CAP_ST,
+				    terminal->icon_title);
 			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		case 21:
-			/* Report a static window title, since the real
-			   window title should NEVER be reported, as it
-			   creates a security vulnerability.  See
-			   http://marc.info/?l=bugtraq&m=104612710031920&w=2
-			   and CVE-2003-0070. */
+			/* Report the window title. */
 			_vte_debug_print(VTE_DEBUG_PARSE,
-					"Reporting fake window title.\n");
-			/* never use terminal->window_title here! */
+					"Reporting window title.\n");
 			g_snprintf (buf, sizeof (buf),
-				    _VTE_CAP_OSC "lTerminal" _VTE_CAP_ST);
+				    _VTE_CAP_OSC "l%s" _VTE_CAP_ST,
+				    terminal->window_title);
 			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		default:
