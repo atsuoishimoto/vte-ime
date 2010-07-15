@@ -1,3 +1,11 @@
+vte (1:0.24.3-1) unstable; urgency=low
+
+  * New upstream bugfix release:
+    + debian/patches/90_autoreconf.patch:
+      - Regenerated for the new version.
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 15 Jul 2010 20:30:04 +0200
+
 vte (1:0.24.1-1) unstable; urgency=low
 
   * New upstream bugfix release:
