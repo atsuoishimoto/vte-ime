@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>VteReaper</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="VTE Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="VTE Reference Manual">
 <link rel="up" href="deprecated-objects.html" title="Deprecated">
 <link rel="prev" href="deprecated-objects.html" title="Deprecated">
 <link rel="next" href="object-hierarchy.html" title="Object Hierarchy">
-<meta name="generator" content="GTK-Doc V1.14.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.15.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -30,7 +30,7 @@
                   <a href="#VteReaper.signals" class="shortcut">Signals</a>
 </td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry">
 <a name="VteReaper"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -43,24 +43,24 @@ converts them into GObject-style "child-exited" signals</p>
 <div class="refsynopsisdiv">
 <a name="VteReaper.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">                    <a class="link" href="VteReaper.html#VteReaper-struct" title="VteReaper">VteReaper</a>;
-<span class="returnvalue">int</span>                 <a class="link" href="VteReaper.html#vte-reaper-add-child" title="vte_reaper_add_child ()">vte_reaper_add_child</a>                (<em class="parameter"><code><a href="/opt/gnome-trunk/share/gtk-doc/html/glib/glib-The-Main-Event-Loop.html#GPid"><span class="type">GPid</span></a> pid</code></em>);
+<span class="returnvalue">int</span>                 <a class="link" href="VteReaper.html#vte-reaper-add-child" title="vte_reaper_add_child ()">vte_reaper_add_child</a>                (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#GPid"><span class="type">GPid</span></a> pid</code></em>);
 <a class="link" href="VteReaper.html" title="VteReaper"><span class="returnvalue">VteReaper</span></a> *         <a class="link" href="VteReaper.html#vte-reaper-get" title="vte_reaper_get ()">vte_reaper_get</a>                      (<em class="parameter"><code><span class="type">void</span></code></em>);
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="VteReaper.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="/opt/gnome-trunk/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
    +----VteReaper
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="VteReaper.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
   "<a class="link" href="VteReaper.html#VteReaper-child-exited" title='The "child-exited" signal'>child-exited</a>"                                   : Run Last
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="VteReaper.description"></a><h2>Description</h2>
 <p>
 Because an application may need to be notified when child processes
@@ -74,9 +74,9 @@ a proxy for glib's own functionality.
 Since 0.11.11
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="VteReaper.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="VteReaper-struct"></a><h3>VteReaper</h3>
 <pre class="programlisting">typedef struct _VteReaper VteReaper;</pre>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
@@ -88,9 +88,9 @@ The reaper object.
 </p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="vte-reaper-add-child"></a><h3>vte_reaper_add_child ()</h3>
-<pre class="programlisting"><span class="returnvalue">int</span>                 vte_reaper_add_child                (<em class="parameter"><code><a href="/opt/gnome-trunk/share/gtk-doc/html/glib/glib-The-Main-Event-Loop.html#GPid"><span class="type">GPid</span></a> pid</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">int</span>                 vte_reaper_add_child                (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#GPid"><span class="type">GPid</span></a> pid</code></em>);</pre>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
 <p><code class="literal">vte_reaper_add_child</code> is deprecated and should not be used in newly-written code.</p>
@@ -118,7 +118,7 @@ Since 0.11.11
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="vte-reaper-get"></a><h3>vte_reaper_get ()</h3>
 <pre class="programlisting"><a class="link" href="VteReaper.html" title="VteReaper"><span class="returnvalue">VteReaper</span></a> *         vte_reaper_get                      (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
@@ -139,14 +139,14 @@ necessary.
 </table></div>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="VteReaper.signal-details"></a><h2>Signal Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="VteReaper-child-exited"></a><h3>The <code class="literal">"child-exited"</code> signal</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> *vtereaper,
-                                                        <a href="/opt/gnome-trunk/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a>       arg1,
-                                                        <a href="/opt/gnome-trunk/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a>       arg2,
-                                                        <a href="/opt/gnome-trunk/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>   user_data)      : Run Last</pre>
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>       arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>       arg2,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>   user_data)      : Run Last</pre>
 <p>
 Emitted when the <a class="link" href="VteReaper.html" title="VteReaper"><span class="type">VteReaper</span></a> object detects that a child of the
 current process has exited.
@@ -181,6 +181,6 @@ current process has exited.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.14.1</div>
+          Generated by GTK-Doc V1.15.1</div>
 </body>
 </html>
