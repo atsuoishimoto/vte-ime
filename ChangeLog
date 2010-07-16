@@ -1,3 +1,42 @@
+commit 5395c03f39e73c14ae444bc86d5b653b3957884d
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Jul 12 21:40:24 2010 +0200
+
+    Version 0.24.3
+
+ configure.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 6042c75b5a6daa0e499e61c8e07242d890d38ff1
+Author: Kees Cook <kees@ubuntu.com>
+Date:   Mon Jul 12 21:31:32 2010 +0200
+
+    Fix terminal title reporting
+    
+    Fixed CVE-2003-0070 again.
+    See also http://marc.info/?l=bugtraq&m=104612710031920&w=2 .
+
+ src/vteseq.c |   24 ++++++++++++++++--------
+ 1 files changed, 16 insertions(+), 8 deletions(-)
+
+commit 623ff441eeac49b0123e16312b8c4fbd17fbc0ab
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Jun 21 20:53:15 2010 +0200
+
+    Version 0.24.2
+
+ configure.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit b052b7637780df287bdef50f83c6b31f9559e203
+Author: Ivar Smolin <okul@linux.ee>
+Date:   Thu May 20 15:07:06 2010 +0300
+
+    Estonian translation updated
+
+ po/et.po |   67 +++++++++++--------------------------------------------------
+ 1 files changed, 12 insertions(+), 55 deletions(-)
+
 commit 10430cbf79306a3f7dc11798e5146b33c0c05448
 Author: Christian Persch <chpe@gnome.org>
 Date:   Mon Apr 26 13:16:16 2010 +0200
@@ -25079,12 +25118,12 @@ Date:   Fri Feb 10 07:58:28 2006 +0000
 
  ChangeLog         |   11 +
  src/Makefile.am   |    4 +
- src/vte-private.h |  385 +++++
- src/vte.c         | 4986 ++---------------------------------------------------
+ src/vte-private.h |  385 ++++
+ src/vte.c         | 5192 +++--------------------------------------------------
  src/vteseq-list.h |  122 ++
- src/vteseq.c      | 4462 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/vteseq.c      | 4462 +++++++++++++++++++++++++++++++++++++++++++++
  src/vteseq.h      |   40 +
- 7 files changed, 5156 insertions(+), 4854 deletions(-)
+ 7 files changed, 5259 insertions(+), 4957 deletions(-)
 
 commit e11441c2d9390f3e9645c162b8b1ae9a10a78a63
 Author: Behdad Esfahbod <behdad@gnome.org>
@@ -31687,7 +31726,7 @@ Date:   Mon Apr 14 19:41:12 2003 +0000
  configure.in    |   90 +-
  src/iso2022.c   |   24 +-
  src/iso2022.h   |    1 +
- src/vte.c       | 3205 ++++++++-----------------------------------------------
+ src/vte.c       | 3341 +++++++++----------------------------------------------
  src/vtedraw.c   |   14 +
  src/vtedraw.h   |   24 +-
  src/vtefc.c     |  113 +-
@@ -31700,7 +31739,7 @@ Date:   Mon Apr 14 19:41:12 2003 +0000
  src/vteskel.c   |    7 +
  src/vtexft.c    |    9 +
  vte.pc.in       |    2 +-
- 17 files changed, 786 insertions(+), 2868 deletions(-)
+ 17 files changed, 854 insertions(+), 2936 deletions(-)
 
 commit dca7f0cdfcc4eba1e2238cd26fb3eb6a3ae58016
 Author: Nalin Dahyabhai <nalin@src.gnome.org>
@@ -34276,10 +34315,10 @@ Date:   Tue Dec 10 00:08:32 2002 +0000
  src/trie.c          |   37 +-
  src/trie.h          |    6 -
  src/utf8echo.c      |    4 +-
- src/vte.c           | 1317 ++++++++++++++++++++++++++++++++-------------------
+ src/vte.c           | 1363 ++++++++++++++++++++++++++++++++-------------------
  src/vte.h           |    2 +-
- vte.spec            |   30 ++-
- 17 files changed, 1028 insertions(+), 656 deletions(-)
+ vte.spec            |   30 +-
+ 17 files changed, 1051 insertions(+), 679 deletions(-)
 
 commit eed823a3a052c0479ef13b3dc234c9a1854aeed6
 Author: Yuri Syrota <rasta@src.gnome.org>
@@ -34950,12 +34989,12 @@ Date:   Fri Oct 25 22:07:11 2002 +0000
  src/debug.h                        |    3 +-
  src/pty.c                          |   94 +-
  src/pty.h                          |   22 +-
- src/vte.c                          | 1912 ++++++++++++++++++++----------------
+ src/vte.c                          | 1970 ++++++++++++++++++++----------------
  src/vte.h                          |   25 +-
  src/vteaccess.c                    |    4 +-
  src/vteapp.c                       |   12 +-
  vte.spec                           |    5 +-
- 20 files changed, 1535 insertions(+), 995 deletions(-)
+ 20 files changed, 1564 insertions(+), 1024 deletions(-)
 
 commit e600d5ea308a700166c9a59e9e88e80ac7f91263
 Author: Nalin Dahyabhai <nalin@src.gnome.org>
@@ -37347,9 +37386,9 @@ Date:   Thu Aug 1 22:05:01 2002 +0000
  src/pty.c  |   25 +-
  src/pty.h  |    5 +
  src/ring.c |    5 +-
- src/vte.c  | 2495 ++++++++++++++++++++++++++++++++----------------------------
+ src/vte.c  | 2565 ++++++++++++++++++++++++++++++++----------------------------
  vte.spec   |    5 +-
- 6 files changed, 1368 insertions(+), 1185 deletions(-)
+ 6 files changed, 1403 insertions(+), 1220 deletions(-)
 
 commit 8515801d31a4279150f085ab2f22a7b177fa474e
 Author: Nalin Dahyabhai <nalin@src.gnome.org>
