@@ -10,6 +10,7 @@ DEB_BUILDDIR_$(udeb) := $(buildbasedir)/udeb
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/utils.mk
 include /usr/share/cdbs/1/class/gnome.mk
+include /usr/share/cdbs/1/rules/autoreconf.mk
 include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
 -include /usr/share/gnome-pkg-tools/1/rules/gnome-get-source.mk
 
@@ -34,9 +35,6 @@ DEB_DESTDIR_$(udeb) := $(CURDIR)/debian/tmp/udeb
 CFLAGS_$(udeb) += $(CFLAGS) -Os
 
 DEB_DH_INSTALL_ARGS = --sourcedir=$(if $(findstring $(udeb),$(cdbs_curpkg)),$(DEB_DESTDIR_$(udeb)),$(DEB_DESTDIR))
-
-common-configure-arch common-configure-indep::
-	autoreconf -f -i -s
 
 ######
 # udeb rules

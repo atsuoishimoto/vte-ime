@@ -8,7 +8,7 @@ Standards-Version: 3.8.4
 XS-Python-Version: >= 2.3
 Build-Depends: cdbs (>= 0.4.43),
                debhelper (>= 5.0.37.2),
-               gnome-common,
+               dh-autoreconf,
                libglib2.0-dev (>= 2.22.0),
                libcairo2-dev,
                libx11-dev,

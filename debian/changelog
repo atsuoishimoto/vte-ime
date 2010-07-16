@@ -1,27 +1,29 @@
-vte (1:0.24.1-1ubuntu2) maverick; urgency=low
-
-  * SECURITY UPDATE: arbitrary command injection via ESC codes.
-    - debian/patches/94_refix_dangerous_esc.patch: revert to static replies.
-    - CVE-2010-2713
-
- -- Kees Cook <kees@ubuntu.com>  Wed, 14 Jul 2010 11:07:26 -0700
-
-vte (1:0.24.1-1ubuntu1) maverick; urgency=low
+vte (1:0.24.3-1ubuntu1) maverick; urgency=low
 
   * Merge with Debian unstable, remaining Ubuntu changes:
   * debian/control.in:
+    - Build depend on dh-autoreconf
     - Add Vcs-Bzr info.
-    - Build depend on gnome-common to run autoreconf
   * debian/rules:
-    - Run autoreconf on build, replacing 90_autoreconf.patch
+    - Run autoreconf on build
     - Link documentation from each package to copy in libvte-common
+  * debian/patches/90_autoreconf.patch:
+    - Not required, autotools now run on build
   * debian/patches/91_keep_fds.patch:
     - Keep file descriptors open on vte_fork_pty().
   * debian/patches/93_add_alt_screen_scroll_toggle.patch:
     - Handle scrolling differently when using alternate screen 
       or scrolling is restricted.
 
- -- Robert Ancell <robert.ancell@canonical.com>  Mon, 24 May 2010 14:23:41 +1000
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 16 Jul 2010 15:53:49 +1000
+
+vte (1:0.24.3-1) unstable; urgency=low
+
+  * New upstream bugfix release:
+    + debian/patches/90_autoreconf.patch:
+      - Regenerated for the new version.
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 15 Jul 2010 20:30:04 +0200
 
 vte (1:0.24.1-1) unstable; urgency=low
 
