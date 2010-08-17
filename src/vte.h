@@ -24,10 +24,9 @@
 #include <pango/pango.h>
 #include <gtk/gtk.h>
 
-#include <sys/types.h> /* for pid_t */
-
 #define __VTE_VTE_H_INSIDE__ 1
 
+#include "vtepty.h"
 #include "vtetypebuiltins.h"
 #include "vteversion.h"
 
@@ -35,49 +34,51 @@
 
 G_BEGIN_DECLS
 
-/* Private implementation details. */
-typedef struct _VteTerminalPrivate VteTerminalPrivate;
+#ifdef VTE_SEAL_ENABLE
+#define _VTE_SEAL(name) _vte_sealed__ ## name
+#else
+#define _VTE_SEAL(name) name
+#endif
 
-/* The terminal widget itself. */
-typedef struct _VteTerminal VteTerminal;
+#ifdef VTE_DISABLE_DEPRECATED
+#define _VTE_DEPRECATED(name) _vte_deprecated__ ## name
+#else
+#define _VTE_DEPRECATED(name) name
+#endif
+
+#define VTE_TYPE_TERMINAL            (vte_terminal_get_type())
+#define VTE_TERMINAL(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), VTE_TYPE_TERMINAL, VteTerminal))
+#define VTE_TERMINAL_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  VTE_TYPE_TERMINAL, VteTerminalClass))
+#define VTE_IS_TERMINAL(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VTE_TYPE_TERMINAL))
+#define VTE_IS_TERMINAL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  VTE_TYPE_TERMINAL))
+#define VTE_TERMINAL_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  VTE_TYPE_TERMINAL, VteTerminalClass))
+
+typedef struct _VteTerminal         VteTerminal;
+typedef struct _VteTerminalPrivate  VteTerminalPrivate;
+typedef struct _VteTerminalClass    VteTerminalClass;
 
 /**
  * VteTerminal:
- * @widget: Base #GtkWidget of the terminal widget.
- * @adjustment: Scroll bar adjustments.
- * @char_width: Width of a narrow character cell.
- * @char_height: Height of a character cell.
- * @char_ascent: The distance (in pixels) from the baseline of drawn text to the top of the character cell.
- * @char_descent: The distance (in pixels) from the baseline of drawn text to the bottom of the character cell.
- * @row_count: Number of visible rows.
- * @column_count: Number of visible columns.
- * @window_title: The terminal's idea of what the window's title should be.
- * @icon_title: The terminal's idea of what the window's title should be when iconified.
- * 
- * All of these fields should be considered read-only.
+ *
+ * All of these fields should be considered read-only and deprecated.
  */
 struct _VteTerminal {
-	/*< public >*/
-
-	/* Widget implementation stuffs. */
 	GtkWidget widget;
-	GtkAdjustment *adjustment;	/* Scrolling adjustment. */
+        /*< private >*/
+	GtkAdjustment *_VTE_SEAL(adjustment);	/* Scrolling adjustment. */
 
 	/* Metric and sizing data. */
-	glong char_width, char_height;	/* dimensions of character cells */
-	glong char_ascent, char_descent; /* important font metrics */
-	glong row_count, column_count;	/* dimensions of the window */
+	glong _VTE_SEAL(char_width), _VTE_SEAL(char_height);	/* dimensions of character cells */
+	glong _VTE_SEAL(char_ascent), _VTE_SEAL(char_descent); /* important font metrics */
+	glong _VTE_SEAL(row_count), _VTE_SEAL(column_count);	/* dimensions of the window */
 
 	/* Titles. */
-	char *window_title;
-	char *icon_title;
+	char *_VTE_SEAL(window_title);
+	char *_VTE_SEAL(icon_title);
 
 	/*< private >*/
 	VteTerminalPrivate *pvt;
 };
-
-/* The widget's class structure. */
-typedef struct _VteTerminalClass VteTerminalClass;
 
 /**
  * VteTerminalClass:
@@ -136,43 +137,39 @@ struct _VteTerminalClass {
 
 	/*< private > */
 	/* Signals we might emit. */
-	guint eof_signal;
-	guint child_exited_signal;
-	guint emulation_changed_signal;
-	guint encoding_changed_signal;
-	guint char_size_changed_signal;
-	guint window_title_changed_signal;
-	guint icon_title_changed_signal;
-	guint selection_changed_signal;
-	guint contents_changed_signal;
-	guint cursor_moved_signal;
-	guint status_line_changed_signal;
-	guint commit_signal;
-
-	guint deiconify_window_signal;
-	guint iconify_window_signal;
-	guint raise_window_signal;
-	guint lower_window_signal;
-	guint refresh_window_signal;
-	guint restore_window_signal;
-	guint maximize_window_signal;
-	guint resize_window_signal;
-	guint move_window_signal;
-
-	guint increase_font_size_signal;
-	guint decrease_font_size_signal;
-
-	guint text_modified_signal;
-	guint text_inserted_signal;
-	guint text_deleted_signal;
-	guint text_scrolled_signal;
-
-	guint reserved1;
-	guint reserved2;
-	guint reserved3;
-	guint reserved4;
-	guint reserved5;
-	guint reserved6;
+        guint _VTE_DEPRECATED(eof_signal);
+        guint _VTE_DEPRECATED(child_exited_signal);
+        guint _VTE_DEPRECATED(emulation_changed_signal);
+        guint _VTE_DEPRECATED(encoding_changed_signal);
+        guint _VTE_DEPRECATED(char_size_changed_signal);
+        guint _VTE_DEPRECATED(window_title_changed_signal);
+        guint _VTE_DEPRECATED(icon_title_changed_signal);
+        guint _VTE_DEPRECATED(selection_changed_signal);
+        guint _VTE_DEPRECATED(contents_changed_signal);
+        guint _VTE_DEPRECATED(cursor_moved_signal);
+        guint _VTE_DEPRECATED(status_line_changed_signal);
+        guint _VTE_DEPRECATED(commit_signal);
+        guint _VTE_DEPRECATED(deiconify_window_signal);
+        guint _VTE_DEPRECATED(iconify_window_signal);
+        guint _VTE_DEPRECATED(raise_window_signal);
+        guint _VTE_DEPRECATED(lower_window_signal);
+        guint _VTE_DEPRECATED(refresh_window_signal);
+        guint _VTE_DEPRECATED(restore_window_signal);
+        guint _VTE_DEPRECATED(maximize_window_signal);
+        guint _VTE_DEPRECATED(resize_window_signal);
+        guint _VTE_DEPRECATED(move_window_signal);
+        guint _VTE_DEPRECATED(increase_font_size_signal);
+        guint _VTE_DEPRECATED(decrease_font_size_signal);
+        guint _VTE_DEPRECATED(text_modified_signal);
+        guint _VTE_DEPRECATED(text_inserted_signal);
+        guint _VTE_DEPRECATED(text_deleted_signal);
+        guint _VTE_DEPRECATED(text_scrolled_signal);
+        guint _VTE_DEPRECATED(reserved1);
+        guint _VTE_DEPRECATED(reserved2);
+        guint _VTE_DEPRECATED(reserved3);
+        guint _VTE_DEPRECATED(reserved4);
+        guint _VTE_DEPRECATED(reserved5);
+        guint _VTE_DEPRECATED(reserved6);
 };
 
 /**
@@ -251,34 +248,25 @@ typedef gboolean (*VteSelectionFunc)(VteTerminal *terminal,
 /* The widget's type. */
 GType vte_terminal_get_type(void);
 
-#define VTE_TYPE_TERMINAL		(vte_terminal_get_type())
-#define VTE_TERMINAL(obj)		(G_TYPE_CHECK_INSTANCE_CAST((obj),\
-							VTE_TYPE_TERMINAL,\
-							VteTerminal))
-#define VTE_TERMINAL_CLASS(klass)	G_TYPE_CHECK_CLASS_CAST((klass),\
-							     VTE_TYPE_TERMINAL,\
-							     VteTerminalClass)
-#define VTE_IS_TERMINAL(obj)		G_TYPE_CHECK_INSTANCE_TYPE((obj),\
-						       VTE_TYPE_TERMINAL)
-#define VTE_IS_TERMINAL_CLASS(klass)	G_TYPE_CHECK_CLASS_TYPE((klass),\
-							     VTE_TYPE_TERMINAL)
-#define VTE_TERMINAL_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), VTE_TYPE_TERMINAL, VteTerminalClass))
-
-/* You can get by with just these two functions. */
 GtkWidget *vte_terminal_new(void);
-pid_t vte_terminal_fork_command(VteTerminal *terminal,
-				const char *command, char **argv,
-				char **envv, const char *directory,
-				gboolean lastlog,
-				gboolean utmp,
-				gboolean wtmp);
 
-/* Users of libzvt may find this useful. */
-pid_t vte_terminal_forkpty(VteTerminal *terminal,
-			   char **envv, const char *directory,
-			   gboolean lastlog,
-			   gboolean utmp,
-			   gboolean wtmp);
+VtePty *vte_terminal_pty_new (VteTerminal *terminal,
+                              VtePtyFlags flags,
+                              GError **error);
+
+void vte_terminal_watch_child (VteTerminal *terminal,
+                               GPid child_pid);
+
+gboolean vte_terminal_fork_command_full(VteTerminal *terminal,
+                                        VtePtyFlags pty_flags,
+                                        const char *working_directory,
+                                        char **argv,
+                                        char **envv,
+                                        GSpawnFlags spawn_flags,
+                                        GSpawnChildSetupFunc child_setup,
+                                        gpointer child_setup_data,
+                                        GPid *child_pid /* out */,
+                                        GError **error);
 
 /* Send data to the terminal to display, or to the terminal's forked command
  * to handle in some way.  If it's 'cat', they should be the same. */
@@ -390,7 +378,8 @@ void vte_terminal_set_mouse_autohide(VteTerminal *terminal, gboolean setting);
 gboolean vte_terminal_get_mouse_autohide(VteTerminal *terminal);
 
 /* Reset the terminal, optionally clearing the tab stops and line history. */
-void vte_terminal_reset(VteTerminal *terminal, gboolean full,
+void vte_terminal_reset(VteTerminal *terminal,
+                        gboolean clear_tabstops,
 			gboolean clear_history);
 
 /* Read the contents of the terminal, using a callback function to determine
@@ -401,17 +390,17 @@ void vte_terminal_reset(VteTerminal *terminal, gboolean full,
  * should match up exactly. */
 char *vte_terminal_get_text(VteTerminal *terminal,
 			    VteSelectionFunc is_selected,
-			    gpointer data,
+			    gpointer user_data,
 			    GArray *attributes);
 char *vte_terminal_get_text_include_trailing_spaces(VteTerminal *terminal,
 						    VteSelectionFunc is_selected,
-						    gpointer data,
+						    gpointer user_data,
 						    GArray *attributes);
 char *vte_terminal_get_text_range(VteTerminal *terminal,
 				  glong start_row, glong start_col,
 				  glong end_row, glong end_col,
 				  VteSelectionFunc is_selected,
-				  gpointer data,
+				  gpointer user_data,
 				  GArray *attributes);
 void vte_terminal_get_cursor_position(VteTerminal *terminal,
 				      glong *column, glong *row);
@@ -438,6 +427,16 @@ char *vte_terminal_match_check(VteTerminal *terminal,
 			       glong column, glong row,
 			       int *tag);
 
+void      vte_terminal_search_set_gregex      (VteTerminal *terminal,
+					       GRegex      *regex);
+GRegex   *vte_terminal_search_get_gregex      (VteTerminal *terminal);
+void      vte_terminal_search_set_wrap_around (VteTerminal *terminal,
+					       gboolean     wrap_around);
+gboolean  vte_terminal_search_get_wrap_around (VteTerminal *terminal);
+gboolean  vte_terminal_search_find_previous   (VteTerminal *terminal);
+gboolean  vte_terminal_search_find_next       (VteTerminal *terminal);
+
+
 /* Set the emulation type.  Most of the time you won't need this. */
 void vte_terminal_set_emulation(VteTerminal *terminal, const char *emulation);
 const char *vte_terminal_get_emulation(VteTerminal *terminal);
@@ -450,15 +449,8 @@ const char *vte_terminal_get_encoding(VteTerminal *terminal);
 /* Get the contents of the status line. */
 const char *vte_terminal_get_status_line(VteTerminal *terminal);
 
-#ifndef VTE_DISABLE_DEPRECATED
-/* Get the padding the widget is using. */
-void vte_terminal_get_padding(VteTerminal *terminal, int *xpad, int *ypad) G_GNUC_DEPRECATED;
-#endif
-
-/* Attach an existing PTY master side to the terminal widget.  Use
- * instead of vte_terminal_fork_command(). */
-void vte_terminal_set_pty(VteTerminal *terminal, int pty_master);
-int vte_terminal_get_pty(VteTerminal *terminal);
+void vte_terminal_set_pty_object(VteTerminal *terminal, VtePty *pty);
+VtePty *vte_terminal_get_pty_object(VteTerminal *terminal);
 
 /* Accessors for bindings. */
 GtkAdjustment *vte_terminal_get_adjustment(VteTerminal *terminal);
@@ -491,62 +483,15 @@ gboolean vte_terminal_write_contents (VteTerminal *terminal,
 				      GCancellable *cancellable,
 				      GError **error);
 
-
-#ifndef VTE_DISABLE_DEPRECATED
-
-/**
- * VTE_IS_TERMINAL_ERASE_BINDING:
- *
- * Does nothing.
- *
- * Returns: %FALSE
- *
- * @Deprecated: 0.20
- */
-#define VTE_IS_TERMINAL_ERASE_BINDING(obj)  (FALSE)
-
-/**
- * VTE_IS_TERMINAL_ANTI_ALIAS:
- *
- * Does nothing.
- *
- * Returns: %FALSE
- *
- * @Deprecated: 0.20
- */
-#define VTE_IS_TERMINAL_ANTI_ALIAS(obj)     (FALSE)
-
-/**
- * VteTerminalAntiAlias:
- * @VTE_ANTI_ALIAS_USE_DEFAULT: Use the system default anti-alias setting
- * @VTE_ANTI_ALIAS_FORCE_ENABLE: Force enable anti-aliasing
- * @VTE_ANTI_ALIAS_FORCE_DISABLE: Force disable anti-aliasing
- *
- * An enumeration describing which anti-alias setting to use.
- *
- * @Deprecated: 0.20
- */
-typedef enum {
-	VTE_ANTI_ALIAS_USE_DEFAULT,
-	VTE_ANTI_ALIAS_FORCE_ENABLE,
-	VTE_ANTI_ALIAS_FORCE_DISABLE
-} VteTerminalAntiAlias;
-
-void vte_terminal_set_cursor_blinks(VteTerminal *terminal,
-				    gboolean blink) G_GNUC_DEPRECATED;
-gboolean vte_terminal_get_using_xft(VteTerminal *terminal) G_GNUC_DEPRECATED;
-int vte_terminal_match_add(VteTerminal *terminal, const char *match) G_GNUC_DEPRECATED;
-glong vte_terminal_get_char_descent(VteTerminal *terminal) G_GNUC_DEPRECATED;
-glong vte_terminal_get_char_ascent(VteTerminal *terminal) G_GNUC_DEPRECATED;
-void vte_terminal_set_font_full(VteTerminal *terminal,
-				const PangoFontDescription *font_desc,
-				VteTerminalAntiAlias antialias) G_GNUC_DEPRECATED;
-void vte_terminal_set_font_from_string_full(VteTerminal *terminal,
-					    const char *name,
-					    VteTerminalAntiAlias antialias) G_GNUC_DEPRECATED;
-
-#endif /* VTE_DISABLE_DEPRECATED */
+#undef _VTE_SEAL
+#undef _VTE_DEPRECATED
 
 G_END_DECLS
+
+#ifndef VTE_DISABLE_DEPRECATED
+#define __VTE_VTE_H_INSIDE__ 1
+#include "vtedeprecated.h"
+#undef __VTE_VTE_H_INSIDE__
+#endif /* VTE_DISABLE_DEPRECATED */
 
 #endif

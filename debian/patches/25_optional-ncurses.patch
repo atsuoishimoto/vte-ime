@@ -1,6 +1,8 @@
---- a/configure.in
-+++ b/configure.in
-@@ -295,45 +295,52 @@
+Index: vte-0.25.90/configure.in
+===================================================================
+--- vte-0.25.90.orig/configure.in	2010-08-16 23:07:06.000000000 +1000
++++ vte-0.25.90/configure.in	2010-08-17 17:35:08.670563000 +1000
+@@ -336,45 +336,52 @@
  AC_CHECK_FUNC(floor,,AC_CHECK_LIB(m,floor,LIBS=["$LIBS -lm"]))
  AC_CHECK_FUNCS([ceil floor])
  
@@ -91,8 +93,10 @@
  
  # Search for the required modules.
  
---- a/src/keymap.c
-+++ b/src/keymap.c
+Index: vte-0.25.90/src/keymap.c
+===================================================================
+--- vte-0.25.90.orig/src/keymap.c	2010-07-16 03:08:44.000000000 +1000
++++ vte-0.25.90/src/keymap.c	2010-08-17 17:35:08.670563000 +1000
 @@ -44,7 +44,7 @@
  #include <termcap.h>
  #define VTE_TERMCAP_NAME "termcap"
@@ -129,8 +133,10 @@
  
  	_vte_debug_print(VTE_DEBUG_KEYBOARD,
  			" (ignoring, no match for modifier state).\n");
---- a/src/ssfe.c
-+++ b/src/ssfe.c
+Index: vte-0.25.90/src/ssfe.c
+===================================================================
+--- vte-0.25.90.orig/src/ssfe.c	2010-01-14 07:49:48.000000000 +1100
++++ vte-0.25.90/src/ssfe.c	2010-08-17 17:35:08.670563000 +1000
 @@ -38,7 +38,7 @@
  #include <termcap.h>
  #define VTE_TERMCAP_NAME "termcap"

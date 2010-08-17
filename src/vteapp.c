@@ -71,24 +71,24 @@ char_size_changed(GtkWidget *widget, guint width, guint height, gpointer data)
 	VteTerminal *terminal;
 	GtkWindow *window;
 	GdkGeometry geometry;
-	int xpad, ypad;
+        GtkBorder *inner_border;
 
 	g_assert(GTK_IS_WINDOW(data));
 	g_assert(VTE_IS_TERMINAL(widget));
 
 	terminal = VTE_TERMINAL(widget);
 	window = GTK_WINDOW(data);
-	if (!GTK_WIDGET_REALIZED (window))
+	if (!gtk_widget_get_realized (GTK_WIDGET (window)))
 		return;
 
-	vte_terminal_get_padding(terminal, &xpad, &ypad);
-
+        gtk_widget_style_get (widget, "inner-border", &inner_border, NULL);
 	geometry.width_inc = width;
 	geometry.height_inc = height;
-	geometry.base_width = xpad;
-	geometry.base_height = ypad;
-	geometry.min_width = xpad + width * 2;
-	geometry.min_height = ypad + height * 2;
+	geometry.base_width = inner_border ? (inner_border->left + inner_border->right) : 0;
+	geometry.base_height = inner_border ? (inner_border->top + inner_border->bottom) : 0;
+	geometry.min_width = geometry.base_width + width * 2;
+	geometry.min_height = geometry.base_height + height * 2;
+        gtk_border_free (inner_border);
 
 	gtk_window_set_geometry_hints(window, widget, &geometry,
 				      GDK_HINT_RESIZE_INC |
@@ -103,26 +103,26 @@ char_size_realized(GtkWidget *widget, gpointer data)
 	GtkWindow *window;
 	GdkGeometry geometry;
 	guint width, height;
-	int xpad, ypad;
+        GtkBorder *inner_border;
 
 	g_assert(GTK_IS_WINDOW(data));
 	g_assert(VTE_IS_TERMINAL(widget));
 
 	terminal = VTE_TERMINAL(widget);
 	window = GTK_WINDOW(data);
-	if (!GTK_WIDGET_REALIZED (window))
+	if (!gtk_widget_get_realized (GTK_WIDGET(window)))
 		return;
 
-	vte_terminal_get_padding(terminal, &xpad, &ypad);
-
+        gtk_widget_style_get (widget, "inner-border", &inner_border, NULL);
 	width = vte_terminal_get_char_width (terminal);
 	height = vte_terminal_get_char_height (terminal);
 	geometry.width_inc = width;
 	geometry.height_inc = height;
-	geometry.base_width = xpad;
-	geometry.base_height = ypad;
-	geometry.min_width = xpad + width * 2;
-	geometry.min_height = ypad + height * 2;
+	geometry.base_width = inner_border ? (inner_border->left + inner_border->right) : 0;
+	geometry.base_height = inner_border ? (inner_border->top + inner_border->bottom) : 0;
+	geometry.min_width = geometry.base_width + width * 2;
+	geometry.min_height = geometry.base_height + height * 2;
+        gtk_border_free (inner_border);
 
 	gtk_window_set_geometry_hints(window, widget, &geometry,
 				      GDK_HINT_RESIZE_INC |
@@ -188,17 +188,21 @@ button_pressed(GtkWidget *widget, GdkEventButton *event, gpointer data)
 	VteTerminal *terminal;
 	char *match;
 	int tag;
-	gint xpad, ypad;
+        GtkBorder *inner_border;
+        int char_width, char_height;
+
 	switch (event->button) {
 	case 3:
 		terminal = VTE_TERMINAL(widget);
-		vte_terminal_get_padding(terminal, &xpad, &ypad);
+
+                gtk_widget_style_get (widget, "inner-border", &inner_border, NULL);
+                char_width = vte_terminal_get_char_width (terminal);
+                char_height = vte_terminal_get_char_height (terminal);
 		match = vte_terminal_match_check(terminal,
-						 (event->x - xpad / 2) /
-						 terminal->char_width,
-						 (event->y - ypad / 2) /
-						 terminal->char_height,
+						 (event->x - (inner_border ? inner_border->left : 0)) / char_width,
+						 (event->y - (inner_border ? inner_border->top : 0)) / char_height,
 						 &tag);
+                gtk_border_free (inner_border);
 		if (match != NULL) {
 			g_print("Matched `%s' (%d).\n", match, tag);
 			g_free(match);
@@ -218,29 +222,24 @@ button_pressed(GtkWidget *widget, GdkEventButton *event, gpointer data)
 static void
 iconify_window(GtkWidget *widget, gpointer data)
 {
-	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_iconify((GTK_WIDGET(data))->window);
-		}
-	}
+	gtk_window_iconify(data);
 }
 
 static void
 deiconify_window(GtkWidget *widget, gpointer data)
 {
-	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_deiconify((GTK_WIDGET(data))->window);
-		}
-	}
+	gtk_window_deiconify(data);
 }
 
 static void
 raise_window(GtkWidget *widget, gpointer data)
 {
+	GdkWindow *window;
+
 	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_raise((GTK_WIDGET(data))->window);
+		window = gtk_widget_get_window(GTK_WIDGET(data));
+		if (window) {
+			gdk_window_raise(window);
 		}
 	}
 }
@@ -248,9 +247,12 @@ raise_window(GtkWidget *widget, gpointer data)
 static void
 lower_window(GtkWidget *widget, gpointer data)
 {
+	GdkWindow *window;
+
 	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_lower((GTK_WIDGET(data))->window);
+		window = gtk_widget_get_window(GTK_WIDGET(data));
+		if (window) {
+			gdk_window_lower(window);
 		}
 	}
 }
@@ -258,9 +260,12 @@ lower_window(GtkWidget *widget, gpointer data)
 static void
 maximize_window(GtkWidget *widget, gpointer data)
 {
+	GdkWindow *window;
+
 	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_maximize((GTK_WIDGET(data))->window);
+		window = gtk_widget_get_window(GTK_WIDGET(data));
+		if (window) {
+			gdk_window_maximize(window);
 		}
 	}
 }
@@ -268,9 +273,12 @@ maximize_window(GtkWidget *widget, gpointer data)
 static void
 restore_window(GtkWidget *widget, gpointer data)
 {
+	GdkWindow *window;
+
 	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_unmaximize((GTK_WIDGET(data))->window);
+		window = gtk_widget_get_window(GTK_WIDGET(data));
+		if (window) {
+			gdk_window_unmaximize(window);
 		}
 	}
 }
@@ -278,14 +286,18 @@ restore_window(GtkWidget *widget, gpointer data)
 static void
 refresh_window(GtkWidget *widget, gpointer data)
 {
+	GdkWindow *window;
+	GtkAllocation allocation;
 	GdkRectangle rect;
+
 	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
+		window = gtk_widget_get_window(widget);
+		if (window) {
+			gtk_widget_get_allocation(widget, &allocation);
 			rect.x = rect.y = 0;
-			rect.width = (GTK_WIDGET(data))->allocation.width;
-			rect.height = (GTK_WIDGET(data))->allocation.height;
-			gdk_window_invalidate_rect((GTK_WIDGET(data))->window,
-						   &rect, TRUE);
+			rect.width = allocation.width;
+			rect.height = allocation.height;
+			gdk_window_invalidate_rect(window, &rect, TRUE);
 		}
 	}
 }
@@ -294,28 +306,43 @@ static void
 resize_window(GtkWidget *widget, guint width, guint height, gpointer data)
 {
 	VteTerminal *terminal;
-	gint owidth, oheight, xpad, ypad;
+
 	if ((GTK_IS_WINDOW(data)) && (width >= 2) && (height >= 2)) {
+                gint owidth, oheight, char_width, char_height, column_count, row_count;
+                GtkBorder *inner_border;
+
 		terminal = VTE_TERMINAL(widget);
-		/* Take into account border overhead. */
+
 		gtk_window_get_size(GTK_WINDOW(data), &owidth, &oheight);
-		owidth -= terminal->char_width * terminal->column_count;
-		oheight -= terminal->char_height * terminal->row_count;
-		/* Take into account padding, which needn't be re-added. */
-		vte_terminal_get_padding(VTE_TERMINAL(widget), &xpad, &ypad);
-		owidth -= xpad;
-		oheight -= ypad;
+
+		/* Take into account border overhead. */
+                char_width = vte_terminal_get_char_width (terminal);
+                char_height = vte_terminal_get_char_height (terminal);
+                column_count = vte_terminal_get_column_count (terminal);
+                row_count = vte_terminal_get_row_count (terminal);
+                gtk_widget_style_get (widget, "inner-border", &inner_border, NULL);
+
+                owidth -= char_width * column_count;
+                oheight -= char_height * row_count;
+                if (inner_border != NULL) {
+                        owidth -= inner_border->left + inner_border->right;
+                        oheight -= inner_border->top + inner_border->bottom;
+                }
 		gtk_window_resize(GTK_WINDOW(data),
 				  width + owidth, height + oheight);
+                gtk_border_free (inner_border);
 	}
 }
 
 static void
 move_window(GtkWidget *widget, guint x, guint y, gpointer data)
 {
+	GdkWindow *window;
+
 	if (GTK_IS_WIDGET(data)) {
-		if ((GTK_WIDGET(data))->window) {
-			gdk_window_move((GTK_WIDGET(data))->window, x, y);
+		window = gtk_widget_get_window(GTK_WIDGET(data));
+		if (window) {
+			gdk_window_move(window, x, y);
 		}
 	}
 }
@@ -460,6 +487,53 @@ child_exit_cb(VteTerminal *terminal,
 {
 }
 
+static int
+parse_enum(GType type,
+           const char *string)
+{
+  GEnumClass *enum_klass;
+  const GEnumValue *enum_value;
+  int value = 0;
+
+  enum_klass = (GEnumClass*)g_type_class_ref(type);
+  enum_value = g_enum_get_value_by_nick(enum_klass, string);
+  if (enum_value)
+    value = enum_value->value;
+  else
+    g_warning("Unknown enum '%s'\n", string);
+  g_type_class_unref(enum_klass);
+
+  return value;
+}
+
+static guint
+parse_flags(GType type,
+            const char *string)
+{
+  GFlagsClass *flags_klass;
+  guint value = 0;
+  char **flags;
+  guint i;
+
+  flags = g_strsplit_set(string, ",|", -1);
+  if (flags == NULL)
+    return 0;
+
+  flags_klass = (GFlagsClass*)g_type_class_ref(type);
+  for (i = 0; flags[i] != NULL; ++i) {
+          const GFlagsValue *flags_value;
+
+          flags_value = g_flags_get_value_by_nick(flags_klass, flags[i]);
+          if (flags_value)
+                  value |= flags_value->value;
+          else
+                  g_warning("Unknown flag '%s'\n", flags[i]);
+  }
+  g_type_class_unref(flags_klass);
+
+  return value;
+}
+
 int
 main(int argc, char **argv)
 {
@@ -480,7 +554,6 @@ main(int argc, char **argv)
 		 cursor_set = FALSE, reverse = FALSE, use_geometry_hints = TRUE,
 		 antialias = TRUE, use_scrolled_window = FALSE,
                  show_object_notifications = FALSE;
-        int scrollbar_policy = 0;
         char *geometry = NULL;
 	gint lines = 100;
 	const char *message = "Launching interactive shell...\r\n";
@@ -489,7 +562,9 @@ main(int argc, char **argv)
 	const char *command = NULL;
 	const char *working_directory = NULL;
 	const char *output_file = NULL;
-        char *cursor_shape = NULL;
+        char *pty_flags_string = NULL;
+        char *cursor_shape_string = NULL;
+        char *scrollbar_policy_string = NULL;
 	GdkColor fore, back, tint, highlight, cursor;
 	const GOptionEntry options[]={
 		{
@@ -561,7 +636,7 @@ main(int argc, char **argv)
 		{
 			"highlight", 'h', 0,
 			G_OPTION_ARG_NONE, &highlight_set,
-			"Enable the cursor highlighting", NULL
+			"Enable distinct highlight color for selection", NULL
 		},
 		{
 			"icon-title", 'i', 0,
@@ -585,8 +660,8 @@ main(int argc, char **argv)
 		},
 		{
 			"cursor-shape", 0, 0,
-			G_OPTION_ARG_STRING, &cursor_shape,
-			"Set cursor shape (block, underline, ibeam)", NULL
+			G_OPTION_ARG_STRING, &cursor_shape_string,
+			"Set cursor shape (block|underline|ibeam)", NULL
 		},
 		{
 			"scroll-background", 's', 0,
@@ -623,8 +698,8 @@ main(int argc, char **argv)
 		},
 		{
 			"scrollbar-policy", 'P', 0,
-			G_OPTION_ARG_INT, &scrollbar_policy,
-			"Set the policy for the vertical scroolbar in the scrolled window (0=always, 1=auto, 2=never; default:0)",
+			G_OPTION_ARG_STRING, &scrollbar_policy_string,
+			"Set the policy for the vertical scroolbar in the scrolled window (always|auto|never; default:always)",
 			NULL
 		},
 		{
@@ -638,10 +713,18 @@ main(int argc, char **argv)
 			G_OPTION_ARG_STRING, &output_file,
 			"Save terminal contents to file at exit", NULL
 		},
+		{
+			"pty-flags", 0, 0,
+			G_OPTION_ARG_STRING, &pty_flags_string,
+			"PTY flags set from default|no-utmp|no-wtmp|no-lastlog|no-helper|no-fallback", NULL
+		},
 		{ NULL }
 	};
 	GOptionContext *context;
 	GError *error = NULL;
+        VteTerminalCursorShape cursor_shape = VTE_CURSOR_SHAPE_BLOCK;
+        GtkPolicyType scrollbar_policy = GTK_POLICY_ALWAYS;
+        VtePtyFlags pty_flags = VTE_PTY_DEFAULT;
 
 	/* Have to do this early. */
 	if (getenv("VTE_PROFILE_MEMORY")) {
@@ -661,6 +744,19 @@ main(int argc, char **argv)
 		g_error_free (error);
 		return 1;
 	}
+
+        if (cursor_shape_string) {
+                cursor_shape = parse_enum(VTE_TYPE_TERMINAL_CURSOR_SHAPE, cursor_shape_string);
+                g_free(cursor_shape_string);
+        }
+        if (scrollbar_policy_string) {
+                scrollbar_policy = parse_enum(GTK_TYPE_POLICY_TYPE, scrollbar_policy_string);
+                g_free(scrollbar_policy_string);
+        }
+        if (pty_flags_string) {
+                pty_flags |= parse_flags(VTE_TYPE_PTY_FLAGS, pty_flags_string);
+                g_free(pty_flags_string);
+        }
 
 	if (!reverse) {
 		back.red = back.green = back.blue = 0xffff;
@@ -693,8 +789,7 @@ main(int argc, char **argv)
         if (use_scrolled_window) {
                 scrolled_window = gtk_scrolled_window_new (NULL, NULL);
                 gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-                                               GTK_POLICY_NEVER,
-                                               CLAMP (scrollbar_policy, GTK_POLICY_ALWAYS, GTK_POLICY_NEVER));
+                                               GTK_POLICY_NEVER, scrollbar_policy);
                 gtk_container_add(GTK_CONTAINER(window), scrolled_window);
         } else {
                 /* Create a box to hold everything. */
@@ -803,16 +898,10 @@ main(int argc, char **argv)
 	if (cursor_set) {
 		vte_terminal_set_color_cursor(terminal, &cursor);
 	}
-        if (g_strcmp0(cursor_shape, "underline") == 0) {
-                vte_terminal_set_cursor_shape(terminal, VTE_CURSOR_SHAPE_UNDERLINE);
-        } else if (g_strcmp0(cursor_shape, "ibeam") == 0) {
-                vte_terminal_set_cursor_shape(terminal, VTE_CURSOR_SHAPE_IBEAM);
-        } else {
-                vte_terminal_set_cursor_shape(terminal, VTE_CURSOR_SHAPE_BLOCK);
-        }
 	if (termcap != NULL) {
 		vte_terminal_set_emulation(terminal, termcap);
 	}
+        vte_terminal_set_cursor_shape(terminal, cursor_shape);
 
 	/* Set the default font. */
 	vte_terminal_set_font_from_string_full(terminal, font,
@@ -881,13 +970,35 @@ main(int argc, char **argv)
 
 	if (!console) {
 		if (shell) {
-			/* Launch a shell. */
+                        GError *err = NULL;
+                        char **command_argv = NULL;
+                        int command_argc;
+                        GPid pid = -1;
+
 			_VTE_DEBUG_IF(VTE_DEBUG_MISC)
 				vte_terminal_feed(terminal, message, -1);
-			vte_terminal_fork_command(terminal,
-						  command, NULL, env_add,
-						  working_directory,
-						  TRUE, TRUE, TRUE);
+
+                        if (command == NULL)
+                                command = "/bin/sh"; // FIXMEchpe
+
+                        if (command != NULL) {
+                                if (!g_shell_parse_argv(command, &command_argc, &command_argv, &err) ||
+                                    !vte_terminal_fork_command_full(terminal,
+                                                                    pty_flags,
+                                                                    NULL,
+                                                                    command_argv,
+                                                                    env_add,
+                                                                    G_SPAWN_SEARCH_PATH,
+                                                                    NULL, NULL,
+                                                                    &pid,
+                                                                    &err)) {
+                                        g_warning("Failed to fork: %s\n", err->message);
+                                        g_error_free(err);
+                                } else {
+                                        g_print("Fork succeeded, PID %d\n", pid);
+                                }
+                        }
+                        g_strfreev(command_argv);
 	#ifdef VTE_DEBUG
 			if (command == NULL) {
 				vte_terminal_feed_child(terminal,

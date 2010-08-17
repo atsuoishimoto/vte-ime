@@ -143,6 +143,10 @@ typedef struct _VteWordCharRange {
 	gunichar start, end;
 } VteWordCharRange;
 
+typedef struct _VteVisualPosition {
+	long row, col;
+} VteVisualPosition;
+
 /* Terminal private data. */
 struct _VteTerminalPrivate {
 	/* Emulation setup data. */
@@ -169,8 +173,7 @@ struct _VteTerminalPrivate {
 	int default_column_count, default_row_count;	/* default sizes */
 
 	/* PTY handling data. */
-	const char *shell;		/* shell we started */
-	int pty_master;			/* pty master descriptor */
+	VtePty *pty;
 	GIOChannel *pty_channel;	/* master channel */
 	guint pty_input_source;
 	guint pty_output_source;
@@ -206,9 +209,7 @@ struct _VteTerminalPrivate {
 	 * screen, which seems to be a DEC-specific feature. */
 	struct _VteScreen {
 		VteRing row_data[1];	/* buffer contents */
-		struct vte_cursor_position {
-			long row, col;
-		} cursor_current, cursor_saved;
+		VteVisualPosition cursor_current, cursor_saved;
 					/* the current and saved positions of
 					   the [insertion] cursor -- current is
 					   absolute, saved is relative to the
@@ -257,9 +258,7 @@ struct _VteTerminalPrivate {
 	struct selection_event_coords {
 		long x, y;
 	} selection_origin, selection_last;
-	struct selection_cell_coords {
-		long row, col;
-	} selection_start, selection_end;
+	VteVisualPosition selection_start, selection_end;
 
 	/* Miscellaneous options. */
 	VteTerminalEraseBinding backspace_binding, delete_binding;
@@ -285,6 +284,7 @@ struct _VteTerminalPrivate {
 
 	/* Cursor shape */
 	VteTerminalCursorShape cursor_shape;
+        float cursor_aspect_ratio;
 
 	/* Cursor blinking. */
         VteTerminalCursorBlinkMode cursor_blink_mode;
@@ -313,10 +313,13 @@ struct _VteTerminalPrivate {
 	GArray *match_regexes;
 	char *match;
 	int match_tag;
-	struct {
-		long row, column;
-	} match_start, match_end;
+	VteVisualPosition match_start, match_end;
 	gboolean show_match;
+
+	/* Search data. */
+	GRegex *search_regex;
+	gboolean search_wrap_around;
+	GArray *search_attrs; /* Cache attrs */
 
 	/* Data used when rendering the text which does not require server
 	 * resources and which can be kept after unrealizing. */

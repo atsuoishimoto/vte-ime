@@ -3,10 +3,10 @@ Upstream: http://bugzilla.gnome.org/show_bug.cgi?id=518405
 Description: Handle scrolling differently when using alternate screen or
  scrolling is restricted.
 
-Index: vte-0.24.0/python/vte.defs
+Index: vte-0.25.90/python/vte.defs
 ===================================================================
---- vte-0.24.0.orig/python/vte.defs	2010-04-01 11:31:07.206688886 +1100
-+++ vte-0.24.0/python/vte.defs	2010-04-01 11:31:17.946687619 +1100
+--- vte-0.25.90.orig/python/vte.defs	2010-08-17 17:35:04.300563000 +1000
++++ vte-0.25.90/python/vte.defs	2010-08-17 17:36:43.850563002 +1000
 @@ -210,6 +210,15 @@
    (return-type "gboolean")
  )
@@ -23,11 +23,11 @@ Index: vte-0.24.0/python/vte.defs
  (define-method set_scroll_background
    (of-object "VteTerminal")
    (c-name "vte_terminal_set_scroll_background")
-Index: vte-0.24.0/src/vte.c
+Index: vte-0.25.90/src/vte.c
 ===================================================================
---- vte-0.24.0.orig/src/vte.c	2010-03-30 00:06:53.000000000 +1100
-+++ vte-0.24.0/src/vte.c	2010-04-01 11:31:17.946687619 +1100
-@@ -10787,8 +10787,9 @@
+--- vte-0.25.90.orig/src/vte.c	2010-08-16 23:06:23.000000000 +1000
++++ vte-0.25.90/src/vte.c	2010-08-17 17:36:43.850563002 +1000
+@@ -10966,8 +10966,9 @@
  		return FALSE;
  	}
  
@@ -39,7 +39,7 @@ Index: vte-0.24.0/src/vte.c
  		char *normal;
  		gssize normal_length;
  		const gchar *special;
-@@ -12353,6 +12354,22 @@
+@@ -12549,6 +12550,22 @@
          g_object_notify (G_OBJECT (terminal), "scroll-on-keystroke");
  }
  
@@ -62,11 +62,11 @@ Index: vte-0.24.0/src/vte.c
  static void
  vte_terminal_real_copy_clipboard(VteTerminal *terminal)
  {
-Index: vte-0.24.0/src/vte.h
+Index: vte-0.25.90/src/vte.h
 ===================================================================
---- vte-0.24.0.orig/src/vte.h	2010-03-30 00:06:53.000000000 +1100
-+++ vte-0.24.0/src/vte.h	2010-04-01 11:31:17.946687619 +1100
-@@ -310,6 +310,8 @@
+--- vte-0.25.90.orig/src/vte.h	2010-07-16 03:08:57.000000000 +1000
++++ vte-0.25.90/src/vte.h	2010-08-17 17:36:43.850563002 +1000
+@@ -298,6 +298,8 @@
  void vte_terminal_set_scroll_on_output(VteTerminal *terminal, gboolean scroll);
  void vte_terminal_set_scroll_on_keystroke(VteTerminal *terminal,
  					  gboolean scroll);
@@ -75,11 +75,11 @@ Index: vte-0.24.0/src/vte.h
  
  /* Set the color scheme. */
  void vte_terminal_set_color_dim(VteTerminal *terminal,
-Index: vte-0.24.0/src/vte-private.h
+Index: vte-0.25.90/src/vte-private.h
 ===================================================================
---- vte-0.24.0.orig/src/vte-private.h	2010-03-30 00:06:53.000000000 +1100
-+++ vte-0.24.0/src/vte-private.h	2010-04-01 11:31:17.946687619 +1100
-@@ -281,6 +281,7 @@
+--- vte-0.25.90.orig/src/vte-private.h	2010-07-16 03:08:44.000000000 +1000
++++ vte-0.25.90/src/vte-private.h	2010-08-17 17:36:43.850563002 +1000
+@@ -280,6 +280,7 @@
  	gboolean scroll_on_output;
  	gboolean scroll_on_keystroke;
  	long scrollback_lines;

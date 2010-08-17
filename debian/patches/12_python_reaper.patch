@@ -3,9 +3,10 @@ GNOME #320127; WONTFIX upstream, we'll need to remove this eventually,
 but we need to take care that nothing in Debian uses it:
 gdebi: #574168
 
-diff -urN vte-0.20.0.orig/python/vte.defs vte-0.20.0/python/vte.defs
---- vte-0.20.0.orig/python/vte.defs	2009-03-05 15:06:07.000000000 +0100
-+++ vte-0.20.0/python/vte.defs	2009-04-07 20:17:08.000000000 +0200
+Index: vte-0.25.90/python/vte.defs
+===================================================================
+--- vte-0.25.90.orig/python/vte.defs	2009-04-18 02:51:43.000000000 +1000
++++ vte-0.25.90/python/vte.defs	2010-08-17 17:35:04.300563000 +1000
 @@ -7,6 +7,14 @@
    (gtype-id "VTE_TYPE_TERMINAL")
  )
@@ -39,10 +40,11 @@ diff -urN vte-0.20.0.orig/python/vte.defs vte-0.20.0/python/vte.defs
  ;; From vteversion.h
  
  
-diff -urN vte-0.20.0.orig/python/vtemodule.c vte-0.20.0/python/vtemodule.c
---- vte-0.20.0.orig/python/vtemodule.c	2009-03-05 15:06:07.000000000 +0100
-+++ vte-0.20.0/python/vtemodule.c	2009-04-07 20:18:05.000000000 +0200
-@@ -25,6 +25,7 @@
+Index: vte-0.25.90/python/vtemodule.c
+===================================================================
+--- vte-0.25.90.orig/python/vtemodule.c	2010-07-16 03:08:44.000000000 +1000
++++ vte-0.25.90/python/vtemodule.c	2010-08-17 17:35:04.300563000 +1000
+@@ -23,6 +23,7 @@
  #include <pygobject.h>
  #include <pygtk/pygtk.h>
  #include "../src/vte.h"
@@ -50,9 +52,10 @@ diff -urN vte-0.20.0.orig/python/vtemodule.c vte-0.20.0/python/vtemodule.c
  
  extern void pyvte_register_classes(PyObject * d);
  extern void pyvte_add_constants(PyObject *module, const gchar *strip_prefix);
-diff -urN vte-0.20.0.orig/python/vte.override vte-0.20.0/python/vte.override
---- vte-0.20.0.orig/python/vte.override	2009-03-05 15:06:07.000000000 +0100
-+++ vte-0.20.0/python/vte.override	2009-04-07 20:17:45.000000000 +0200
+Index: vte-0.25.90/python/vte.override
+===================================================================
+--- vte-0.25.90.orig/python/vte.override	2010-07-16 03:08:44.000000000 +1000
++++ vte-0.25.90/python/vte.override	2010-08-17 17:35:04.300563000 +1000
 @@ -7,6 +7,7 @@
  #include <pygobject.h>
  #include <gtk/gtk.h>

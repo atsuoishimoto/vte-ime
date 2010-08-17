@@ -1,3 +1,13 @@
+vte (1:0.25.90-0ubuntu1) maverick; urgency=low
+
+  * New upstream release
+  * debian/libvte9.install:
+    - Update to new installed location
+  * debian/patches/91_keep_fds.patch:
+    - Applied upstream
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Tue, 17 Aug 2010 17:30:11 +1000
+
 vte (1:0.24.3-1ubuntu1) maverick; urgency=low
 
   * Merge with Debian unstable, remaining Ubuntu changes:
