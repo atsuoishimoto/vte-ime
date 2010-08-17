@@ -1,13 +1,218 @@
-commit 5395c03f39e73c14ae444bc86d5b653b3957884d
+commit b48f5ea815337f48a0dafefb68b5858af66ecd6a
 Author: Christian Persch <chpe@gnome.org>
-Date:   Mon Jul 12 21:40:24 2010 +0200
+Date:   Mon Aug 16 21:23:39 2010 +0200
 
-    Version 0.24.3
+    One more GSEAL fix
 
- configure.in |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ src/reflect.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-commit 6042c75b5a6daa0e499e61c8e07242d890d38ff1
+commit 077f698fcd06eae347ee91426a110c4d00ee1a99
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Aug 16 15:09:42 2010 +0200
+
+    Version 0.25.90
+
+ NEWS         |   15 +++++++++++++++
+ configure.in |    2 +-
+ 2 files changed, 16 insertions(+), 1 deletions(-)
+
+commit deaac0d77a1838dc3ecc33ba2993b45dd2a3ee1c
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 11 16:15:18 2010 -0400
+
+    Fix signdness warnings
+
+ src/vte.c |   30 ++++++++++++++++--------------
+ 1 files changed, 16 insertions(+), 14 deletions(-)
+
+commit 9af0c65c082daab19d388f50c2b5d52f8f28a454
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 11 16:10:06 2010 -0400
+
+    Bug 626676 - Cleanup vte_terminal_determine_colors
+    
+    Or rather, rewrite it.
+    
+    At least I understand how it's supposed to work now.  Combinations of
+    set highlight color, set cursor color, reverse mode, selected text,
+    etc work much better now.
+
+ src/vte.c |  190 +++++++++++++++++++++++++++++++++----------------------------
+ 1 files changed, 103 insertions(+), 87 deletions(-)
+
+commit a0d9e0ff3a580a47f45dc01eb303c164a126c81b
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 11 15:21:29 2010 -0400
+
+    Simplify determine_colors more
+    
+    Get rid of reverse argument.  Also "xor" instead of "or" selection mode
+    with reverse mode.  Selection works with reverse mode now.  Before, it
+    didn't render.
+
+ src/vte.c |   34 +++++++++++-----------------------
+ 1 files changed, 11 insertions(+), 23 deletions(-)
+
+commit 956a836ab4f7000a7cf409c05a194e194573c358
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 11 14:30:14 2010 -0400
+
+    Bug 621298 - Cursor invisible (plain black) in (xfce) Terminal & terminator
+    
+    Fix the case where cursor color is set.
+    
+    Towards making determine_colors make sense.  Still not done.  More
+    commits coming, but this one is enough to fix the main regression.
+
+ src/vte.c |   32 ++++++++++++++++++++++----------
+ 1 files changed, 22 insertions(+), 10 deletions(-)
+
+commit 3a7fbb285ebf9a50eb3498e21e001b773701f5a6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 11 14:24:33 2010 -0400
+
+    Revert "Don't hide cursor even if cell is invisible"
+    
+    This reverts commit 18ee5f522d8bc2f5dfe896f40eba8d5313cb310f.
+    
+    This didn't make sense.  It was making invisible cells visible when
+    under cursor.
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit edde846fa555e0d5e16d54328e47d81096f82893
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 11 13:46:10 2010 -0400
+
+    Minor
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b2f8852f936a8ef0537a0a83156a24544b1a1cf2
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Aug 11 13:45:40 2010 -0400
+
+    Minor --help adjustment
+
+ src/vteapp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 9abf75cb36376d00a6dc14d7482599a57cbff023
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Aug 11 18:16:20 2010 +0200
+
+    Vary gettext domain for vte/gtk3
+    
+    Using the same domain creates parallel-install troubles.
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 48e2356a5a91c8c6d61573c30bcb8740fbec4b8e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 10 15:01:47 2010 -0400
+
+    Ensure vte-gtk-compat.h is included in the tarball
+
+ src/Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 01c7eee35d336e674df206220047c19bc38ed20e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Aug 10 15:00:22 2010 -0400
+
+    Ensure decset, osc and window are included in the tarball
+
+ src/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 14aa0032f04aa1771116fe6f73dd46a75c4c11f2
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Aug 10 20:09:29 2010 +0200
+
+    Docs update
+
+ doc/reference/vte-sections.txt |    6 ++++
+ src/vte.c                      |   57 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+), 0 deletions(-)
+
+commit 4feccba86ead67f7e0da018b45f2301a89a3ea75
+Author: Nils-Christoph Fiedler <ncfiedler@gnome.org>
+Date:   Sun Aug 8 15:53:24 2010 +0200
+
+    Updated LowGerman translation
+
+ po/nds.po |   35 ++++++++++++++++++-----------------
+ 1 files changed, 18 insertions(+), 17 deletions(-)
+
+commit 18ed68d1ea94e002cef001398b8bb344d639f5d7
+Author: A S Alam <aalam@users.sf.net>
+Date:   Wed Aug 4 15:10:48 2010 +0530
+
+    update Translation in master for Punjabi by A S Alam
+
+ po/pa.po |   46 ++++++++++++++++++++++++----------------------
+ 1 files changed, 24 insertions(+), 22 deletions(-)
+
+commit 23655733396cbe49b989901c7a4a0c66bca4a4dc
+Author: Dirgita <dirgitadevina@gmail.com>
+Date:   Wed Aug 4 11:03:00 2010 +0700
+
+    Updated Indonesian translation
+
+ po/id.po |  152 +++++++++++++++++---------------------------------------------
+ 1 files changed, 42 insertions(+), 110 deletions(-)
+
+commit 701dfad230c641edd7894f562fb46195a57bcf08
+Author: Daniel Nylander <po@danielnylander.se>
+Date:   Sun Jul 25 19:05:14 2010 +0200
+
+    Updated Swedish translation
+
+ po/sv.po |  114 ++++++++++++++++++++++++-------------------------------------
+ 1 files changed, 45 insertions(+), 69 deletions(-)
+
+commit bc8df68917912f333ebdab8135800e4d3632dcd4
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Jul 22 13:05:04 2010 -0400
+
+    Bug 618097 - Broken backtab (cbt)
+
+ src/vteseq.c |    9 ++-------
+ 1 files changed, 2 insertions(+), 7 deletions(-)
+
+commit 3e8c59f78a8e7557ffccd97d7cd5dea0f7b0aceb
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Jul 22 12:32:40 2010 -0400
+
+    Add compat impl for gtk_accessible_get_widget()
+
+ src/vte-gtk-compat.h |    4 ++++
+ src/vteaccess.c      |    1 +
+ 2 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 07307c1863cd68a85284235b69e6687f9eed36e9
+Author: Fran Diéguez <fran.dieguez@mabishu.com>
+Date:   Wed Jul 21 16:28:11 2010 +0200
+
+    Updated Galician translations
+
+ po/gl.po |   58 ++++++++++++++++++----------------------------------------
+ 1 files changed, 18 insertions(+), 40 deletions(-)
+
+commit c01a676e1ed44e1aa3e318cea559be4b2f1d49c3
+Author: Mario Blättermann <mariobl@gnome.org>
+Date:   Fri Jul 16 21:38:54 2010 +0200
+
+    [i18n] Updated German translation
+
+ po/de.po |   99 ++++++++++++++++++++++++++++---------------------------------
+ 1 files changed, 45 insertions(+), 54 deletions(-)
+
+commit 8b971a7b2c59902914ecbbc3915c45dd21530a91
 Author: Kees Cook <kees@ubuntu.com>
 Date:   Mon Jul 12 21:31:32 2010 +0200
 
@@ -15,110 +220,1057 @@ Date:   Mon Jul 12 21:31:32 2010 +0200
     
     Fixed CVE-2003-0070 again.
     See also http://marc.info/?l=bugtraq&m=104612710031920&w=2 .
+    (cherry picked from commit 6042c75b5a6daa0e499e61c8e07242d890d38ff1)
 
  src/vteseq.c |   24 ++++++++++++++++--------
  1 files changed, 16 insertions(+), 8 deletions(-)
 
-commit 623ff441eeac49b0123e16312b8c4fbd17fbc0ab
+commit a4445d5bd1106d8683b471a358f7933bacb58105
 Author: Christian Persch <chpe@gnome.org>
-Date:   Mon Jun 21 20:53:15 2010 +0200
+Date:   Mon Jul 12 21:27:38 2010 +0200
 
-    Version 0.24.2
+    Tiny configure fix
 
  configure.in |    4 ++--
  1 files changed, 2 insertions(+), 2 deletions(-)
 
-commit b052b7637780df287bdef50f83c6b31f9559e203
+commit d17e650aa062946ce599f80fe33989cc2c7bb52d
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Thu Jul 15 09:57:23 2010 -0400
+
+    Stop using the gdk_draw_* API
+    
+    Only one gdk_draw_rectangle() call let.
+
+ src/vte.c |   29 ++++++++++++++++-------------
+ 1 files changed, 16 insertions(+), 13 deletions(-)
+
+commit 6eadb8494797e44910b86b5e101823cf527c04e1
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Thu Jul 15 09:07:51 2010 -0400
+
+    Use accessors for setting adjustment
+    
+    We use g_object_freeze_notify() to emit the same amount of ::changed
+    signals.
+
+ src/vte.c |   34 ++++++++++++++++++++--------------
+ 1 files changed, 20 insertions(+), 14 deletions(-)
+
+commit 31303a1893ba6052a537f285c99db80499a8b797
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Thu Jul 15 08:38:42 2010 -0400
+
+    Use get accessors for adjustments
+
+ src/vte.c |   57 +++++++++++++++++++++++++++++++--------------------------
+ 1 files changed, 31 insertions(+), 26 deletions(-)
+
+commit 887f86c00e99e38f9374eea03b1535cd823851b3
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Thu Jul 15 08:24:16 2010 -0400
+
+    Add remaining accessors
+    
+    All that remains now is the adjustment accessors.
+
+ src/vte.c       |   19 ++++++++-------
+ src/vteaccess.c |   64 ++++++++++++++++++++++++++++--------------------------
+ src/vteapp.c    |   65 ++++++++++++++++++++++++++++++++----------------------
+ src/vtedraw.c   |   11 ++++++---
+ src/vteseq.c    |   16 +++++++------
+ 5 files changed, 97 insertions(+), 78 deletions(-)
+
+commit 0f4d6539fa0280cfa658a27ceaca63c2db0232e4
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Wed Jul 14 22:52:53 2010 -0400
+
+    Seal VTE when VTE_SEAL_ENABLE is given, not GSEAL_ENABLE
+    
+    gtk+ 3.0 defines GSEAL_ENABLE, which seals up VTE for the vte code as well.
+    Instead, seal of VTE when VTE_SEAL_ENABLE is defined and set it in
+    the .pc file.
+
+ src/vte.h |    2 +-
+ vte.pc.in |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 235461a3c4ac1577a3c0891a2d0ca5316e12a568
+Author: Kristian Høgsberg <krh@bitplanet.net>
+Date:   Wed Jul 14 22:51:18 2010 -0400
+
+    Introduce compat macros for region differences
+
+ src/vte-gtk-compat.h |   27 +++++++++++++++++++++++++++
+ src/vte.c            |    6 +++---
+ src/vtedraw.h        |    1 +
+ 3 files changed, 31 insertions(+), 3 deletions(-)
+
+commit ac1e78c78e6a39834d35c525be01d50c348d33ba
+Author: Saleem Abdulrasool <compnerd@compnerd.org>
+Date:   Wed Jul 14 22:10:00 2010 -0400
+
+    Use accessors for gtk objects
+    
+    This change introduces vte-gtk-compat.h to allow compatibility with the
+    current GTK+ requirement (2.14+) while allowing us to use GSEAL when
+    available.  When the GTK+ requirements are moved up to 2.20+, it should
+    be possible to entirely remove the header.
+    
+    Setting of the GTK adjustment fields still occurs without the accessors
+    as setting the value and then using value_changed may introduce
+    different behaviour and/or double signal emissions.
+
+ src/vte-gtk-compat.h |   45 +++++++++
+ src/vte.c            |  253 +++++++++++++++++++++++++++++--------------------
+ 2 files changed, 195 insertions(+), 103 deletions(-)
+
+commit 396f44dd5ea0a4d9d0567ae9c6618bb3004c4c34
+Author: Kristjan Schmidt <kristjan.schmidt@googlemail.com>
+Date:   Sun Jul 4 17:33:30 2010 +0200
+
+    Add Esperanto translation
+
+ po/LINGUAS |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 3671437e3d2fca4ac4918078700b2d60de43228c
+Author: Kristjan Schmidt <kristjan.schmidt@googlemail.com>
+Date:   Sun Jul 4 17:33:30 2010 +0200
+
+    Add Esperanto translation
+
+ po/eo.po |  105 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 105 insertions(+), 0 deletions(-)
+
+commit 137e16630cd737dd4690fb54e6431b0bfebcf509
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jun 30 15:27:30 2010 -0400
+
+    Simplify libtool versioning
+
+ configure.in    |   38 +++++++++++++++++++-------------------
+ src/Makefile.am |    2 +-
+ 2 files changed, 20 insertions(+), 20 deletions(-)
+
+commit 4423625ec82432f7bbc6b8a00b865271d3b123fd
+Author: Aron Xu <aronxu@gnome.org>
+Date:   Tue Jun 29 21:53:54 2010 +0800
+
+    Update Simplified Chinese translation.
+
+ po/zh_CN.po |  112 ++++++++++++++++++++++++----------------------------------
+ 1 files changed, 46 insertions(+), 66 deletions(-)
+
+commit 11a21955d145c743631a3eb6dc109e08359bfea5
+Author: Khaled Hosny <khaledhosny@eglug.org>
+Date:   Sat Jun 26 22:30:37 2010 +0300
+
+    Updated Arabic translation
+
+ po/ar.po |   46 ++++++++++++++++++++--------------------------
+ 1 files changed, 20 insertions(+), 26 deletions(-)
+
+commit 9caf8b2249dea81bc03108020b7c033a78cd3f57
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Jun 25 02:02:29 2010 -0300
+
+    Minor comment fix.
+
+ src/vte.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 8b3dbe8e6771356023fe552b178659357f502473
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Jun 17 15:02:54 2010 -0400
+
+    Set widget app_paintable.
+
+ src/vte.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 332e694b5067c7e8e5d2f32ceccbd229243a3ff7
+Author: Christian Persch <chpe@gnome.org>
+Date:   Fri May 28 21:10:46 2010 +0200
+
+    Make vte dual buildable with gtk2 and gtk3
+    
+    Gtk3 build is untested.
+
+ Makefile.am               |    8 +++-
+ configure.in              |   82 ++++++++++++++++++++++++++++++++++++--------
+ doc/reference/Makefile.am |    4 +-
+ src/Makefile.am           |   64 ++++++++++++++++++-----------------
+ vte-uninstalled.pc.in     |    2 +-
+ vte.pc.in                 |    4 +-
+ 6 files changed, 111 insertions(+), 53 deletions(-)
+
+commit 405ed5bb3151940db0f21ff5b8e96bea94770f96
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Jun 11 22:51:49 2010 -0400
+
+    Clean up background clearing
+    
+    Fixes bug where lower border of the screen was not properly painted in
+    fullscreen mode.
+
+ src/vte.c     |   45 +++++++++------------------------------------
+ src/vtedraw.c |   18 +-----------------
+ src/vtedraw.h |    3 +--
+ 3 files changed, 11 insertions(+), 55 deletions(-)
+
+commit b73782a28894e25ed146271f9d6c6775a6836199
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Jun 4 14:36:45 2010 -0400
+
+    Bug 601926 - Don't hardcode meta to alt
+
+ src/keymap.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b86c068b061090e176b1ff6e82dcccfd0198ed2f
+Author: Matthias Clasen <mclasen@redhat.com>
+Date:   Thu Jun 3 12:16:30 2010 -0400
+
+    Bug 620493 - strict aliasing warning
+
+ gnome-pty-helper/gnome-pty-helper.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit bff92abe96896ebf3c7e2a60243caf65659d3390
+Author: Yaron Shahrabani <sh.yaron@gmail.com>
+Date:   Sat May 29 13:29:22 2010 +0300
+
+    Updated Hebrew translation.
+
+ po/he.po |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 94d7fb63386d1e8e2653a961af6cbeac06b05c2b
+Author: Yaron Shahrabani <sh.yaron@gmail.com>
+Date:   Sat May 29 13:28:26 2010 +0300
+
+    Updated Hebrew translation.
+
+ po/he.po |  100 ++++++++++++++++++++++++++-----------------------------------
+ 1 files changed, 43 insertions(+), 57 deletions(-)
+
+commit b1cc8aa1a42e74c2130a6e39c5571779fb842f69
 Author: Ivar Smolin <okul@linux.ee>
-Date:   Thu May 20 15:07:06 2010 +0300
+Date:   Thu May 27 08:35:49 2010 +0300
 
     Estonian translation updated
 
- po/et.po |   67 +++++++++++--------------------------------------------------
- 1 files changed, 12 insertions(+), 55 deletions(-)
+ po/et.po |   84 ++++++++++++-------------------------------------------------
+ 1 files changed, 17 insertions(+), 67 deletions(-)
 
-commit 10430cbf79306a3f7dc11798e5146b33c0c05448
+commit 9370647823ce29c1088c351381a07a5506b74c84
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed May 26 13:09:47 2010 -0400
+
+    Bug 618749 - set terminal widget background color to terminal background
+
+ src/vte.c |   15 ++++++++++++---
+ 1 files changed, 12 insertions(+), 3 deletions(-)
+
+commit 430dd34fa9532fa492ea512f226e8483d1393716
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed May 26 13:09:25 2010 -0400
+
+    Fix requires_clear setting
+    
+    Part of Bug 618749 - [PATCH] set terminal widget background color to terminal
+
+ src/vtedraw.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 2902ade6f3714e8d42cab0320a5e99345a142bd9
+Author: Petr Kovar <pknbe@volny.cz>
+Date:   Sun May 23 19:49:10 2010 +0200
+
+    Update Czech translation by Marek Cernocky
+
+ po/cs.po |   43 ++++++++++++++++++-------------------------
+ 1 files changed, 18 insertions(+), 25 deletions(-)
+
+commit 3bd8a57d124126f360a2352bfdc61e78a7c7982f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri May 14 18:27:32 2010 -0400
+
+    Revert "Disable introspection dist"
+    
+    This reverts commit a0cec4542963d52b1c1842ea9b450a51262b4c09.
+
+ src/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 2d2aabde8ba4ef9dff306cbf15044c68e350ba9d
+Author: Thomas Thurman <tthurman@gnome.org>
+Date:   Thu May 13 18:06:11 2010 -0400
+
+    Updated Shavian translation
+
+ po/en@shaw.po |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 868d03f9921e49ef8966a9307a0f521f5c9311d7
+Author: Thomas Thurman <tthurman@gnome.org>
+Date:   Wed May 12 18:41:00 2010 -0400
+
+    Updated Shavian transliteration
+
+ po/en@shaw.po |   47 ++++++++++++++++++++---------------------------
+ 1 files changed, 20 insertions(+), 27 deletions(-)
+
+commit 5dc9b3ce32070f1a7040b8ed24d9d463ad6a67b0
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue May 11 16:49:10 2010 -0400
+
+    Bug 614658 - text selection with mouse is buggy when using the shift key
+
+ src/vte.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit c84f01d9de7bc2c7a9bfbc6373afbdebbab3d2be
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed May 5 19:16:39 2010 -0400
+
+    Bug 617690 - Setting default fg color should not cancel underline
+
+ src/vteseq.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+commit 7af990ed413f19de0b20815b4ceeec13c201790f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon May 3 11:31:46 2010 -0400
+
+    Release 0.25.1
+
+ NEWS         |   17 +++++++++++++++++
+ configure.in |    2 +-
+ 2 files changed, 18 insertions(+), 1 deletions(-)
+
+commit a0cec4542963d52b1c1842ea9b450a51262b4c09
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon May 3 21:08:54 2010 -0400
+
+    Disable introspection dist
+    
+    Broken as usual...
+
+ src/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 860ed187545355fa9daef60907a3746837cc7b6a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon May 3 11:21:42 2010 -0400
+
+    [configure] Make libtool versioning automatic
+
+ configure.in |   21 +++++++++------------
+ 1 files changed, 9 insertions(+), 12 deletions(-)
+
+commit d8ccb73b23cd2a5c85a3bfbfbfe550391feb3ae0
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon May 3 04:17:52 2010 -0400
+
+    [search] Fix not-found
+
+ src/vte.c |   30 +++++++++++++++++++++++++++++-
+ 1 files changed, 29 insertions(+), 1 deletions(-)
+
+commit e7101e79d6ba2d8a2f2d1029e76f7c8aecffbc09
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon May 3 03:58:34 2010 -0400
+
+    [search] Don't scroll if result is on screen already
+
+ src/vte.c |   22 ++++++++++++++++------
+ 1 files changed, 16 insertions(+), 6 deletions(-)
+
+commit 8be7456df21e13fa7182143eb1266790ce3fc31a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon May 3 03:49:09 2010 -0400
+
+    Fix presenting search result
+
+ src/vte.c |   47 ++++++++++++++++++++++-------------------------
+ 1 files changed, 22 insertions(+), 25 deletions(-)
+
+commit 871fc9e97a2c6f8340ca20eb75fbbd04fecfb694
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon May 3 03:23:17 2010 -0400
+
+    Add comment
+
+ src/vte.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit fc35e7bed6ee7940167f9cde0eae913be7d15f4a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon May 3 03:21:59 2010 -0400
+
+    Fix selection invalidation.  Oops!
+
+ src/vte.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit d80ecde4c350e9922d374f9adb97238e5c041e5c
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon May 3 03:20:52 2010 -0400
+
+    [search] Implement wrap-around
+
+ src/vte.c |   92 +++++++++++++++++++++++++++++++++++++++----------------------
+ 1 files changed, 59 insertions(+), 33 deletions(-)
+
+commit 95c30fc52edd2d5de68267fdf3847b9e639d218d
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sun May 2 03:35:21 2010 -0400
+
+    Add VteVisualPosition
+
+ src/vte-private.h |   16 ++++------
+ src/vte.c         |   80 ++++++++++++++++++++++++++--------------------------
+ src/vteseq.c      |    2 +-
+ 3 files changed, 48 insertions(+), 50 deletions(-)
+
+commit ae08c6d9c1a2f1d9f5fee8658ddbed2321b1b0e1
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sun May 2 03:23:29 2010 -0400
+
+    Refactor search
+
+ src/vte-private.h |    1 +
+ src/vte.c         |  186 +++++++++++++++++++++++++++++++++-------------------
+ 2 files changed, 119 insertions(+), 68 deletions(-)
+
+commit 1710d5069482355cf1b3dff9a7605f35311823d4
+Author: Kjartan Maraas <kmaraas@gnome.org>
+Date:   Sun May 2 11:40:20 2010 +0200
+
+    Updated Norwegian bokmål translation
+
+ po/nb.po |   95 +++++++++++++++++++-------------------------------------------
+ 1 files changed, 29 insertions(+), 66 deletions(-)
+
+commit 81375a2f4aec7b55d8c3337a316fdeda166b701f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Apr 29 16:38:36 2010 -0400
+
+    Bug 616497 - 256 color sequence lacks boundary checking
+
+ src/vteseq.c |   28 ++++++++++++++++------------
+ 1 files changed, 16 insertions(+), 12 deletions(-)
+
+commit 5e7bb0b7cbbd130eada9730b029270d822a69ef5
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Apr 27 16:28:12 2010 -0400
+
+    Fixup search a bit
+
+ src/vte-private.h |    2 +-
+ src/vte.c         |    9 +++++----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+commit ed1c3e4ba7aa3a6a3d4eea9dc30b6356f91c26b9
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Apr 27 11:35:39 2010 -0400
+
+    Add _[gs]et_wrap_around() API
+
+ src/vte-private.h |    1 +
+ src/vte.c         |   29 ++++++++++++++++++++++-------
+ src/vte.h         |    7 ++++---
+ 3 files changed, 27 insertions(+), 10 deletions(-)
+
+commit c16d84a84006fd62ad4282b983868ae7b91cf9c6
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Apr 27 06:22:26 2010 -0400
+
+    Start of find_prev
+
+ src/vte.c |   95 +++++++++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 files changed, 80 insertions(+), 15 deletions(-)
+
+commit 812fa94985488dda7d14992895c20ea632c04147
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Apr 27 04:01:03 2010 -0400
+
+    Add buffer search API
+    
+    Not performing any actual search right now.
+
+ src/vte-private.h |    3 ++
+ src/vte.c         |   61 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/vte.h         |    9 +++++++
+ 3 files changed, 73 insertions(+), 0 deletions(-)
+
+commit 3653a15060dace53d22834fd853ecf702859aea0
+Author: Francisco Diéguez <fran.dieguez@mabishu.com>
+Date:   Sat Apr 17 21:35:15 2010 +0200
+
+    Updated Galician translations
+
+ po/gl.po |   37 ++++++++++++++++---------------------
+ 1 files changed, 16 insertions(+), 21 deletions(-)
+
+commit 25a382362d049d655620c122e3036f3482ebf963
 Author: Christian Persch <chpe@gnome.org>
-Date:   Mon Apr 26 13:16:16 2010 +0200
+Date:   Thu Apr 15 19:02:04 2010 +0200
 
-    Version 0.24.1
+    VteBg is private API
 
- NEWS         |    5 +++++
- configure.in |    4 ++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ doc/reference/vte-sections.txt |    1 -
+ src/vtebg.c                    |    2 +-
+ 2 files changed, 1 insertions(+), 2 deletions(-)
 
-commit d86f723c76212eabd22c0622072f6f0cb9b733d1
+commit 8c0e7c9aa277e8f51d7dbb010044fea072a26c0b
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Apr 15 18:55:02 2010 +0200
+
+    Use (transfer full)
+
+ src/pty.c |    6 +++---
+ src/vte.c |   18 +++++++++---------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
+
+commit 15ce739c19ff14f3d5e2267d2c1bb1d1b5c50a28
+Author: Jorge González <jorgegonz@svn.gnome.org>
+Date:   Thu Apr 15 08:28:01 2010 +0200
+
+    Updated Spanish translation
+
+ po/es.po |  119 ++++++++++++++++++++++++++++----------------------------------
+ 1 files changed, 54 insertions(+), 65 deletions(-)
+
+commit 32af285e46f078a84fbff7d2455bba4960b3a4b8
+Author: Matej Urbančič <mateju@svn.gnome.org>
+Date:   Wed Apr 14 17:58:38 2010 +0200
+
+    Updated Slovenian translation
+
+ po/sl.po |  129 ++++++++++++++++++++++++++-----------------------------------
+ 1 files changed, 55 insertions(+), 74 deletions(-)
+
+commit c4159492f8ea3f5fc4c1adeae5077ef12edb366b
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Apr 12 20:29:38 2010 +0200
+
+    Add some more gi annotations
+
+ src/vte.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 0142382369accceab938fd06e7001688187834c5
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Apr 12 20:09:08 2010 +0200
+
+    Tiny docs fix
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit deeab3837a7b3c463e525f75f0b96436448bc7c3
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Apr 12 19:59:44 2010 +0200
+
+    Add annotation-glossary.xml include
+
+ doc/reference/vte-docs.xml |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 122d6382534fd381ca2f964b0df9aa568da52c45
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Apr 12 19:59:03 2010 +0200
+
+    Add deprecation guards to vtedeprecated.h
+    
+    They're redunant since this file is only included in the
+    !VTE_DISABLE_DEPRECATED case, but this is necessary to make the docs
+    build happy.
+
+ src/vtedeprecated.h |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit fddc82dde27f0cbdbc38c617808be965b83558ac
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Apr 12 11:38:06 2010 -0400
+
+    Bug 615417 - Reversed and one error saturation level in 0.24.0
+
+ src/vtebg.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit f82251e5138a3515c3bd17e4af5769ee2c7c3d96
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Apr 12 11:23:42 2010 -0400
+
+    Bug 615467 - [PATCH] VTE does not handle CSI%dr properly
+
+ src/caps.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit bc3a50d2d6024e8b01bb64f9e0e908de123216a2
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Apr 11 21:00:01 2010 +0200
+
+    Don't crash when root_surface is NULL
+
+ src/vtebg.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 17a7de4fb76205f92d6f9af7af9ba6e127eeb3b4
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Apr 11 20:51:56 2010 +0200
+
+    Add some debug output to VteBg
+
+ src/debug.c |    3 ++-
+ src/debug.h |    3 ++-
+ src/vtebg.c |   21 ++++++++++++---------
+ 3 files changed, 16 insertions(+), 11 deletions(-)
+
+commit bf80e94ed89c3abdc238725694617444cc0f3949
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 10 17:48:54 2010 +0200
+
+    Tiny docs fixup
+
+ src/vte.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 09ac9fd1733e0376fe2201e92a93accd7c716865
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 10 17:41:28 2010 +0200
+
+    Add gobject introspection annotations
+    
+    ... and update some docs.
+
+ src/pty.c |   24 +++---
+ src/vte.c |  315 ++++++++++++++++++++++++++----------------------------------
+ src/vte.h |    9 +-
+ 3 files changed, 154 insertions(+), 194 deletions(-)
+
+commit b1379dc19ac015a3dbb7a42f7b1250e6e096820f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 10 16:34:11 2010 +0200
+
+    Remove unused variable
+
+ src/vtebg.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit e70fbd240fd230155a5321907bfe6f4fa032586c
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 10 16:27:19 2010 +0200
+
+    Add FIXME about potential optimisation
+
+ src/vtebg.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 3aaa051bc390c97dca80beff9fdcf14eaddf01a8
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 10 16:24:33 2010 +0200
+
+    Add some gtk-doc comments
+    
+    While trying to understand this code.
+
+ src/vtebg.c |   43 +++++++++++++++++++++++++++++++++++--------
+ 1 files changed, 35 insertions(+), 8 deletions(-)
+
+commit 41db1d0d64227d65d1f25de68d8a62e3a7bd271d
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 10 16:06:02 2010 +0200
+
+    Use _vte_debug_print() here
+
+ src/vtebg.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+commit 7561724dc78abf71a6cefaf17965f16a69fec44b
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 10 16:01:45 2010 +0200
+
+    Parse options enum from string
+
+ src/vteapp.c |   54 ++++++++++++++++++++++++++++++++++++++----------------
+ 1 files changed, 38 insertions(+), 16 deletions(-)
+
+commit 08283ddc9f5516e1f15306399c909c0adc49db77
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 10 15:49:31 2010 +0200
+
+    Use standard form of stock type macros
+
+ src/vte.h   |   29 +++++++++--------------------
+ src/vtebg.h |   15 +++++++--------
+ 2 files changed, 16 insertions(+), 28 deletions(-)
+
+commit 39b7a1f74dc7044d1fd6cd9df7abceffa7e99349
 Author: Christian Persch <chpe@gnome.org>
 Date:   Sat Apr 10 01:42:24 2010 +0200
 
     We also depend on cairo-xlib on gdk-x11
-    (cherry picked from commit 39b7a1f74dc7044d1fd6cd9df7abceffa7e99349)
 
  configure.in |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-commit ac9813af66c110fae31db02114a7904cdf9547e5
+commit a9642829fbbd027bf39df6205efc1d7cb8383c02
 Author: Christian Persch <chpe@gnome.org>
-Date:   Tue Apr 20 11:59:28 2010 +0200
+Date:   Sat Apr 10 01:41:52 2010 +0200
 
-    Backport VteBg fixes from master
+    Use G_STATIC_ASSERT
     
-    Fixes bug #615417, bug #614469.
+    Now that we depend on glib 2.22, remove our private static assert macro
+    and just use G_STATIC_ASSERT.
 
- src/debug.c   |    3 +-
- src/debug.h   |    3 +-
- src/vtebg.c   |  320 +++++++++++++++++++++++++++++----------------------------
- src/vtebg.h   |   35 +++----
- src/vtedraw.c |    2 +-
- src/vtedraw.h |    2 +-
- 6 files changed, 187 insertions(+), 178 deletions(-)
+ src/debug.h      |    4 ----
+ src/vterowdata.h |   10 +++++-----
+ 2 files changed, 5 insertions(+), 9 deletions(-)
 
-commit a784d8d2dd79f7f4eba24aea4ea5f129a095ce0f
+commit 49759e9608b1d69cdc26a44e0259d57297be995a
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Apr 8 17:16:49 2010 +0200
+
+    Fix underline cursor height calculation
+    
+    Use the cell width, not the whole cursor width when calculating the
+    underline cursor height.
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit d00507b9bc4c29248817915225c49c1e8b349fe0
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Dec 3 18:47:13 2009 +0100
+
+    Use the style's cursor-aspect-ratio when drawing the cursor
+    
+    For the ibeam cursor, use the aspect ratio; for the underline, its
+    inverse (that's the only thing that makes sense here).
+    
+    Bug #586950.
+
+ src/vte-private.h |    1 +
+ src/vte.c         |   29 +++++++++++++++++++++++------
+ 2 files changed, 24 insertions(+), 6 deletions(-)
+
+commit b72c2a7df25e5fdfefbd437505f9f71b7d675da8
 Author: Christian Persch <chpe@gnome.org>
 Date:   Thu Apr 8 13:15:00 2010 +0200
 
     Print the GDK target during configure
     
     For checking purposes.
-    (cherry picked from commit b72c2a7df25e5fdfefbd437505f9f71b7d675da8)
 
  configure.in |    2 ++
  1 files changed, 2 insertions(+), 0 deletions(-)
 
-commit 0ed604d8a8f83e6fdb5444be0305abeb7b0d1f7f
+commit 8df389be0035f185705a4553bd8564940cb23080
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Apr 4 22:37:02 2010 +0200
+
+    Remove accidentally added include
+
+ src/vtetc.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 022bf76c6b01ea82310c67020461530082f86998
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Apr 4 18:12:00 2010 +0200
+
+    Add debug output when g-p-h fails
+
+ src/pty.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit d8569b1a45bdba4f09d6162ad9287f47ac8ca25f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Apr 4 17:20:16 2010 +0200
+
+    Remove unused function declaration
+
+ src/vtetc.c |    1 +
+ src/vtetc.h |    3 ---
+ 2 files changed, 1 insertions(+), 3 deletions(-)
+
+commit feeda1671770daffa08a4235b94becdcbf9b825c
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Apr 4 17:08:10 2010 +0200
+
+    Remove signal ID from VteBgClass
+    
+    It's unused.
+
+ src/vtebg.c |   16 ++++++++--------
+ src/vtebg.h |    1 -
+ 2 files changed, 8 insertions(+), 9 deletions(-)
+
+commit acbaf637f2c78d34d735e1b0c0c2586b344d42ff
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Apr 4 17:06:39 2010 +0200
+
+    Remove unnecessary i18n init from vtebg
+    
+    VteBg is an internal object that cannot be accessed from outside, and
+    that has no i18n. So there's really no need to make its class init
+    function bind vte's textdomain.
+
+ src/vtebg.c |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
+
+commit be41faea3651c2a90012648490ebf346eac82d04
 Author: Christian Persch <chpe@gnome.org>
 Date:   Sun Apr 4 17:03:24 2010 +0200
 
     Add x11 to pkg-config dep list on gdk-x11
     
     Bug #613525.
-    (cherry picked from commit be41faea3651c2a90012648490ebf346eac82d04)
 
  configure.in |   10 +++++++++-
  1 files changed, 9 insertions(+), 1 deletions(-)
 
-commit 4c8cd732f506d529f15dc07cb1b9be8f5886057f
+commit f0809d9cc8b4bba36252a12098fb31dd81534242
 Author: Christian Persch <chpe@gnome.org>
-Date:   Mon Mar 29 15:11:44 2010 +0200
+Date:   Sat Apr 3 23:50:51 2010 +0200
 
-    Remove failing doc check test
+    Remove #if 0'd code
+
+ src/vtebg.c |   22 ----------------------
+ 1 files changed, 0 insertions(+), 22 deletions(-)
+
+commit 9a36a04d3f6edbb81a304b0cad3b60d2e90d2324
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 3 23:49:15 2010 +0200
+
+    Fix crash when loading the bg pixbuf failed
+
+ src/vtebg.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 61e12fa671c2af5766ba28077a788423355bb5c1
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Apr 3 18:59:03 2010 +0200
+
+    Clean up vtebg
     
-    Bug #613192.
+    Fixes build with !GDK_WINDOWING_X11. Bug #614469.
 
- src/Makefile.am |    2 +-
+ src/vtebg.c   |  191 +++++++++++++++++++++++++++++----------------------------
+ src/vtebg.h   |   19 +++---
+ src/vtedraw.c |    2 +-
+ src/vtedraw.h |    2 +-
+ 4 files changed, 107 insertions(+), 107 deletions(-)
+
+commit e2981d7ae9039256a22137a7f0b8fd886b794a94
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Apr 1 18:09:41 2010 -0400
+
+    Bug 604240 - fix set-scrolling-region behaviour on reset
+
+ src/vteseq.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit bd2da3fd0fc436887a61a89b0dd367954fa36745
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Apr 1 02:16:56 2010 -0400
+
+    Bug 604241 - improve xterm emulation of set-scrolling-region behaviour
+
+ src/caps.c         |    5 +++++
+ src/vteseq-n.gperf |    2 ++
+ src/vteseq.c       |   26 ++++++++++++++++++++++++++
+ 3 files changed, 33 insertions(+), 0 deletions(-)
+
+commit f74f7b2ac16cedd53884917ede02e293276f40f2
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Apr 1 01:52:35 2010 -0400
+
+    Bug 613192 - check-doc-syntax.sh test fails
+
+ src/check-doc-syntax.sh |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-commit 90ca5afc7ec6c97c089e2648bab10e0ebda976eb
+commit 0f095ac8755655525a48424773cf06b5b9ed21e9
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Apr 1 01:49:30 2010 -0400
+
+    Fix warnings
+
+ src/dumpkeys.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 18ee5f522d8bc2f5dfe896f40eba8d5313cb310f
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Apr 1 01:41:36 2010 -0400
+
+    Don't hide cursor even if cell is invisible
+
+ src/vte.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 09345b1ab25b72984419e82cfe3dca07bc5229ce
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Apr 1 01:39:41 2010 -0400
+
+    Bug 499944 - vte_sequence_handler_ta abuses cell.attr.invisible to hide tab char
+
+ src/vtedraw.c |    5 +++++
+ src/vteseq.c  |    1 -
+ 2 files changed, 5 insertions(+), 1 deletions(-)
+
+commit f412a6f73a7b3a432bb88830b63ee25ea648619d
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Thu Apr 1 01:34:18 2010 -0400
+
+    Followup on Bug 602596 - Cursor can become invisible
+    
+    Fix invisible attribute.
+
+ src/vte.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+commit 3a37564dbce407a112b82b3e7b384a6669c498a3
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Mar 31 19:03:03 2010 -0400
+
+    Remove #ident
+
+ python/vtemodule.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit b58bc5359085d2c9233ac6d6a265645bfa217e82
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Mar 31 14:05:10 2010 -0400
+
+    Bug 602596 - Cursor can become invisible
+    
+    Always compute the full fore/back color first, then reverse.
+    That's what xterm does also.
+
+ src/vte.c |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
+
+commit 492f6a7d6dbb30b2dee2d3b4ee0cd7f9a3bb7f60
 Author: Christian Persch <chpe@gnome.org>
-Date:   Mon Mar 29 14:16:29 2010 +0200
+Date:   Tue Mar 30 21:42:41 2010 +0200
 
-    Prepare 0.24.0
+    Also generate type builtins from vtedeprecated.h
 
- NEWS         |    6 ++++++
- configure.in |   10 +++++-----
- 2 files changed, 11 insertions(+), 5 deletions(-)
+ src/Makefile.am |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-commit 36a80fc68ebd213c374121043a48b87f618e8b79
+commit d4d0df68fb76fc145d05c2d6c1a7354e1737cffa
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Mar 30 21:34:31 2010 +0200
+
+    Remove obsolete FIXME comment
+
+ src/pty.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 80ea6ee57d8d80a2876edf626e797e738c8419ad
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Mar 30 21:33:15 2010 +0200
+
+    Reindent code after removing extra block
+
+ src/pty.c |   46 +++++++++++++++++++++++-----------------------
+ 1 files changed, 23 insertions(+), 23 deletions(-)
+
+commit d75b77aaccf81e56077525d9aba45bd1a59da2d8
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Mar 30 21:31:29 2010 +0200
+
+    Remove "utf-8" property on VtePty
+    
+    It doesn't make much sense.
+
+ src/pty.c |   36 +++---------------------------------
+ 1 files changed, 3 insertions(+), 33 deletions(-)
+
+commit 840e598b685e5d6bd7b7f73b3b972c99ca933bbd
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Mar 30 21:29:16 2010 +0200
+
+    Make vte_pty_set_utf8 return a GError on failure
+
+ src/pty.c    |   56 +++++++++++++++++++++++++++++++++++++++-----------------
+ src/vte.c    |    9 +++++++--
+ src/vtepty.h |    5 +++--
+ 3 files changed, 49 insertions(+), 21 deletions(-)
+
+commit 63a407a1f8c4f77fc8cdf3b8d404dca154a5b686
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Mar 30 21:12:07 2010 +0200
+
+    Remove FIXME
+
+ src/pty.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit 13f08f861f96bf2c695ce2486729bf54df5e946d
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Mar 30 21:11:34 2010 +0200
+
+    Reindent after removing unnecessary block
+
+ src/pty.c |  129 ++++++++++++++++++++++++++++++-------------------------------
+ 1 files changed, 64 insertions(+), 65 deletions(-)
+
+commit 1665665bc4b66fe6e8b25466cf4768f026741212
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Mar 30 21:10:15 2010 +0200
+
+    Don't leak a FD on error
+
+ src/pty.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 85d92cf07482ab861173d5516319284b8173c801
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Mar 30 21:02:20 2010 +0200
+
+    Remove obsolete warning message
+    
+    We now report back a GError which is much better than spewing random
+    stuff to the console.
+
+ src/pty.c |   11 -----------
+ 1 files changed, 0 insertions(+), 11 deletions(-)
+
+commit b6741eec1a280a590b20682e65e41ad65b84c50f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Mar 30 20:58:43 2010 +0200
+
+    Preserve errno since the deprecated API might use it
+
+ src/pty.c |   12 +++++++++---
+ 1 files changed, 9 insertions(+), 3 deletions(-)
+
+commit 9ce477c70120a2a24c32bcacebc28b6e09a63957
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Mar 30 20:55:47 2010 +0200
+
+    Don't allow setting negative row/column size
+
+ src/pty.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 8b6da8a26641ec84a6b0475d12e2b05952bf0cec
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Mar 29 14:17:45 2010 +0200
+
+    Update lt versioning
+
+ configure.in |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 5a472756b10dc8b683fc0372d97fb69ea4ff2256
 Author: Jamil Ahmed <itsjamil@gmail.com>
 Date:   Sun Mar 28 00:31:22 2010 +0600
 
@@ -126,6 +1278,362 @@ Date:   Sun Mar 28 00:31:22 2010 +0600
 
  po/bn.po |  127 +++++++++++++++++++++++++++++--------------------------------
  1 files changed, 60 insertions(+), 67 deletions(-)
+
+commit 8c1473f646bffffbc18c2473f6f1e80b9287a4b8
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Mar 26 16:52:17 2010 -0400
+
+    Bug 614048 - Never change active selection to a column block
+    
+    Only activate block selection if ctrl was pressed when selection was started.
+
+ src/vte.c |   42 +++---------------------------------------
+ 1 files changed, 3 insertions(+), 39 deletions(-)
+
+commit 26771370d12c58d5876aa7e0d8b7c6acd2698189
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Mar 25 14:16:55 2010 +0100
+
+    Use the set column/row size even when we don't have a PTY
+    
+    Bug #317158.
+
+ src/vte.c |   23 +++++------------------
+ 1 files changed, 5 insertions(+), 18 deletions(-)
+
+commit f116be136c0111d3ff1ea7a8c89233bd00fd5140
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Mar 25 13:59:32 2010 +0100
+
+    Add more conditionals
+    
+    Only use these signals if they're defined. Taken from the patch in
+    bug #369310.
+
+ src/pty.c |   20 ++++++++++++++++++++
+ 1 files changed, 20 insertions(+), 0 deletions(-)
+
+commit 1e684a5156f770c6238ef02e15b5d8713f43638d
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 24 21:38:32 2010 +0100
+
+    Add GError param to vte_pty_new_foreign
+
+ src/pty.c    |   22 +++++++++-------------
+ src/vte.c    |    5 +++--
+ src/vtepty.h |    3 ++-
+ 3 files changed, 14 insertions(+), 16 deletions(-)
+
+commit 47ddb37d3e6900a456a6739ceb6f03ab96f7c1b0
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 24 21:29:11 2010 +0100
+
+    Preserve errno
+
+ src/pty.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit bd66b79ef8395e9ffe177e82aff20bf5de6f79e5
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 24 21:26:23 2010 +0100
+
+    Don't leak a FD when starting the PTY helper fails
+
+ src/pty.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+commit 28b4c114ab963aa526a27853fd16e311f5bfc171
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 24 15:46:41 2010 +0100
+
+    Return error when compiled without g-p-h and no-fallback flag used
+
+ src/pty.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+commit da94ec83debfbf19e36fec9aea15f619803cee70
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 24 15:21:49 2010 +0100
+
+    Preserve errno for the _vte_pty_* compat API
+
+ src/pty.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit c7070697b5363714462c7450448475918ffac0a3
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 24 15:18:53 2010 +0100
+
+    More error handling
+
+ src/pty.c |   28 +++++++++++++++++++++++-----
+ 1 files changed, 23 insertions(+), 5 deletions(-)
+
+commit 1e2b9d17dcbfd530e925a9896d106ca4885e0911
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 24 14:57:33 2010 +0100
+
+    Better error reporting
+
+ src/pty.c |   24 ++++++++++++++----------
+ 1 files changed, 14 insertions(+), 10 deletions(-)
+
+commit d08ab3e5641e6f486e1918d32566bec104924698
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 24 14:15:08 2010 +0100
+
+    Prevent single inclusion of vtedeprecated.h
+
+ src/vte.h           |    2 ++
+ src/vtedeprecated.h |    4 ++++
+ 2 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 8d263ba855ca6cbf741fc9cdfc921963be63991c
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 24 14:10:47 2010 +0100
+
+    Move deprecated stuff out of vte.h
+    
+    ... and into vtedeprecated.h. This way it won't end up in the GIR.
+
+ src/Makefile.am     |    3 +-
+ src/vte.h           |   78 ++----------------------------------------
+ src/vtedeprecated.h |   93 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 99 insertions(+), 75 deletions(-)
+
+commit 4ad049abbad52836542551953c4072ae08d7ceea
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 24 14:05:04 2010 +0100
+
+    Improve error messages
+    
+    Get more specific error messages telling what exactly went wrong.
+
+ src/pty.c |   77 +++++++++++++++++++++++++++++++++++++++++-------------------
+ 1 files changed, 52 insertions(+), 25 deletions(-)
+
+commit 52ec2582e509940ec48215c03d120ec2ace46076
+Author: Badral Sanligiin <badral@openmn.org>
+Date:   Tue Mar 23 02:34:11 2010 +0100
+
+    Updated Mongolian translation
+
+ po/mn.po |  100 +++++++++++++++++++++++++++++++------------------------------
+ 1 files changed, 51 insertions(+), 49 deletions(-)
+
+commit 5cd582723d55a487d8117adbae28f7bf0fd76da3
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Sun Mar 21 22:26:59 2010 -0400
+
+    Bug 613528 - computed size is wrong with low width and height values in vte_terminal_size_allocate
+
+ src/vte.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 087f18c041175fe73b187ee4f1ad89a2aa53bbff
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Mar 18 20:27:30 2010 +0100
+
+    Move deprecated stuff to the end
+
+ src/vte.h |   46 ++++++++++++++++++----------------------------
+ 1 files changed, 18 insertions(+), 28 deletions(-)
+
+commit 8f67e5d4b0ad71d512d47082b46fe353efff1601
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Mar 18 13:24:50 2010 +0100
+
+    Add PTY flags option to vteapp
+    
+    So I can test the PTY implementation.
+
+ src/vteapp.c |   42 +++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 41 insertions(+), 1 deletions(-)
+
+commit 75594032397e16e7f6b34ca89fe506c16f011bda
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Mar 18 00:21:24 2010 +0100
+
+    Remove unnecessary include
+
+ src/vte.h    |    2 ++
+ src/vtepty.h |    2 --
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 6ed5d3120d575531a5e25594785310ddaf28d330
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 22:59:43 2010 +0100
+
+    Docs update
+
+ src/vte.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit cb7b31e70e34b7af4162fd28b947678c31609819
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 22:37:41 2010 +0100
+
+    Work harder to preserve errno
+
+ src/pty.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+commit fb2739a358ae8f4775150f54745e16be698775db
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 22:34:16 2010 +0100
+
+    Use errsv here instead of errno
+
+ src/pty.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 7f0db06fc886d8a98ea171d775ee8293554ab704
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 21:54:46 2010 +0100
+
+    Use G_SPAWN_SEARCH_PATH in vteapp's --command
+
+ src/vteapp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit e1b7915a6cb88da609f2c9a7c754ff75aa260d88
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 21:23:40 2010 +0100
+
+    Add introspection
+    
+    Based on a patch by Johan Dahlin from bug #604837.
+
+ Makefile.am     |    2 +-
+ configure.in    |   11 +++++++++++
+ src/Makefile.am |   33 +++++++++++++++++++++++++++++++++
+ 3 files changed, 45 insertions(+), 1 deletions(-)
+
+commit eb412ad588f9796bdeb63f3cfddf419cd99b28e3
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 21:23:27 2010 +0100
+
+    Remove removed pty test
+
+ src/Makefile.am |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+commit 74b824a278cc884be462855f148bcc8b349f2d46
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 19:19:22 2010 +0100
+
+    Use inner-border property
+    
+    Replace deprecated vte_terminal_get_padding() with "inner-border" style
+    property.
+
+ src/vteaccess.c |   18 +++++++++----
+ src/vteapp.c    |   72 +++++++++++++++++++++++++++++++++---------------------
+ 2 files changed, 56 insertions(+), 34 deletions(-)
+
+commit 8cc30010ef4e8d67bf3bba68a7c45e47992b35ac
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 19:03:19 2010 +0100
+
+    Rename VTE_SEAL to _VTE_SEAL
+    
+    So that gtk-doc doesn't think this macro should be documented.
+
+ src/vte.h |   90 ++++++++++++++++++++++++++++++------------------------------
+ 1 files changed, 45 insertions(+), 45 deletions(-)
+
+commit cc1431c5cc8f12252a3ebeb17da273d6edfe1c56
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 19:01:13 2010 +0100
+
+    Seal VteTerminal
+    
+    All of these public fields have accessors already.
+
+ src/vte.h |   30 +++++++++---------------------
+ 1 files changed, 9 insertions(+), 21 deletions(-)
+
+commit 15221b3505dc9a7ee9eec63e9d3d040a211aca60
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 18:50:22 2010 +0100
+
+    Deprecated VteTerminalClass::*_signal
+    
+    These signal IDs are useless. If someone is interested in the signal ID,
+    they can just use g_signal_lookup().
+
+ src/vte.h |   70 ++++++++++++++++++++++++++++--------------------------------
+ 1 files changed, 33 insertions(+), 37 deletions(-)
+
+commit 106081e2d1875d893e598a4d20bfab266b6a764e
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 18:40:49 2010 +0100
+
+    Add VTE_SEAL and VTE_DEPRECATED macros
+
+ src/vte.h |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
+
+commit 4c07ce73bef1f253075c382d0e55cc526df7222a
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Jan 30 14:15:37 2010 +0100
+
+    Add index for new API in 0.26
+
+ doc/reference/vte-docs.xml |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit e45144f8a70244da43723349b09d9edf5f9d8d1f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Jan 30 14:14:19 2010 +0100
+
+    Update version in API docs for new/deprecated APIs
+
+ src/pty.c    |   40 ++++++++++++++++++++--------------------
+ src/vte.c    |   24 ++++++++++++------------
+ src/vtepty.h |    6 +++---
+ 3 files changed, 35 insertions(+), 35 deletions(-)
+
+commit dd08c50c6a6dd4349d3cbce271ddf4b741db8861
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Jan 14 18:08:33 2010 +0100
+
+    Add VtePty and adapt the VteTerminal APIs to it
+    
+    Add VtePty as a GObject holding the info about the PTY. Add new API to
+    VteTerminal to set a VtePty, and deprecate the old API that takes a FD
+    to the PTY. Also deprecate the whole of the undocumented _vte_pty_*()
+    APIs.
+    
+    Add vte_terminal_fork_command_full() variant that allow providing a
+    custom child setup function and that returns a GError on failure.
+    
+    Bug #585841, bug #320128, bug #514447, bug #588871.
+
+ Makefile.am                    |    2 +-
+ doc/reference/vte-docs.xml     |    3 +
+ doc/reference/vte-sections.txt |   50 ++-
+ doc/reference/vte.types        |    5 +-
+ gnome-pty-helper/configure.in  |    5 +-
+ src/Makefile.am                |   14 +-
+ src/pty.c                      | 1652 ++++++++++++++++++++++++++++++----------
+ src/pty.h                      |    6 +-
+ src/vte-private.h              |    3 +-
+ src/vte.c                      |  775 +++++++++++++------
+ src/vte.h                      |   40 +-
+ src/vteapp.c                   |   32 +-
+ src/vtepty-private.h           |   43 +
+ src/vtepty.h                   |  121 +++
+ 14 files changed, 2058 insertions(+), 693 deletions(-)
+
+commit 9103412cc7c3706f246a1e382af7361f6319c104
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Mar 17 18:21:39 2010 +0100
+
+    Post branch version bump
+
+ configure.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 commit 953625f24173318ba1a553866a9b8c7cb83aac01
 Author: Behdad Esfahbod <behdad@behdad.org>
