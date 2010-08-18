@@ -1,3 +1,10 @@
+vte (1:0.25.90-0ubuntu2) maverick; urgency=low
+
+  * debian/control:
+    - Build-depend on gobject-introspection
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 18 Aug 2010 12:21:20 +1000
+
 vte (1:0.25.90-0ubuntu1) maverick; urgency=low
 
   * New upstream release
