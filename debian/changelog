@@ -1,3 +1,12 @@
+vte (1:0.25.90-0ubuntu3) maverick; urgency=low
+
+  [ Anders Kaseorg ]
+  * debian/patches/fix-alt-modifier.patch:
+    - Revert upstream commit b73782a, which broke the Alt modifier.
+      (LP: #619754)
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 19 Aug 2010 12:49:37 +1000
+
 vte (1:0.25.90-0ubuntu2) maverick; urgency=low
 
   * debian/control:
