@@ -1,3 +1,13 @@
+vte (1:0.25.90-0ubuntu4) maverick; urgency=low
+
+  [ Anders Kaseorg ]
+  * debian/patches/fix-alt-modifier.patch:
+    - Replace with upstream reversion commit c56c3c4.
+  * debian/patches/fix-meta-modifier.patch:
+    - Take upstream commit 724195b to really fix Meta.
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 27 Aug 2010 12:18:17 +1000
+
 vte (1:0.25.90-0ubuntu3) maverick; urgency=low
 
   [ Anders Kaseorg ]

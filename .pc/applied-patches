@@ -3,3 +3,4 @@
 60_termcap-home-end.patch
 93_add_alt_screen_scroll_toggle.patch
 fix-alt-modifier.patch
+fix-meta-modifier.patch
