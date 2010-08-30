@@ -1,6 +1,6 @@
 m4_define([version_major],0)
 m4_define([version_minor],25)
-m4_define([version_micro],90)
+m4_define([version_micro],91)
 m4_define([version_triplet],version_major.version_minor.version_micro)
 
 m4_define([so_major_adjust],9) dnl Don't change!
@@ -51,7 +51,7 @@ case "$with_gtk" in
        VTE_PC_VERSION=
        VTE_LIBRARY_SUFFIX=
        GTK_API_VERSION=2.0
-       GTK_REQUIRED=2.14.0
+       GTK_REQUIRED=2.20.0
        ;;
   3.0) VTE_API_VERSION=2.90
        VTE_API_MAJOR_VERSION=2

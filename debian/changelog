@@ -1,3 +1,12 @@
+vte (1:0.25.91-0ubuntu1) maverick; urgency=low
+
+  * New upstream release
+  * debian/patches/fix-alt-modifier.patch:
+  * debian/patches/fix-meta-modifier.patch:
+    - Applied upstream
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Mon, 30 Aug 2010 11:14:41 +1000
+
 vte (1:0.25.90-0ubuntu4) maverick; urgency=low
 
   [ Anders Kaseorg ]

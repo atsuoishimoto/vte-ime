@@ -4910,8 +4910,13 @@ vte_terminal_read_modifiers (VteTerminal *terminal,
 	GdkModifierType modifiers;
 
 	/* Read the modifiers. */
-	if (gdk_event_get_state((GdkEvent*)event, &modifiers))
+	if (gdk_event_get_state((GdkEvent*)event, &modifiers)) {
+		GdkKeymap *keymap;
+		keymap = gdk_keymap_get_for_display (
+				gdk_drawable_get_display (((GdkEventAny *)event)->window));
+		gdk_keymap_add_virtual_modifiers (keymap, &modifiers);
 		terminal->pvt->modifiers = modifiers;
+	}
 }
 
 /* Read and handle a keypress event. */
@@ -8776,9 +8781,11 @@ vte_terminal_realize(GtkWidget *widget)
     }
 #endif /* GTK >= 2.15.1 */
 
-	style = gtk_widget_get_style (widget);
-	style = gtk_style_attach (style, window);
-	gtk_widget_set_style (widget, style);
+#if GTK_CHECK_VERSION (2, 20, 0)
+	gtk_widget_style_attach (widget);
+#else
+	widget->style = gtk_style_attach(widget->style, widget->window);
+#endif
 
 	vte_terminal_ensure_font (terminal);
 
