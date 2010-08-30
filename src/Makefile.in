@@ -48,9 +48,8 @@ check_PROGRAMS = dumpkeys$(EXEEXT) iso2022$(EXEEXT) reaper$(EXEEXT) \
 	vteconv$(EXEEXT) vtetc$(EXEEXT)
 TESTS = table$(EXEEXT) trie$(EXEEXT) $(TEST_SH)
 subdir = src
-DIST_COMMON = $(am__dist_gir_DATA_DIST) $(header_HEADERS) \
-	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/vteversion.h.in
+DIST_COMMON = $(header_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/vteversion.h.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.in
@@ -264,8 +263,7 @@ DIST_SOURCES = $(libvte@VTE_LIBRARY_SUFFIX_U@_la_SOURCES) \
 	$(table_SOURCES) $(trie_SOURCES) \
 	$(vte@VTE_LIBRARY_SUFFIX_U@_SOURCES) $(vteconv_SOURCES) \
 	$(vtetc_SOURCES) $(xticker_SOURCES)
-am__dist_gir_DATA_DIST = Vte-$(VTE_API_VERSION).gir
-DATA = $(dist_gir_DATA) $(typelib_DATA)
+DATA = $(nodist_gir_DATA) $(nodist_typelib_DATA)
 HEADERS = $(header_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -600,9 +598,9 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
 @HAVE_INTROSPECTION_TRUE@	$(NULL)
 
 @HAVE_INTROSPECTION_TRUE@girdir = $(INTROSPECTION_GIRDIR)
-@HAVE_INTROSPECTION_TRUE@dist_gir_DATA = $(INTROSPECTION_GIRS)
+@HAVE_INTROSPECTION_TRUE@nodist_gir_DATA = $(INTROSPECTION_GIRS)
 @HAVE_INTROSPECTION_TRUE@typelibdir = $(INTROSPECTION_TYPELIBDIR)
-@HAVE_INTROSPECTION_TRUE@typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
+@HAVE_INTROSPECTION_TRUE@nodist_typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
 # Misc unit tests and utilities
 vtelibdir = $(libdir)/vte-$(VTE_API_VERSION)
@@ -1985,10 +1983,10 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-dist_girDATA: $(dist_gir_DATA)
+install-nodist_girDATA: $(nodist_gir_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(girdir)" || $(MKDIR_P) "$(DESTDIR)$(girdir)"
-	@list='$(dist_gir_DATA)'; test -n "$(girdir)" || list=; \
+	@list='$(nodist_gir_DATA)'; test -n "$(girdir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
@@ -1998,17 +1996,17 @@ install-dist_girDATA: $(dist_gir_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(girdir)" || exit $$?; \
 	done
 
-uninstall-dist_girDATA:
+uninstall-nodist_girDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(dist_gir_DATA)'; test -n "$(girdir)" || list=; \
+	@list='$(nodist_gir_DATA)'; test -n "$(girdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(girdir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(girdir)" && rm -f $$files
-install-typelibDATA: $(typelib_DATA)
+install-nodist_typelibDATA: $(nodist_typelib_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(typelibdir)" || $(MKDIR_P) "$(DESTDIR)$(typelibdir)"
-	@list='$(typelib_DATA)'; test -n "$(typelibdir)" || list=; \
+	@list='$(nodist_typelib_DATA)'; test -n "$(typelibdir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
@@ -2018,9 +2016,9 @@ install-typelibDATA: $(typelib_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(typelibdir)" || exit $$?; \
 	done
 
-uninstall-typelibDATA:
+uninstall-nodist_typelibDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(typelib_DATA)'; test -n "$(typelibdir)" || list=; \
+	@list='$(nodist_typelib_DATA)'; test -n "$(typelibdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(typelibdir)' && rm -f" $$files ")"; \
@@ -2286,8 +2284,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_girDATA install-headerHEADERS \
-	install-typelibDATA install-vtelibPROGRAMS \
+install-data-am: install-headerHEADERS install-nodist_girDATA \
+	install-nodist_typelibDATA install-vtelibPROGRAMS \
 	install-vtelibSCRIPTS
 
 install-dvi: install-dvi-am
@@ -2334,9 +2332,9 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-dist_girDATA \
-	uninstall-headerHEADERS uninstall-libLTLIBRARIES \
-	uninstall-typelibDATA uninstall-vtelibPROGRAMS \
+uninstall-am: uninstall-binPROGRAMS uninstall-headerHEADERS \
+	uninstall-libLTLIBRARIES uninstall-nodist_girDATA \
+	uninstall-nodist_typelibDATA uninstall-vtelibPROGRAMS \
 	uninstall-vtelibSCRIPTS
 
 .MAKE: all check check-am install install-am install-strip
@@ -2347,20 +2345,20 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_girDATA \
 	distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-binPROGRAMS \
-	install-data install-data-am install-dist_girDATA install-dvi \
-	install-dvi-am install-exec install-exec-am \
-	install-headerHEADERS install-html install-html-am \
-	install-info install-info-am install-libLTLIBRARIES \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip install-typelibDATA \
-	install-vtelibPROGRAMS install-vtelibSCRIPTS installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-dist_girDATA uninstall-headerHEADERS \
-	uninstall-libLTLIBRARIES uninstall-typelibDATA \
-	uninstall-vtelibPROGRAMS uninstall-vtelibSCRIPTS
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-headerHEADERS \
+	install-html install-html-am install-info install-info-am \
+	install-libLTLIBRARIES install-man install-nodist_girDATA \
+	install-nodist_typelibDATA install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip install-vtelibPROGRAMS \
+	install-vtelibSCRIPTS installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-headerHEADERS \
+	uninstall-libLTLIBRARIES uninstall-nodist_girDATA \
+	uninstall-nodist_typelibDATA uninstall-vtelibPROGRAMS \
+	uninstall-vtelibSCRIPTS
 
 	$(NULL)
 
