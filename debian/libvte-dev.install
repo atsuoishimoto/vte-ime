@@ -3,3 +3,4 @@ usr/lib/pkgconfig
 usr/lib/libvte.a
 usr/lib/libvte.so
 usr/share/pygtk/2.0/defs
+usr/share/gir-1.0

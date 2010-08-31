@@ -8,7 +8,7 @@ Section: libs
 Priority: optional
 Maintainer: Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Guilherme de S. Pastore <gpastore@debian.org>
-Uploaders: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>, Emilio Pozuelo Monfort <pochu@debian.org>, Josselin Mouette <joss@debian.org>, Sebastian Dröge <slomo@debian.org>
+Uploaders: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>, Emilio Pozuelo Monfort <pochu@debian.org>, Sebastian Dröge <slomo@debian.org>
 Standards-Version: 3.8.4
 XS-Python-Version: >= 2.3
 Build-Depends: cdbs (>= 0.4.43),
@@ -62,6 +62,20 @@ Description: Terminal emulator widget for GTK+ 2.0 - minimal runtime
  .
  This package contains the minimal runtime library needed by the Debian
  installer.
+
+Package: gir1.0-vte-1.0
+Section: libs
+Architecture: any
+Depends: ${gir:Depends},
+         ${shlibs:Depends},
+         ${misc:Depends}
+Conflicts: gobject-introspection-repository
+Description: GObject introspection data for the VTE library
+ This package contains introspection data for VTE, a terminal emulator
+ widget for GTK+.
+ .
+ It can be used by packages using the GIRepository format to generate
+ dynamic bindings.
 
 Package: libvte-dev
 Architecture: any

@@ -58,6 +58,20 @@ Description: Terminal emulator widget for GTK+ 2.0 - minimal runtime
  This package contains the minimal runtime library needed by the Debian
  installer.
 
+Package: gir1.0-vte-1.0
+Section: libs
+Architecture: any
+Depends: ${gir:Depends},
+         ${shlibs:Depends},
+         ${misc:Depends}
+Conflicts: gobject-introspection-repository
+Description: GObject introspection data for the VTE library
+ This package contains introspection data for VTE, a terminal emulator
+ widget for GTK+.
+ .
+ It can be used by packages using the GIRepository format to generate
+ dynamic bindings.
+
 Package: libvte-dev
 Architecture: any
 Section: libdevel

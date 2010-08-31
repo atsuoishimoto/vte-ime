@@ -1,3 +1,14 @@
+vte (1:0.25.91-0ubuntu2) maverick; urgency=low
+
+  * debian/rules:
+    - Compile with --enable-introspection (LP: #626979)
+  * debian/control:
+  * debian/libvte-dev.install:
+  * debian/gir1.0-vte-1.0.install
+    - Install introspection files
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Tue, 31 Aug 2010 12:59:13 +1000
+
 vte (1:0.25.91-0ubuntu1) maverick; urgency=low
 
   * New upstream release

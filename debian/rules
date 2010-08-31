@@ -21,7 +21,8 @@ DEB_FIXPERMS_EXCLUDE += gnome-pty-helper
 DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.24.0)' --add-udeb=$(udeb)
 
 DEB_CONFIGURE_EXTRA_FLAGS += \
-	--enable-glade-catalogue
+	--enable-glade-catalogue \
+	--enable-introspection
 
 UDEB_CONFIGURE_EXTRA_FLAGS += \
 	--disable-python \
