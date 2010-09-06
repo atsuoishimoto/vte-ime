@@ -1,3 +1,10 @@
+vte (1:0.25.91-0ubuntu3) maverick; urgency=low
+
+  * debian/control:
+    - Add build-depends on libgirepository1.0-dev
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Mon, 06 Sep 2010 11:23:59 +1000
+
 vte (1:0.25.91-0ubuntu2) maverick; urgency=low
 
   * debian/rules:
