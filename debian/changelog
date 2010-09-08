@@ -1,3 +1,10 @@
+vte (1:0.25.91-0ubuntu4) maverick; urgency=low
+
+  * debian/patches/91_keep_fds.patch:
+    - Update and return patch that hadn't been applied upstream (LP: #620297)
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 08 Sep 2010 17:57:18 +1000
+
 vte (1:0.25.91-0ubuntu3) maverick; urgency=low
 
   * debian/control:
