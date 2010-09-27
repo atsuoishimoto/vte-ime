@@ -1,3 +1,9 @@
+vte (1:0.26.0-0ubuntu1) maverick; urgency=low
+
+  * New upstream release v0.26.0
+
+ -- Chris Coulson <chris.coulson@canonical.com>  Mon, 27 Sep 2010 14:20:13 +0100
+
 vte (1:0.25.91-0ubuntu4) maverick; urgency=low
 
   * debian/patches/91_keep_fds.patch:

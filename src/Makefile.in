@@ -40,7 +40,7 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = vte@VTE_LIBRARY_SUFFIX_U@$(EXEEXT)
 @HAVE_INTROSPECTION_TRUE@am__append_1 = Vte-$(VTE_API_VERSION).gir
-@HAVE_INTROSPECTION_TRUE@am__append_2 = $(dist_gir_DATA) $(typelib_DATA)
+@HAVE_INTROSPECTION_TRUE@am__append_2 = $(nodist_gir_DATA) $(nodist_typelib_DATA)
 vtelib_PROGRAMS = interpret$(EXEEXT) slowcat$(EXEEXT)
 check_PROGRAMS = dumpkeys$(EXEEXT) iso2022$(EXEEXT) reaper$(EXEEXT) \
 	reflect-text-view$(EXEEXT) reflect-vte$(EXEEXT) mev$(EXEEXT) \
@@ -402,6 +402,7 @@ VTE_API_VERSION = @VTE_API_VERSION@
 VTE_API_VERSION_U = @VTE_API_VERSION_U@
 VTE_CFLAGS = @VTE_CFLAGS@
 VTE_DEFAULT_EMULATION = @VTE_DEFAULT_EMULATION@
+VTE_LDFLAGS = @VTE_LDFLAGS@
 VTE_LIBRARY_SUFFIX_U = @VTE_LIBRARY_SUFFIX_U@
 VTE_LIBS = @VTE_LIBS@
 VTE_MAJOR_VERSION = @VTE_MAJOR_VERSION@
@@ -409,6 +410,7 @@ VTE_MICRO_VERSION = @VTE_MICRO_VERSION@
 VTE_MINOR_VERSION = @VTE_MINOR_VERSION@
 VTE_PC_VERSION = @VTE_PC_VERSION@
 VTE_PKGS = @VTE_PKGS@
+VTE_SEAL_CFLAGS = @VTE_SEAL_CFLAGS@
 WARN_CFLAGS = @WARN_CFLAGS@
 XGETTEXT = @XGETTEXT@
 abs_builddir = @abs_builddir@
@@ -561,14 +563,17 @@ libvte@VTE_LIBRARY_SUFFIX_U@_la_CPPFLAGS = \
  	-DDATADIR='"$(datadir)"' \
 	-DLIBEXECDIR='"$(libexecdir)"' \
 	-DLOCALEDIR='"$(localedir)"' \
-	-DVTE_COMPILATION
+	-DVTE_COMPILATION \
+	$(AM_CPPFLAGS)
 
-libvte@VTE_LIBRARY_SUFFIX_U@_la_CFLAGS = $(VTE_CFLAGS)
+libvte@VTE_LIBRARY_SUFFIX_U@_la_CFLAGS = $(VTE_CFLAGS) $(AM_CFLAGS)
 libvte@VTE_LIBRARY_SUFFIX_U@_la_LIBADD = $(VTE_LIBS)
 libvte@VTE_LIBRARY_SUFFIX_U@_la_LDFLAGS = \
+  $(VTE_LDFLAGS) \
 	-version-info $(LT_VERSION_INFO) \
 	-export-symbols-regex "^vte_terminal_.*|^vte_pty_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
-	@LIBTOOL_EXPORT_OPTIONS@ @LIBTOOL_FLAGS@
+	@LIBTOOL_EXPORT_OPTIONS@ @LIBTOOL_FLAGS@ \
+	$(AM_LDFLAGS)
 
 
 # Generated sources

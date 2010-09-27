@@ -436,6 +436,12 @@ If getting the window size failed, <em class="parameter"><code>error</code></em>
 Sets what value of the TERM environment variable to set
 when using <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()"><code class="function">vte_pty_child_setup()</code></a>.
 </p>
+<p>
+Note: When using <code class="function">fork()</code> and <code class="function">execve()</code>, or the <a href="http://library.gnome.org/devel/glib/unstable/glib-Spawning-Processes.html#g-spawn-async"><code class="function">g_spawn_async()</code></a> family of
+functions with <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()"><code class="function">vte_pty_child_setup()</code></a>,
+and the environment passed to them contains the <code class="literal">TERM</code>
+environment variable, that value will override the one set here.
+</p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
