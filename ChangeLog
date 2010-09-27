@@ -1,3 +1,216 @@
+commit bfde97095fa039559f447a4903f810357fdd8b3a
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Sep 26 20:35:35 2010 +0200
+
+    Update
+
+ NEWS |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit 49936a8cbaeb62bbb935274dbb9e73c8990361dc
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Sep 26 16:23:27 2010 +0200
+
+    Version 0.26.0
+
+ configure.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 4f1df545bf8ac5439d38bd2415b49edefb56eba5
+Author: Lucian Adrian Grijincu <lucian.grijincu@gmail.com>
+Date:   Sat Sep 25 12:34:30 2010 +0300
+
+    Updated Romanian translation
+
+ po/ro.po |   72 +++++++++++++++++++++++++++++++------------------------------
+ 1 files changed, 37 insertions(+), 35 deletions(-)
+
+commit 252ced33f6930fb54704d9aef2011bf530b7adfe
+Author: Yuri Myasoedov <ymyasoedov@src.gnome.org>
+Date:   Wed Sep 22 09:15:28 2010 +0400
+
+    Updated Russian translation
+
+ po/ru.po |  119 +++++++++++++++++++++++--------------------------------------
+ 1 files changed, 45 insertions(+), 74 deletions(-)
+
+commit dab50851a395069492218115caf44361b742b20c
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Sep 20 22:23:39 2010 -0400
+
+    Revert 9370647823ce29c1088c351381a07a5506b74c84
+    
+    Was not needed anymore.  For details see:
+    
+    Bug 621902 - artifacts shown at the button of maximized terminal after
+    minimizing another window over it
+
+ src/vte.c |    8 --------
+ 1 files changed, 0 insertions(+), 8 deletions(-)
+
+commit 43936cabba157cf9704680bcb5c71bb2324aadc2
+Author: Daniel S. Koda <danielskoda@gmail.com>
+Date:   Mon Sep 20 08:58:25 2010 -0300
+
+    Updated Brazilian Portuguese translation
+
+ po/pt_BR.po |  121 ++++++++++++++---------------------------------------------
+ 1 files changed, 28 insertions(+), 93 deletions(-)
+
+commit 25c56f2d644340d2216cd4df4ee2c377fc17db85
+Author: Wouter Bolsterlee <wbolster@gnome.org>
+Date:   Sun Sep 19 20:28:01 2010 +0200
+
+    Updated Dutch translation by Wouter Bolsterlee
+
+ po/nl.po |  111 +++++++++++++++++++++++++------------------------------------
+ 1 files changed, 46 insertions(+), 65 deletions(-)
+
+commit 2ddaf14177f238f5d5f00949e489ad792f3e3698
+Author: Kenneth Nielsen <k.nielsen81@gmail.com>
+Date:   Sun Sep 19 17:44:43 2010 +0200
+
+    Updated Danish translation
+
+ po/da.po |  111 ++++++++++++++++++++++++++-----------------------------------
+ 1 files changed, 47 insertions(+), 64 deletions(-)
+
+commit c5b318675ec1fc90464a4eaa356c5ad1ab68c69d
+Author: Francesco Marletta <francesco.marletta@tiscali.it>
+Date:   Sat Sep 18 17:12:26 2010 +0200
+
+    [l10n] Updated Italian translation
+
+ po/it.po |   52 ++++++++++++++++++++--------------------------------
+ 1 files changed, 20 insertions(+), 32 deletions(-)
+
+commit e984749f939981d16ee7828ebef352e74ce461e1
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Sep 15 00:47:58 2010 +0200
+
+    Don't force VTE_SEAL_ENABLE on vte/gtk2
+    
+    Only enforce it on vte 2.90 (gtk3).
+
+ configure.in          |    3 +++
+ vte-uninstalled.pc.in |    2 +-
+ vte.pc.in             |    2 +-
+ 3 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 0574bcfbd5c5925458ecdea0e6bbac6d65e30efc
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Sep 13 16:17:31 2010 +0200
+
+    Clarify TERM env var handling with VtePty
+
+ src/pty.c |    5 +++++
+ src/vte.c |   32 ++++++++++++++++++++++++++++++--
+ 2 files changed, 35 insertions(+), 2 deletions(-)
+
+commit a7b74340edad2f1e61dc7b78a7177c52715eb925
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Sep 11 12:29:34 2010 +0200
+
+    Use new gdk keysym names on gtk3
+
+ src/iso2022.c |  200 +++++++++++++++--------------
+ src/keymap.c  |  404 +++++++++++++++++++++++++++++----------------------------
+ src/vte.c     |  110 ++++++++--------
+ 3 files changed, 367 insertions(+), 347 deletions(-)
+
+commit 5f52c7ce5f8151aa1718dc0aab6c116ba595f402
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Sep 6 13:08:00 2010 +0200
+
+    Use -Bsymbolic-functions when available
+    
+    Bug #628870.
+
+ configure.in    |   25 +++++++++++++++++++++++++
+ src/Makefile.am |   10 +++++++---
+ 2 files changed, 32 insertions(+), 3 deletions(-)
+
+commit f04856b1b5ec91431871c4c77a07e4256eb7cc20
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Sep 12 13:36:16 2010 +0200
+
+    Add --cursor-blink to vteapp
+
+ src/vteapp.c |   20 +++++++++++++-------
+ 1 files changed, 13 insertions(+), 7 deletions(-)
+
+commit 2a325bd050eb3e9d19767687aabb95c390b13b6e
+Author: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>
+Date:   Mon Sep 13 20:34:51 2010 +0900
+
+    Updated Japanese translation.
+
+ po/ja.po |  106 +++++++++++++++++++++++++++-----------------------------------
+ 1 files changed, 46 insertions(+), 60 deletions(-)
+
+commit f1676fbe3e91a6e887abf254723b57e841fad0bb
+Author: Piotr Drąg <piotrdrag@gmail.com>
+Date:   Tue Sep 7 19:02:47 2010 +0200
+
+    Updated Polish translation
+
+ po/pl.po |   34 +++++++++++++---------------------
+ 1 files changed, 13 insertions(+), 21 deletions(-)
+
+commit 606ae4edb1721ea7643b0e2439a6d8fc2b6469a2
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Sep 6 13:05:25 2010 +0200
+
+    Remove unused variable
+
+ src/vte.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 2f58eba8406c699159ed8fc4a88554f88e1012fc
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Sep 6 12:49:56 2010 +0200
+
+    Use correct variables for cleaning the gir data
+
+ src/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit be36d54abdd1ef3b067430c33e155137f8a31eef
+Author: Michael Kotsarinis <mk73628@gmail.com>
+Date:   Sat Sep 4 19:02:02 2010 +0300
+
+    Updated Greek translation
+
+ po/el.po |  111 ++++++++++++++++++++++++++++----------------------------------
+ 1 files changed, 50 insertions(+), 61 deletions(-)
+
+commit 8bf969a27069fbc0c71f0bb3fcb176456b5e32ba
+Author: drtv <vasudeven@git.gnome.org>
+Date:   Fri Sep 3 21:35:19 2010 +0530
+
+    Updated Tamil translation
+
+ po/ta.po |   99 +++++++++++++++++++++++++++-----------------------------------
+ 1 files changed, 43 insertions(+), 56 deletions(-)
+
+commit 0689c745e07e48e1324c3a3878f42d3ea1c38f59
+Author: Philip Withnall <philip@tecnocode.co.uk>
+Date:   Wed Sep 1 09:44:36 2010 +0100
+
+    Update British English translation
+
+ po/en_GB.po |  108 ++++++++++++++++++++++++-----------------------------------
+ 1 files changed, 44 insertions(+), 64 deletions(-)
+
+commit d831dd8da5bdfa2e8c85932966605e8dd64e8fce
+Author: Gabor Kelemen <kelemeng@gnome.hu>
+Date:   Tue Aug 31 01:55:44 2010 +0200
+
+    Updated Hungarian translation
+
+ po/hu.po |   99 ++++++++++++++++++++++----------------------------------------
+ 1 files changed, 35 insertions(+), 64 deletions(-)
+
 commit 203d696ed3772da3b7eb52b12e1f53cc6fdbbebf
 Author: Christian Persch <chpe@gnome.org>
 Date:   Sun Aug 29 13:56:48 2010 +0200
