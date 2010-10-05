@@ -1,3 +1,11 @@
+vte (1:0.26.0-0ubuntu2) maverick-proposed; urgency=low
+
+  * debian/patches/lp621927_set_default_term.patch: properly set TERM
+    environment variable if unset on vte_terminal_init so applications started
+    from the wm menus properly get a sane value to begin with (LP: #621927)
+
+ -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Tue, 05 Oct 2010 15:02:50 -0400
+
 vte (1:0.26.0-0ubuntu1) maverick; urgency=low
 
   * New upstream release v0.26.0

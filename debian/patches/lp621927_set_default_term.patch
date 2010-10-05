@@ -1,0 +1,30 @@
+From: Mathieu Trudel-Lapierre <mathieu.trudel-lapierre@canonical.com>
+Subject: Force setting TERM if it's not already existing in the terminal's
+ environment.
+Bug-Ubuntu: http://launchpad.net/bugs/621927
+Last-Update: 2010-10-05
+
+=== modified file 'src/vte.c'
+--- vte-0.26.0.orig/src/vte.c	2010-09-27 14:20:13 +0000
++++ vte-0.26.0/src/vte.c	2010-10-06 01:39:40 +0000
+@@ -8082,6 +8082,7 @@
+ vte_terminal_init(VteTerminal *terminal)
+ {
+ 	VteTerminalPrivate *pvt;
++	char *term_var;
+ 
+ 	_vte_debug_print(VTE_DEBUG_LIFECYCLE, "vte_terminal_init()\n");
+ 
+@@ -8155,6 +8156,11 @@
+ 	pvt->pty_pid = -1;
+         pvt->child_exit_status = 0;
+ 
++        /* Make sure we start with *something* set for TERM */
++        term_var = g_getenv("TERM");
++        if (term_var == NULL)
++                g_setenv("TERM", VTE_DEFAULT_EMULATION, TRUE);
++
+ 	/* Scrolling options. */
+ 	pvt->scroll_on_keystroke = TRUE;
+         pvt->scrollback_lines = -1; /* force update in vte_terminal_set_scrollback_lines */
+
