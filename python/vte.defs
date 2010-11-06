@@ -7,14 +7,6 @@
   (gtype-id "VTE_TYPE_TERMINAL")
 )
 
-(define-object Reaper
-  (in-module "Vte")
-  (parent "GObject")
-  (c-name "VteReaper")
-  (gtype-id "VTE_TYPE_REAPER")
-)
-
-
 ;; Enumerations and flags ...
 
 (define-enum TerminalEraseBinding
@@ -820,17 +812,6 @@
 )
 
 
-
-;; From ../src/reaper.h
-(define-function vte_reaper_get_type
-  (c-name "vte_reaper_get_type")
-  (return-type "GtkType")
-)
- 
-(define-function reaper_get
-  (c-name "vte_reaper_get")
-  (return-type "VteReaper*")
-)
 
 ;; From vteversion.h
 

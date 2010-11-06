@@ -1,3 +1,14 @@
+vte (1:0.24.3-2) unstable; urgency=low
+
+  [ Emilio Pozuelo Monfort ]
+  * debian/patches/12_python_reaper.patch:
+    - Removed, upstream said WONTFIX, so remove that API.
+  * debian/control.in:
+    - Break gdebi (<< 0.6.1) since that's the first version not requiring
+      the above patch.
+
+ -- Josselin Mouette <joss@debian.org>  Sat, 06 Nov 2010 12:48:02 +0100
+
 vte (1:0.24.3-1) unstable; urgency=low
 
   * New upstream bugfix release:

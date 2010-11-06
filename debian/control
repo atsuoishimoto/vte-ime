@@ -105,6 +105,7 @@ Conflicts: python2.3-vte,
            python2.4-vte
 Replaces: python2.3-vte,
           python2.4-vte
+Breaks: gdebi (<< 0.6.1)
 Description: Python bindings for the VTE widget set
  The VTE library inserts terminal capability strings into a trie, and then
  uses it to determine if data received from a pseudo-terminal is a control
