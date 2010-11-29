@@ -1,3 +1,12 @@
+vte (1:0.26.0-0ubuntu3) natty; urgency=low
+
+  [ Michael Terry ]
+  * Explicitly specify the Python version when running make.  Since
+    $PYTHON was only specified during the debuild configure step, it
+    reverted to the default version during install.  (LP: #674175)
+
+ -- Barry Warsaw <barry@ubuntu.com>  Mon, 29 Nov 2010 17:46:24 -0500
+
 vte (1:0.26.0-0ubuntu2) maverick-proposed; urgency=low
 
   * debian/patches/lp621927_set_default_term.patch: properly set TERM
