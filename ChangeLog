@@ -1,3 +1,49 @@
+commit 960b8f945b987603635ec85e0defbab2d84cdc64
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Nov 13 13:22:21 2010 +0100
+
+    Version 0.26.2
+
+ NEWS         |    4 ++++
+ configure.in |    2 +-
+ 2 files changed, 5 insertions(+), 1 deletions(-)
+
+commit c5ff71e924d7b3598e332392c4cc4c19e89a7d6f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Oct 16 00:02:07 2010 +0200
+
+    Plug refcount leak
+    
+    The leaked VtePty leaked FDs, too. Bug #632257.
+
+ src/vte.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit c2e51e25c7d321e20348fe1e3c71ea7278197860
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Oct 13 11:43:01 2010 -0400
+
+    Version 0.26.1
+
+ NEWS         |    7 +++++++
+ configure.in |    2 +-
+ 2 files changed, 8 insertions(+), 1 deletions(-)
+
+commit c5d31b87d7a377f5e6fe93fc1efb061f5c7e9db7
+Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
+Date:   Thu Oct 7 12:57:45 2010 +0200
+
+    Pass the correct TERM value inside envp when spawning
+    
+    So the codepaths that end up invoking execve still have the correct
+    TERM entry. Clarify the effect of vte_pty_set_term().
+    
+    https://bugzilla.gnome.org/show_bug.cgi?id=631589
+
+ src/pty.c |   19 ++++++++-----------
+ src/vte.c |   32 ++------------------------------
+ 2 files changed, 10 insertions(+), 41 deletions(-)
+
 commit bfde97095fa039559f447a4903f810357fdd8b3a
 Author: Christian Persch <chpe@gnome.org>
 Date:   Sun Sep 26 20:35:35 2010 +0200

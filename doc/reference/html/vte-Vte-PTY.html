@@ -433,14 +433,7 @@ If getting the window size failed, <em class="parameter"><code>error</code></em>
 <pre class="programlisting"><span class="returnvalue">void</span>                vte_pty_set_term                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
                                                          <em class="parameter"><code>const <span class="type">char</span> *emulation</code></em>);</pre>
 <p>
-Sets what value of the TERM environment variable to set
-when using <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()"><code class="function">vte_pty_child_setup()</code></a>.
-</p>
-<p>
-Note: When using <code class="function">fork()</code> and <code class="function">execve()</code>, or the <a href="http://library.gnome.org/devel/glib/unstable/glib-Spawning-Processes.html#g-spawn-async"><code class="function">g_spawn_async()</code></a> family of
-functions with <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()"><code class="function">vte_pty_child_setup()</code></a>,
-and the environment passed to them contains the <code class="literal">TERM</code>
-environment variable, that value will override the one set here.
+Sets what value of the TERM environment variable to set just after forking.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -526,8 +519,8 @@ and whether to use the GNOME PTY helper.
 <a name="VtePty--term"></a><h3>The <code class="literal">"term"</code> property</h3>
 <pre class="programlisting">  "term"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
 <p>
-The value to set for the TERM environment variable
-in <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()"><code class="function">vte_pty_child_setup()</code></a>.
+The value to set for the TERM environment variable just after
+forking.
 </p>
 <p>Default value: "xterm"</p>
 <p class="since">Since 0.26</p>
