@@ -73,13 +73,13 @@ configure-stamp-%:
 configure/python-vte:: $(addprefix configure-stamp-, $(PY_VERSIONS))
 
 build-stamp-%:
-	make -C $(buildbasedir)/$* PYTHON=`which $*`
+	make -C $(buildbasedir)/$*
 	touch $@
 
 build/python-vte:: $(addprefix build-stamp-, $(PY_VERSIONS))
 
 install-stamp-%:
-	make -C $(buildbasedir)/$* install DESTDIR=$(DEB_DESTDIR) PYTHON=`which $*`
+	PYTHON=`which $*` make -C $(buildbasedir)/$* install DESTDIR=$(DEB_DESTDIR)
 	# stop shipping *.a and *.la files for the Python module;
 	# python-support moves them anyway (#412477)
 	find $(DEB_DESTDIR)/usr/lib/$* -name \*.a -exec rm -f '{}' \;

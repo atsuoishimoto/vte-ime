@@ -184,7 +184,6 @@
 <ANCHOR id="VteTerminal-resize-window" href="vte/VteTerminal.html#VteTerminal-resize-window">
 <ANCHOR id="VteTerminal-restore-window" href="vte/VteTerminal.html#VteTerminal-restore-window">
 <ANCHOR id="VteTerminal-selection-changed" href="vte/VteTerminal.html#VteTerminal-selection-changed">
-<ANCHOR id="VteTerminal-set-scroll-adjustments" href="vte/VteTerminal.html#VteTerminal-set-scroll-adjustments">
 <ANCHOR id="VteTerminal-status-line-changed" href="vte/VteTerminal.html#VteTerminal-status-line-changed">
 <ANCHOR id="VteTerminal-text-deleted" href="vte/VteTerminal.html#VteTerminal-text-deleted">
 <ANCHOR id="VteTerminal-text-inserted" href="vte/VteTerminal.html#VteTerminal-text-inserted">
@@ -255,4 +254,5 @@
 <ANCHOR id="annotation-glossterm-allow-none" href="vte/annotation-glossary.html#annotation-glossterm-allow-none">
 <ANCHOR id="annotation-glossterm-element-type" href="vte/annotation-glossary.html#annotation-glossterm-element-type">
 <ANCHOR id="annotation-glossterm-transfer full" href="vte/annotation-glossary.html#annotation-glossterm-transfer full">
+<ANCHOR id="annotation-glossterm-type" href="vte/annotation-glossary.html#annotation-glossterm-type">
 <ANCHOR id="annotation-glossterm-transfer none" href="vte/annotation-glossary.html#annotation-glossterm-transfer none">

@@ -1,11 +1,15 @@
-vte (1:0.26.0-0ubuntu3) natty; urgency=low
+vte (1:0.26.2-0ubuntu1) natty; urgency=low
 
-  [ Michael Terry ]
-  * Explicitly specify the Python version when running make.  Since
-    $PYTHON was only specified during the debuild configure step, it
-    reverted to the default version during install.  (LP: #674175)
+  * New upstream release
+  * debian/control:
+    - Use standards-version 3.9.1
+    - Add depends on libvte-common so all packages can use linked documentation
+  * debian/libvte-doc.links:
+    - Fix html documentation link
+  * debian/rules:
+    - Set PYTHON environment variable on install
 
- -- Barry Warsaw <barry@ubuntu.com>  Mon, 29 Nov 2010 17:46:24 -0500
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 09 Dec 2010 14:20:40 +1100
 
 vte (1:0.26.0-0ubuntu2) maverick-proposed; urgency=low
 

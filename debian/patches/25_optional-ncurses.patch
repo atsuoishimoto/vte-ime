@@ -1,8 +1,8 @@
-Index: vte-0.25.90/configure.in
+Index: vte-0.26.2/configure.in
 ===================================================================
---- vte-0.25.90.orig/configure.in	2010-08-16 23:07:06.000000000 +1000
-+++ vte-0.25.90/configure.in	2010-08-17 17:35:08.670563000 +1000
-@@ -336,45 +336,52 @@
+--- vte-0.26.2.orig/configure.in	2010-11-13 23:18:51.000000000 +1100
++++ vte-0.26.2/configure.in	2010-11-24 17:30:28.245693001 +1100
+@@ -364,45 +364,52 @@
  AC_CHECK_FUNC(floor,,AC_CHECK_LIB(m,floor,LIBS=["$LIBS -lm"]))
  AC_CHECK_FUNCS([ceil floor])
  
@@ -93,11 +93,11 @@ Index: vte-0.25.90/configure.in
  
  # Search for the required modules.
  
-Index: vte-0.25.90/src/keymap.c
+Index: vte-0.26.2/src/keymap.c
 ===================================================================
---- vte-0.25.90.orig/src/keymap.c	2010-07-16 03:08:44.000000000 +1000
-+++ vte-0.25.90/src/keymap.c	2010-08-17 17:35:08.670563000 +1000
-@@ -44,7 +44,7 @@
+--- vte-0.26.2.orig/src/keymap.c	2010-09-14 00:14:28.000000000 +1000
++++ vte-0.26.2/src/keymap.c	2010-11-24 17:30:28.245693001 +1100
+@@ -50,7 +50,7 @@
  #include <termcap.h>
  #define VTE_TERMCAP_NAME "termcap"
  #else
@@ -106,7 +106,7 @@ Index: vte-0.25.90/src/keymap.c
  #endif
  
  #ifdef VTE_DEBUG
-@@ -1008,8 +1008,10 @@
+@@ -1014,8 +1014,10 @@
  	enum _vte_fkey_mode fkey_mode;
  	char *cap, *tmp;
  	const char *termcap_special = NULL;
@@ -117,7 +117,7 @@ Index: vte-0.25.90/src/keymap.c
  
  	g_return_if_fail(normal != NULL);
  	g_return_if_fail(normal_length != NULL);
-@@ -1163,6 +1165,7 @@
+@@ -1169,6 +1171,7 @@
  			}
  		}
  	}
@@ -125,7 +125,7 @@ Index: vte-0.25.90/src/keymap.c
  	if (termcap_special != NULL) {
  		tmp = g_strdup(terminal);
  		cap = NULL;
-@@ -1203,6 +1206,7 @@
+@@ -1209,6 +1212,7 @@
  			return;
  		}
  	}
@@ -133,10 +133,10 @@ Index: vte-0.25.90/src/keymap.c
  
  	_vte_debug_print(VTE_DEBUG_KEYBOARD,
  			" (ignoring, no match for modifier state).\n");
-Index: vte-0.25.90/src/ssfe.c
+Index: vte-0.26.2/src/ssfe.c
 ===================================================================
---- vte-0.25.90.orig/src/ssfe.c	2010-01-14 07:49:48.000000000 +1100
-+++ vte-0.25.90/src/ssfe.c	2010-08-17 17:35:08.670563000 +1000
+--- vte-0.26.2.orig/src/ssfe.c	2010-01-14 07:49:48.000000000 +1100
++++ vte-0.26.2/src/ssfe.c	2010-11-24 17:30:28.245693001 +1100
 @@ -38,7 +38,7 @@
  #include <termcap.h>
  #define VTE_TERMCAP_NAME "termcap"

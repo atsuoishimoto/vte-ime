@@ -1,10 +1,10 @@
 Upstream: http://bugzilla.gnome.org/show_bug.cgi?id=320128
 Description: Keep file descriptors open on vte_fork_pty().
 
-Index: vte-0.25.91/src/pty.c
+Index: vte-0.26.2/src/pty.c
 ===================================================================
---- vte-0.25.91.orig/src/pty.c	2010-09-07 16:57:59.842604001 +1000
-+++ vte-0.25.91/src/pty.c	2010-09-08 16:17:55.724088801 +1000
+--- vte-0.26.2.orig/src/pty.c	2010-10-19 00:58:58.000000000 +1100
++++ vte-0.26.2/src/pty.c	2010-11-24 17:30:31.825693001 +1100
 @@ -192,6 +192,7 @@
  		const char *name;
  		int fd;
@@ -13,7 +13,7 @@ Index: vte-0.25.91/src/pty.c
  } VtePtyChildSetupData;
  
  /**
-@@ -332,6 +332,20 @@
+@@ -332,6 +333,20 @@
  		close(fd);
  	}
  
@@ -34,7 +34,7 @@ Index: vte-0.25.91/src/pty.c
  	/* Reset our signals -- our parent may have done any number of
  	 * weird things to them. */
  	_vte_pty_reset_signal_handlers();
-@@ -437,6 +451,23 @@
+@@ -440,6 +455,23 @@
  	return (gchar **) g_ptr_array_free (array, FALSE);
  }
  
@@ -58,9 +58,9 @@ Index: vte-0.25.91/src/pty.c
  /*
   * __vte_pty_get_pty_flags:
   * @lastlog: %TRUE if the session should be logged to the lastlog
-@@ -520,6 +551,10 @@
+@@ -523,6 +555,10 @@
          /* add the given environment to the childs */
-         envp2 = __vte_pty_merge_environ (envv);
+         envp2 = __vte_pty_merge_environ (envv, pty->priv->term);
  
 +        pty->priv->child_setup_data.keep_fd = _vte_pty_keep_fd(envp2);
 +        if (pty->priv->child_setup_data.keep_fd > 0)
