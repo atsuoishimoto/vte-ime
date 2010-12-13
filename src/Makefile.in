@@ -41,7 +41,7 @@ host_triplet = @host@
 bin_PROGRAMS = vte@VTE_LIBRARY_SUFFIX_U@$(EXEEXT)
 @HAVE_INTROSPECTION_TRUE@am__append_1 = Vte-$(VTE_API_VERSION).gir
 @HAVE_INTROSPECTION_TRUE@am__append_2 = $(nodist_gir_DATA) $(nodist_typelib_DATA)
-vtelib_PROGRAMS = interpret$(EXEEXT) slowcat$(EXEEXT)
+noinst_PROGRAMS = interpret$(EXEEXT) slowcat$(EXEEXT)
 check_PROGRAMS = dumpkeys$(EXEEXT) iso2022$(EXEEXT) reaper$(EXEEXT) \
 	reflect-text-view$(EXEEXT) reflect-vte$(EXEEXT) mev$(EXEEXT) \
 	ssfe$(EXEEXT) table$(EXEEXT) trie$(EXEEXT) xticker$(EXEEXT) \
@@ -81,7 +81,6 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
-	"$(DESTDIR)$(vtelibdir)" "$(DESTDIR)$(vtelibdir)" \
 	"$(DESTDIR)$(girdir)" "$(DESTDIR)$(typelibdir)" \
 	"$(DESTDIR)$(headerdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
@@ -121,7 +120,7 @@ libvte@VTE_LIBRARY_SUFFIX_U@_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libvte@VTE_LIBRARY_SUFFIX_U@_la_CFLAGS) $(CFLAGS) \
 	$(libvte@VTE_LIBRARY_SUFFIX_U@_la_LDFLAGS) $(LDFLAGS) -o $@
-PROGRAMS = $(bin_PROGRAMS) $(vtelib_PROGRAMS)
+PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am_dumpkeys_OBJECTS = dumpkeys.$(OBJEXT)
 dumpkeys_OBJECTS = $(am_dumpkeys_OBJECTS)
 dumpkeys_LDADD = $(LDADD)
@@ -220,7 +219,7 @@ am_xticker_OBJECTS = xticker.$(OBJEXT)
 xticker_OBJECTS = $(am_xticker_OBJECTS)
 xticker_LDADD = $(LDADD)
 xticker_DEPENDENCIES = $(am__DEPENDENCIES_1)
-SCRIPTS = $(vtelib_SCRIPTS)
+SCRIPTS = $(noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -470,7 +469,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = iso2022.txt $(VTESEQ_BUILTSOURCES) $(vtelib_SCRIPTS) \
+EXTRA_DIST = iso2022.txt $(VTESEQ_BUILTSOURCES) $(noinst_SCRIPTS) \
 	$(TEST_SH)
 
 # The library
@@ -563,6 +562,7 @@ libvte@VTE_LIBRARY_SUFFIX_U@_la_CPPFLAGS = \
  	-DDATADIR='"$(datadir)"' \
 	-DLIBEXECDIR='"$(libexecdir)"' \
 	-DLOCALEDIR='"$(localedir)"' \
+	-DTERMCAPDIR='"$(pkgdatadir)/termcap-$(VTE_API_VERSION)"' \
 	-DVTE_COMPILATION \
 	$(AM_CPPFLAGS)
 
@@ -606,10 +606,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
 @HAVE_INTROSPECTION_TRUE@nodist_gir_DATA = $(INTROSPECTION_GIRS)
 @HAVE_INTROSPECTION_TRUE@typelibdir = $(INTROSPECTION_TYPELIBDIR)
 @HAVE_INTROSPECTION_TRUE@nodist_typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
-
-# Misc unit tests and utilities
-vtelibdir = $(libdir)/vte-$(VTE_API_VERSION)
-vtelib_SCRIPTS = decset osc window
+noinst_SCRIPTS = decset osc window
 TEST_SH = check-doc-syntax.sh
 AM_CFLAGS = $(GLIB_CFLAGS)
 LDADD = $(GLIB_LIBS)
@@ -645,7 +642,7 @@ interpret_SOURCES = \
 
 interpret_CPPFLAGS = \
  	-DINTERPRET_MAIN \
- 	-DDATADIR='"$(datadir)"'
+ 	-DTERMCAPDIR='"$(pkgdatadir)/termcap-$(VTE_API_VERSION)"'
 
 interpret_CFLAGS = $(GTK_CFLAGS)
 interpret_LDADD = $(GTK_LIBS)
@@ -850,43 +847,9 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-install-vtelibPROGRAMS: $(vtelib_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	test -z "$(vtelibdir)" || $(MKDIR_P) "$(DESTDIR)$(vtelibdir)"
-	@list='$(vtelib_PROGRAMS)'; test -n "$(vtelibdir)" || list=; \
-	for p in $$list; do echo "$$p $$p"; done | \
-	sed 's/$(EXEEXT)$$//' | \
-	while read p p1; do if test -f $$p || test -f $$p1; \
-	  then echo "$$p"; echo "$$p"; else :; fi; \
-	done | \
-	sed -e 'p;s,.*/,,;n;h' -e 's|.*|.|' \
-	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
-	sed 'N;N;N;s,\n, ,g' | \
-	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
-	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
-	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
-	    else { print "f", $$3 "/" $$4, $$1; } } \
-	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
-	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
-	    test -z "$$files" || { \
-	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(vtelibdir)$$dir'"; \
-	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(vtelibdir)$$dir" || exit $$?; \
-	    } \
-	; done
 
-uninstall-vtelibPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(vtelib_PROGRAMS)'; test -n "$(vtelibdir)" || list=; \
-	files=`for p in $$list; do echo "$$p"; done | \
-	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
-	      -e 's/$$/$(EXEEXT)/' `; \
-	test -n "$$list" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(vtelibdir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(vtelibdir)" && rm -f $$files
-
-clean-vtelibPROGRAMS:
-	@list='$(vtelib_PROGRAMS)'; test -n "$$list" || exit 0; \
+clean-noinstPROGRAMS:
+	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
 	echo " rm -f" $$list; \
 	rm -f $$list || exit $$?; \
 	test -n "$(EXEEXT)" || exit 0; \
@@ -938,40 +901,6 @@ vtetc$(EXEEXT): $(vtetc_OBJECTS) $(vtetc_DEPENDENCIES)
 xticker$(EXEEXT): $(xticker_OBJECTS) $(xticker_DEPENDENCIES) 
 	@rm -f xticker$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(xticker_OBJECTS) $(xticker_LDADD) $(LIBS)
-install-vtelibSCRIPTS: $(vtelib_SCRIPTS)
-	@$(NORMAL_INSTALL)
-	test -z "$(vtelibdir)" || $(MKDIR_P) "$(DESTDIR)$(vtelibdir)"
-	@list='$(vtelib_SCRIPTS)'; test -n "$(vtelibdir)" || list=; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  if test -f "$$d$$p"; then echo "$$d$$p"; echo "$$p"; else :; fi; \
-	done | \
-	sed -e 'p;s,.*/,,;n' \
-	    -e 'h;s|.*|.|' \
-	    -e 'p;x;s,.*/,,;$(transform)' | sed 'N;N;N;s,\n, ,g' | \
-	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1; } \
-	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
-	    if ($$2 == $$4) { files[d] = files[d] " " $$1; \
-	      if (++n[d] == $(am__install_max)) { \
-		print "f", d, files[d]; n[d] = 0; files[d] = "" } } \
-	    else { print "f", d "/" $$4, $$1 } } \
-	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
-	     if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
-	     test -z "$$files" || { \
-	       echo " $(INSTALL_SCRIPT) $$files '$(DESTDIR)$(vtelibdir)$$dir'"; \
-	       $(INSTALL_SCRIPT) $$files "$(DESTDIR)$(vtelibdir)$$dir" || exit $$?; \
-	     } \
-	; done
-
-uninstall-vtelibSCRIPTS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(vtelib_SCRIPTS)'; test -n "$(vtelibdir)" || exit 0; \
-	files=`for p in $$list; do echo "$$p"; done | \
-	       sed -e 's,.*/,,;$(transform)'`; \
-	test -n "$$list" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(vtelibdir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(vtelibdir)" && rm -f $$files
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -2233,7 +2162,7 @@ all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(DATA) \
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(vtelibdir)" "$(DESTDIR)$(vtelibdir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(headerdir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(headerdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -2268,7 +2197,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-vtelibPROGRAMS \
+	clean-libLTLIBRARIES clean-libtool clean-noinstPROGRAMS \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -2290,8 +2219,7 @@ info: info-am
 info-am:
 
 install-data-am: install-headerHEADERS install-nodist_girDATA \
-	install-nodist_typelibDATA install-vtelibPROGRAMS \
-	install-vtelibSCRIPTS
+	install-nodist_typelibDATA
 
 install-dvi: install-dvi-am
 
@@ -2339,14 +2267,13 @@ ps-am:
 
 uninstall-am: uninstall-binPROGRAMS uninstall-headerHEADERS \
 	uninstall-libLTLIBRARIES uninstall-nodist_girDATA \
-	uninstall-nodist_typelibDATA uninstall-vtelibPROGRAMS \
-	uninstall-vtelibSCRIPTS
+	uninstall-nodist_typelibDATA
 
 .MAKE: all check check-am install install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-TESTS check-am clean \
 	clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-vtelibPROGRAMS ctags \
+	clean-libLTLIBRARIES clean-libtool clean-noinstPROGRAMS ctags \
 	distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-binPROGRAMS \
@@ -2355,15 +2282,13 @@ uninstall-am: uninstall-binPROGRAMS uninstall-headerHEADERS \
 	install-html install-html-am install-info install-info-am \
 	install-libLTLIBRARIES install-man install-nodist_girDATA \
 	install-nodist_typelibDATA install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip install-vtelibPROGRAMS \
-	install-vtelibSCRIPTS installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-binPROGRAMS uninstall-headerHEADERS \
-	uninstall-libLTLIBRARIES uninstall-nodist_girDATA \
-	uninstall-nodist_typelibDATA uninstall-vtelibPROGRAMS \
-	uninstall-vtelibSCRIPTS
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-headerHEADERS uninstall-libLTLIBRARIES \
+	uninstall-nodist_girDATA uninstall-nodist_typelibDATA
 
 	$(NULL)
 

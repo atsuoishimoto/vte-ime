@@ -240,11 +240,7 @@ vte_bg_get_for_screen(GdkScreen *screen)
 
 		window = gdk_screen_get_root_window(screen);
                 pvt->native.window = window;
-#if GTK_CHECK_VERSION (2, 91, 6)
-                pvt->native.native_window = gdk_x11_window_get_xid(window);
-#else
                 pvt->native.native_window = gdk_x11_drawable_get_xid(window);
-#endif
 #if GTK_CHECK_VERSION (2, 90, 8)
                 pvt->native.display = gdk_window_get_display(window);
 #else

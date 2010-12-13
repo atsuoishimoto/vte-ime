@@ -1,14 +1,97 @@
-commit 960b8f945b987603635ec85e0defbab2d84cdc64
+commit 9d9b0ab63422b0ece31a4fceddf17348ab9bed36
+Author: Javier Jardón <jjardon@gnome.org>
+Date:   Tue Nov 9 03:46:39 2010 +0100
+
+    Use gtk_paned_new() instead gtk_[h|v]paned_new()
+
+ src/reflect.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit d512516528a5951c81a8be7f8d47f10c52f7ac13
+Author: Brandon Ehle <azverkan@yahoo.com>
+Date:   Sun Oct 31 01:43:34 2010 -0700
+
+    Fix a compile error when using an older version of GTK+.
+
+ src/vte.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+commit a6c009841f7917bac1a2a16bbb0d921ba4b8bf0d
+Author: Carles Ferrando <carles.ferrando@gmail.com>
+Date:   Fri Oct 29 21:49:51 2010 +0100
+
+    Updated Catalan (Valencian) translation
+
+ po/ca@valencia.po |   56 ++++++++++++++++++++++++----------------------------
+ 1 files changed, 26 insertions(+), 30 deletions(-)
+
+commit a3de47da0a42892d01fc4b6b90a5ec2728b26787
 Author: Christian Persch <chpe@gnome.org>
-Date:   Sat Nov 13 13:22:21 2010 +0100
+Date:   Tue Oct 26 13:44:37 2010 +0200
 
-    Version 0.26.2
+    Add missing break
 
- NEWS         |    4 ++++
+ src/vte.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit f75f5a42aa3bbba44e91ca4a58396139a3883eb3
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Oct 26 13:44:21 2010 +0200
+
+    Add missing break
+
+ src/vte.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit ba49f082e6ba59a37d9ad2740ecb3ba4209a6c42
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Oct 26 13:41:05 2010 +0200
+
+    Implement [hv]scroll-policy properties
+
+ src/vte-private.h |    8 ++++++++
+ src/vte.c         |   42 ++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 46 insertions(+), 4 deletions(-)
+
+commit 85b7996647b171f82910538e2a9c90a6d359d1a2
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Oct 24 20:12:03 2010 +0200
+
+    Implement GtkScrollable interface on gtk3
+
+ src/vte.c           |   75 ++++++++++++++++++++++++++++++++++++++++++++------
+ src/vte.h           |    5 +++
+ src/vtedeprecated.h |    4 +++
+ 3 files changed, 75 insertions(+), 9 deletions(-)
+
+commit cc497d0eae579f7b67adc92a93225326e32beefe
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Oct 18 16:07:35 2010 +0200
+
+    Post release version bump
+
  configure.in |    2 +-
- 2 files changed, 5 insertions(+), 1 deletions(-)
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-commit c5ff71e924d7b3598e332392c4cc4c19e89a7d6f
+commit 51a75752f3df876c4a96b6f9030ebc79afbf6c6a
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Oct 18 16:03:17 2010 +0200
+
+    Add cast to fix compiler warning
+
+ src/vteapp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 5278c3f3f0cdc5bfa741a5b5579d5da2aeda0079
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Oct 18 16:02:08 2010 +0200
+
+    Version 0.27.1
+
+ NEWS |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+commit 80676b14ddc84ea28571501ec78fd9fc885446b8
 Author: Christian Persch <chpe@gnome.org>
 Date:   Sat Oct 16 00:02:07 2010 +0200
 
@@ -19,17 +102,47 @@ Date:   Sat Oct 16 00:02:07 2010 +0200
  src/vte.c |    1 +
  1 files changed, 1 insertions(+), 0 deletions(-)
 
-commit c2e51e25c7d321e20348fe1e3c71ea7278197860
-Author: Behdad Esfahbod <behdad@behdad.org>
-Date:   Wed Oct 13 11:43:01 2010 -0400
+commit 2944c2ac799a8c73f488d83ab5912936f6a0f766
+Author: Gintautas Miliauskas <gintautas@miliauskas.lt>
+Date:   Wed Oct 13 16:10:24 2010 +0300
 
-    Version 0.26.1
+    Updated Lithuanian translation.
 
- NEWS         |    7 +++++++
- configure.in |    2 +-
- 2 files changed, 8 insertions(+), 1 deletions(-)
+ po/lt.po |  113 +++++++++++++++++++++++++++----------------------------------
+ 1 files changed, 50 insertions(+), 63 deletions(-)
 
-commit c5d31b87d7a377f5e6fe93fc1efb061f5c7e9db7
+commit 7d0eb2ff215709712d80577521a22979490126e5
+Author: Owen W. Taylor <otaylor@fishsoup.net>
+Date:   Mon Oct 11 13:22:31 2010 -0400
+
+    Report correct minimum/natural sizes for GTK+ 3
+    
+    In GTK+ 3, the hack of reporting the current size of the terminal
+    as its minimum size breaks down because GTK+ 3 will never allocate
+    a widget smaller than its minimum size. However, in GTK+ 3 it's
+    possible to report separate minimum and natural sizes, so we
+    should just report a minimum size of 1x1 character and a natural
+    size of the current size.
+    
+    This requires a change in vteapp.c to make the window start off
+    at the right size.
+    
+    https://bugzilla.gnome.org/show_bug.cgi?id=631903
+
+ src/vte.c    |   67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/vteapp.c |   10 ++++++++
+ 2 files changed, 77 insertions(+), 0 deletions(-)
+
+commit 552cfed9ad796ee8ea34b0182aa63a2a5e7abfb3
+Author: Changwoo Ryu <cwryu@debian.org>
+Date:   Sat Oct 9 08:33:01 2010 +0900
+
+    Updated Korean translation
+
+ po/ko.po |   66 ++++++++++++++++++-------------------------------------------
+ 1 files changed, 20 insertions(+), 46 deletions(-)
+
+commit e5fd6c3cda63cad2e3d7af8728a168b90eb009dc
 Author: Tomeu Vizoso <tomeu.vizoso@collabora.co.uk>
 Date:   Thu Oct 7 12:57:45 2010 +0200
 
@@ -44,20 +157,200 @@ Date:   Thu Oct 7 12:57:45 2010 +0200
  src/vte.c |   32 ++------------------------------
  2 files changed, 10 insertions(+), 41 deletions(-)
 
-commit bfde97095fa039559f447a4903f810357fdd8b3a
+commit 89336f820dabf3d0ae2f55d76d4af4c70c3004f6
 Author: Christian Persch <chpe@gnome.org>
-Date:   Sun Sep 26 20:35:35 2010 +0200
+Date:   Tue Oct 5 16:34:54 2010 +0200
 
-    Update
+    Don't install the test programmes and scripts
 
- NEWS |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+ src/Makefile.am |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
 
-commit 49936a8cbaeb62bbb935274dbb9e73c8990361dc
+commit 89cb5538c3d1a7b825faa78f23106ee957442dee
 Author: Christian Persch <chpe@gnome.org>
-Date:   Sun Sep 26 16:23:27 2010 +0200
+Date:   Tue Oct 5 00:40:52 2010 +0200
 
-    Version 0.26.0
+    Vary termcap file into for gtk2/3 builds
+
+ src/Makefile.am      |    3 ++-
+ src/interpret.c      |    3 +--
+ src/vte.c            |    9 +++++----
+ termcaps/Makefile.am |    2 +-
+ 4 files changed, 9 insertions(+), 8 deletions(-)
+
+commit 89c61bb589eb99a7f70f96f0550fdda4e3151706
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Oct 4 14:16:04 2010 +0200
+
+    Post release version bump
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit bc02908854e9b2c396427a24cb8fb36afe2cb818
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Oct 4 14:11:12 2010 +0200
+
+    Bump gtk 3 req
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit b38176cf75284d2cb5530b071415a1b6465aa0f5
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Oct 4 14:09:28 2010 +0200
+
+    Distcheck with gtk 3 now
+
+ Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 21f66f796766f22df087d9011aad29a59030e765
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 1 16:03:24 2010 -0400
+
+    Whitespace
+
+ src/vteapp.c |  224 +++++++++++++++++++++++++++++-----------------------------
+ 1 files changed, 112 insertions(+), 112 deletions(-)
+
+commit 81e166f3f7ef206b58296e41afa9c93af26a85f7
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 1 16:02:09 2010 -0400
+
+    Remove unnecessary conditional
+
+ src/vteapp.c |   33 ++++++++++++++++-----------------
+ 1 files changed, 16 insertions(+), 17 deletions(-)
+
+commit f97b8b8a41a5ace2995cc663dba624a82ce65670
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Fri Oct 1 16:01:20 2010 -0400
+
+    [vteapp] Prefer $SHELL to /bin/sh
+
+ src/vteapp.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 332bd39b2e85bba165dca2a37d4fa3d53e2ce6ff
+Author: Inaki Larranaga Murgoitio <dooteo@zundan.com>
+Date:   Fri Oct 1 00:21:13 2010 +0200
+
+    Updated Basque language
+
+ po/eu.po |   96 ++++++++++++++++++++++++++-----------------------------------
+ 1 files changed, 41 insertions(+), 55 deletions(-)
+
+commit 8e292f603ea78e00ee707aed3614a55cf908f292
+Author: Gheyret Kenji <gheyret@hotmail.com>
+Date:   Fri Oct 1 00:16:25 2010 +0200
+
+    Added UG translation
+
+ po/ug.po |  132 +++++++++++++++++++++++++++++--------------------------------
+ 1 files changed, 63 insertions(+), 69 deletions(-)
+
+commit 48a7718d143a03b28b4c708e054c1ea6f44c942a
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Tue Sep 28 15:02:08 2010 -0400
+
+    Revert "Revert 9370647823ce29c1088c351381a07a5506b74c84"
+    
+    This reverts commit dab50851a395069492218115caf44361b742b20c.
+    
+    Again, set widget background color to the terminal background color.
+    This removes flicker when resizing the terminal/widget.
+
+ src/vte.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+commit 5f64a707e562598be0432a56d5bdeea9962e7add
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Sep 28 19:50:29 2010 +0200
+
+    Use gtk_widget_set_visual
+
+ src/vteapp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 8d71032c172285be94d34c01cb891f110dcbb925
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Sep 28 16:02:56 2010 +0200
+
+    Fix the gtk 2 build
+
+ src/vtebg.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit cde73f4896e82b13edb112bfd5f510ed2740d2df
+Author: Christian Persch <chpe@gnome.org>
+Date:   Fri Sep 24 14:53:07 2010 +0200
+
+    Use gdk_error_trap_pop_ignored
+
+ src/vte-gtk-compat.h |    4 ++++
+ src/vtebg.c          |    2 +-
+ 2 files changed, 5 insertions(+), 1 deletions(-)
+
+commit aeb607a958f96648d78496459ca6aebda9fd0324
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Sep 21 13:58:52 2010 +0200
+
+    Don't use gdk_drawable_get_size
+
+ src/vteaccess.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
+
+commit b0a12909c0df9a8818923ef8af663a18d60a768c
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Sep 14 18:08:52 2010 +0200
+
+    Port to latest rendering-cleanup-next branch
+
+ src/vte.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+commit 21a064ac8b5925108b0ab9bd6516664c8cd3e268
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Sep 13 21:44:50 2010 +0200
+
+    Use cairo_copy_clip_rectangle_list() to recreate the clip region
+    
+    Thanks to Behdad for the hint, and for pointing out a bug in my
+    first attempt.
+
+ src/vte.c |   48 ++++++++++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 44 insertions(+), 4 deletions(-)
+
+commit 6a7f6538aaaf81e5ef755c6660dcca8311835ca1
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Sep 13 16:27:13 2010 +0200
+
+    Port to GtkWidget::draw
+    
+    ... to work with the rendering-cleanup-next branch of gtk.
+    
+    Need to think what will happen with the update_regions.
+
+ src/vte.c |   45 +++++++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 43 insertions(+), 2 deletions(-)
+
+commit e69b4c1bb4de66d432a1592a50daba1b105a6b64
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sat Sep 11 12:39:03 2010 +0200
+
+    Fix build with gtk 3 rendering cleanup branch
+
+ src/vte.c    |   22 ++++++++++++++++------
+ src/vteapp.c |   10 ++++++++++
+ src/vtebg.c  |    4 ++++
+ 3 files changed, 30 insertions(+), 6 deletions(-)
+
+commit 65dfcff5ab1a60d1761581e341c8c8a00fc89c5d
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Sep 26 16:24:03 2010 +0200
+
+    Post branch version bump
 
  configure.in |    4 ++--
  1 files changed, 2 insertions(+), 2 deletions(-)

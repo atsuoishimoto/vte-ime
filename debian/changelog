@@ -1,3 +1,41 @@
+vte (1:0.27.2-0ubuntu1) natty; urgency=low
+
+  * fix_gtk3_api_changes.patch:
+    - Fix GTK3 API breakage
+  * debian/control:
+    - Drop libvte-bin package, after consulting with Debian
+  * debian/rules:
+    - Use separate libexecdir to put binaries in separate folder
+      for the gtk3 version of the library
+
+ -- Michael Terry <mterry@ubuntu.com>  Mon, 13 Dec 2010 17:00:11 -0500
+
+vte (1:0.27.2-0ubuntu1~build2) natty; urgency=low
+
+  * debian/rules:
+    - Fix when gtk3 version is installed
+
+ -- Michael Terry <mterry@ubuntu.com>  Tue, 23 Nov 2010 15:31:24 -0500
+
+vte (1:0.27.2-0ubuntu1~build1) natty; urgency=low
+
+  * New upstream version
+  * debian/watch:
+    - Fix regular expression to work
+  * debian/rules:
+    - Fix python install line to specify version of python, fixes FTBFS
+  * Adds support for gtk3, adding:
+    - libvte-2.90-9
+    - gir1.0-vte-2.90
+    - libvte-2.90-dev
+    - libvte-bin
+  * Renamed gir1.0-vte-1.0 to gir1.0-vte-0.0, since that is the version of
+    the gir used.  There are no rdepends.
+  * Moved the helper program from the library package to a new libvte-bin
+    package
+
+ -- Michael Terry <mterry@ubuntu.com>  Tue, 23 Nov 2010 10:13:27 -0500
+
 vte (1:0.26.2-0ubuntu1) natty; urgency=low
 
   * New upstream release
