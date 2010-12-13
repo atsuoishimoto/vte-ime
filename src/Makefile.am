@@ -96,6 +96,7 @@ libvte@VTE_LIBRARY_SUFFIX_U@_la_CPPFLAGS = \
  	-DDATADIR='"$(datadir)"' \
 	-DLIBEXECDIR='"$(libexecdir)"' \
 	-DLOCALEDIR='"$(localedir)"' \
+	-DTERMCAPDIR='"$(pkgdatadir)/termcap-$(VTE_API_VERSION)"' \
 	-DVTE_COMPILATION \
 	$(AM_CPPFLAGS)
 
@@ -193,10 +194,9 @@ endif
 
 # Misc unit tests and utilities
 
-vtelibdir = $(libdir)/vte-$(VTE_API_VERSION)
-vtelib_PROGRAMS = interpret slowcat
-vtelib_SCRIPTS = decset osc window
-EXTRA_DIST += $(vtelib_SCRIPTS)
+noinst_PROGRAMS = interpret slowcat
+noinst_SCRIPTS = decset osc window
+EXTRA_DIST += $(noinst_SCRIPTS)
 
 TEST_SH = check-doc-syntax.sh
 EXTRA_DIST += $(TEST_SH)
@@ -240,7 +240,7 @@ interpret_SOURCES = \
 	interpret.c
 interpret_CPPFLAGS = \
  	-DINTERPRET_MAIN \
- 	-DDATADIR='"$(datadir)"'
+ 	-DTERMCAPDIR='"$(pkgdatadir)/termcap-$(VTE_API_VERSION)"'
 interpret_CFLAGS = $(GTK_CFLAGS)
 interpret_LDADD = $(GTK_LIBS)
 

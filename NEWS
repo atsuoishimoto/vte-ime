@@ -1,19 +1,10 @@
-0.26.2
-======
-- Plug FD leak (#632257)
-
-0.26.1
-======
-
-- Pass the correct TERM value inside envp when spawning.
-- Bugs fixed:
-    Bug 631589 - set_emulation does not work in the python bindings
-
-0.26.0
+0.27.1
 ======
 
 - Bugs fixed:
-  * Bug 601926 - Don't hardcode meta to alt
+  * Bug 631589 - Pass the correct TERM value inside envp when spawning
+  * Bug 631903 - Report correct minimum/natural sizes for GTK+ 3
+  * Bug 632257 - vte leaks FDs
 - Translation updates
 
 0.25.90

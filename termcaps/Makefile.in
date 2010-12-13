@@ -279,7 +279,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = xterm xterm.baseline
-termcapdir = $(pkgdatadir)/termcap
+termcapdir = $(pkgdatadir)/termcap-$(VTE_API_VERSION)
 termcap_DATA = xterm $(am__append_1)
 all: all-am
 

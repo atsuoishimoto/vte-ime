@@ -1,5 +1,5 @@
 m4_define([version_major],0)
-m4_define([version_minor],26)
+m4_define([version_minor],27)
 m4_define([version_micro],2)
 m4_define([version_triplet],version_major.version_minor.version_micro)
 
@@ -61,7 +61,7 @@ case "$with_gtk" in
        VTE_LIBRARY_SUFFIX=$VTE_API_VERSION
        VTE_SEAL_CFLAGS="-DVTE_SEAL_ENABLE"
        GTK_API_VERSION=3.0
-       GTK_REQUIRED=2.90.0
+       GTK_REQUIRED=2.91.0
        ;;
 esac
 
