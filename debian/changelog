@@ -1,3 +1,10 @@
+vte (1:0.27.2-0ubuntu2) natty; urgency=low
+
+  * debian/control.in:
+    - Rename gir1.0 packages to gir1.2
+
+ -- Michael Terry <mterry@ubuntu.com>  Thu, 16 Dec 2010 13:36:58 -0500
+
 vte (1:0.27.2-0ubuntu1) natty; urgency=low
 
   * fix_gtk3_api_changes.patch:

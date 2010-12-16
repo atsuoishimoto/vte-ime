@@ -16,8 +16,8 @@ Build-Depends: cdbs (>= 0.4.43),
                libgtk3.0-dev (>= 2.91.0),
                gobject-introspection (>= 0.6.7),
                libgirepository1.0-dev (>= 0.6.7),
-               gir1.0-gtk-2.0,
-               gir1.0-gtk-3.0,
+               gir1.2-gtk-2.0,
+               gir1.2-gtk-3.0,
                gettext,
                python-gtk2-dev,
                python-all-dev (>= 2.3.5-11),
@@ -62,14 +62,15 @@ Description: Terminal emulator widget for GTK+ 2.0 - minimal runtime
  This package contains the minimal runtime library needed by the Debian
  installer.
 
-Package: gir1.0-vte-0.0
+Package: gir1.2-vte-0.0
 Section: libs
 Architecture: any
 Depends: ${gir:Depends},
          ${shlibs:Depends},
          ${misc:Depends},
          libvte-common
-Conflicts: gobject-introspection-repository
+Conflicts: gobject-introspection-repository, gir1.0-vte-0.0
+Replaces: gir1.0-vte-0.0
 Description: GObject introspection data for the VTE library
  This package contains introspection data for VTE, a terminal emulator
  widget for GTK+.
@@ -112,12 +113,14 @@ Description: Terminal emulator widget for GTK+ 3.0 - runtime files
  sequence or just random data. The sample program "interpret" illustrates
  more or less what the widget sees after it filters incoming data.
 
-Package: gir1.0-vte-2.90
+Package: gir1.2-vte-2.90
 Section: libs
 Architecture: any
 Depends: ${gir:Depends},
          ${misc:Depends},
          libvte-common
+Conflicts: gir1.0-vte-2.90
+Replaces: gir1.0-vte-2.90
 Description: GObject introspection data for the VTE library
  This package contains introspection data for VTE, a terminal emulator
  widget for GTK+.
