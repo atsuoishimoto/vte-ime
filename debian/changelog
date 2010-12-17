@@ -1,3 +1,9 @@
+vte (1:0.27.2-0ubuntu3) natty; urgency=low
+
+  * Fix update glitch related to scroll regions (LP: #246701)
+
+ -- Micah Cowan <micah@cowan.name>  Fri, 17 Dec 2010 11:58:21 +1100
+
 vte (1:0.27.2-0ubuntu2) natty; urgency=low
 
   * debian/control.in:
