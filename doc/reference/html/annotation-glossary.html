@@ -25,6 +25,12 @@
                       | 
                    <a class="shortcut" href="#glsA">A</a>
                       | 
+                   <a class="shortcut" href="#glsC">C</a>
+                      | 
+                   <a class="shortcut" href="#glsT">T</a>
+                      | 
+                   <a class="shortcut" href="#glsA">A</a>
+                      | 
                    <a class="shortcut" href="#glsE">E</a>
                       | 
                    <a class="shortcut" href="#glsT">T</a>
@@ -39,11 +45,20 @@
 <dd><p>Parameter for returning results. Default is <acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>.</p></dd>
 <a name="glsA"></a><h3 class="title">A</h3>
 <dt>
-<a name="annotation-glossterm-array"></a>array</dt>
-<dd><p>Parameter points to an array of items.</p></dd>
-<dt>
 <a name="annotation-glossterm-allow-none"></a>allow-none</dt>
 <dd><p>NULL is ok, both for passing and for returning.</p></dd>
+<a name="glsC"></a><h3 class="title">C</h3>
+<dt>
+<a name="annotation-glossterm-closure"></a>closure</dt>
+<dd><p>This parameter is a 'user_data', for callbacks; many bindings can pass NULL here.</p></dd>
+<a name="glsT"></a><h3 class="title">T</h3>
+<dt>
+<a name="annotation-glossterm-transfer%20none"></a>transfer none</dt>
+<dd><p>Don't free data after the code is done.</p></dd>
+<a name="glsA"></a><h3 class="title">A</h3>
+<dt>
+<a name="annotation-glossterm-array"></a>array</dt>
+<dd><p>Parameter points to an array of items.</p></dd>
 <a name="glsE"></a><h3 class="title">E</h3>
 <dt>
 <a name="annotation-glossterm-element-type"></a>element-type</dt>
@@ -55,9 +70,6 @@
 <dt>
 <a name="annotation-glossterm-type"></a>type</dt>
 <dd><p>Override the parsed C type with given type</p></dd>
-<dt>
-<a name="annotation-glossterm-transfer%20none"></a>transfer none</dt>
-<dd><p>Don't free data after the code is done.</p></dd>
 </div>
 <div class="footer">
 <hr>

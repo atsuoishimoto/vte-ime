@@ -162,7 +162,7 @@ vte@VTE_LIBRARY_SUFFIX_U@_LDADD = libvte@VTE_LIBRARY_SUFFIX_U@.la $(VTE_LIBS)
 # introspection
 
 INTROSPECTION_GIRS =
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
+INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) --warn-all
 INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
 
 if HAVE_INTROSPECTION
@@ -326,6 +326,16 @@ dumpkeys_SOURCES = dumpkeys.c
 mev_SOURCES = mev.c
 ssfe_SOURCES = ssfe.c
 xticker_SOURCES = xticker.c
+
+# GSettings
+
+# Don't use the automatic rules since the generated .enums.xml isn't very nice
+# gsettings_ENUM_NAMESPACE = org.gnome.vte.v0
+# gsettings_ENUM_FILES = vte.h
+
+dist_gsettingsschema_DATA = org.gnome.vte.v0.enums.xml
+
+#
 
 -include $(top_srcdir)/git.mk
 -include $(INTROSPECTION_MAKEFILE)

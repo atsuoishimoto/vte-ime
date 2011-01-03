@@ -60,7 +60,7 @@
  *
  * Since: 0.16.15
  */
-#define VTE_MICRO_VERSION (2)
+#define VTE_MICRO_VERSION (3)
 
 /**
  * VTE_CHECK_VERSION:

@@ -48,31 +48,31 @@ manipulating pseudo-terminals</p>
 enum                <a class="link" href="vte-Vte-PTY.html#VtePtyError" title="enum VtePtyError">VtePtyError</a>;
                     <a class="link" href="vte-Vte-PTY.html#VtePty-struct" title="VtePty">VtePty</a>;
 <a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            <a class="link" href="vte-Vte-PTY.html#vte-pty-new" title="vte_pty_new ()">vte_pty_new</a>                         (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePtyFlags" title="enum VtePtyFlags"><span class="type">VtePtyFlags</span></a> flags</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 <a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            <a class="link" href="vte-Vte-PTY.html#vte-pty-new-foreign" title="vte_pty_new_foreign ()">vte_pty_new_foreign</a>                 (<em class="parameter"><code><span class="type">int</span> fd</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="vte-Vte-PTY.html#vte-pty-close" title="vte_pty_close ()">vte_pty_close</a>                       (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()">vte_pty_child_setup</a>                 (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>);
 <span class="returnvalue">int</span>                 <a class="link" href="vte-Vte-PTY.html#vte-pty-get-fd" title="vte_pty_get_fd ()">vte_pty_get_fd</a>                      (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="vte-Vte-PTY.html#vte-pty-set-size" title="vte_pty_set_size ()">vte_pty_set_size</a>                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
+<span class="returnvalue">gboolean</span>            <a class="link" href="vte-Vte-PTY.html#vte-pty-set-size" title="vte_pty_set_size ()">vte_pty_set_size</a>                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> rows</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> columns</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="vte-Vte-PTY.html#vte-pty-get-size" title="vte_pty_get_size ()">vte_pty_get_size</a>                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="vte-Vte-PTY.html#vte-pty-get-size" title="vte_pty_get_size ()">vte_pty_get_size</a>                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> *rows</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> *columns</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="vte-Vte-PTY.html#vte-pty-set-term" title="vte_pty_set_term ()">vte_pty_set_term</a>                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
                                                          <em class="parameter"><code>const <span class="type">char</span> *emulation</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="vte-Vte-PTY.html#vte-pty-set-utf8" title="vte_pty_set_utf8 ()">vte_pty_set_utf8</a>                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> utf8</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="vte-Vte-PTY.html#vte-pty-set-utf8" title="vte_pty_set_utf8 ()">vte_pty_set_utf8</a>                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
+                                                         <em class="parameter"><code><span class="type">gboolean</span> utf8</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 </pre>
 </div>
 <div class="refsect1">
 <a name="vte-Vte-PTY.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+  GObject
    +----VtePty
 </pre>
 </div>
@@ -80,14 +80,14 @@ enum                <a class="link" href="vte-Vte-PTY.html#VtePtyError" title="e
 <a name="vte-Vte-PTY.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 VtePty implements
- <a href="http://library.gnome.org/devel/gio/unstable/GInitable.html">GInitable</a>.</p>
+ GInitable.</p>
 </div>
 <div class="refsect1">
 <a name="vte-Vte-PTY.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="vte-Vte-PTY.html#VtePty--fd" title='The "fd" property'>fd</a>"                       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write / Construct Only
+  "<a class="link" href="vte-Vte-PTY.html#VtePty--fd" title='The "fd" property'>fd</a>"                       <span class="type">gint</span>                  : Read / Write / Construct Only
   "<a class="link" href="vte-Vte-PTY.html#VtePty--flags" title='The "flags" property'>flags</a>"                    <a class="link" href="vte-Vte-PTY.html#VtePtyFlags" title="enum VtePtyFlags"><span class="type">VtePtyFlags</span></a>           : Read / Write / Construct Only
-  "<a class="link" href="vte-Vte-PTY.html#VtePty--term" title='The "term" property'>term</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
+  "<a class="link" href="vte-Vte-PTY.html#VtePty--term" title='The "term" property'>term</a>"                     <span class="type">gchar</span>*                : Read / Write
 </pre>
 </div>
 <div class="refsect1">
@@ -184,24 +184,24 @@ pseudo-terminals and to resize pseudo-terminals.
 <div class="refsect2">
 <a name="vte-pty-new"></a><h3>vte_pty_new ()</h3>
 <pre class="programlisting"><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            vte_pty_new                         (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePtyFlags" title="enum VtePtyFlags"><span class="type">VtePtyFlags</span></a> flags</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Allocates a new pseudo-terminal.
 </p>
 <p>
-You can later use <code class="function">fork()</code> or the <a href="http://library.gnome.org/devel/glib/unstable/glib-Spawning-Processes.html#g-spawn-async"><code class="function">g_spawn_async()</code></a> familty of functions
+You can later use <code class="function">fork()</code> or the <code class="function">g_spawn_async()</code> familty of functions
 to start a process on the PTY.
 </p>
 <p>
 If using <code class="function">fork()</code>, you MUST call <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()"><code class="function">vte_pty_child_setup()</code></a> in the child.
 </p>
 <p>
-If using <a href="http://library.gnome.org/devel/glib/unstable/glib-Spawning-Processes.html#g-spawn-async"><code class="function">g_spawn_async()</code></a> and friends, you MUST either use
+If using <code class="function">g_spawn_async()</code> and friends, you MUST either use
 <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()"><code class="function">vte_pty_child_setup()</code></a> directly as the child setup function, or call
 <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()"><code class="function">vte_pty_child_setup()</code></a> from your own child setup function supplied.
 </p>
 <p>
-Also, you MUST pass the <a href="http://library.gnome.org/devel/glib/unstable/glib-Spawning-Processes.html#G-SPAWN-DO-NOT-REAP-CHILD:CAPS"><code class="literal">G_SPAWN_DO_NOT_REAP_CHILD</code></a> flag.
+Also, you MUST pass the <code class="literal">G_SPAWN_DO_NOT_REAP_CHILD</code> flag.
 </p>
 <p>
 When using the GNOME PTY Helper,
@@ -229,12 +229,12 @@ be no fallback to allocate a PTY using Unix98 PTY functions.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td> return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+<td>return location for a <span class="type">GError</span>, or <a href="/gnome/usr/share/gtk-doc/html/liboil/liboil-liboiljunk.html#NULL--CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error with <em class="parameter"><code>error</code></em> filled in. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+<td>a new <a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a>, or <a href="/gnome/usr/share/gtk-doc/html/liboil/liboil-liboiljunk.html#NULL--CAPS"><code class="literal">NULL</code></a> on error with <em class="parameter"><code>error</code></em> filled in. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
 </td>
 </tr>
 </tbody>
@@ -245,7 +245,7 @@ be no fallback to allocate a PTY using Unix98 PTY functions.
 <div class="refsect2">
 <a name="vte-pty-new-foreign"></a><h3>vte_pty_new_foreign ()</h3>
 <pre class="programlisting"><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            vte_pty_new_foreign                 (<em class="parameter"><code><span class="type">int</span> fd</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Creates a new <a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> for the PTY master <em class="parameter"><code>fd</code></em>.
 </p>
@@ -261,17 +261,17 @@ and close it on finalize.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>fd</code></em> :</span></p></td>
-<td> a file descriptor to the PTY. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+<td>a file descriptor to the PTY. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td> return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+<td>return location for a <span class="type">GError</span>, or <a href="/gnome/usr/share/gtk-doc/html/liboil/liboil-liboiljunk.html#NULL--CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> for <em class="parameter"><code>fd</code></em>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error with <em class="parameter"><code>error</code></em> filled in. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+<td>a new <a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> for <em class="parameter"><code>fd</code></em>, or <a href="/gnome/usr/share/gtk-doc/html/liboil/liboil-liboiljunk.html#NULL--CAPS"><code class="literal">NULL</code></a> on error with <em class="parameter"><code>error</code></em> filled in. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
 </td>
 </tr>
 </tbody>
@@ -327,8 +327,8 @@ FIXMEchpe
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the file descriptor of the PTY master in <em class="parameter"><code>pty</code></em>. The
-  file descriptor belongs to <em class="parameter"><code>pty</code></em> and must not be closed. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+<td>the file descriptor of the PTY master in <em class="parameter"><code>pty</code></em>. The
+file descriptor belongs to <em class="parameter"><code>pty</code></em> and must not be closed. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
 </td>
 </tr>
 </tbody>
@@ -337,16 +337,16 @@ FIXMEchpe
 <hr>
 <div class="refsect2">
 <a name="vte-pty-set-size"></a><h3>vte_pty_set_size ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            vte_pty_set_size                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            vte_pty_set_size                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> rows</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> columns</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Attempts to resize the pseudo terminal's window size.  If successful, the
 OS kernel will send <span class="type">SIGWINCH</span> to the child process group.
 </p>
 <p>
-If setting the window size failed, <em class="parameter"><code>error</code></em> will be set to a <a href="http://library.gnome.org/devel/glib/unstable/glib-IO-Channels.html#GIOError"><span class="type">GIOError</span></a>.
+If setting the window size failed, <em class="parameter"><code>error</code></em> will be set to a <span class="type">GIOError</span>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -358,24 +358,21 @@ If setting the window size failed, <em class="parameter"><code>error</code></em>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>rows</code></em> :</span></p></td>
-<td>the desired number of rows
-</td>
+<td>the desired number of rows</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>columns</code></em> :</span></p></td>
-<td>the desired number of columns
-</td>
+<td>the desired number of columns</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>(allow-none); return location to store a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>(allow-none); return location to store a <span class="type">GError</span>, or <a href="/gnome/usr/share/gtk-doc/html/liboil/liboil-liboiljunk.html#NULL--CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> on failure with <em class="parameter"><code>error</code></em> filled in
-
-</td>
+<td>
+<code class="literal">TRUE</code> on success, <code class="literal">FALSE</code> on failure with <em class="parameter"><code>error</code></em> filled in</td>
 </tr>
 </tbody>
 </table></div>
@@ -384,15 +381,15 @@ If setting the window size failed, <em class="parameter"><code>error</code></em>
 <hr>
 <div class="refsect2">
 <a name="vte-pty-get-size"></a><h3>vte_pty_get_size ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            vte_pty_get_size                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            vte_pty_get_size                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> *rows</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> *columns</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Reads the pseudo terminal's window size.
 </p>
 <p>
-If getting the window size failed, <em class="parameter"><code>error</code></em> will be set to a <a href="http://library.gnome.org/devel/glib/unstable/glib-IO-Channels.html#GIOError"><span class="type">GIOError</span></a>.
+If getting the window size failed, <em class="parameter"><code>error</code></em> will be set to a <span class="type">GIOError</span>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -404,24 +401,23 @@ If getting the window size failed, <em class="parameter"><code>error</code></em>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>rows</code></em> :</span></p></td>
-<td> a location to store the number of rows, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+<td>a location to store the number of rows, or <a href="/gnome/usr/share/gtk-doc/html/liboil/liboil-liboiljunk.html#NULL--CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>columns</code></em> :</span></p></td>
-<td> a location to store the number of columns, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+<td>a location to store the number of columns, or <a href="/gnome/usr/share/gtk-doc/html/liboil/liboil-liboiljunk.html#NULL--CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>return location to store a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>return location to store a <span class="type">GError</span>, or <a href="/gnome/usr/share/gtk-doc/html/liboil/liboil-liboiljunk.html#NULL--CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> on failure with <em class="parameter"><code>error</code></em> filled in
-
-</td>
+<td>
+<code class="literal">TRUE</code> on success, <code class="literal">FALSE</code> on failure with <em class="parameter"><code>error</code></em> filled in</td>
 </tr>
 </tbody>
 </table></div>
@@ -445,7 +441,7 @@ Sets what value of the TERM environment variable to set just after forking.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>emulation</code></em> :</span></p></td>
-<td> the name of a terminal description, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+<td>the name of a terminal description, or <a href="/gnome/usr/share/gtk-doc/html/liboil/liboil-liboiljunk.html#NULL--CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
 </td>
 </tr>
 </tbody>
@@ -455,9 +451,9 @@ Sets what value of the TERM environment variable to set just after forking.
 <hr>
 <div class="refsect2">
 <a name="vte-pty-set-utf8"></a><h3>vte_pty_set_utf8 ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            vte_pty_set_utf8                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> utf8</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            vte_pty_set_utf8                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>,
+                                                         <em class="parameter"><code><span class="type">gboolean</span> utf8</code></em>,
+                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Tells the kernel whether the terminal is UTF-8 or not, in case it can make
 use of the info.  Linux 2.6.5 or so defines IUTF8 to make the line
@@ -473,19 +469,17 @@ discipline do multibyte backspace correctly.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>utf8</code></em> :</span></p></td>
-<td>whether or not the pty is in UTF-8 mode
-</td>
+<td>whether or not the pty is in UTF-8 mode</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td> return location to store a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+<td>return location to store a <span class="type">GError</span>, or <a href="/gnome/usr/share/gtk-doc/html/liboil/liboil-liboiljunk.html#NULL--CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> on failure with <em class="parameter"><code>error</code></em> filled in
-
-</td>
+<td>
+<code class="literal">TRUE</code> on success, <code class="literal">FALSE</code> on failure with <em class="parameter"><code>error</code></em> filled in</td>
 </tr>
 </tbody>
 </table></div>
@@ -496,7 +490,7 @@ discipline do multibyte backspace correctly.
 <a name="vte-Vte-PTY.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
 <a name="VtePty--fd"></a><h3>The <code class="literal">"fd"</code> property</h3>
-<pre class="programlisting">  "fd"                       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write / Construct Only</pre>
+<pre class="programlisting">  "fd"                       <span class="type">gint</span>                  : Read / Write / Construct Only</pre>
 <p>
 The file descriptor of the PTY master.
 </p>
@@ -517,7 +511,7 @@ and whether to use the GNOME PTY helper.
 <hr>
 <div class="refsect2">
 <a name="VtePty--term"></a><h3>The <code class="literal">"term"</code> property</h3>
-<pre class="programlisting">  "term"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<pre class="programlisting">  "term"                     <span class="type">gchar</span>*                : Read / Write</pre>
 <p>
 The value to set for the TERM environment variable just after
 forking.

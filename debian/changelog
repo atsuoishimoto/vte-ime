@@ -1,3 +1,13 @@
+vte (1:0.27.3-0ubuntu1) natty; urgency=low
+
+  * New upstream version
+  * debian/libvte-common.install:
+    - Add new gsettings schema
+  * debian/patches/fix_gtk3_api_changes.patch:
+    - Dropped, applied upstream
+
+ -- Michael Terry <mterry@ubuntu.com>  Mon, 03 Jan 2011 16:46:32 -0500
+
 vte (1:0.27.2-0ubuntu3) natty; urgency=low
 
   * Fix update glitch related to scroll regions (LP: #246701)

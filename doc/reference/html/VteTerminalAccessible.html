@@ -42,14 +42,14 @@
 <div class="refsynopsisdiv">
 <a name="VteTerminalAccessible.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">struct              <a class="link" href="VteTerminalAccessible.html#VteTerminalAccessible-struct" title="struct VteTerminalAccessible">VteTerminalAccessible</a>;
-<a href="/opt/gnome/share/gtk-doc/html/atk/AtkObject.html"><span class="returnvalue">AtkObject</span></a> *         <a class="link" href="VteTerminalAccessible.html#vte-terminal-accessible-new" title="vte_terminal_accessible_new ()">vte_terminal_accessible_new</a>         (<em class="parameter"><code><a class="link" href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a> *terminal</code></em>);
+<span class="returnvalue">AtkObject</span> *         <a class="link" href="VteTerminalAccessible.html#vte-terminal-accessible-new" title="vte_terminal_accessible_new ()">vte_terminal_accessible_new</a>         (<em class="parameter"><code><a class="link" href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a> *terminal</code></em>);
 </pre>
 </div>
 <div class="refsect1">
 <a name="VteTerminalAccessible.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="/opt/gnome/share/gtk-doc/html/atk/AtkObject.html">AtkObject</a>
+  GObject
+   +----AtkObject
          +----GtkAccessible
                +----VteTerminalAccessible
 </pre>
@@ -58,7 +58,7 @@
 <a name="VteTerminalAccessible.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 VteTerminalAccessible implements
- <a href="/opt/gnome/share/gtk-doc/html/atk/AtkText.html">AtkText</a>,  <a href="/opt/gnome/share/gtk-doc/html/atk/AtkComponent.html">AtkComponent</a> and  <a href="/opt/gnome/share/gtk-doc/html/atk/AtkAction.html">AtkAction</a>.</p>
+ AtkText,  AtkComponent and  AtkAction.</p>
 </div>
 <div class="refsect1">
 <a name="VteTerminalAccessible.description"></a><h2>Description</h2>
@@ -79,7 +79,7 @@ The accessible peer for <a class="link" href="VteTerminal.html" title="VteTermin
 <hr>
 <div class="refsect2">
 <a name="vte-terminal-accessible-new"></a><h3>vte_terminal_accessible_new ()</h3>
-<pre class="programlisting"><a href="/opt/gnome/share/gtk-doc/html/atk/AtkObject.html"><span class="returnvalue">AtkObject</span></a> *         vte_terminal_accessible_new         (<em class="parameter"><code><a class="link" href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a> *terminal</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">AtkObject</span> *         vte_terminal_accessible_new         (<em class="parameter"><code><a class="link" href="VteTerminal.html" title="VteTerminal"><span class="type">VteTerminal</span></a> *terminal</code></em>);</pre>
 <p>
 Creates a new accessibility peer for the terminal widget.
 </p>
@@ -93,7 +93,7 @@ Creates a new accessibility peer for the terminal widget.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> the new <a href="/opt/gnome/share/gtk-doc/html/atk/AtkObject.html"><span class="type">AtkObject</span></a>
+<td>the new <span class="type">AtkObject</span>
 </td>
 </tr>
 </tbody>

@@ -1,6 +1,6 @@
 m4_define([version_major],0)
 m4_define([version_minor],27)
-m4_define([version_micro],2)
+m4_define([version_micro],3)
 m4_define([version_triplet],version_major.version_minor.version_micro)
 
 m4_define([so_major_adjust],9) dnl Don't change!
@@ -61,7 +61,7 @@ case "$with_gtk" in
        VTE_LIBRARY_SUFFIX=$VTE_API_VERSION
        VTE_SEAL_CFLAGS="-DVTE_SEAL_ENABLE"
        GTK_API_VERSION=3.0
-       GTK_REQUIRED=2.91.0
+       GTK_REQUIRED=2.91.6
        ;;
 esac
 
@@ -265,7 +265,7 @@ if test "$enable_Bsymbolic" != "no"; then
        AC_MSG_WARN([-Bsymbolic not supported by ld; disabling])
        enable_Bsymbolic=no
      else
-       AC_MSG_ERROR([-Bsymbolic requested but not supported by ld])
+       AC_MSG_ERROR([-Bsymbolic requested but not supported by ld. Use --disable-Bsymbolic to disable])
      fi])
 fi
 
@@ -322,7 +322,7 @@ case $host in
 	;;
 esac
 
-GLIB_REQUIRED=2.22.0
+GLIB_REQUIRED=2.26.0
 PANGO_REQUIRED=1.22.0
 AC_DEFINE(GDK_MULTIHEAD_SAFE,1,[Force use of GDK's multihead-safe APIs.])
 PKG_CHECK_MODULES(GLIB,[glib-2.0 > $GLIB_REQUIRED gobject-2.0])
@@ -569,7 +569,13 @@ if test -z "$enable_introspection"; then
   enable_introspection=no
 fi
 
-GOBJECT_INTROSPECTION_CHECK([0.6.7])
+GOBJECT_INTROSPECTION_CHECK([0.9.0])
+
+# *********
+# GSettings
+# *********
+
+GLIB_GSETTINGS
 
 ################################################################################
 
