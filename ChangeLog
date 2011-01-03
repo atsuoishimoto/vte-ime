@@ -1,3 +1,130 @@
+commit 70c9222ba95931495dde123fcc427bcc8bcef08d
+Author: Ignacio Casal Quinteiro <icq@gnome.org>
+Date:   Tue Dec 21 16:52:33 2010 +0100
+
+    Fix annotations. No need to annotate the strings.
+    
+    See as example gtk_text_buffer_insert.
+
+ src/vte.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit b916a4d3f369d4357697ebd0d00e2b01b5c50c5c
+Author: Ignacio Casal Quinteiro <icq@gnome.org>
+Date:   Tue Dec 21 16:44:39 2010 +0100
+
+    Add --warn-all flag.
+
+ src/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 66dedcb732b31a141656c6f05ec2d3bbe7c4cf40
+Author: Ivar Smolin <okul@linux.ee>
+Date:   Mon Dec 20 13:58:06 2010 +0200
+
+    [l10n] Updated Estonian translation
+
+ po/et.po |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit 728bc476c024987007c0856db44eff483a43902c
+Author: Ignacio Casal Quinteiro <icq@gnome.org>
+Date:   Sat Dec 4 13:47:42 2010 +0100
+
+    Bump gobject-introspection to 0.9.0
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit f9fcec517d4125eabe93dcdc5002b615e275ff42
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Dec 2 21:06:48 2010 +0100
+
+    Fix build with gtk3 master
+
+ configure.in |    2 +-
+ src/vtebg.c  |    5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+commit 4fa7d35b7d454a06b3700b2b52021b61ef4ac426
+Author: Theppitak Karoonboonyanan <thep@linux.thai.net>
+Date:   Tue Nov 23 16:32:49 2010 +0700
+
+    Updated Thai translation.
+
+ po/th.po |  104 ++++++++++++++++++++++++++++----------------------------------
+ 1 files changed, 47 insertions(+), 57 deletions(-)
+
+commit f05ddeca7ed710db16dfc183ab9bc48150baa695
+Author: Gheyret T.Kenji <gheyret@gmail.com>
+Date:   Sat Nov 20 13:05:34 2010 +0100
+
+    Added UG translation
+
+ po/ug.po |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
+
+commit 56472c1940a9df55edd134fc5d3c74ada67ad37b
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Nov 17 18:21:07 2010 +0100
+
+    Clarify error message
+    
+    Bug #628870.
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 64f03be0c97d3941f259e20cc6d7a12d3a329770
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Nov 16 20:47:56 2010 +0100
+
+    Don't use the automatic rules for .enums.xml generation
+    
+    The generated file isn't very nice, so put a fixed-up copy
+    in git, dist and install it.
+
+ src/Makefile.am                |    7 ++++---
+ src/org.gnome.vte.v0.enums.xml |   28 ++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+), 3 deletions(-)
+
+commit de948ce4b0d63a1e37cfc85c3b3da82397758873
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Nov 16 20:36:25 2010 +0100
+
+    Change .enums.xml namespace
+
+ src/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 187cdd3089b67613bbb3757f16897cbfeb315aa2
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Nov 16 20:21:26 2010 +0100
+
+    Create and install a gsettings .enums.xml file for vte's enum types
+
+ configure.in    |    8 +++++++-
+ src/Makefile.am |    9 +++++++++
+ 2 files changed, 16 insertions(+), 1 deletions(-)
+
+commit e21f7da2881bbb9ba863398728e194c7acfcfc50
+Author: Gheyret T.Kenji <gheyret@gmail.com>
+Date:   Sat Nov 13 23:01:05 2010 +0100
+
+    Added UG translation
+
+ po/ug.po |   31 ++++++++++++-------------------
+ 1 files changed, 12 insertions(+), 19 deletions(-)
+
+commit a09849b392ab1065c10225a390f669e061047932
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Nov 11 14:32:35 2010 +0100
+
+    Post release version bump
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 9d9b0ab63422b0ece31a4fceddf17348ab9bed36
 Author: Javier Jardón <jjardon@gnome.org>
 Date:   Tue Nov 9 03:46:39 2010 +0100
