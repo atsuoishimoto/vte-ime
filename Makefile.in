@@ -34,8 +34,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@BUILD_GNOME_PTY_HELPER_TRUE@am__append_1 = gnome-pty-helper
-@ENABLE_GLADE_CATALOGUE_TRUE@am__append_2 = glade
+@HAVE_GTK_2_TRUE@am__append_1 = python
+@BUILD_GNOME_PTY_HELPER_TRUE@am__append_2 = gnome-pty-helper
+@ENABLE_GLADE_CATALOGUE_TRUE@am__append_3 = glade
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
@@ -52,7 +53,8 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = vte.pc vte-uninstalled.pc
+CONFIG_CLEAN_FILES = vte${VTE_PC_VERSION}.pc \
+	vte${VTE_PC_VERSION}-uninstalled.pc
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
@@ -99,7 +101,7 @@ AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
 	distdir dist dist-all distcheck
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = src python termcaps po doc perf gnome-pty-helper glade
+DIST_SUBDIRS = src termcaps po doc perf python gnome-pty-helper glade
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -170,15 +172,22 @@ GLADE_CATALOGUE_DIR = @GLADE_CATALOGUE_DIR@
 GLADE_ICON_DIR = @GLADE_ICON_DIR@
 GLADE_MODULE_DIR = @GLADE_MODULE_DIR@
 GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_COMPILE_SCHEMAS = @GLIB_COMPILE_SCHEMAS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
 GLIB_MKENUMS = @GLIB_MKENUMS@
+GLIB_PREFIX = @GLIB_PREFIX@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GREP = @GREP@
+GSETTINGS_DISABLE_SCHEMAS_COMPILE = @GSETTINGS_DISABLE_SCHEMAS_COMPILE@
 GTKDOC_CHECK = @GTKDOC_CHECK@
+GTKDOC_MKPDF = @GTKDOC_MKPDF@
+GTKDOC_REBASE = @GTKDOC_REBASE@
+GTK_API_VERSION = @GTK_API_VERSION@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
+GTK_PREFIX = @GTK_PREFIX@
 HTML_DIR = @HTML_DIR@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -191,6 +200,14 @@ INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTROSPECTION_CFLAGS = @INTROSPECTION_CFLAGS@
+INTROSPECTION_COMPILER = @INTROSPECTION_COMPILER@
+INTROSPECTION_GENERATE = @INTROSPECTION_GENERATE@
+INTROSPECTION_GIRDIR = @INTROSPECTION_GIRDIR@
+INTROSPECTION_LIBS = @INTROSPECTION_LIBS@
+INTROSPECTION_MAKEFILE = @INTROSPECTION_MAKEFILE@
+INTROSPECTION_SCANNER = @INTROSPECTION_SCANNER@
+INTROSPECTION_TYPELIBDIR = @INTROSPECTION_TYPELIBDIR@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
@@ -198,10 +215,10 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBTOOL_EXPORT_OPTIONS = @LIBTOOL_EXPORT_OPTIONS@
 LIBTOOL_FLAGS = @LIBTOOL_FLAGS@
-LIBVTE_LTVERSION = @LIBVTE_LTVERSION@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_VERSION_INFO = @LT_VERSION_INFO@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
@@ -220,9 +237,12 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
@@ -248,13 +268,21 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+VTE_API_MAJOR_VERSION = @VTE_API_MAJOR_VERSION@
+VTE_API_MINOR_VERSION = @VTE_API_MINOR_VERSION@
+VTE_API_VERSION = @VTE_API_VERSION@
+VTE_API_VERSION_U = @VTE_API_VERSION_U@
 VTE_CFLAGS = @VTE_CFLAGS@
 VTE_DEFAULT_EMULATION = @VTE_DEFAULT_EMULATION@
+VTE_LDFLAGS = @VTE_LDFLAGS@
+VTE_LIBRARY_SUFFIX_U = @VTE_LIBRARY_SUFFIX_U@
 VTE_LIBS = @VTE_LIBS@
 VTE_MAJOR_VERSION = @VTE_MAJOR_VERSION@
 VTE_MICRO_VERSION = @VTE_MICRO_VERSION@
 VTE_MINOR_VERSION = @VTE_MINOR_VERSION@
+VTE_PC_VERSION = @VTE_PC_VERSION@
 VTE_PKGS = @VTE_PKGS@
+VTE_SEAL_CFLAGS = @VTE_SEAL_CFLAGS@
 WARN_CFLAGS = @WARN_CFLAGS@
 XGETTEXT = @XGETTEXT@
 abs_builddir = @abs_builddir@
@@ -280,6 +308,7 @@ datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+gsettingsschemadir = @gsettingsschemadir@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -314,8 +343,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = src python termcaps po doc perf $(am__append_1) \
-	$(am__append_2)
+SUBDIRS = src termcaps po doc perf $(am__append_1) $(am__append_2) \
+	$(am__append_3)
 EXTRA_DIST = \
 	MAINTAINERS \
 	HACKING \
@@ -324,8 +353,13 @@ EXTRA_DIST = \
 
 DISTCLEANFILES = 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = vte.pc
-DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
+pkgconfig_DATA = vte$(VTE_PC_VERSION).pc
+DISTCHECK_CONFIGURE_FLAGS = \
+	--enable-gtk-doc \
+	--disable-introspection \
+	--disable-silent-rules \
+	--with-gtk=3.0
+
 MAINTAINERCLEANFILES = \
 		ChangeLog \
 		$(srcdir)/INSTALL \
@@ -403,9 +437,9 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
-vte.pc: $(top_builddir)/config.status $(srcdir)/vte.pc.in
+vte${VTE_PC_VERSION}.pc: $(top_builddir)/config.status $(srcdir)/vte.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-vte-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/vte-uninstalled.pc.in
+vte${VTE_PC_VERSION}-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/vte-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:

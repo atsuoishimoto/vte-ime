@@ -1,11 +1,15 @@
 --- a/configure.in
 +++ b/configure.in
-@@ -294,45 +294,52 @@
+@@ -364,45 +364,52 @@
  AC_CHECK_FUNC(floor,,AC_CHECK_LIB(m,floor,LIBS=["$LIBS -lm"]))
  AC_CHECK_FUNCS([ceil floor])
  
 -# Look for tgetent
--
++AC_ARG_WITH(ncurses,
++           [AS_HELP_STRING([--without-ncurses],
++                           [don't use ncurses library])
++           ], with_ncurses=$withval, with_ncurses=yes)
+ 
 -AC_CHECK_FUNC([tgetent],[vte_cv_termcap_lib=libc],
 -  [AC_CHECK_LIB([ncurses],[tgetent],[vte_cv_termcap_lib=libncurses],
 -    [AC_CHECK_LIB([tinfo],[tgetent],[vte_cv_termcap_lib=libtinfo],
@@ -43,11 +47,6 @@
 -              ;;
 -  *)          AC_MSG_ERROR([tgetent not found in any library]) ;;
 -esac
-+AC_ARG_WITH(ncurses,
-+           [AS_HELP_STRING([--without-ncurses],
-+                           [don't use ncurses library])
-+           ], with_ncurses=$withval, with_ncurses=yes)
-+
 +if test x$with_ncurses = xyes ; then
 +	# Look for tgetent
 +
@@ -91,10 +90,10 @@
 +fi
  
  # Search for the required modules.
- VTE_PKGS="glib-2.0 >= $GLIB_REQUIRED gobject-2.0 pango >= $PANGO_REQUIRED gtk+-2.0 >= $GTK_REQUIRED"
+ 
 --- a/src/keymap.c
 +++ b/src/keymap.c
-@@ -44,7 +44,7 @@
+@@ -50,7 +50,7 @@
  #include <termcap.h>
  #define VTE_TERMCAP_NAME "termcap"
  #else
@@ -103,7 +102,7 @@
  #endif
  
  #ifdef VTE_DEBUG
-@@ -1008,8 +1008,10 @@
+@@ -1014,8 +1014,10 @@
  	enum _vte_fkey_mode fkey_mode;
  	char *cap, *tmp;
  	const char *termcap_special = NULL;
@@ -114,7 +113,7 @@
  
  	g_return_if_fail(normal != NULL);
  	g_return_if_fail(normal_length != NULL);
-@@ -1163,6 +1165,7 @@
+@@ -1169,6 +1171,7 @@
  			}
  		}
  	}
@@ -122,7 +121,7 @@
  	if (termcap_special != NULL) {
  		tmp = g_strdup(terminal);
  		cap = NULL;
-@@ -1203,6 +1206,7 @@
+@@ -1209,6 +1212,7 @@
  			return;
  		}
  	}

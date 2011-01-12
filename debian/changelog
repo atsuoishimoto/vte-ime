@@ -1,3 +1,80 @@
+vte (1:0.27.4-1) experimental; urgency=low
+
+  * Switch to CDBS' flavors system.
+  * Bump debhelper compatibility to 8.
+  * New upstream release, based on a patch by Michael Terry.
+    Closes: #604846.
+  * Include check-dist.mk to prevent accidental uploads to unstable.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Wed, 12 Jan 2011 22:45:34 +0000
+
+vte (1:0.24.3-2) unstable; urgency=low
+
+  [ Emilio Pozuelo Monfort ]
+  * debian/patches/12_python_reaper.patch:
+    - Removed, upstream said WONTFIX, so remove that API.
+  * debian/control.in:
+    - Break gdebi (<< 0.6.1) since that's the first version not requiring
+      the above patch.
+
+ -- Josselin Mouette <joss@debian.org>  Sat, 06 Nov 2010 12:48:02 +0100
+
+vte (1:0.24.3-1) unstable; urgency=low
+
+  * New upstream bugfix release:
+    + debian/patches/90_autoreconf.patch:
+      - Regenerated for the new version.
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 15 Jul 2010 20:30:04 +0200
+
+vte (1:0.24.1-1) unstable; urgency=low
+
+  * New upstream bugfix release:
+    + debian/patches/01_transparent_crash.patch:
+      - Dropped, fixed upstream.
+    + debian/patches/25_optional-ncurses.patch:
+      - Updated to apply cleanly again.
+    + debian/patches/90_autoreconf.patch:
+      - Regenerated for the new version.
+    + debian/control.in:
+      - Update build dependencies and dependencies of the -dev package.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 03 May 2010 20:11:29 +0200
+
+vte (1:0.24.0-3) unstable; urgency=low
+
+  * debian/python-vte.install:
+    - Also install bindings for python2.6 (don't hardcode site-packages).
+  * debian/control.in,
+    debian/rules,
+    debian/source/format,
+    - Switch to source format 3.0 (quilt).
+  * debian/patches/25_optional-ncurses.patch:
+    - Updated to apply cleanly.
+  * debian/control.in:
+    - Bump Standards-Version to 3.8.4, no changes needed.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Wed, 21 Apr 2010 14:18:44 +0200
+
+vte (1:0.24.0-2) unstable; urgency=low
+
+  * 01_transparent_crash.patch: patch by Tetralet to fix a crash when 
+    the background file is missing, or when the transparent background 
+    has no root window. Closes: #576624.
+
+ -- Josselin Mouette <joss@debian.org>  Fri, 09 Apr 2010 18:23:02 +0200
+
+vte (1:0.24.0-1) unstable; urgency=low
+
+  * New upstream stable release:
+    + debian/rules:
+      - Update shlibs version because of new API.
+      - Remove X_DISPLAY_MISSING from udeb CFLAGS.
+    + debian/patches/90_autoreconf.patch:
+      - Updated for the new version.
+
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 31 Mar 2010 11:11:22 +0200
+
 vte (1:0.23.5-4) experimental; urgency=low
 
   [ Cyril Brulebois ]

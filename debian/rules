@@ -3,100 +3,49 @@
 libvteN := $(shell sed -rn 's/^Package:[[:space:]]*(libvte[0-9]+)[[:space:]]*$$/\1/p' debian/control)
 udeb := $(libvteN)-udeb
 
-buildbasedir := $(CURDIR)/debian/build
-DEB_BUILDDIR := $(buildbasedir)/main
-DEB_BUILDDIR_$(udeb) := $(buildbasedir)/udeb
+PY_VERSIONS = $(shell pyversions --requested debian/control)
+DEB_BUILDDIR = debian/build
+DEB_MAKE_FLAVORS = main udeb gtk3 $(PY_VERSIONS)
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/patchsys-quilt.mk
 include /usr/share/cdbs/1/rules/utils.mk
 include /usr/share/cdbs/1/class/gnome.mk
 include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
 include /usr/share/gnome-pkg-tools/1/rules/check-dist.mk
--include /usr/share/gnome-pkg-tools/1/rules/gnome-get-source.mk
+include /usr/share/gnome-pkg-tools/1/rules/gnome-get-source.mk
 
-PY_VERSIONS = $(shell pyversions --requested debian/control)
-
-DEB_CONFIGURE_LIBEXECDIR := \$${prefix}/lib/$(libvteN)
 DEB_FIXPERMS_EXCLUDE += gnome-pty-helper
-DEB_DH_MAKESHLIBS_ARGS_ALL += -V '$(libvteN) (>= 1:0.23.5)' --add-udeb=$(udeb)
+DEB_DH_MAKESHLIBS_ARGS_$(libvteN) += -V '$(libvteN) (>= 1:0.24.0)' --add-udeb=$(udeb)
+
+DEB_CONFIGURE_SCRIPT_ENV = PYTHON="/usr/bin/$(cdbs_make_curflavor)"
 
 DEB_CONFIGURE_EXTRA_FLAGS += \
 	--enable-glade-catalogue
 
-UDEB_CONFIGURE_EXTRA_FLAGS += \
+DEB_CONFIGURE_FLAGS_main += \
+	--libexecdir=/usr/lib/$(libvteN) \
+	--disable-python
+
+DEB_CONFIGURE_FLAGS_gtk3 += \
+	--libexecdir=/usr/lib/libvte2-90 \
+	--with-gtk=3.0 \
+	--enable-introspection \
+	--disable-python
+
+DEB_CONFIGURE_FLAGS_udeb += \
 	--disable-python \
 	--disable-gnome-pty-helper \
 	--disable-gtk-doc \
 	--without-ncurses
 
-DEB_DESTDIR := $(CURDIR)/debian/tmp/main
-DEB_DESTDIR_$(udeb) := $(CURDIR)/debian/tmp/udeb
+DEB_MAKE_DESTDIRSKEL = $(CURDIR)/debian/tmp
+DEB_MAKE_DESTDIRSKEL_udeb = $(CURDIR)/debian/tmp/udeb
 
-CFLAGS_$(udeb) += $(CFLAGS) -Os -DX_DISPLAY_MISSING
+DEB_DH_INSTALL_SOURCEDIR_$(udeb) += --sourcedir=debian/tmp/udeb
 
-DEB_DH_INSTALL_ARGS = --sourcedir=$(if $(findstring $(udeb),$(cdbs_curpkg)),$(DEB_DESTDIR_$(udeb)),$(DEB_DESTDIR))
-
-######
-# udeb rules
-configure/$(udeb):: $(DEB_BUILDDIR_$(udeb))/config.status
-$(DEB_BUILDDIR_$(udeb))/config.status:
-	cd $(DEB_BUILDDIR_$(udeb)) && \
-		$(DEB_CONFIGURE_SCRIPT_ENV) \
-		CFLAGS="$(CFLAGS_$(udeb))" \
-			$(DEB_CONFIGURE_SCRIPT) \
-				$(DEB_CONFIGURE_NORMAL_ARGS) \
-				$(cdbs_configure_flags) \
-				$(DEB_CONFIGURE_EXTRA_FLAGS) \
-				$(UDEB_CONFIGURE_EXTRA_FLAGS) \
-				$(DEB_CONFIGURE_USER_FLAGS)
-
-build/$(udeb)::
-	make -C $(DEB_BUILDDIR_$(udeb))
-
-install/$(udeb)::
-	make -C $(DEB_BUILDDIR_$(udeb)) install DESTDIR=$(DEB_DESTDIR_$(udeb))
-
-
-######
-# Python rules
-configure-stamp-%:
-	mkdir $(buildbasedir)/$*
-	cd $(buildbasedir)/$* && PYTHON=`which $*` $(DEB_CONFIGURE_SCRIPT_ENV) \
-	    $(DEB_CONFIGURE_SCRIPT) \
-		$(DEB_CONFIGURE_NORMAL_ARGS) \
-		$(cdbs_configure_flags) \
-		$(DEB_CONFIGURE_EXTRA_FLAGS) \
-		$(DEB_CONFIGURE_USER_FLAGS)
-	touch $@
-
-configure/python-vte:: $(addprefix configure-stamp-, $(PY_VERSIONS))
-
-build-stamp-%:
-	make -C $(buildbasedir)/$*
-	touch $@
-
-build/python-vte:: $(addprefix build-stamp-, $(PY_VERSIONS))
-
-install-stamp-%:
-	make -C $(buildbasedir)/$* install DESTDIR=$(DEB_DESTDIR)
-	# stop shipping *.a and *.la files for the Python module;
-	# python-support moves them anyway (#412477)
-	find $(DEB_DESTDIR)/usr/lib/$* -name \*.a -exec rm -f '{}' \;
-	find $(DEB_DESTDIR)/usr/lib/$* -name \*.la -exec rm -f '{}' \;
-	touch $@
-
-install/python-vte:: $(addprefix install-stamp-, $(PY_VERSIONS))
+# FIXME: not honoured
+#CFLAGS_udeb += $(CFLAGS) -Os
+CFLAGS += $(if $(findstring udeb,$(cdbs_make_curflavor)),-Os)
 
 binary-install/python-vte::
 	dh_pysupport -ppython-vte
-
-
-######
-# common cleanup
-clean::
-	-rm -rf $(buildbasedir)
-	-rm -rf $(addprefix configure-stamp-, $(PY_VERSIONS))
-	-rm -rf $(addprefix build-stamp-, $(PY_VERSIONS))
-	-rm -rf $(addprefix install-stamp-, $(PY_VERSIONS))
-

@@ -2,24 +2,42 @@
 <!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
 <book xmlns="http://www.devhelp.net/book" title="VTE Reference Manual" link="index.html" author="" name="vte">
   <chapters>
-    <sub name="VTE" link="ch01.html">
-      <sub name="VteTerminal" link="VteTerminal.html"/>
-      <sub name="VteTerminalAccessible" link="VteTerminalAccessible.html"/>
+    <sub name="API Reference" link="pt01.html">
+      <sub name="" link="ch01.html">
+        <sub name="VteTerminal" link="VteTerminal.html"/>
+      </sub>
+      <sub name="" link="ch02.html">
+        <sub name="Vte PTY" link="vte-Vte-PTY.html"/>
+      </sub>
+      <sub name="" link="ch03.html">
+        <sub name="Version Information" link="vte-Version-Information.html"/>
+      </sub>
+      <sub name="Interna" link="internal-objects.html">
+        <sub name="VteTerminalAccessible" link="VteTerminalAccessible.html"/>
+      </sub>
+      <sub name="Deprecated" link="deprecated-objects.html">
+        <sub name="VteReaper" link="VteReaper.html"/>
+      </sub>
     </sub>
+    <sub name="Object Hierarchy" link="object-hierarchy.html"/>
+    <sub name="Index" link="api-index-full.html"/>
+    <sub name="Index of deprecated symbols" link="api-index-deprecated.html"/>
+    <sub name="Index of new symbols in 0.20" link="api-index-0-20.html"/>
+    <sub name="Index of new symbols in 0.24" link="api-index-0-24.html"/>
+    <sub name="Index of new symbols in 0.26" link="api-index-0-26.html"/>
+    <sub name="Annotation Glossary" link="annotation-glossary.html"/>
+    <sub name="Licence" link="licence.html"/>
   </chapters>
   <functions>
     <function name="VteTerminal" link="VteTerminal.html#VteTerminal-struct"/>
-    <function name="enum VteTerminalEraseBinding" link="VteTerminal.html#VteTerminalEraseBinding"/>
-    <function name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
+    <function name="enum VteTerminalAntiAlias" link="VteTerminal.html#VteTerminalAntiAlias"/>
     <function name="enum VteTerminalCursorBlinkMode" link="VteTerminal.html#VteTerminalCursorBlinkMode"/>
+    <function name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
+    <function name="enum VteTerminalEraseBinding" link="VteTerminal.html#VteTerminalEraseBinding"/>
     <function name="enum VteTerminalWriteFlags" link="VteTerminal.html#VteTerminalWriteFlags"/>
     <function name="VteSelectionFunc ()" link="VteTerminal.html#VteSelectionFunc"/>
     <function name="vte_terminal_new ()" link="VteTerminal.html#vte-terminal-new"/>
     <function name="vte_terminal_im_append_menuitems ()" link="VteTerminal.html#vte-terminal-im-append-menuitems"/>
-    <function name="vte_terminal_fork_command ()" link="VteTerminal.html#vte-terminal-fork-command"/>
-    <function name="vte_terminal_forkpty ()" link="VteTerminal.html#vte-terminal-forkpty"/>
-    <function name="vte_terminal_set_pty ()" link="VteTerminal.html#vte-terminal-set-pty"/>
-    <function name="vte_terminal_get_pty ()" link="VteTerminal.html#vte-terminal-get-pty"/>
     <function name="vte_terminal_feed ()" link="VteTerminal.html#vte-terminal-feed"/>
     <function name="vte_terminal_feed_child ()" link="VteTerminal.html#vte-terminal-feed-child"/>
     <function name="vte_terminal_feed_child_binary ()" link="VteTerminal.html#vte-terminal-feed-child-binary"/>
@@ -94,6 +112,21 @@
     <function name="vte_terminal_get_status_line ()" link="VteTerminal.html#vte-terminal-get-status-line"/>
     <function name="vte_terminal_get_padding ()" link="VteTerminal.html#vte-terminal-get-padding"/>
     <function name="vte_terminal_write_contents ()" link="VteTerminal.html#vte-terminal-write-contents"/>
+    <function name="vte_terminal_search_find_next ()" link="VteTerminal.html#vte-terminal-search-find-next"/>
+    <function name="vte_terminal_search_find_previous ()" link="VteTerminal.html#vte-terminal-search-find-previous"/>
+    <function name="vte_terminal_search_get_gregex ()" link="VteTerminal.html#vte-terminal-search-get-gregex"/>
+    <function name="vte_terminal_search_get_wrap_around ()" link="VteTerminal.html#vte-terminal-search-get-wrap-around"/>
+    <function name="vte_terminal_search_set_gregex ()" link="VteTerminal.html#vte-terminal-search-set-gregex"/>
+    <function name="vte_terminal_search_set_wrap_around ()" link="VteTerminal.html#vte-terminal-search-set-wrap-around"/>
+    <function name="vte_terminal_fork_command ()" link="VteTerminal.html#vte-terminal-fork-command"/>
+    <function name="vte_terminal_fork_command_full ()" link="VteTerminal.html#vte-terminal-fork-command-full"/>
+    <function name="vte_terminal_forkpty ()" link="VteTerminal.html#vte-terminal-forkpty"/>
+    <function name="vte_terminal_get_pty ()" link="VteTerminal.html#vte-terminal-get-pty"/>
+    <function name="vte_terminal_get_pty_object ()" link="VteTerminal.html#vte-terminal-get-pty-object"/>
+    <function name="vte_terminal_pty_new ()" link="VteTerminal.html#vte-terminal-pty-new"/>
+    <function name="vte_terminal_set_pty ()" link="VteTerminal.html#vte-terminal-set-pty"/>
+    <function name="vte_terminal_set_pty_object ()" link="VteTerminal.html#vte-terminal-set-pty-object"/>
+    <function name="vte_terminal_watch_child ()" link="VteTerminal.html#vte-terminal-watch-child"/>
     <function name="vte_terminal_get_adjustment ()" link="VteTerminal.html#vte-terminal-get-adjustment"/>
     <function name="vte_terminal_get_char_ascent ()" link="VteTerminal.html#vte-terminal-get-char-ascent"/>
     <function name="vte_terminal_get_char_descent ()" link="VteTerminal.html#vte-terminal-get-char-descent"/>
@@ -121,6 +154,7 @@
     <function name="The &quot;icon-title&quot; property" link="VteTerminal.html#VteTerminal--icon-title"/>
     <function name="The &quot;pointer-autohide&quot; property" link="VteTerminal.html#VteTerminal--pointer-autohide"/>
     <function name="The &quot;pty&quot; property" link="VteTerminal.html#VteTerminal--pty"/>
+    <function name="The &quot;pty-object&quot; property" link="VteTerminal.html#VteTerminal--pty-object"/>
     <function name="The &quot;scroll-background&quot; property" link="VteTerminal.html#VteTerminal--scroll-background"/>
     <function name="The &quot;scroll-on-keystroke&quot; property" link="VteTerminal.html#VteTerminal--scroll-on-keystroke"/>
     <function name="The &quot;scroll-on-output&quot; property" link="VteTerminal.html#VteTerminal--scroll-on-output"/>
@@ -160,7 +194,30 @@
     <function name="The &quot;text-modified&quot; signal" link="VteTerminal.html#VteTerminal-text-modified"/>
     <function name="The &quot;text-scrolled&quot; signal" link="VteTerminal.html#VteTerminal-text-scrolled"/>
     <function name="The &quot;window-title-changed&quot; signal" link="VteTerminal.html#VteTerminal-window-title-changed"/>
+    <function name="enum VtePtyFlags" link="vte-Vte-PTY.html#VtePtyFlags"/>
+    <function name="enum VtePtyError" link="vte-Vte-PTY.html#VtePtyError"/>
+    <function name="VtePty" link="vte-Vte-PTY.html#VtePty-struct"/>
+    <function name="vte_pty_new ()" link="vte-Vte-PTY.html#vte-pty-new"/>
+    <function name="vte_pty_new_foreign ()" link="vte-Vte-PTY.html#vte-pty-new-foreign"/>
+    <function name="vte_pty_close ()" link="vte-Vte-PTY.html#vte-pty-close"/>
+    <function name="vte_pty_child_setup ()" link="vte-Vte-PTY.html#vte-pty-child-setup"/>
+    <function name="vte_pty_get_fd ()" link="vte-Vte-PTY.html#vte-pty-get-fd"/>
+    <function name="vte_pty_set_size ()" link="vte-Vte-PTY.html#vte-pty-set-size"/>
+    <function name="vte_pty_get_size ()" link="vte-Vte-PTY.html#vte-pty-get-size"/>
+    <function name="vte_pty_set_term ()" link="vte-Vte-PTY.html#vte-pty-set-term"/>
+    <function name="vte_pty_set_utf8 ()" link="vte-Vte-PTY.html#vte-pty-set-utf8"/>
+    <function name="The &quot;fd&quot; property" link="vte-Vte-PTY.html#VtePty--fd"/>
+    <function name="The &quot;flags&quot; property" link="vte-Vte-PTY.html#VtePty--flags"/>
+    <function name="The &quot;term&quot; property" link="vte-Vte-PTY.html#VtePty--term"/>
+    <function name="VTE_MAJOR_VERSION" link="vte-Version-Information.html#VTE-MAJOR-VERSION:CAPS"/>
+    <function name="VTE_MINOR_VERSION" link="vte-Version-Information.html#VTE-MINOR-VERSION:CAPS"/>
+    <function name="VTE_MICRO_VERSION" link="vte-Version-Information.html#VTE-MICRO-VERSION:CAPS"/>
+    <function name="VTE_CHECK_VERSION()" link="vte-Version-Information.html#VTE-CHECK-VERSION:CAPS"/>
     <function name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <function name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
+    <function name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
+    <function name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child"/>
+    <function name="vte_reaper_get ()" link="VteReaper.html#vte-reaper-get"/>
+    <function name="The &quot;child-exited&quot; signal" link="VteReaper.html#VteReaper-child-exited"/>
   </functions>
 </book>
