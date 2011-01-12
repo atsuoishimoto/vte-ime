@@ -1,3 +1,63 @@
+0.27.4
+======
+- Fix build with recent GTK+
+- Introspection fixes for fork_command_full
+- Translation updates
+
+0.27.3
+======
+- Add a gsettings .enums.xml file for vte's enum types
+- Fix build with latest gtk 3
+- Fix introspection annotations and require gobject-introspection 0.9.0
+- Bugs fixed:
+  * Bug 628870 - Clarify error message
+- Translation updates
+
+0.27.2
+======
+(See git log)
+
+0.27.1
+======
+
+- Bugs fixed:
+  * Bug 631589 - Pass the correct TERM value inside envp when spawning
+  * Bug 631903 - Report correct minimum/natural sizes for GTK+ 3
+  * Bug 632257 - vte leaks FDs
+- Translation updates
+
+0.25.90
+=======
+
+- Make vte parallel-buildable with gtk 2 and gtk 3
+- Bugs fixed:
+  * Bug 617690 - Setting default fg color should not cancel underline
+  * Bug 614658 - text selection with mouse is buggy when using the shift key
+  * Bug 618749 - set terminal widget background color to terminal background
+  * Bug 601926 - Don't hardcode meta to alt
+  * Bug 618097 - Broken backtab (cbt)
+  * Bug 621298 - Cursor invisible (plain black) in (xfce) Terminal & terminator
+  * Bug 626676 - Cleanup vte_terminal_determine_colors
+  * Bug 620493 - strict aliasing warning
+- Translation updates
+
+0.25.1
+=======
+- Add support for searching the buffer.  New public API:
+  vte_terminal_search_[sg]et_regex
+  vte_terminal_search_find_(previous|next)
+
+0.24.1
+======
+- Bugs fixed: https://bugzilla.gnome.org/buglist.cgi?status_whiteboard_type=substring;chfieldto=2010-04-26%2012%3A00%3A00;query_format=advanced;chfieldfrom=2010-03-29;status_whiteboard=fixed-0-24;bug_status=RESOLVED;resolution=FIXED;product=vte
+- Translation updates
+
+0.24.0
+======
+- Updated API docs
+- Cache backgrounds as cairo surfaces
+- Translation updates
+
 0.23.5
 =======
 - Fix unintented soversion bump

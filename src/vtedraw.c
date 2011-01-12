@@ -101,10 +101,6 @@
  *
  *       * Zooming in and out a terminal reuses the font info structs.
  *
- *     Since we use gdk timeout to schedule the delayed destruction, we also
- *     add a gtk quit handler which is run when the innermost main loop exits
- *     to cleanup any pending delayed destructions.
- *
  *
  * Pre-caching ASCII letters:
  *
@@ -397,6 +393,7 @@ static struct font_info *
 font_info_allocate (PangoContext *context)
 {
 	struct font_info *info;
+	PangoTabArray *tabs;
 
 	info = g_slice_new0 (struct font_info);
 
@@ -405,6 +402,10 @@ font_info_allocate (PangoContext *context)
 			  info);
 
 	info->layout = pango_layout_new (context);
+	tabs = pango_tab_array_new_with_positions (1, FALSE, PANGO_TAB_LEFT, 1);
+	pango_layout_set_tabs (info->layout, tabs);
+	pango_tab_array_free (tabs);
+
 	info->string = g_string_sized_new (VTE_UTF8_BPC+1);
 
 	font_info_measure_font (info);
@@ -442,42 +443,6 @@ font_info_free (struct font_info *info)
 
 
 static GHashTable *font_info_for_context;
-static guint quit_id;
-
-static gboolean
-cleanup_delayed_font_info_destroys_predicate (PangoContext *context,
-					      struct font_info *info)
-{
-	if (info->destroy_timeout) {
-		g_source_remove (info->destroy_timeout);
-		info->destroy_timeout = 0;
-
-		font_info_free (info);
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static gboolean
-cleanup_delayed_font_info_destroys (void)
-{
-	g_hash_table_foreach_remove (font_info_for_context,
-				     (GHRFunc) cleanup_delayed_font_info_destroys_predicate,
-				     NULL);
-
-	quit_id = 0;
-	return 0;
-}
-
-static void
-ensure_quit_handler (void)
-{
-	if (G_UNLIKELY (quit_id == 0))
-		quit_id = gtk_quit_add (1,
-					(GtkFunction) cleanup_delayed_font_info_destroys,
-					NULL);
-}
 
 static struct font_info *
 font_info_register (struct font_info *info)
@@ -539,7 +504,6 @@ font_info_destroy (struct font_info *info)
 		return;
 
 	/* Delay destruction by a few seconds, in case we need it again */
-	ensure_quit_handler ();
 	info->destroy_timeout = gdk_threads_add_timeout_seconds (FONT_CACHE_TIMEOUT,
 								 (GSourceFunc) font_info_destroy_delayed,
 								 info);
@@ -785,8 +749,6 @@ struct _vte_draw {
 
 	gint started;
 
-	gboolean requires_clear;
-
 	struct font_info *font;
 	struct font_info *font_bold;
 	cairo_pattern_t *bg_pattern;
@@ -802,7 +764,6 @@ _vte_draw_new (GtkWidget *widget)
 	/* Create the structure. */
 	draw = g_slice_new0 (struct _vte_draw);
 	draw->widget = g_object_ref (widget);
-	draw->requires_clear = FALSE;
 
 	_vte_debug_print (VTE_DEBUG_DRAW, "draw_new\n");
 
@@ -834,13 +795,16 @@ _vte_draw_free (struct _vte_draw *draw)
 void
 _vte_draw_start (struct _vte_draw *draw)
 {
-	g_return_if_fail (GTK_WIDGET_REALIZED (draw->widget));
+	GdkWindow *window;
+
+	g_return_if_fail (gtk_widget_get_realized (draw->widget));
 
 	_vte_debug_print (VTE_DEBUG_DRAW, "draw_start\n");
 
 	if (draw->started == 0) {
-		g_object_ref (draw->widget->window);
-		draw->cr = gdk_cairo_create (draw->widget->window);
+		window = gtk_widget_get_window(draw->widget);
+		g_object_ref (window);
+		draw->cr = gdk_cairo_create (window);
 	}
 
 	draw->started++;
@@ -855,7 +819,7 @@ _vte_draw_end (struct _vte_draw *draw)
 	if (draw->started == 0) {
 		cairo_destroy (draw->cr);
 		draw->cr = NULL;
-		g_object_unref (draw->widget->window);
+		g_object_unref (gtk_widget_get_window(draw->widget));
  	}
 
 	_vte_debug_print (VTE_DEBUG_DRAW, "draw_end\n");
@@ -868,8 +832,6 @@ _vte_draw_set_background_solid(struct _vte_draw *draw,
 			       double blue,
 			       double opacity)
 {
-	draw->requires_clear = opacity != 0xFFFF;
-
 	if (draw->bg_pattern)
 		cairo_pattern_destroy (draw->bg_pattern);
 
@@ -881,46 +843,32 @@ _vte_draw_set_background_solid(struct _vte_draw *draw,
 
 void
 _vte_draw_set_background_image (struct _vte_draw *draw,
-			        enum VteBgSourceType type,
+			        VteBgSourceType type,
 			        GdkPixbuf *pixbuf,
 			        const char *filename,
 			        const PangoColor *color,
 			        double saturation)
 {
-	GdkPixmap *pixmap;
 	cairo_surface_t *surface;
-	cairo_t *cr;
 
-	if (type != VTE_BG_SOURCE_NONE)
-		draw->requires_clear = TRUE;
+	/* Need a valid draw->cr for cairo_get_target () */
+	_vte_draw_start (draw);
 
-	pixmap = vte_bg_get_pixmap (vte_bg_get_for_screen (gtk_widget_get_screen (draw->widget)),
-				    type, pixbuf, filename,
-				    color, saturation,
-				    gtk_widget_get_colormap (draw->widget));
+	surface = vte_bg_get_surface (vte_bg_get_for_screen (gtk_widget_get_screen (draw->widget)),
+				     type, pixbuf, filename,
+				     color, saturation,
+				     cairo_get_target(draw->cr));
 
-	if (!pixmap)
+	_vte_draw_end (draw);
+
+	if (!surface)
 		return;
 
 	if (draw->bg_pattern)
 		cairo_pattern_destroy (draw->bg_pattern);
 
-	/* Ugh... We need to create a dummy cairo_t */
-	surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 0, 0);
-	cr = cairo_create (surface);
-
-	gdk_cairo_set_source_pixmap (cr, pixmap, 0, 0);
-	draw->bg_pattern = cairo_pattern_reference (cairo_get_source (cr));
-
-	cairo_destroy (cr);
+	draw->bg_pattern = cairo_pattern_create_for_surface (surface);
 	cairo_surface_destroy (surface);
-
-	/* Transfer the pixmap ownership to the pattern */
-	cairo_pattern_set_user_data (draw->bg_pattern,
-				     (cairo_user_data_key_t *) draw,
-				     pixmap,
-				     (cairo_destroy_func_t) g_object_unref);
-
 	cairo_pattern_set_extend (draw->bg_pattern, CAIRO_EXTEND_REPEAT);
 }
 
@@ -940,14 +888,12 @@ _vte_draw_set_background_scroll (struct _vte_draw *draw,
 	cairo_pattern_set_matrix (draw->bg_pattern, &matrix);
 }
 
-gboolean
+void
 _vte_draw_clip (struct _vte_draw *draw, GdkRegion *region)
 {
 	_vte_debug_print (VTE_DEBUG_DRAW, "draw_clip\n");
 	gdk_cairo_region(draw->cr, region);
 	cairo_clip (draw->cr);
-
-	return TRUE;
 }
 
 void
@@ -1217,10 +1163,4 @@ _vte_draw_fill_rectangle (struct _vte_draw *draw,
 	cairo_rectangle (draw->cr, x, y, width, height);
 	set_source_color_alpha (draw->cr, color, alpha);
 	cairo_fill (draw->cr);
-}
-
-gboolean
-_vte_draw_requires_clear (struct _vte_draw *draw)
-{
-	return draw->requires_clear;
 }
