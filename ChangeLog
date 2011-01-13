@@ -1,3 +1,96 @@
+commit dda7b5036acc1ca95c71eb0d5f3d4fb1590a4508
+Author: Matthias Clasen <mclasen@redhat.com>
+Date:   Tue Jan 11 13:40:51 2011 -0500
+
+    Updates
+
+ NEWS |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit 63ad8cf6c00c92e959e7856b6529281892a63d59
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 5 20:20:39 2011 -0500
+
+    Bug 638782 - vte build is broken by using gtk_quit_add: uplift needed
+    
+    Harmlessly remove cleanup...
+
+ src/vtedraw.c |   41 -----------------------------------------
+ 1 files changed, 0 insertions(+), 41 deletions(-)
+
+commit b33feb45bff370ad860685923e3616a3583b281d
+Author: Cristian Klein <cristiklein+gnome@gmail.com>
+Date:   Wed Jan 5 19:36:38 2011 +0000
+
+    Prevent useless wakeups when the focus is lost.
+    
+    When running powertop in a gnome-terminal window, gnome-terminal is
+    shown to generate 1.6 wakeups/second. This is caused by the fact that
+    the cursor blink timer is not disable when the cursor is hidden.
+
+ src/vte-private.h |    1 +
+ src/vte.c         |   48 +++++++++++++++++++++++++++---------------------
+ 2 files changed, 28 insertions(+), 21 deletions(-)
+
+commit d64e28b3290aaf034ec37bbf4524ef78adbdfb2e
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Wed Jan 5 02:03:49 2011 -0500
+
+    Bug 589557 - Ctrl+<key> sends erroneous value when primary keyboard layout is not English
+    
+    Fix it to match what xterm is doing.
+
+ src/vte.c |   44 ++++++++++++++++++++++++++------------------
+ 1 files changed, 26 insertions(+), 18 deletions(-)
+
+commit fc7eb565f48d3ddc311bb0296177860b58eb311e
+Author: Ignacio Casal Quinteiro <icq@gnome.org>
+Date:   Thu Dec 30 21:15:01 2010 +0100
+
+    Fix annotations of fork_command_full.
+    
+    Some annotations were removed in the previous commit, it was wrong
+    and it must be readded.
+
+ src/vte.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+commit f7c5b8e77d4143031fe5e32437728f357ef94015
+Author: Ignacio Casal Quinteiro <icq@gnome.org>
+Date:   Mon Dec 27 20:25:49 2010 +0100
+
+    Make fork_command_full introspectable.
+
+ src/vte.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 0017f00af763f7778cf19153d234a58304104ba4
+Author: Gheyret T.Kenji <gheyret@gmail.com>
+Date:   Thu Dec 23 19:42:18 2010 +0100
+
+    Added UG translation
+
+ po/ug.po |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 7c5709cfce74ac1bed351a013600da1483ce8279
+Author: Vincent Untz <vuntz@gnome.org>
+Date:   Thu Dec 23 14:13:38 2010 +0100
+
+    release: post-release bump to 0.27.4
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 435b8ffe9166bba9dd9ac663db5a3ccfff8b4e26
+Author: Vincent Untz <vuntz@gnome.org>
+Date:   Thu Dec 23 14:13:31 2010 +0100
+
+    release: 0.27.3
+
+ NEWS |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
 commit 70c9222ba95931495dde123fcc427bcc8bcef08d
 Author: Ignacio Casal Quinteiro <icq@gnome.org>
 Date:   Tue Dec 21 16:52:33 2010 +0100
