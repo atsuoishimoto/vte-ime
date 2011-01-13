@@ -184,6 +184,7 @@
 <ANCHOR id="VteTerminal-resize-window" href="vte/VteTerminal.html#VteTerminal-resize-window">
 <ANCHOR id="VteTerminal-restore-window" href="vte/VteTerminal.html#VteTerminal-restore-window">
 <ANCHOR id="VteTerminal-selection-changed" href="vte/VteTerminal.html#VteTerminal-selection-changed">
+<ANCHOR id="VteTerminal-set-scroll-adjustments" href="vte/VteTerminal.html#VteTerminal-set-scroll-adjustments">
 <ANCHOR id="VteTerminal-status-line-changed" href="vte/VteTerminal.html#VteTerminal-status-line-changed">
 <ANCHOR id="VteTerminal-text-deleted" href="vte/VteTerminal.html#VteTerminal-text-deleted">
 <ANCHOR id="VteTerminal-text-inserted" href="vte/VteTerminal.html#VteTerminal-text-inserted">
@@ -250,10 +251,9 @@
 <ANCHOR id="VteReaper.signal-details" href="vte/VteReaper.html#VteReaper.signal-details">
 <ANCHOR id="VteReaper-child-exited" href="vte/VteReaper.html#VteReaper-child-exited">
 <ANCHOR id="annotation-glossterm-out" href="vte/annotation-glossary.html#annotation-glossterm-out">
-<ANCHOR id="annotation-glossterm-allow-none" href="vte/annotation-glossary.html#annotation-glossterm-allow-none">
-<ANCHOR id="annotation-glossterm-closure" href="vte/annotation-glossary.html#annotation-glossterm-closure">
-<ANCHOR id="annotation-glossterm-transfer none" href="vte/annotation-glossary.html#annotation-glossterm-transfer none">
 <ANCHOR id="annotation-glossterm-array" href="vte/annotation-glossary.html#annotation-glossterm-array">
+<ANCHOR id="annotation-glossterm-allow-none" href="vte/annotation-glossary.html#annotation-glossterm-allow-none">
 <ANCHOR id="annotation-glossterm-element-type" href="vte/annotation-glossary.html#annotation-glossterm-element-type">
+<ANCHOR id="annotation-glossterm-scope call" href="vte/annotation-glossary.html#annotation-glossterm-scope call">
 <ANCHOR id="annotation-glossterm-transfer full" href="vte/annotation-glossary.html#annotation-glossterm-transfer full">
-<ANCHOR id="annotation-glossterm-type" href="vte/annotation-glossary.html#annotation-glossterm-type">
+<ANCHOR id="annotation-glossterm-transfer none" href="vte/annotation-glossary.html#annotation-glossterm-transfer none">

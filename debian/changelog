@@ -1,3 +1,9 @@
+vte (1:0.27.4-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 13 Jan 2011 12:31:29 -0600
+
 vte (1:0.27.3-0ubuntu1) natty; urgency=low
 
   * New upstream version

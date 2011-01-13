@@ -29,7 +29,7 @@
     <sub name="Licence" link="licence.html"/>
   </chapters>
   <functions>
-    <keyword type="struct" name="struct VteTerminal" link="VteTerminal.html#VteTerminal-struct"/>
+    <keyword type="struct" name="VteTerminal" link="VteTerminal.html#VteTerminal-struct"/>
     <keyword type="enum" name="enum VteTerminalAntiAlias" link="VteTerminal.html#VteTerminalAntiAlias" deprecated=""/>
     <keyword type="enum" name="enum VteTerminalCursorBlinkMode" link="VteTerminal.html#VteTerminalCursorBlinkMode"/>
     <keyword type="enum" name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
@@ -187,6 +187,7 @@
     <keyword type="signal" name="The &quot;resize-window&quot; signal" link="VteTerminal.html#VteTerminal-resize-window"/>
     <keyword type="signal" name="The &quot;restore-window&quot; signal" link="VteTerminal.html#VteTerminal-restore-window"/>
     <keyword type="signal" name="The &quot;selection-changed&quot; signal" link="VteTerminal.html#VteTerminal-selection-changed"/>
+    <keyword type="signal" name="The &quot;set-scroll-adjustments&quot; signal" link="VteTerminal.html#VteTerminal-set-scroll-adjustments"/>
     <keyword type="signal" name="The &quot;status-line-changed&quot; signal" link="VteTerminal.html#VteTerminal-status-line-changed"/>
     <keyword type="signal" name="The &quot;text-deleted&quot; signal" link="VteTerminal.html#VteTerminal-text-deleted"/>
     <keyword type="signal" name="The &quot;text-inserted&quot; signal" link="VteTerminal.html#VteTerminal-text-inserted"/>
@@ -212,7 +213,7 @@
     <keyword type="macro" name="VTE_MINOR_VERSION" link="vte-Version-Information.html#VTE-MINOR-VERSION:CAPS" since="0.16.15"/>
     <keyword type="macro" name="VTE_MICRO_VERSION" link="vte-Version-Information.html#VTE-MICRO-VERSION:CAPS" since="0.16.15"/>
     <keyword type="macro" name="VTE_CHECK_VERSION()" link="vte-Version-Information.html#VTE-CHECK-VERSION:CAPS" since="0.16.15"/>
-    <keyword type="struct" name="struct VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
+    <keyword type="struct" name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <keyword type="function" name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
     <keyword type="struct" name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
     <keyword type="function" name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child" deprecated=""/>
