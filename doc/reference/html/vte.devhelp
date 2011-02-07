@@ -29,7 +29,7 @@
     <sub name="Licence" link="licence.html"/>
   </chapters>
   <functions>
-    <function name="VteTerminal" link="VteTerminal.html#VteTerminal-struct"/>
+    <function name="struct VteTerminal" link="VteTerminal.html#VteTerminal-struct"/>
     <function name="enum VteTerminalAntiAlias" link="VteTerminal.html#VteTerminalAntiAlias"/>
     <function name="enum VteTerminalCursorBlinkMode" link="VteTerminal.html#VteTerminalCursorBlinkMode"/>
     <function name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
@@ -213,7 +213,7 @@
     <function name="VTE_MINOR_VERSION" link="vte-Version-Information.html#VTE-MINOR-VERSION:CAPS"/>
     <function name="VTE_MICRO_VERSION" link="vte-Version-Information.html#VTE-MICRO-VERSION:CAPS"/>
     <function name="VTE_CHECK_VERSION()" link="vte-Version-Information.html#VTE-CHECK-VERSION:CAPS"/>
-    <function name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
+    <function name="struct VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <function name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
     <function name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
     <function name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child"/>
