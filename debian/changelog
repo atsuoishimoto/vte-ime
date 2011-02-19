@@ -1,3 +1,17 @@
+vte (1:0.27.5-1) experimental; urgency=low
+
+  * debian/control.in:
+    + Drop obsolete dpkg-dev build dependency.
+    + Bump the libgtk2.0-dev dependency on the -dev package.
+  * New upstream release.
+    + debian/control.in:
+      - Update build dependencies.
+      - Update for the new gtk+ 3 package names.
+    + debian/patches/90_autoreconf.patch:
+      - Updated.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sat, 19 Feb 2011 14:23:13 +0000
+
 vte (1:0.27.4-1) experimental; urgency=low
 
   * Switch to CDBS' flavors system.

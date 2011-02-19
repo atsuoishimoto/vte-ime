@@ -1,3 +1,42 @@
+commit 80239d8e93b9db3dca976e4ed520c38d394dedb2
+Author: Matthias Clasen <mclasen@redhat.com>
+Date:   Wed Feb 2 02:14:46 2011 -0500
+
+    Updates
+
+ NEWS |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+commit 437b412c8010fa0fbee022235f3ddb9fd4d3fd3a
+Author: Fran Diéguez <fran.dieguez@mabishu.com>
+Date:   Thu Jan 27 00:41:50 2011 +0100
+
+    QA of Galician translations
+
+ po/gl.po |   38 ++++++++++++++++++++------------------
+ 1 files changed, 20 insertions(+), 18 deletions(-)
+
+commit 86225e5f053bf8bfb3e851fda437455624514eec
+Author: Matthias Clasen <mclasen@redhat.com>
+Date:   Sun Jan 16 11:07:14 2011 -0500
+
+    Don't use internal GTK+ api
+    
+    GtkTargetPair was always documented as private, and in
+    GTK+ 3 it is gone from the headers. Just use existing API.
+
+ src/vte.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
+
+commit 4553d0294a6095ce9f5215a8af273a7decac8740
+Author: Matthias Clasen <mclasen@redhat.com>
+Date:   Tue Jan 11 14:15:35 2011 -0500
+
+    Bump version
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit dda7b5036acc1ca95c71eb0d5f3d4fb1590a4508
 Author: Matthias Clasen <mclasen@redhat.com>
 Date:   Tue Jan 11 13:40:51 2011 -0500
