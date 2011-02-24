@@ -1,3 +1,244 @@
+commit aec26917e31291ecfb892761ddb7899ae4370ce0
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Feb 21 17:37:29 2011 +0100
+
+    Version 0.27.90
+
+ NEWS         |    5 +++++
+ configure.in |    2 +-
+ 2 files changed, 6 insertions(+), 1 deletions(-)
+
+commit 841b0ee578d09ada0f0c43d8dd22a49785da4e5b
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Feb 21 17:38:02 2011 +0100
+
+    Remove gsettings enum stuff
+
+ configure.in                   |    6 ------
+ src/Makefile.am                |    8 --------
+ src/org.gnome.vte.v0.enums.xml |   28 ----------------------------
+ 3 files changed, 0 insertions(+), 42 deletions(-)
+
+commit e7d3f3c118bbc39805736323f6e9fe572eb71ab8
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Feb 16 20:42:18 2011 +0100
+
+    Add version marker to new API
+
+ src/vte.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+commit 219ea41b4382ab43ddb6b826d62a5401aab20e6e
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Feb 16 20:34:41 2011 +0100
+
+    Export vte_get_user_shell()
+    
+    Bug #642184. Also fixes bug #640179.
+
+ doc/reference/vte-sections.txt |    3 ++
+ src/Makefile.am                |    2 +-
+ src/vte.c                      |   58 ++++++++++++++++++----------------------
+ src/vte.h                      |    2 +
+ src/vteapp.c                   |    3 ++
+ 5 files changed, 35 insertions(+), 33 deletions(-)
+
+commit de22ca4f72bcf7f60afc4d948d04018b5cdbde7b
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Feb 14 23:20:46 2011 +0100
+
+    Require gtk 3.0.0
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 4973121f747cb9519ed149d7c90b596f9bcabee3
+Author: Daniel Korostil <ted.korostiled@gmail.com>
+Date:   Tue Feb 8 20:22:20 2011 +0200
+
+    Uploaded Ukranian
+
+ po/uk.po |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit f01e298c01f7b2bb23d00e209550bebcef494485
+Author: Daniel Korostil <ted.korostiled@gmail.com>
+Date:   Tue Feb 8 20:16:56 2011 +0200
+
+    Uploaded Ukranian
+
+ po/uk.po |  123 ++++++++++++++++++++++++++++----------------------------------
+ 1 files changed, 56 insertions(+), 67 deletions(-)
+
+commit 2681c8e440a955ec75c1eb9830a653f64a32380f
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Feb 6 00:28:55 2011 +0100
+
+    Add new struct
+
+ doc/reference/vte-sections.txt |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 3597b3adf026e87e6c7edc40115aa23c098abccd
+Author: Christian Persch <chpe@gnome.org>
+Date:   Sun Feb 6 00:24:51 2011 +0100
+
+    Add index with symbols new in 0.28
+
+ doc/reference/vte-docs.xml |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+commit 1c55bed8025942925f2e9760a9461020bc634e86
+Author: Ignacio Casal Quinteiro <icq@gnome.org>
+Date:   Tue Jan 25 12:31:31 2011 +0100
+
+    Add RGBA variants to set colors.
+
+ doc/reference/vte-sections.txt |    7 ++
+ src/vte.c                      |  207 ++++++++++++++++++++++++++++++++++++++++
+ src/vte.h                      |   21 ++++
+ 3 files changed, 235 insertions(+), 0 deletions(-)
+
+commit 0ac349af9c34094763f27d66fa7a2c1901576afa
+Author: Christian Persch <chpe@gnome.org>
+Date:   Thu Feb 3 14:03:06 2011 +0100
+
+    Lower intltool req again
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 15a5ebd5de88b2145bee53ea7230d2dca6cc9a20
+Author: Mahyar Moghimi <mahyar.moqimi@gmail.com>
+Date:   Thu Feb 3 12:45:34 2011 +0330
+
+    Updating Persian Translation
+
+ po/fa.po |  115 ++++++++++++++++++++++++++++----------------------------------
+ 1 files changed, 52 insertions(+), 63 deletions(-)
+
+commit 1b6d84b8b795b5aa01d1ef5d95dbf9e58554128e
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Feb 2 19:00:23 2011 +0100
+
+    There are no macros
+
+ Makefile.am  |    2 +-
+ configure.in |    1 -
+ 2 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 31b4047a51ac48264b735a8be24fdddd3b086acc
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Feb 2 18:45:41 2011 +0100
+
+    Add default style provider
+    
+    This fixes the default value for the 'inner-border' property not
+    to be NULL.
+    
+    Bug #640460.
+
+ configure.in      |    2 +-
+ src/vte-private.h |    5 +++++
+ src/vte.c         |   29 +++++++++++++++++++++++++++--
+ 3 files changed, 33 insertions(+), 3 deletions(-)
+
+commit 1c114685f684941e28f60b1440bc0e5effd9b770
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Feb 2 18:08:15 2011 +0100
+
+    Don't shadow a global definition
+
+ src/ring.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit cc095a66991be940dffa59cfeb09d27b820ff636
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Feb 2 18:06:24 2011 +0100
+
+    Remove unused variables
+
+ src/vte.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+commit ca772ef8e9113a8c4599a43b717ab0e67c0b7c14
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Feb 2 18:05:17 2011 +0100
+
+    Remove obsolete signal IDs in class struct
+    
+    ... and add more padding. gtk3 only, so no ABI change.
+
+ src/vte.c |   62 ++++++++++++++++++++++++++++++++++--------------------------
+ src/vte.h |   16 ++++++++++++--
+ 2 files changed, 48 insertions(+), 30 deletions(-)
+
+commit a34652e11339722ecad0079dc9ad85de191deffb
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Feb 2 17:48:57 2011 +0100
+
+    Lower am req again
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit f46b5c288c9b1222cf614f22c1d1f53f1ee60c56
+Author: Christian Persch <chpe@gnome.org>
+Date:   Wed Feb 2 17:49:06 2011 +0100
+
+    Revert "Use the recommended configure.ac instead configure.in"
+    
+    This reverts commit 765f1087eced3d19768a7ebd98500e5ff3df8a1a.
+    
+    Renaming breaks automatic reconfiguring from make during git bisect.
+
+ autogen.sh   |    2 +-
+ configure.ac |  625 ----------------------------------------------------------
+ configure.in |  625 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 626 insertions(+), 626 deletions(-)
+
+commit 2cce4ae4d5599b131b5f53340f636630bf1cf6d9
+Author: Javier Jardón <javier.jardon@codethink.co.uk>
+Date:   Wed Feb 2 13:35:24 2011 +0000
+
+    build: Update autotools configuration
+    
+    Replace deprecated macros and use the new libtool syntax
+
+ Makefile.am  |    2 ++
+ autogen.sh   |    7 +------
+ configure.ac |   29 ++++++++++++++++-------------
+ 3 files changed, 19 insertions(+), 19 deletions(-)
+
+commit 765f1087eced3d19768a7ebd98500e5ff3df8a1a
+Author: Javier Jardón <javier.jardon@codethink.co.uk>
+Date:   Wed Feb 2 13:23:19 2011 +0000
+
+    Use the recommended configure.ac instead configure.in
+
+ autogen.sh   |    2 +-
+ configure.ac |  622 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ configure.in |  622 ----------------------------------------------------------
+ 3 files changed, 623 insertions(+), 623 deletions(-)
+
+commit 45c73fc2a9aaf166056c7f29aec7bdf8cd8d165f
+Author: Javier Jardón <javier.jardon@codethink.co.uk>
+Date:   Wed Feb 2 13:21:32 2011 +0000
+
+    configura.in: Check for >= version of glib, not only >
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit a9200f9dd2852a358cf6644f197e5bda87790001
+Author: Matthias Clasen <mclasen@redhat.com>
+Date:   Wed Feb 2 02:21:10 2011 -0500
+
+    Post-release bump
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 80239d8e93b9db3dca976e4ed520c38d394dedb2
 Author: Matthias Clasen <mclasen@redhat.com>
 Date:   Wed Feb 2 02:14:46 2011 -0500
