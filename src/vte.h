@@ -53,9 +53,10 @@ G_BEGIN_DECLS
 #define VTE_IS_TERMINAL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  VTE_TYPE_TERMINAL))
 #define VTE_TERMINAL_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  VTE_TYPE_TERMINAL, VteTerminalClass))
 
-typedef struct _VteTerminal         VteTerminal;
-typedef struct _VteTerminalPrivate  VteTerminalPrivate;
-typedef struct _VteTerminalClass    VteTerminalClass;
+typedef struct _VteTerminal             VteTerminal;
+typedef struct _VteTerminalPrivate      VteTerminalPrivate;
+typedef struct _VteTerminalClass        VteTerminalClass;
+typedef struct _VteTerminalClassPrivate VteTerminalClassPrivate;
 
 /**
  * VteTerminal:
@@ -133,6 +134,10 @@ struct _VteTerminalClass {
 
  	void (*beep)(VteTerminal* terminal);
 
+#if GTK_CHECK_VERSION (2, 99, 0)
+        /* Padding for future expansion. */
+        gpointer padding[16];
+#else
 	/* Padding for future expansion. */
 	void (*vte_reserved3)(void);
 	void (*vte_reserved4)(void);
@@ -172,6 +177,11 @@ struct _VteTerminalClass {
         guint _VTE_DEPRECATED(reserved4);
         guint _VTE_DEPRECATED(reserved5);
         guint _VTE_DEPRECATED(reserved6);
+#endif
+
+#if GTK_CHECK_VERSION (2, 99, 0)
+        VteTerminalClassPrivate *priv;
+#endif
 };
 
 /**
@@ -321,6 +331,27 @@ void vte_terminal_set_colors(VteTerminal *terminal,
 			     const GdkColor *background,
 			     const GdkColor *palette,
 			     glong palette_size);
+
+#if GTK_CHECK_VERSION (2, 99, 0)
+void vte_terminal_set_color_bold_rgba(VteTerminal *terminal,
+                                      const GdkRGBA *bold);
+void vte_terminal_set_color_dim_rgba(VteTerminal *terminal,
+	                             const GdkRGBA *dim);
+void vte_terminal_set_color_foreground_rgba(VteTerminal *terminal,
+					    const GdkRGBA *foreground);
+void vte_terminal_set_color_background_rgba(VteTerminal *terminal,
+					    const GdkRGBA *background);
+void vte_terminal_set_color_cursor_rgba(VteTerminal *terminal,
+					const GdkRGBA *cursor_background);
+void vte_terminal_set_color_highlight_rgba(VteTerminal *terminal,
+					   const GdkRGBA *highlight_background);
+void vte_terminal_set_colors_rgba(VteTerminal *terminal,
+				  const GdkRGBA *foreground,
+				  const GdkRGBA *background,
+				  const GdkRGBA *palette,
+				  gsize palette_size);
+#endif
+
 void vte_terminal_set_default_colors(VteTerminal *terminal);
 
 /* Background effects. */
@@ -453,6 +484,8 @@ const char *vte_terminal_get_status_line(VteTerminal *terminal);
 
 void vte_terminal_set_pty_object(VteTerminal *terminal, VtePty *pty);
 VtePty *vte_terminal_get_pty_object(VteTerminal *terminal);
+
+char *vte_get_user_shell (void);
 
 /* Accessors for bindings. */
 #if !GTK_CHECK_VERSION (2, 91, 2)

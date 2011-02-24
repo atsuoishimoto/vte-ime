@@ -1,3 +1,15 @@
+vte (1:0.27.90-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+  * debian/control:
+    - Bump build-depends on libgtk-3-dev
+  * debian/libvte-common.install:
+    - GSettings schema removed
+  * debian/libvte-2.90-9.symbols:
+    - Updated
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 24 Feb 2011 11:07:55 +1100
+
 vte (1:0.27.5-0ubuntu2) natty; urgency=low
 
   * debian/control:

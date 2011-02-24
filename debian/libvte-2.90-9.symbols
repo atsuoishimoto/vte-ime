@@ -6,6 +6,7 @@ libvte2_90.so.9 libvte-2.90-9 #MINVER#
  _vte_pty_open@Base 1:0.27.2
  _vte_pty_set_size@Base 1:0.27.2
  _vte_pty_set_utf8@Base 1:0.27.2
+ vte_get_user_shell@Base 1:0.27.90
  vte_pty_child_setup@Base 1:0.27.2
  vte_pty_close@Base 1:0.27.2
  vte_pty_error_get_type@Base 1:0.27.2
@@ -102,12 +103,19 @@ libvte2_90.so.9 libvte-2.90-9 #MINVER#
  vte_terminal_set_background_transparent@Base 1:0.27.2
  vte_terminal_set_backspace_binding@Base 1:0.27.2
  vte_terminal_set_color_background@Base 1:0.27.2
+ vte_terminal_set_color_background_rgba@Base 1:0.27.90
  vte_terminal_set_color_bold@Base 1:0.27.2
+ vte_terminal_set_color_bold_rgba@Base 1:0.27.90
  vte_terminal_set_color_cursor@Base 1:0.27.2
+ vte_terminal_set_color_cursor_rgba@Base 1:0.27.90
  vte_terminal_set_color_dim@Base 1:0.27.2
+ vte_terminal_set_color_dim_rgba@Base 1:0.27.90
  vte_terminal_set_color_foreground@Base 1:0.27.2
+ vte_terminal_set_color_foreground_rgba@Base 1:0.27.90
  vte_terminal_set_color_highlight@Base 1:0.27.2
+ vte_terminal_set_color_highlight_rgba@Base 1:0.27.90
  vte_terminal_set_colors@Base 1:0.27.2
+ vte_terminal_set_colors_rgba@Base 1:0.27.90
  vte_terminal_set_cursor_blink_mode@Base 1:0.27.2
  vte_terminal_set_cursor_blinks@Base 1:0.27.2
  vte_terminal_set_cursor_shape@Base 1:0.27.2

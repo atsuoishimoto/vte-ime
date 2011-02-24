@@ -25,11 +25,12 @@
     <sub name="Index of new symbols in 0.20" link="api-index-0-20.html"/>
     <sub name="Index of new symbols in 0.24" link="api-index-0-24.html"/>
     <sub name="Index of new symbols in 0.26" link="api-index-0-26.html"/>
+    <sub name="Index of new symbols in 0.28" link="api-index-0-28.html"/>
     <sub name="Annotation Glossary" link="annotation-glossary.html"/>
     <sub name="Licence" link="licence.html"/>
   </chapters>
   <functions>
-    <function name="struct VteTerminal" link="VteTerminal.html#VteTerminal-struct"/>
+    <function name="VteTerminal" link="VteTerminal.html#VteTerminal-struct"/>
     <function name="enum VteTerminalAntiAlias" link="VteTerminal.html#VteTerminalAntiAlias"/>
     <function name="enum VteTerminalCursorBlinkMode" link="VteTerminal.html#VteTerminalCursorBlinkMode"/>
     <function name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
@@ -58,12 +59,19 @@
     <function name="vte_terminal_set_scroll_on_output ()" link="VteTerminal.html#vte-terminal-set-scroll-on-output"/>
     <function name="vte_terminal_set_scroll_on_keystroke ()" link="VteTerminal.html#vte-terminal-set-scroll-on-keystroke"/>
     <function name="vte_terminal_set_color_bold ()" link="VteTerminal.html#vte-terminal-set-color-bold"/>
+    <function name="vte_terminal_set_color_bold_rgba ()" link="VteTerminal.html#vte-terminal-set-color-bold-rgba"/>
     <function name="vte_terminal_set_color_foreground ()" link="VteTerminal.html#vte-terminal-set-color-foreground"/>
+    <function name="vte_terminal_set_color_foreground_rgba ()" link="VteTerminal.html#vte-terminal-set-color-foreground-rgba"/>
     <function name="vte_terminal_set_color_background ()" link="VteTerminal.html#vte-terminal-set-color-background"/>
+    <function name="vte_terminal_set_color_background_rgba ()" link="VteTerminal.html#vte-terminal-set-color-background-rgba"/>
     <function name="vte_terminal_set_color_dim ()" link="VteTerminal.html#vte-terminal-set-color-dim"/>
+    <function name="vte_terminal_set_color_dim_rgba ()" link="VteTerminal.html#vte-terminal-set-color-dim-rgba"/>
     <function name="vte_terminal_set_color_cursor ()" link="VteTerminal.html#vte-terminal-set-color-cursor"/>
+    <function name="vte_terminal_set_color_cursor_rgba ()" link="VteTerminal.html#vte-terminal-set-color-cursor-rgba"/>
     <function name="vte_terminal_set_color_highlight ()" link="VteTerminal.html#vte-terminal-set-color-highlight"/>
+    <function name="vte_terminal_set_color_highlight_rgba ()" link="VteTerminal.html#vte-terminal-set-color-highlight-rgba"/>
     <function name="vte_terminal_set_colors ()" link="VteTerminal.html#vte-terminal-set-colors"/>
+    <function name="vte_terminal_set_colors_rgba ()" link="VteTerminal.html#vte-terminal-set-colors-rgba"/>
     <function name="vte_terminal_set_default_colors ()" link="VteTerminal.html#vte-terminal-set-default-colors"/>
     <function name="vte_terminal_set_opacity ()" link="VteTerminal.html#vte-terminal-set-opacity"/>
     <function name="vte_terminal_set_background_image ()" link="VteTerminal.html#vte-terminal-set-background-image"/>
@@ -187,7 +195,6 @@
     <function name="The &quot;resize-window&quot; signal" link="VteTerminal.html#VteTerminal-resize-window"/>
     <function name="The &quot;restore-window&quot; signal" link="VteTerminal.html#VteTerminal-restore-window"/>
     <function name="The &quot;selection-changed&quot; signal" link="VteTerminal.html#VteTerminal-selection-changed"/>
-    <function name="The &quot;set-scroll-adjustments&quot; signal" link="VteTerminal.html#VteTerminal-set-scroll-adjustments"/>
     <function name="The &quot;status-line-changed&quot; signal" link="VteTerminal.html#VteTerminal-status-line-changed"/>
     <function name="The &quot;text-deleted&quot; signal" link="VteTerminal.html#VteTerminal-text-deleted"/>
     <function name="The &quot;text-inserted&quot; signal" link="VteTerminal.html#VteTerminal-text-inserted"/>
@@ -209,11 +216,7 @@
     <function name="The &quot;fd&quot; property" link="vte-Vte-PTY.html#VtePty--fd"/>
     <function name="The &quot;flags&quot; property" link="vte-Vte-PTY.html#VtePty--flags"/>
     <function name="The &quot;term&quot; property" link="vte-Vte-PTY.html#VtePty--term"/>
-    <function name="VTE_MAJOR_VERSION" link="vte-Version-Information.html#VTE-MAJOR-VERSION:CAPS"/>
-    <function name="VTE_MINOR_VERSION" link="vte-Version-Information.html#VTE-MINOR-VERSION:CAPS"/>
-    <function name="VTE_MICRO_VERSION" link="vte-Version-Information.html#VTE-MICRO-VERSION:CAPS"/>
-    <function name="VTE_CHECK_VERSION()" link="vte-Version-Information.html#VTE-CHECK-VERSION:CAPS"/>
-    <function name="struct VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
+    <function name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
     <function name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
     <function name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
     <function name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child"/>

@@ -1,12 +1,16 @@
 m4_define([version_major],0)
 m4_define([version_minor],27)
-m4_define([version_micro],5)
+m4_define([version_micro],90)
 m4_define([version_triplet],version_major.version_minor.version_micro)
 
 m4_define([so_major_adjust],9) dnl Don't change!
 
-AC_PREREQ([2.59])
-AC_INIT(vte, [version_triplet], [http://bugzilla.gnome.org/enter_bug.cgi?product=vte])
+AC_PREREQ([2.63])
+AC_INIT([vte],
+        [version_triplet],
+        [http://bugzilla.gnome.org/enter_bug.cgi?product=vte],
+        [vte])
+
 AC_CONFIG_SRCDIR([src/vte.c])
 AC_CONFIG_HEADERS([config.h])
 
@@ -61,7 +65,7 @@ case "$with_gtk" in
        VTE_LIBRARY_SUFFIX=$VTE_API_VERSION
        VTE_SEAL_CFLAGS="-DVTE_SEAL_ENABLE"
        GTK_API_VERSION=3.0
-       GTK_REQUIRED=2.91.6
+       GTK_REQUIRED=3.0.0
        ;;
 esac
 
@@ -79,16 +83,16 @@ AM_CONDITIONAL([HAVE_GTK_3],[test "$with_gtk" = "3.0"])
 
 ################################################################################
 
-AC_ISC_POSIX
+# Check for programs
 AC_PROG_CC
-AC_STDC_HEADERS
-AM_PROG_CC_STDC
-
+AC_HEADER_STDC
 AM_PROG_CC_C_O
-
-AM_PROG_LIBTOOL
-
 AC_PROG_SED
+
+# Initialize libtool
+LT_PREREQ([2.2])
+LT_INIT
+
 
 ################################################################################
 # i18n
@@ -273,8 +277,6 @@ AC_SUBST([VTE_LDFLAGS])
 
 ################################################################################
 
-GNOME_COMMON_INIT
-
 # Disable deprecations and single includes
 # We don't use GNOME_MAINTAINER_MODE_DEFINES here since it's too much and
 # it also defines VTE's own defines.
@@ -325,7 +327,7 @@ esac
 GLIB_REQUIRED=2.26.0
 PANGO_REQUIRED=1.22.0
 AC_DEFINE(GDK_MULTIHEAD_SAFE,1,[Force use of GDK's multihead-safe APIs.])
-PKG_CHECK_MODULES(GLIB,[glib-2.0 > $GLIB_REQUIRED gobject-2.0])
+PKG_CHECK_MODULES(GLIB,[glib-2.0 >= $GLIB_REQUIRED gobject-2.0])
 PKG_CHECK_MODULES(GTK,[glib-2.0 >= $GLIB_REQUIRED gobject-2.0 gtk+-$GTK_API_VERSION >= $GTK_REQUIRED])
 
 AC_PATH_PROG([GLIB_GENMARSHAL],[glib-genmarshal])
@@ -476,7 +478,7 @@ if sys.version_info < minver:
 	sys.exit(1)
 sys.exit(0)
 "
-	if $PYTHON -c "$prog" 1>&AC_FD_CC 2>&AC_FD_CC
+	if $PYTHON -c "$prog" 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
 	then
 		AC_MSG_RESULT([okay])
 	else
@@ -570,12 +572,6 @@ if test -z "$enable_introspection"; then
 fi
 
 GOBJECT_INTROSPECTION_CHECK([0.9.0])
-
-# *********
-# GSettings
-# *********
-
-GLIB_GSETTINGS
 
 ################################################################################
 

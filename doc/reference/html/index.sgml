@@ -1,11 +1,6 @@
 <ONLINE href="http://library.gnome.org/devel/vte/">
 <ANCHOR id="VteTerminal" href="vte/VteTerminal.html">
 <ANCHOR id="VteTerminal.synopsis" href="vte/VteTerminal.html#VteTerminal.synopsis">
-<ANCHOR id="VteTerminalAntiAlias" href="vte/VteTerminal.html#VteTerminalAntiAlias">
-<ANCHOR id="VteTerminalCursorBlinkMode" href="vte/VteTerminal.html#VteTerminalCursorBlinkMode">
-<ANCHOR id="VteTerminalCursorShape" href="vte/VteTerminal.html#VteTerminalCursorShape">
-<ANCHOR id="VteTerminalEraseBinding" href="vte/VteTerminal.html#VteTerminalEraseBinding">
-<ANCHOR id="VteTerminalWriteFlags" href="vte/VteTerminal.html#VteTerminalWriteFlags">
 <ANCHOR id="VteTerminal.object-hierarchy" href="vte/VteTerminal.html#VteTerminal.object-hierarchy">
 <ANCHOR id="VteTerminal.implemented-interfaces" href="vte/VteTerminal.html#VteTerminal.implemented-interfaces">
 <ANCHOR id="VteTerminal.properties" href="vte/VteTerminal.html#VteTerminal.properties">
@@ -57,12 +52,19 @@
 <ANCHOR id="vte-terminal-set-scroll-on-output" href="vte/VteTerminal.html#vte-terminal-set-scroll-on-output">
 <ANCHOR id="vte-terminal-set-scroll-on-keystroke" href="vte/VteTerminal.html#vte-terminal-set-scroll-on-keystroke">
 <ANCHOR id="vte-terminal-set-color-bold" href="vte/VteTerminal.html#vte-terminal-set-color-bold">
+<ANCHOR id="vte-terminal-set-color-bold-rgba" href="vte/VteTerminal.html#vte-terminal-set-color-bold-rgba">
 <ANCHOR id="vte-terminal-set-color-foreground" href="vte/VteTerminal.html#vte-terminal-set-color-foreground">
+<ANCHOR id="vte-terminal-set-color-foreground-rgba" href="vte/VteTerminal.html#vte-terminal-set-color-foreground-rgba">
 <ANCHOR id="vte-terminal-set-color-background" href="vte/VteTerminal.html#vte-terminal-set-color-background">
+<ANCHOR id="vte-terminal-set-color-background-rgba" href="vte/VteTerminal.html#vte-terminal-set-color-background-rgba">
 <ANCHOR id="vte-terminal-set-color-dim" href="vte/VteTerminal.html#vte-terminal-set-color-dim">
+<ANCHOR id="vte-terminal-set-color-dim-rgba" href="vte/VteTerminal.html#vte-terminal-set-color-dim-rgba">
 <ANCHOR id="vte-terminal-set-color-cursor" href="vte/VteTerminal.html#vte-terminal-set-color-cursor">
+<ANCHOR id="vte-terminal-set-color-cursor-rgba" href="vte/VteTerminal.html#vte-terminal-set-color-cursor-rgba">
 <ANCHOR id="vte-terminal-set-color-highlight" href="vte/VteTerminal.html#vte-terminal-set-color-highlight">
+<ANCHOR id="vte-terminal-set-color-highlight-rgba" href="vte/VteTerminal.html#vte-terminal-set-color-highlight-rgba">
 <ANCHOR id="vte-terminal-set-colors" href="vte/VteTerminal.html#vte-terminal-set-colors">
+<ANCHOR id="vte-terminal-set-colors-rgba" href="vte/VteTerminal.html#vte-terminal-set-colors-rgba">
 <ANCHOR id="vte-terminal-set-default-colors" href="vte/VteTerminal.html#vte-terminal-set-default-colors">
 <ANCHOR id="vte-terminal-set-opacity" href="vte/VteTerminal.html#vte-terminal-set-opacity">
 <ANCHOR id="vte-terminal-set-background-image" href="vte/VteTerminal.html#vte-terminal-set-background-image">
@@ -189,7 +191,6 @@
 <ANCHOR id="VteTerminal-resize-window" href="vte/VteTerminal.html#VteTerminal-resize-window">
 <ANCHOR id="VteTerminal-restore-window" href="vte/VteTerminal.html#VteTerminal-restore-window">
 <ANCHOR id="VteTerminal-selection-changed" href="vte/VteTerminal.html#VteTerminal-selection-changed">
-<ANCHOR id="VteTerminal-set-scroll-adjustments" href="vte/VteTerminal.html#VteTerminal-set-scroll-adjustments">
 <ANCHOR id="VteTerminal-status-line-changed" href="vte/VteTerminal.html#VteTerminal-status-line-changed">
 <ANCHOR id="VteTerminal-text-deleted" href="vte/VteTerminal.html#VteTerminal-text-deleted">
 <ANCHOR id="VteTerminal-text-inserted" href="vte/VteTerminal.html#VteTerminal-text-inserted">
@@ -198,8 +199,6 @@
 <ANCHOR id="VteTerminal-window-title-changed" href="vte/VteTerminal.html#VteTerminal-window-title-changed">
 <ANCHOR id="vte-Vte-PTY" href="vte/vte-Vte-PTY.html">
 <ANCHOR id="vte-Vte-PTY.synopsis" href="vte/vte-Vte-PTY.html#vte-Vte-PTY.synopsis">
-<ANCHOR id="VtePtyFlags" href="vte/vte-Vte-PTY.html#VtePtyFlags">
-<ANCHOR id="VtePtyError" href="vte/vte-Vte-PTY.html#VtePtyError">
 <ANCHOR id="VtePty" href="vte/vte-Vte-PTY.html#VtePty">
 <ANCHOR id="vte-Vte-PTY.object-hierarchy" href="vte/vte-Vte-PTY.html#vte-Vte-PTY.object-hierarchy">
 <ANCHOR id="vte-Vte-PTY.implemented-interfaces" href="vte/vte-Vte-PTY.html#vte-Vte-PTY.implemented-interfaces">
@@ -234,10 +233,6 @@
 <ANCHOR id="vte-Version-Information.synopsis" href="vte/vte-Version-Information.html#vte-Version-Information.synopsis">
 <ANCHOR id="vte-Version-Information.description" href="vte/vte-Version-Information.html#vte-Version-Information.description">
 <ANCHOR id="vte-Version-Information.details" href="vte/vte-Version-Information.html#vte-Version-Information.details">
-<ANCHOR id="VTE-MAJOR-VERSION:CAPS" href="vte/vte-Version-Information.html#VTE-MAJOR-VERSION:CAPS">
-<ANCHOR id="VTE-MINOR-VERSION:CAPS" href="vte/vte-Version-Information.html#VTE-MINOR-VERSION:CAPS">
-<ANCHOR id="VTE-MICRO-VERSION:CAPS" href="vte/vte-Version-Information.html#VTE-MICRO-VERSION:CAPS">
-<ANCHOR id="VTE-CHECK-VERSION:CAPS" href="vte/vte-Version-Information.html#VTE-CHECK-VERSION:CAPS">
 <ANCHOR id="VteTerminalAccessible" href="vte/VteTerminalAccessible.html">
 <ANCHOR id="VteTerminalAccessible.synopsis" href="vte/VteTerminalAccessible.html#VteTerminalAccessible.synopsis">
 <ANCHOR id="VteTerminalAccessible.object-hierarchy" href="vte/VteTerminalAccessible.html#VteTerminalAccessible.object-hierarchy">
@@ -259,10 +254,9 @@
 <ANCHOR id="VteReaper-child-exited" href="vte/VteReaper.html#VteReaper-child-exited">
 <ANCHOR id="annotation-glossterm-out" href="vte/annotation-glossary.html#annotation-glossterm-out">
 <ANCHOR id="annotation-glossterm-allow-none" href="vte/annotation-glossary.html#annotation-glossterm-allow-none">
-<ANCHOR id="annotation-glossterm-closure" href="vte/annotation-glossary.html#annotation-glossterm-closure">
 <ANCHOR id="annotation-glossterm-transfer none" href="vte/annotation-glossary.html#annotation-glossterm-transfer none">
 <ANCHOR id="annotation-glossterm-array" href="vte/annotation-glossary.html#annotation-glossterm-array">
 <ANCHOR id="annotation-glossterm-element-type" href="vte/annotation-glossary.html#annotation-glossterm-element-type">
-<ANCHOR id="annotation-glossterm-scope call" href="vte/annotation-glossary.html#annotation-glossterm-scope call">
 <ANCHOR id="annotation-glossterm-transfer full" href="vte/annotation-glossary.html#annotation-glossterm-transfer full">
+<ANCHOR id="annotation-glossterm-scope call" href="vte/annotation-glossary.html#annotation-glossterm-scope call">
 <ANCHOR id="annotation-glossterm-type" href="vte/annotation-glossary.html#annotation-glossterm-type">

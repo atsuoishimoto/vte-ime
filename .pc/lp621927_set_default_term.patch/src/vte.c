@@ -282,16 +282,17 @@ _vte_incoming_chunks_reverse(struct _vte_incoming_chunk *chunk)
 	return prev;
 }
 
-
-#if GTK_CHECK_VERSION (2, 91, 2)
+#if GTK_CHECK_VERSION (2, 99, 0)
 #ifdef VTE_DEBUG
 G_DEFINE_TYPE_WITH_CODE(VteTerminal, vte_terminal, GTK_TYPE_WIDGET,
+                        g_type_add_class_private (g_define_type_id, sizeof (VteTerminalClassPrivate));
                         G_IMPLEMENT_INTERFACE(GTK_TYPE_SCROLLABLE, NULL)
                         if (_vte_debug_on(VTE_DEBUG_LIFECYCLE)) {
                                 g_printerr("vte_terminal_get_type()\n");
                         })
 #else
 G_DEFINE_TYPE_WITH_CODE(VteTerminal, vte_terminal, GTK_TYPE_WIDGET,
+                        g_type_add_class_private (g_define_type_id, sizeof (VteTerminalClassPrivate));
                         G_IMPLEMENT_INTERFACE(GTK_TYPE_SCROLLABLE, NULL))
 #endif
 #else
@@ -2854,6 +2855,213 @@ vte_terminal_set_colors(VteTerminal *terminal,
 	terminal->pvt->palette_initialized = TRUE;
 }
 
+#if GTK_CHECK_VERSION (2, 99, 0)
+
+static GdkColor *
+gdk_color_from_rgba (GdkColor *color,
+                     const GdkRGBA *rgba)
+{
+        if (rgba == NULL)
+                return NULL;
+
+        color->red = rgba->red * 65535.;
+        color->green = rgba->green * 65535.;
+        color->blue = rgba->blue * 65535.;
+        color->pixel = 0;
+
+	return color;
+}
+
+/**
+ * vte_terminal_set_color_bold_rgba:
+ * @terminal: a #VteTerminal
+ * @bold: (allow-none): the new bold color or %NULL
+ *
+ * Sets the color used to draw bold text in the default foreground color.
+ * If @bold is %NULL then the default color is used.
+ */
+void
+vte_terminal_set_color_bold_rgba(VteTerminal *terminal,
+                                 const GdkRGBA *bold)
+{
+	GdkColor color;
+
+	if (bold == NULL)
+	{
+		vte_terminal_generate_bold(&terminal->pvt->palette[VTE_DEF_FG],
+					   &terminal->pvt->palette[VTE_DEF_BG],
+					   1.8,
+					   &color);
+	}
+	else
+	{
+		gdk_color_from_rgba(&color, bold);
+	}
+
+	vte_terminal_set_color_bold(terminal, &color);
+}
+
+/**
+ * vte_terminal_set_color_dim_rgba:
+ * @terminal: a #VteTerminal
+ * @dim: (allow-none): the new dim color or %NULL
+ *
+ * Sets the color used to draw dim text in the default foreground color.
+ * If @dim is %NULL then the default color is used.
+ *
+ * Since: 0.28
+ */
+void
+vte_terminal_set_color_dim_rgba(VteTerminal *terminal,
+                                const GdkRGBA *dim)
+{
+	GdkColor color;
+
+	if (dim == NULL)
+	{
+		vte_terminal_generate_bold(&terminal->pvt->palette[VTE_DEF_FG],
+					   &terminal->pvt->palette[VTE_DEF_BG],
+					   0.5,
+					   &color);
+	}
+	else
+	{
+		gdk_color_from_rgba(&color, dim);
+	}
+
+	vte_terminal_set_color_dim(terminal, &color);
+}
+
+/**
+ * vte_terminal_set_color_foreground_rgba:
+ * @terminal: a #VteTerminal
+ * @foreground: the new foreground color
+ *
+ * Sets the foreground color used to draw normal text.
+ *
+ * Since: 0.28
+ */
+void
+vte_terminal_set_color_foreground_rgba(VteTerminal *terminal,
+				       const GdkRGBA *foreground)
+{
+	GdkColor color;
+
+	vte_terminal_set_color_foreground(terminal,
+                                          gdk_color_from_rgba(&color, foreground));
+}
+
+/**
+ * vte_terminal_set_color_background_rgba:
+ * @terminal: a #VteTerminal
+ * @background: the new background color
+ *
+ * Sets the background color for text which does not have a specific background
+ * color assigned.  Only has effect when no background image is set and when
+ * the terminal is not transparent.
+ *
+ * Since: 0.28
+ */
+void
+vte_terminal_set_color_background_rgba(VteTerminal *terminal,
+				       const GdkRGBA *background)
+{
+	GdkColor color;
+
+	vte_terminal_set_color_background(terminal,
+                                          gdk_color_from_rgba (&color, background));
+}
+
+/**
+ * vte_terminal_set_color_cursor_rgba:
+ * @terminal: a #VteTerminal
+ * @cursor_background: (allow-none): the new color to use for the text cursor, or %NULL
+ *
+ * Sets the background color for text which is under the cursor.  If %NULL, text
+ * under the cursor will be drawn with foreground and background colors
+ * reversed.
+ *
+ * Since: 0.28
+ */
+void
+vte_terminal_set_color_cursor_rgba(VteTerminal *terminal,
+				   const GdkRGBA *cursor_background)
+{
+        GdkColor color;
+
+	vte_terminal_set_color_cursor(terminal,
+                                      gdk_color_from_rgba(&color, cursor_background));
+}
+
+/**
+ * vte_terminal_set_color_highlight_rgba:
+ * @terminal: a #VteTerminal
+ * @highlight_background: (allow-none): the new color to use for highlighted text, or %NULL
+ *
+ * Sets the background color for text which is highlighted.  If %NULL,
+ * highlighted text (which is usually highlighted because it is selected) will
+ * be drawn with foreground and background colors reversed.
+ *
+ * Since: 0.28
+ */
+void
+vte_terminal_set_color_highlight_rgba(VteTerminal *terminal,
+				      const GdkRGBA *highlight_background)
+{
+	GdkColor color;
+
+	vte_terminal_set_color_highlight(terminal,
+                                         gdk_color_from_rgba(&color, highlight_background));
+}
+
+/**
+ * vte_terminal_set_colors_rgba:
+ * @terminal: a #VteTerminal
+ * @foreground: (allow-none): the new foreground color, or %NULL
+ * @background: (allow-none): the new background color, or %NULL
+ * @palette: (array length=palette_size zero-terminated=0) (element-type Gdk.RGBA): the color palette
+ * @palette_size: the number of entries in @palette
+ *
+ * The terminal widget uses a 28-color model comprised of the default foreground
+ * and background colors, the bold foreground color, the dim foreground
+ * color, an eight color palette, bold versions of the eight color palette,
+ * and a dim version of the the eight color palette.
+ *
+ * @palette_size must be either 0, 8, 16, or 24, or between 25 and 255 inclusive.
+ * If @foreground is %NULL and
+ * @palette_size is greater than 0, the new foreground color is taken from
+ * @palette[7].  If @background is %NULL and @palette_size is greater than 0,
+ * the new background color is taken from @palette[0].  If
+ * @palette_size is 8 or 16, the third (dim) and possibly the second (bold)
+ * 8-color palettes are extrapolated from the new background color and the items
+ * in @palette.
+ *
+ * Since: 0.28
+ */
+void
+vte_terminal_set_colors_rgba(VteTerminal *terminal,
+			     const GdkRGBA *foreground,
+			     const GdkRGBA *background,
+			     const GdkRGBA *palette,
+			     gsize palette_size)
+{
+	GdkColor fg, bg, *pal;
+	gsize i;
+
+	pal = g_new (GdkColor, palette_size);
+	for (i = 0; i < palette_size; ++i)
+                gdk_color_from_rgba(&pal[i], &palette[i]);
+
+	vte_terminal_set_colors(terminal,
+                                gdk_color_from_rgba(&fg, foreground),
+                                gdk_color_from_rgba(&bg, background),
+	                        pal, palette_size);
+
+	g_free (pal);
+}
+
+#endif /* GTK 3.0 */
+
 /**
  * vte_terminal_set_opacity:
  * @terminal: a #VteTerminal
@@ -3466,46 +3674,42 @@ vte_terminal_watch_child (VteTerminal *terminal,
         g_object_thaw_notify(object);
 }
 
-/*
- * _vte_terminal_get_user_shell:
+/**
+ * vte_get_user_shell:
  *
- * Uses getpwd() to determine the user's shell. If that fails, falls back
- * to using the SHELL environment variable. As last-ditch fallback, returns
- * "/bin/sh".
+ * Gets the user's shell, or %NULL. In the latter case, the
+ * system default (usually "/bin/sh") should be used.
  *
- * Returns: a newly allocated string containing the command to run the
- *   user's shell
+ * Returns: (tranfer full) (type filename): a newly allocated string with the
+ *   user's shell, or %NULL
+ *
+ * Since: 0.28
  */
-static char *
-_vte_terminal_get_user_shell (void)
+char *
+vte_get_user_shell (void)
 {
 	struct passwd *pwd;
-	char *command;
 
 	pwd = getpwuid(getuid());
-	if (pwd != NULL) {
-	        command = g_strdup (pwd->pw_shell);
-	        _vte_debug_print(VTE_DEBUG_MISC,
-				"Using user's shell (%s).\n",
-				command ? command : "(null)");
-	}
-	if (command == NULL) {
-		if (g_getenv ("SHELL")) {
-			command = g_strdup (g_getenv ("SHELL"));
-			_vte_debug_print(VTE_DEBUG_MISC,
-					 "Using $SHELL shell (%s).\n",
-					 command);
-		} else {
-			command = g_strdup ("/bin/sh");
-			_vte_debug_print(VTE_DEBUG_MISC,
-					 "Using default shell (%s).\n",
-					 command);
-		}
-	}
+        if (pwd && pwd->pw_shell)
+                return g_strdup (pwd->pw_shell);
 
-	g_assert (command != NULL);
+        return NULL;
+}
 
-	return command;
+static char *
+_vte_terminal_get_user_shell_with_fallback (void)
+{
+        char *command;
+        const gchar *env;
+
+        if ((command = vte_get_user_shell ()))
+                return command;
+
+        if ((env = g_getenv ("SHELL")))
+                return g_strdup (env);
+
+        return g_strdup ("/bin/sh");
 }
 
 /*
@@ -3529,7 +3733,7 @@ _vte_terminal_get_argv (const char *command,
 	char **argv2;
         char *shell = NULL;
 
-        argv2 = __vte_pty_get_argv(command ? command : (shell = _vte_terminal_get_user_shell()),
+        argv2 = __vte_pty_get_argv(command ? command : (shell = _vte_terminal_get_user_shell_with_fallback ()),
                                    argv,
                                    flags);
         g_free(shell);
@@ -6349,8 +6553,6 @@ vte_terminal_copy(VteTerminal *terminal, GdkAtom board)
 				"Assuming ownership of selection.\n");
 		if (!targets) {
 			GtkTargetList *list;
-			GList *l;
-			int i;
 
 			list = gtk_target_list_new (NULL, 0);
 			gtk_target_list_add_text_targets (list, 0);
@@ -8273,6 +8475,17 @@ vte_terminal_init(VteTerminal *terminal)
 #ifdef VTE_DEBUG
 	/* In debuggable mode, we always do this. */
 	/* gtk_widget_get_accessible(&terminal->widget); */
+#endif
+
+#if GTK_CHECK_VERSION (2, 99, 0)
+{
+        GtkStyleContext *context;
+
+        context = gtk_widget_get_style_context (&terminal->widget);
+        gtk_style_context_add_provider (context,
+                                        VTE_TERMINAL_GET_CLASS (terminal)->priv->style_provider,
+                                        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+}
 #endif
 }
 
@@ -11649,6 +11862,12 @@ vte_terminal_class_init(VteTerminalClass *klass)
 
 	/* Register some signals of our own. */
 
+#if GTK_CHECK_VERSION (2, 99, 0)
+#define OBSOLETE_SIGNAL(str)
+#else
+#define OBSOLETE_SIGNAL(str) str
+#endif
+
         /**
          * VteTerminal::eof:
          * @vteterminal: the object which received the signal
@@ -11657,7 +11876,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * is running in the terminal.  This signal is frequently (but not
          * always) emitted with a #VteTerminal::child-exited signal.
          */
-	klass->eof_signal =
+        OBSOLETE_SIGNAL (klass->eof_signal =)
                 g_signal_new(I_("eof"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11674,7 +11893,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * This signal is emitted when the terminal detects that a child started
          * using vte_terminal_fork_command() has exited.
          */
-	klass->child_exited_signal =
+        OBSOLETE_SIGNAL (klass->child_exited_signal =)
                 g_signal_new(I_("child-exited"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11690,7 +11909,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted when the terminal's %window_title field is modified.
          */
-	klass->window_title_changed_signal =
+        OBSOLETE_SIGNAL (klass->window_title_changed_signal =)
                 g_signal_new(I_("window-title-changed"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11706,7 +11925,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted when the terminal's %icon_title field is modified.
          */
-	klass->icon_title_changed_signal =
+        OBSOLETE_SIGNAL (klass->icon_title_changed_signal =)
                 g_signal_new(I_("icon-title-changed"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11724,7 +11943,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * as a result of receiving a control sequence which toggled between the
          * local and UTF-8 encodings, or at the parent application's request.
          */
-	klass->encoding_changed_signal =
+        OBSOLETE_SIGNAL (klass->encoding_changed_signal =)
                 g_signal_new(I_("encoding-changed"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11744,7 +11963,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * prepares to send it to the child process.  The signal is emitted even
          * when there is no child process.
          */
-	klass->commit_signal =
+        OBSOLETE_SIGNAL (klass->commit_signal =)
                 g_signal_new(I_("commit"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11761,7 +11980,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * Emitted whenever the terminal's emulation changes, only possible at
          * the parent application's request.
          */
-	klass->emulation_changed_signal =
+        OBSOLETE_SIGNAL (klass->emulation_changed_signal =)
                 g_signal_new(I_("emulation-changed"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11780,7 +11999,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * Emitted whenever selection of a new font causes the values of the
          * %char_width or %char_height fields to change.
          */
-	klass->char_size_changed_signal =
+        OBSOLETE_SIGNAL (klass->char_size_changed_signal =)
                 g_signal_new(I_("char-size-changed"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11796,7 +12015,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted whenever the contents of terminal's selection changes.
          */
-	klass->selection_changed_signal =
+        OBSOLETE_SIGNAL (klass->selection_changed_signal =)
                 g_signal_new (I_("selection-changed"),
 			      G_OBJECT_CLASS_TYPE(klass),
 			      G_SIGNAL_RUN_LAST,
@@ -11813,7 +12032,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * Emitted whenever the visible appearance of the terminal has changed.
          * Used primarily by #VteTerminalAccessible.
          */
-	klass->contents_changed_signal =
+        OBSOLETE_SIGNAL (klass->contents_changed_signal =)
                 g_signal_new(I_("contents-changed"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11830,7 +12049,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * Emitted whenever the cursor moves to a new character cell.  Used
          * primarily by #VteTerminalAccessible.
          */
-	klass->cursor_moved_signal =
+        OBSOLETE_SIGNAL (klass->cursor_moved_signal =)
                 g_signal_new(I_("cursor-moved"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11846,7 +12065,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted at the child application's request.
          */
-	klass->deiconify_window_signal =
+        OBSOLETE_SIGNAL (klass->deiconify_window_signal =)
                 g_signal_new(I_("deiconify-window"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11862,7 +12081,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted at the child application's request.
          */
-	klass->iconify_window_signal =
+        OBSOLETE_SIGNAL (klass->iconify_window_signal =)
                 g_signal_new(I_("iconify-window"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11878,7 +12097,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted at the child application's request.
          */
-	klass->raise_window_signal =
+        OBSOLETE_SIGNAL (klass->raise_window_signal =)
                 g_signal_new(I_("raise-window"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11894,7 +12113,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted at the child application's request.
          */
-	klass->lower_window_signal =
+        OBSOLETE_SIGNAL (klass->lower_window_signal =)
                 g_signal_new(I_("lower-window"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11910,7 +12129,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted at the child application's request.
          */
-	klass->refresh_window_signal =
+        OBSOLETE_SIGNAL (klass->refresh_window_signal =)
                 g_signal_new(I_("refresh-window"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11926,7 +12145,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted at the child application's request.
          */
-	klass->restore_window_signal =
+        OBSOLETE_SIGNAL (klass->restore_window_signal =)
                 g_signal_new(I_("restore-window"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11942,7 +12161,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted at the child application's request.
          */
-	klass->maximize_window_signal =
+        OBSOLETE_SIGNAL (klass->maximize_window_signal =)
                 g_signal_new(I_("maximize-window"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11960,7 +12179,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted at the child application's request.
          */
-	klass->resize_window_signal =
+        OBSOLETE_SIGNAL (klass->resize_window_signal =)
                 g_signal_new(I_("resize-window"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11978,7 +12197,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted at the child application's request.
          */
-	klass->move_window_signal =
+        OBSOLETE_SIGNAL (klass->move_window_signal =)
                 g_signal_new(I_("move-window"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -11995,7 +12214,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * Emitted whenever the contents of the status line are modified or
          * cleared.
          */
-	klass->status_line_changed_signal =
+        OBSOLETE_SIGNAL (klass->status_line_changed_signal =)
                 g_signal_new(I_("status-line-changed"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -12011,7 +12230,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted when the user hits the '+' key while holding the Control key.
          */
-	klass->increase_font_size_signal =
+        OBSOLETE_SIGNAL (klass->increase_font_size_signal =)
                 g_signal_new(I_("increase-font-size"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -12027,7 +12246,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          *
          * Emitted when the user hits the '-' key while holding the Control key.
          */
-	klass->decrease_font_size_signal =
+        OBSOLETE_SIGNAL (klass->decrease_font_size_signal =)
                 g_signal_new(I_("decrease-font-size"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -12045,7 +12264,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * its accessibility peer. May not be emitted under certain
          * circumstances.
          */
-	klass->text_modified_signal =
+        OBSOLETE_SIGNAL (klass->text_modified_signal =)
                 g_signal_new(I_("text-modified"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -12063,7 +12282,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * its accessibility peer. May not be emitted under certain
          * circumstances.
          */
-	klass->text_inserted_signal =
+        OBSOLETE_SIGNAL (klass->text_inserted_signal =)
                 g_signal_new(I_("text-inserted"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -12081,7 +12300,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * its accessibility peer. May not be emitted under certain
          * circumstances.
          */
-	klass->text_deleted_signal =
+        OBSOLETE_SIGNAL (klass->text_deleted_signal =)
                 g_signal_new(I_("text-deleted"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -12100,7 +12319,7 @@ vte_terminal_class_init(VteTerminalClass *klass)
          * its accessibility peer. May not be emitted under certain
          * circumstances.
          */
-	klass->text_scrolled_signal =
+       OBSOLETE_SIGNAL (klass->text_scrolled_signal =)
                 g_signal_new(I_("text-scrolled"),
 			     G_OBJECT_CLASS_TYPE(klass),
 			     G_SIGNAL_RUN_LAST,
@@ -12109,6 +12328,8 @@ vte_terminal_class_init(VteTerminalClass *klass)
 			     NULL,
                              g_cclosure_marshal_VOID__INT,
 			     G_TYPE_NONE, 1, G_TYPE_INT);
+
+#undef OBSOLETE_SIGNAL
 
         /**
          * VteTerminal::copy-clipboard:
@@ -12608,11 +12829,13 @@ vte_terminal_class_init(VteTerminalClass *klass)
                                      G_PARAM_READABLE |
                                      G_PARAM_STATIC_STRINGS));
 
+#if !GTK_CHECK_VERSION (2,99, 0)
         /* Now install the default style */
         gtk_rc_parse_string("style \"vte-default-style\" {\n"
                               "VteTerminal::inner-border = { 1, 1, 1, 1 }\n"
                             "}\n"
                             "class \"VteTerminal\" style : gtk \"vte-default-style\"\n");
+#endif
 
         /* Keybindings */
 	binding_set = gtk_binding_set_by_class(klass);
@@ -12623,6 +12846,17 @@ vte_terminal_class_init(VteTerminalClass *klass)
 	gtk_binding_entry_add_signal(binding_set, GDK_KEY (F20), 0, "copy-clipboard",0);
 
 	process_timer = g_timer_new ();
+
+#if GTK_CHECK_VERSION (2, 99, 0)
+        klass->priv = G_TYPE_CLASS_GET_PRIVATE (klass, VTE_TYPE_TERMINAL, VteTerminalClassPrivate);
+
+        klass->priv->style_provider = GTK_STYLE_PROVIDER (gtk_css_provider_new ());
+        gtk_css_provider_load_from_data (GTK_CSS_PROVIDER (klass->priv->style_provider),
+                                         "VteTerminal {\n"
+                                           "-VteTerminal-inner-border: 1;\n"
+                                         "}\n",
+                                         -1, NULL);
+#endif /* GTK 3.0 */
 }
 
 /**

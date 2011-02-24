@@ -1,4 +1,4 @@
-/* ANSI-C code produced by gperf version 3.0.4 */
+/* ANSI-C code produced by gperf version 3.0.3 */
 /* Command-line: gperf -m 100 vteseq-n.gperf  */
 /* Computed positions: -k'1,4,$' */
 
@@ -214,7 +214,7 @@ static const struct vteseq_n_pool_t vteseq_n_pool_contents =
 #define vteseq_n_pool ((const char *) &vteseq_n_pool_contents)
 #ifdef __GNUC__
 __inline
-#if defined __GNUC_STDC_INLINE__ || defined __GNUC_GNU_INLINE__
+#ifdef __GNUC_STDC_INLINE__
 __attribute__ ((__gnu_inline__))
 #endif
 #endif
