@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
 libvteN := $(shell sed -rn 's/^Package:[[:space:]]*(libvte[0-9]+)[[:space:]]*$$/\1/p' debian/control)
+libvte3N := $(shell sed -rn 's/^Package:[[:space:]]*(libvte-[0-9\.-]+)[[:space:]]*$$/\1/p' debian/control)
 udeb := $(libvteN)-udeb
 
 PY_VERSIONS = $(shell pyversions --requested debian/control)
@@ -10,14 +11,16 @@ DEB_MAKE_FLAVORS = main udeb gtk3 $(PY_VERSIONS)
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/utils.mk
 include /usr/share/cdbs/1/class/gnome.mk
+include /usr/share/cdbs/1/rules/autoreconf.mk
 include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
 include /usr/share/gnome-pkg-tools/1/rules/check-dist.mk
 include /usr/share/gnome-pkg-tools/1/rules/gnome-get-source.mk
 
 DEB_FIXPERMS_EXCLUDE += gnome-pty-helper
 DEB_DH_MAKESHLIBS_ARGS_$(libvteN) += -V '$(libvteN) (>= 1:0.24.0)' --add-udeb=$(udeb)
+DEB_DH_MAKESHLIBS_ARGS_$(libvte3N) += -V '$(libvte3N) (>= 1:0.27.90)'
 
-DEB_CONFIGURE_SCRIPT_ENV = PYTHON="/usr/bin/$(cdbs_make_curflavor)"
+DEB_CONFIGURE_EXTRA_FLAGS += PYTHON="/usr/bin/$(cdbs_make_curflavor)"
 
 DEB_CONFIGURE_EXTRA_FLAGS += \
 	--enable-glade-catalogue

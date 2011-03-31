@@ -48,9 +48,8 @@ check_PROGRAMS = dumpkeys$(EXEEXT) iso2022$(EXEEXT) reaper$(EXEEXT) \
 	vteconv$(EXEEXT) vtetc$(EXEEXT)
 TESTS = table$(EXEEXT) trie$(EXEEXT) $(TEST_SH)
 subdir = src
-DIST_COMMON = $(dist_gsettingsschema_DATA) $(header_HEADERS) \
-	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/vteversion.h.in
+DIST_COMMON = $(header_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/vteversion.h.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.in
@@ -82,8 +81,8 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
-	"$(DESTDIR)$(gsettingsschemadir)" "$(DESTDIR)$(girdir)" \
-	"$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(headerdir)"
+	"$(DESTDIR)$(girdir)" "$(DESTDIR)$(typelibdir)" \
+	"$(DESTDIR)$(headerdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libvte@VTE_LIBRARY_SUFFIX_U@_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -263,8 +262,7 @@ DIST_SOURCES = $(libvte@VTE_LIBRARY_SUFFIX_U@_la_SOURCES) \
 	$(table_SOURCES) $(trie_SOURCES) \
 	$(vte@VTE_LIBRARY_SUFFIX_U@_SOURCES) $(vteconv_SOURCES) \
 	$(vtetc_SOURCES) $(xticker_SOURCES)
-DATA = $(dist_gsettingsschema_DATA) $(nodist_gir_DATA) \
-	$(nodist_typelib_DATA)
+DATA = $(nodist_gir_DATA) $(nodist_typelib_DATA)
 HEADERS = $(header_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -272,7 +270,6 @@ am__tty_colors = \
 red=; grn=; lgn=; blu=; std=
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
-ACLOCAL_AMFLAGS = @ACLOCAL_AMFLAGS@
 ALL_LINGUAS = @ALL_LINGUAS@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
@@ -305,7 +302,6 @@ GLADE_CATALOGUE_DIR = @GLADE_CATALOGUE_DIR@
 GLADE_ICON_DIR = @GLADE_ICON_DIR@
 GLADE_MODULE_DIR = @GLADE_MODULE_DIR@
 GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_COMPILE_SCHEMAS = @GLIB_COMPILE_SCHEMAS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
 GLIB_MKENUMS = @GLIB_MKENUMS@
@@ -313,7 +309,6 @@ GLIB_PREFIX = @GLIB_PREFIX@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GREP = @GREP@
-GSETTINGS_DISABLE_SCHEMAS_COMPILE = @GSETTINGS_DISABLE_SCHEMAS_COMPILE@
 GTKDOC_CHECK = @GTKDOC_CHECK@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
@@ -374,8 +369,6 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
-PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
-PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
@@ -441,7 +434,6 @@ datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
-gsettingsschemadir = @gsettingsschemadir@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -578,7 +570,7 @@ libvte@VTE_LIBRARY_SUFFIX_U@_la_LIBADD = $(VTE_LIBS)
 libvte@VTE_LIBRARY_SUFFIX_U@_la_LDFLAGS = \
   $(VTE_LDFLAGS) \
 	-version-info $(LT_VERSION_INFO) \
-	-export-symbols-regex "^vte_terminal_.*|^vte_pty_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
+	-export-symbols-regex "^vte_terminal_.*|^vte_pty_.*|^vte_get_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
 	@LIBTOOL_EXPORT_OPTIONS@ @LIBTOOL_FLAGS@ \
 	$(AM_LDFLAGS)
 
@@ -732,13 +724,6 @@ dumpkeys_SOURCES = dumpkeys.c
 mev_SOURCES = mev.c
 ssfe_SOURCES = ssfe.c
 xticker_SOURCES = xticker.c
-
-# GSettings
-
-# Don't use the automatic rules since the generated .enums.xml isn't very nice
-# gsettings_ENUM_NAMESPACE = org.gnome.vte.v0
-# gsettings_ENUM_FILES = vte.h
-dist_gsettingsschema_DATA = org.gnome.vte.v0.enums.xml
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -1931,26 +1916,6 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-dist_gsettingsschemaDATA: $(dist_gsettingsschema_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(gsettingsschemadir)" || $(MKDIR_P) "$(DESTDIR)$(gsettingsschemadir)"
-	@list='$(dist_gsettingsschema_DATA)'; test -n "$(gsettingsschemadir)" || list=; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(gsettingsschemadir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(gsettingsschemadir)" || exit $$?; \
-	done
-
-uninstall-dist_gsettingsschemaDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(dist_gsettingsschema_DATA)'; test -n "$(gsettingsschemadir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(gsettingsschemadir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(gsettingsschemadir)" && rm -f $$files
 install-nodist_girDATA: $(nodist_gir_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(girdir)" || $(MKDIR_P) "$(DESTDIR)$(girdir)"
@@ -2196,7 +2161,7 @@ all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(DATA) \
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(gsettingsschemadir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(headerdir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(headerdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -2252,8 +2217,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_gsettingsschemaDATA \
-	install-headerHEADERS install-nodist_girDATA \
+install-data-am: install-headerHEADERS install-nodist_girDATA \
 	install-nodist_typelibDATA
 
 install-dvi: install-dvi-am
@@ -2300,9 +2264,9 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-dist_gsettingsschemaDATA \
-	uninstall-headerHEADERS uninstall-libLTLIBRARIES \
-	uninstall-nodist_girDATA uninstall-nodist_typelibDATA
+uninstall-am: uninstall-binPROGRAMS uninstall-headerHEADERS \
+	uninstall-libLTLIBRARIES uninstall-nodist_girDATA \
+	uninstall-nodist_typelibDATA
 
 .MAKE: all check check-am install install-am install-strip
 
@@ -2312,17 +2276,16 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_gsettingsschemaDATA \
 	distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-binPROGRAMS \
-	install-data install-data-am install-dist_gsettingsschemaDATA \
-	install-dvi install-dvi-am install-exec install-exec-am \
-	install-headerHEADERS install-html install-html-am \
-	install-info install-info-am install-libLTLIBRARIES \
-	install-man install-nodist_girDATA install-nodist_typelibDATA \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-binPROGRAMS uninstall-dist_gsettingsschemaDATA \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-headerHEADERS \
+	install-html install-html-am install-info install-info-am \
+	install-libLTLIBRARIES install-man install-nodist_girDATA \
+	install-nodist_typelibDATA install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-binPROGRAMS \
 	uninstall-headerHEADERS uninstall-libLTLIBRARIES \
 	uninstall-nodist_girDATA uninstall-nodist_typelibDATA
 

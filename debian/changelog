@@ -1,3 +1,18 @@
+vte (1:0.27.90-1) experimental; urgency=low
+
+  * Make the -dev package depend on the gir package.
+  * Force the upgrade of libvte-common for the new termcap definitions.
+  * New upstream pre-release.
+  * Use dh-autoreconf; drop 90_autoreconf.patch.
+  * Pass PYTHON= as configure argument instead of environment, so that 
+    it doesn’t get lost when dh-autoreconf goes mad.
+  * Bump shlibs version.
+  * There’s no longer gsettings stuff to isntall.
+  * Update symbols file.
+  * Make the -dev packages recommend the -doc package.
+
+ -- Josselin Mouette <joss@debian.org>  Thu, 31 Mar 2011 10:34:47 +0530
+
 vte (1:0.27.5-1) experimental; urgency=low
 
   * debian/control.in:

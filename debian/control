@@ -13,6 +13,7 @@ XS-Python-Version: >= 2.3
 Build-Depends: cdbs (>= 0.4.90),
                debhelper (>= 8),
                gnome-pkg-tools (>= 0.10),
+               dh-autoreconf,
                libglib2.0-dev (>= 2.26.0),
                libcairo2-dev,
                libx11-dev,
@@ -37,7 +38,7 @@ Architecture: any
 Section: libs
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libvte-common
+         libvte-common (>= ${source:Version})
 Description: Terminal emulator widget for GTK+ 2.0 - runtime files
  The VTE library inserts terminal capability strings into a trie, and then
  uses it to determine if data received from a pseudo-terminal is a control
@@ -74,6 +75,7 @@ Depends: ${misc:Depends},
          libpango1.0-dev (>= 1.22.0),
          libglib2.0-dev (>= 2.26.0),
          libvte-common
+Recommends: libvte-doc
 Provides: python-vte-dev
 Description: Terminal emulator widget for GTK+ 2.0 - development files
  The VTE library inserts terminal capability strings into a trie, and then
@@ -89,7 +91,7 @@ Architecture: any
 Section: libs
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libvte-common
+         libvte-common (>= ${source:Version})
 Description: Terminal emulator widget for GTK+ 3.0 - runtime files
  The VTE library inserts terminal capability strings into a trie, and then
  uses it to determine if data received from a pseudo-terminal is a control
@@ -114,12 +116,14 @@ Architecture: any
 Section: libdevel
 Depends: ${misc:Depends},
          libvte-2.90-9 (= ${binary:Version}),
+         gir1.2-vte-2.90 (= ${binary:Version}),
          libcairo2-dev,
          libx11-dev,
          libgtk-3-dev (>= 3.0.0),
          libpango1.0-dev (>= 1.22.0),
          libglib2.0-dev (>= 2.22.0),
          libvte-common
+Recommends: libvte-doc
 Description: Terminal emulator widget for GTK+ 3.0 - development files
  The VTE library inserts terminal capability strings into a trie, and then
  uses it to determine if data received from a pseudo-terminal is a control

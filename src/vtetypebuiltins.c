@@ -3,7 +3,7 @@
 
 #include "vte.h"
 
-/* enumerations from "vte.h" */
+/* enumerations from "../../../src/vte.h" */
 GType
 vte_terminal_erase_binding_get_type (void)
 {
@@ -88,7 +88,7 @@ vte_terminal_write_flags_get_type (void)
   return g_define_type_id__volatile;
 }
 
-/* enumerations from "vtepty.h" */
+/* enumerations from "../../../src/vtepty.h" */
 GType
 vte_pty_flags_get_type (void)
 {
@@ -133,7 +133,7 @@ vte_pty_error_get_type (void)
   return g_define_type_id__volatile;
 }
 
-/* enumerations from "vtedeprecated.h" */
+/* enumerations from "../../../src/vtedeprecated.h" */
 GType
 vte_terminal_anti_alias_get_type (void)
 {

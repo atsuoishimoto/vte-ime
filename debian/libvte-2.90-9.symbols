@@ -132,3 +132,11 @@ libvte2_90.so.9 libvte-2.90-9 #MINVER#
  vte_terminal_watch_child@Base 1:0.27.2
  vte_terminal_write_contents@Base 1:0.27.2
  vte_terminal_write_flags_get_type@Base 1:0.27.2
+ vte_get_user_shell@Base 1:0.27.90
+ vte_terminal_set_color_background_rgba@Base 1:0.27.90
+ vte_terminal_set_color_bold_rgba@Base 1:0.27.90
+ vte_terminal_set_color_cursor_rgba@Base 1:0.27.90
+ vte_terminal_set_color_dim_rgba@Base 1:0.27.90
+ vte_terminal_set_color_foreground_rgba@Base 1:0.27.90
+ vte_terminal_set_color_highlight_rgba@Base 1:0.27.90
+ vte_terminal_set_colors_rgba@Base 1:0.27.90
