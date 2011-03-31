@@ -105,7 +105,7 @@ libvte@VTE_LIBRARY_SUFFIX_U@_la_LIBADD = $(VTE_LIBS)
 libvte@VTE_LIBRARY_SUFFIX_U@_la_LDFLAGS = \
   $(VTE_LDFLAGS) \
 	-version-info $(LT_VERSION_INFO) \
-	-export-symbols-regex "^vte_terminal_.*|^vte_pty_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
+	-export-symbols-regex "^vte_terminal_.*|^vte_pty_.*|^vte_get_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
 	@LIBTOOL_EXPORT_OPTIONS@ @LIBTOOL_FLAGS@ \
 	$(AM_LDFLAGS)
 
@@ -326,14 +326,6 @@ dumpkeys_SOURCES = dumpkeys.c
 mev_SOURCES = mev.c
 ssfe_SOURCES = ssfe.c
 xticker_SOURCES = xticker.c
-
-# GSettings
-
-# Don't use the automatic rules since the generated .enums.xml isn't very nice
-# gsettings_ENUM_NAMESPACE = org.gnome.vte.v0
-# gsettings_ENUM_FILES = vte.h
-
-dist_gsettingsschema_DATA = org.gnome.vte.v0.enums.xml
 
 #
 

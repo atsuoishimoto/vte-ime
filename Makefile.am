@@ -1,3 +1,5 @@
+ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+
 SUBDIRS = src termcaps po doc perf
 
 if HAVE_GTK_2
