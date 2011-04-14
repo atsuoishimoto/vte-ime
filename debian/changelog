@@ -1,3 +1,22 @@
+vte (1:0.28.0-1) experimental; urgency=low
+
+  * Team upload.
+  * New upstream release.
+  * Add build-depends to libgladeui-dev, the GTK3 version now requires it.
+  * Move autoreconf.mk before debhelper.mk to avoid debhelper.log
+    leftovers.
+  * Drop unneeded Sections fields duplicating the default value.
+  * Add lintian overrides for package-name-doesnt-match-sonames and
+    setgid-binary.
+
+ -- Raphaël Hertzog <hertzog@debian.org>  Thu, 14 Apr 2011 20:27:53 +0000
+
+vte (1:0.27.90-2) experimental; urgency=low
+
+  * Drop unneeded dependency on libvte-common from gir1.2-vte-2.90.
+
+ -- Jordi Mallach <jordi@debian.org>  Wed, 06 Apr 2011 11:31:01 +0200
+
 vte (1:0.27.90-1) experimental; urgency=low
 
   * Make the -dev package depend on the gir package.

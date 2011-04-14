@@ -8,10 +8,10 @@ PY_VERSIONS = $(shell pyversions --requested debian/control)
 DEB_BUILDDIR = debian/build
 DEB_MAKE_FLAVORS = main udeb gtk3 $(PY_VERSIONS)
 
+include /usr/share/cdbs/1/rules/autoreconf.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/utils.mk
 include /usr/share/cdbs/1/class/gnome.mk
-include /usr/share/cdbs/1/rules/autoreconf.mk
 include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
 include /usr/share/gnome-pkg-tools/1/rules/check-dist.mk
 include /usr/share/gnome-pkg-tools/1/rules/gnome-get-source.mk
