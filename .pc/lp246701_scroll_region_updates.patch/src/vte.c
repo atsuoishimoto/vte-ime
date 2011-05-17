@@ -8326,7 +8326,6 @@ static void
 vte_terminal_init(VteTerminal *terminal)
 {
 	VteTerminalPrivate *pvt;
-	char *term_var;
 
 	_vte_debug_print(VTE_DEBUG_LIFECYCLE, "vte_terminal_init()\n");
 
@@ -8410,11 +8409,6 @@ vte_terminal_init(VteTerminal *terminal)
 	pvt->pty_output_source = 0;
 	pvt->pty_pid = -1;
         pvt->child_exit_status = 0;
-
-        /* Make sure we start with *something* set for TERM */
-        term_var = g_getenv("TERM");
-        if (term_var == NULL)
-                g_setenv("TERM", VTE_DEFAULT_EMULATION, TRUE);
 
 	/* Scrolling options. */
 	pvt->scroll_on_keystroke = TRUE;

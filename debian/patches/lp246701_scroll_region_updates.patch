@@ -1,8 +1,8 @@
-Index: vte-0.26.0/src/vte.c
+Index: vte-0.28.0/src/vte.c
 ===================================================================
---- vte-0.26.0.orig/src/vte.c	2010-11-30 23:04:53.000000000 -0800
-+++ vte-0.26.0/src/vte.c	2010-12-07 20:05:07.865548000 -0800
-@@ -3862,6 +3862,7 @@ vte_terminal_process_incoming(VteTermina
+--- vte-0.28.0.orig/src/vte.c	2011-05-17 12:18:16.676757671 +0200
++++ vte-0.28.0/src/vte.c	2011-05-17 12:18:22.586757675 +0200
+@@ -4057,6 +4057,7 @@
  	long wcount, start, delta;
  	gboolean leftovers, modified, bottom, again;
  	gboolean invalidated_text;
@@ -10,7 +10,7 @@ Index: vte-0.26.0/src/vte.c
  	GArray *unichars;
  	struct _vte_incoming_chunk *chunk, *next_chunk, *achunk = NULL;
  
-@@ -3881,6 +3882,10 @@ vte_terminal_process_incoming(VteTermina
+@@ -4076,6 +4077,10 @@
  	cursor = screen->cursor_current;
  	cursor_visible = terminal->pvt->cursor_visible;
  
@@ -21,7 +21,7 @@ Index: vte-0.26.0/src/vte.c
  	/* We should only be called when there's data to process. */
  	g_assert(terminal->pvt->incoming ||
  		 (terminal->pvt->pending->len > 0));
-@@ -3979,6 +3984,8 @@ skip_chunk:
+@@ -4174,6 +4179,8 @@
  		 * points to the first character which isn't part of this
  		 * sequence. */
  		if ((match != NULL) && (match[0] != '\0')) {
@@ -30,7 +30,7 @@ Index: vte-0.26.0/src/vte.c
  			/* Call the right sequence handler for the requested
  			 * behavior. */
  			_vte_terminal_handle_sequence(terminal,
-@@ -3989,12 +3996,20 @@ skip_chunk:
+@@ -4184,12 +4191,20 @@
  			start = (next - wbuf);
  			modified = TRUE;
  
@@ -56,7 +56,7 @@ Index: vte-0.26.0/src/vte.c
  				/* Clip off any part of the box which isn't already on-screen. */
  				bbox_topleft.x = MAX(bbox_topleft.x, 0);
  				bbox_topleft.y = MAX(bbox_topleft.y, delta);
-@@ -4014,6 +4029,8 @@ skip_chunk:
+@@ -4209,6 +4224,8 @@
  				bbox_bottomright.x = bbox_bottomright.y = -G_MAXINT;
  				bbox_topleft.x = bbox_topleft.y = G_MAXINT;
  			}

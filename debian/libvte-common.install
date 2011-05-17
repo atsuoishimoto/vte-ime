@@ -1,3 +1,4 @@
 usr/share/locale
-usr/share/vte/termcap-*
 usr/share/glade3
+usr/share/vte/termcap-0.0
+usr/share/vte/termcap-2.90

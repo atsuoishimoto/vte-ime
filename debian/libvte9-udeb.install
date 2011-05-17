@@ -1,2 +1,2 @@
 usr/lib/libvte.so.*
-usr/share/vte/termcap-0.0/xterm
+usr/share/vte/termcap-*

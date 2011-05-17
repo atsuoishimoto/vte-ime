@@ -4,4 +4,3 @@ usr/lib/pkgconfig/pyvte.pc
 usr/lib/libvte.a
 usr/lib/libvte.so
 usr/share/pygtk/2.0/defs
-usr/share/gir-1.0/Vte-0.0.gir

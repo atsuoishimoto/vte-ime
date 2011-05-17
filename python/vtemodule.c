@@ -23,7 +23,6 @@
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
 #include "../src/vte.h"
-#include "../src/reaper.h"
 
 extern void pyvte_register_classes(PyObject * d);
 extern void pyvte_add_constants(PyObject *module, const gchar *strip_prefix);

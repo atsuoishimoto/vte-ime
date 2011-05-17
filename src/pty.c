@@ -192,7 +192,6 @@ typedef struct {
 		const char *name;
 		int fd;
 	} tty;
-	int keep_fd;
 } VtePtyChildSetupData;
 
 /**
@@ -333,20 +332,6 @@ vte_pty_child_setup (VtePty *pty)
 		close(fd);
 	}
 
-        if (data->keep_fd > 0) {
-                int i;
-                /* Close most descriptors. */
-                for (i = 0; i < sysconf(_SC_OPEN_MAX); i++) {
-                        if (i != data->keep_fd &&
-                            i != fd && 
-                            i != STDOUT_FILENO && 
-                            i != STDIN_FILENO && 
-                            i != STDERR_FILENO) {
-                                close(i);
-                         }
-                }
-        }
-
 	/* Reset our signals -- our parent may have done any number of
 	 * weird things to them. */
 	_vte_pty_reset_signal_handlers();
@@ -455,23 +440,6 @@ __vte_pty_merge_environ (char **envp, const char *term_value)
 	return (gchar **) g_ptr_array_free (array, FALSE);
 }
 
-static int
-_vte_pty_keep_fd(char **env_add)
-{
-        int i;
-        if (env_add == NULL)
-                return -1;
-
-        const gchar *needle = "VTE_PTY_KEEP_FD=";
-        for (i = 0; env_add[i] != NULL; i++) {
-                gchar *s = strstr(env_add[i], needle);
-                if (s != NULL)
-                        return atoi(&s[strlen(needle)]);
-        }
-
-        return -1;
-}
-
 /*
  * __vte_pty_get_pty_flags:
  * @lastlog: %TRUE if the session should be logged to the lastlog
@@ -554,10 +522,6 @@ __vte_pty_spawn (VtePty *pty,
 
         /* add the given environment to the childs */
         envp2 = __vte_pty_merge_environ (envv, pty->priv->term);
-
-        pty->priv->child_setup_data.keep_fd = _vte_pty_keep_fd(envp2);
-        if (pty->priv->child_setup_data.keep_fd > 0)
-                spawn_flags |= G_SPAWN_LEAVE_DESCRIPTORS_OPEN;
 
         _VTE_DEBUG_IF (VTE_DEBUG_MISC) {
                 g_printerr ("Spawing command:\n");
@@ -1762,25 +1726,22 @@ vte_pty_error_quark(void)
  *
  * Allocates a new pseudo-terminal.
  *
- * You can later use fork() or the g_spawn_async() familty of functions
+ * You can later use fork() or the g_spawn_async() family of functions
  * to start a process on the PTY.
  *
  * If using fork(), you MUST call vte_pty_child_setup() in the child.
  *
  * If using g_spawn_async() and friends, you MUST either use
- * vte_pty_child_setup () directly as the child setup function, or call
+ * vte_pty_child_setup() directly as the child setup function, or call
  * vte_pty_child_setup() from your own child setup function supplied.
- *
  * Also, you MUST pass the %G_SPAWN_DO_NOT_REAP_CHILD flag.
  *
- * When using the GNOME PTY Helper,
+ * If GNOME PTY Helper is available and
  * unless some of the %VTE_PTY_NO_LASTLOG, %VTE_PTY_NO_UTMP or
  * %VTE_PTY_NO_WTMP flags are passed in @flags, the
  * session is logged in the corresponding lastlog, utmp or wtmp
- * system files.
- *
- * When passing %VTE_PTY_NO_HELPER in @flags, the
- * GNOME PTY Helper bypassed entirely.
+ * system files.  When passing %VTE_PTY_NO_HELPER in @flags, the
+ * GNOME PTY Helper is bypassed entirely.
  *
  * When passing %VTE_PTY_NO_FALLBACK in @flags,
  * and opening a PTY using the PTY helper fails, there will
