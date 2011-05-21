@@ -1,3 +1,11 @@
+vte (1:0.28.0-1ubuntu2) oneiric; urgency=low
+
+  * Use DEB_DH_INSTALL_ARGS_$(udeb) rather than
+    DEB_DH_INSTALL_SOURCEDIR_$(udeb), so that we actually use the udeb build
+    pass again.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Sat, 21 May 2011 23:14:42 +0100
+
 vte (1:0.28.0-1ubuntu1) oneiric; urgency=low
 
   * Drop gir1.2-vte-0.0. We just have two reverse dependencies which will be
