@@ -6,7 +6,8 @@
 Source: vte
 Section: libs
 Priority: optional
-Maintainer: Guilherme de S. Pastore <gpastore@debian.org>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Guilherme de S. Pastore <gpastore@debian.org>
 Uploaders: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>, Emilio Pozuelo Monfort <pochu@debian.org>, Jordi Mallach <jordi@debian.org>, Josselin Mouette <joss@debian.org>, Sebastian Dröge <slomo@debian.org>
 Standards-Version: 3.8.4
 XS-Python-Version: >= 2.3

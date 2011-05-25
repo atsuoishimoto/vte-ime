@@ -192,7 +192,6 @@ typedef struct {
 		const char *name;
 		int fd;
 	} tty;
-	int keep_fd;
 } VtePtyChildSetupData;
 
 /**
@@ -333,20 +332,6 @@ vte_pty_child_setup (VtePty *pty)
 		close(fd);
 	}
 
-        if (data->keep_fd > 0) {
-                int i;
-                /* Close most descriptors. */
-                for (i = 0; i < sysconf(_SC_OPEN_MAX); i++) {
-                        if (i != data->keep_fd &&
-                            i != fd && 
-                            i != STDOUT_FILENO && 
-                            i != STDIN_FILENO && 
-                            i != STDERR_FILENO) {
-                                close(i);
-                         }
-                }
-        }
-
 	/* Reset our signals -- our parent may have done any number of
 	 * weird things to them. */
 	_vte_pty_reset_signal_handlers();
@@ -455,23 +440,6 @@ __vte_pty_merge_environ (char **envp, const char *term_value)
 	return (gchar **) g_ptr_array_free (array, FALSE);
 }
 
-static int
-_vte_pty_keep_fd(char **env_add)
-{
-        int i;
-        if (env_add == NULL)
-                return -1;
-
-        const gchar *needle = "VTE_PTY_KEEP_FD=";
-        for (i = 0; env_add[i] != NULL; i++) {
-                gchar *s = strstr(env_add[i], needle);
-                if (s != NULL)
-                        return atoi(&s[strlen(needle)]);
-        }
-
-        return -1;
-}
-
 /*
  * __vte_pty_get_pty_flags:
  * @lastlog: %TRUE if the session should be logged to the lastlog
@@ -554,10 +522,6 @@ __vte_pty_spawn (VtePty *pty,
 
         /* add the given environment to the childs */
         envp2 = __vte_pty_merge_environ (envv, pty->priv->term);
-
-        pty->priv->child_setup_data.keep_fd = _vte_pty_keep_fd(envp2);
-        if (pty->priv->child_setup_data.keep_fd > 0)
-                spawn_flags |= G_SPAWN_LEAVE_DESCRIPTORS_OPEN;
 
         _VTE_DEBUG_IF (VTE_DEBUG_MISC) {
                 g_printerr ("Spawing command:\n");
