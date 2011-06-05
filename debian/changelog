@@ -1,3 +1,15 @@
+vte (1:0.28.0-2) experimental; urgency=low
+
+  * Fix long description, thanks Teemu Ikonen. Closes: #623219.
+  * Drop useless libvte-dev dependency on python-vte. Closes: #549015.
+  * libvte-common Breaks libvte9 < 1:0.28. Closes: #616394, #611826.
+  * python-vte Breaks python-apt << 0.8.0~exp2. Closes: #621483.
+  * Fix udeb sourcedir, thanks Colin Watson. Closes: #627555.
+  * 01_scroll_notebook.patch: new patch. Allow to switch tabs with 
+    Alt+wheel with the latest gtk+3.0.
+
+ -- Josselin Mouette <joss@debian.org>  Sun, 05 Jun 2011 02:06:40 +0200
+
 vte (1:0.28.0-1) experimental; urgency=low
 
   * Team upload.
