@@ -25,6 +25,7 @@ G_BEGIN_DECLS
 #define g_marshal_value_peek_boxed(v)    g_value_get_boxed (v)
 #define g_marshal_value_peek_pointer(v)  g_value_get_pointer (v)
 #define g_marshal_value_peek_object(v)   g_value_get_object (v)
+#define g_marshal_value_peek_variant(v)  g_value_get_variant (v)
 #else /* !G_ENABLE_DEBUG */
 /* WARNING: This code accesses GValues directly, which is UNSUPPORTED API.
  *          Do not access GValues directly in your code. Instead, use the
@@ -48,10 +49,11 @@ G_BEGIN_DECLS
 #define g_marshal_value_peek_boxed(v)    (v)->data[0].v_pointer
 #define g_marshal_value_peek_pointer(v)  (v)->data[0].v_pointer
 #define g_marshal_value_peek_object(v)   (v)->data[0].v_pointer
+#define g_marshal_value_peek_variant(v)  (v)->data[0].v_pointer
 #endif /* !G_ENABLE_DEBUG */
 
 
-/* VOID:INT,INT (marshal.list:1) */
+/* VOID:INT,INT (../../../src/marshal.list:1) */
 G_GNUC_INTERNAL void _vte_marshal_VOID__INT_INT (GClosure     *closure,
                                                  GValue       *return_value,
                                                  guint         n_param_values,
@@ -94,7 +96,7 @@ _vte_marshal_VOID__INT_INT (GClosure     *closure,
             data2);
 }
 
-/* VOID:OBJECT,OBJECT (marshal.list:2) */
+/* VOID:OBJECT,OBJECT (../../../src/marshal.list:2) */
 G_GNUC_INTERNAL void _vte_marshal_VOID__OBJECT_OBJECT (GClosure     *closure,
                                                        GValue       *return_value,
                                                        guint         n_param_values,
@@ -137,7 +139,7 @@ _vte_marshal_VOID__OBJECT_OBJECT (GClosure     *closure,
             data2);
 }
 
-/* VOID:STRING,UINT (marshal.list:3) */
+/* VOID:STRING,UINT (../../../src/marshal.list:3) */
 G_GNUC_INTERNAL void _vte_marshal_VOID__STRING_UINT (GClosure     *closure,
                                                      GValue       *return_value,
                                                      guint         n_param_values,
@@ -180,7 +182,7 @@ _vte_marshal_VOID__STRING_UINT (GClosure     *closure,
             data2);
 }
 
-/* VOID:UINT,UINT (marshal.list:4) */
+/* VOID:UINT,UINT (../../../src/marshal.list:4) */
 G_GNUC_INTERNAL void _vte_marshal_VOID__UINT_UINT (GClosure     *closure,
                                                    GValue       *return_value,
                                                    guint         n_param_values,
