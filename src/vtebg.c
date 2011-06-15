@@ -24,6 +24,7 @@
 #include "debug.h"
 #include "marshal.h"
 #include "vtebg.h"
+#include "vte-gtk-compat.h"
 
 #ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
@@ -87,7 +88,6 @@ static cairo_surface_t *
 vte_bg_root_surface(VteBg *bg)
 {
         VteBgPrivate *pvt = bg->pvt;
-	GdkPixmap *pixmap;
 	GdkAtom prop_type;
 	int prop_size;
 	Window root;
@@ -98,7 +98,6 @@ vte_bg_root_surface(VteBg *bg)
 	Display *display;
 	Screen *screen;
 
-	pixmap = NULL;
 	pixmaps = NULL;
 	gdk_error_trap_push();
 	if (!_vte_property_get_pixmaps(pvt->native.window, pvt->native.atom,
@@ -130,7 +129,7 @@ vte_bg_root_surface(VteBg *bg)
 	g_free(pixmaps);
  out:
 	_vte_bg_display_sync(bg);
-	gdk_error_trap_pop();
+	gdk_error_trap_pop_ignored ();
 
 	return surface;
 }
@@ -241,8 +240,13 @@ vte_bg_get_for_screen(GdkScreen *screen)
 
 		window = gdk_screen_get_root_window(screen);
                 pvt->native.window = window;
+#if GTK_CHECK_VERSION (2, 91, 6)
+                pvt->native.native_window = GDK_WINDOW_XID (window);
+                pvt->native.display = gdk_window_get_display(window);
+#else
                 pvt->native.native_window = gdk_x11_drawable_get_xid(window);
                 pvt->native.display = gdk_drawable_get_display(GDK_DRAWABLE(window));
+#endif
                 pvt->native.native_atom = gdk_x11_get_xatom_by_name_for_display(pvt->native.display, "_XROOTPMAP_ID");
                 pvt->native.atom = gdk_x11_xatom_to_atom_for_display(pvt->native.display, pvt->native.native_atom);
 		pvt->root_surface = vte_bg_root_surface(bg);

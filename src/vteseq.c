@@ -532,9 +532,10 @@ vte_sequence_handler_offset(VteTerminal *terminal,
 
 /* Call another function a given number of times, or once. */
 static void
-vte_sequence_handler_multiple(VteTerminal *terminal,
-			      GValueArray *params,
-			      VteTerminalSequenceHandler handler)
+vte_sequence_handler_multiple_limited(VteTerminal *terminal,
+                                      GValueArray *params,
+                                      VteTerminalSequenceHandler handler,
+                                      glong max)
 {
 	long val = 1;
 	int i;
@@ -544,13 +545,29 @@ vte_sequence_handler_multiple(VteTerminal *terminal,
 		value = g_value_array_get_nth(params, 0);
 		if (G_VALUE_HOLDS_LONG(value)) {
 			val = g_value_get_long(value);
-			val = MAX(val, 1);	/* FIXME: vttest. */
+			val = CLAMP(val, 1, max);	/* FIXME: vttest. */
 		}
 	}
 	for (i = 0; i < val; i++)
 		handler (terminal, NULL);
 }
 
+static void
+vte_sequence_handler_multiple(VteTerminal *terminal,
+                              GValueArray *params,
+                              VteTerminalSequenceHandler handler)
+{
+        vte_sequence_handler_multiple_limited(terminal, params, handler, G_MAXLONG);
+}
+
+static void
+vte_sequence_handler_multiple_r(VteTerminal *terminal,
+                                GValueArray *params,
+                                VteTerminalSequenceHandler handler)
+{
+        vte_sequence_handler_multiple_limited(terminal, params, handler,
+                                              terminal->column_count - terminal->pvt->screen->cursor_current.col);
+}
 
 /* Manipulate certain terminal attributes. */
 static void
@@ -835,8 +852,8 @@ vte_sequence_handler_decset_internal(VteTerminal *terminal,
 			_vte_terminal_home_cursor (terminal);
 		}
 		/* Reset scrollbars and repaint everything. */
-		terminal->adjustment->value =
-			terminal->pvt->screen->scroll_delta;
+		gtk_adjustment_set_value(terminal->adjustment,
+					 terminal->pvt->screen->scroll_delta);
 		vte_terminal_set_scrollback_lines(terminal,
 				terminal->pvt->scrollback_lines);
 		_vte_terminal_queue_contents_changed(terminal);
@@ -975,18 +992,13 @@ vte_sequence_handler_bt (VteTerminal *terminal, GValueArray *params)
 
 	if (terminal->pvt->tabstops != NULL) {
 		/* Find the next tabstop. */
-		while (newcol >= 0) {
+		while (newcol > 0) {
+			newcol--;
 			if (_vte_terminal_get_tabstop(terminal,
 						     newcol % terminal->column_count)) {
 				break;
 			}
-			newcol--;
 		}
-	}
-
-	/* If we have no tab stops, stop at the first column. */
-	if (newcol <= 0) {
-		newcol = 0;
 	}
 
 	/* Warp the cursor. */
@@ -1200,6 +1212,8 @@ vte_sequence_handler_cs (VteTerminal *terminal, GValueArray *params)
 	GValue *value;
 	VteScreen *screen;
 
+	_vte_terminal_home_cursor (terminal);
+
 	/* We require two parameters.  Anything less is a reset. */
 	screen = terminal->pvt->screen;
 	if ((params == NULL) || (params->n_values < 2)) {
@@ -1232,7 +1246,6 @@ vte_sequence_handler_cs (VteTerminal *terminal, GValueArray *params)
 	    screen->scrolling_region.end == rows - 1) {
 		screen->scrolling_restricted = FALSE;
 	}
-	_vte_terminal_home_cursor (terminal);
 }
 
 /* Restrict scrolling and updates to a subset of the visible lines, because
@@ -1558,7 +1571,7 @@ vte_sequence_handler_horizontal_and_vertical_position (VteTerminal *terminal, GV
 static void
 vte_sequence_handler_ic (VteTerminal *terminal, GValueArray *params)
 {
-	struct vte_cursor_position save;
+	VteVisualPosition save;
 	VteScreen *screen;
 
 	screen = terminal->pvt->screen;
@@ -1574,7 +1587,7 @@ vte_sequence_handler_ic (VteTerminal *terminal, GValueArray *params)
 static void
 vte_sequence_handler_IC (VteTerminal *terminal, GValueArray *params)
 {
-	vte_sequence_handler_multiple(terminal, params, vte_sequence_handler_ic);
+	vte_sequence_handler_multiple_r(terminal, params, vte_sequence_handler_ic);
 }
 
 /* Begin insert mode. */
@@ -2082,7 +2095,6 @@ vte_sequence_handler_ta (VteTerminal *terminal, GValueArray *params)
 			if (!found) {
 				VteCell *cell = _vte_row_data_get_writable (rowdata, col);
 				VteCell tab = *cell;
-				tab.attr.invisible = 1; /* FIXME: bug 499944 */
 				tab.attr.columns = newcol - col;
 				tab.c = '\t';
 				/* Check if it fits in columns */
@@ -2326,27 +2338,26 @@ vte_sequence_handler_character_attributes (VteTerminal *terminal, GValueArray *p
 			break;
 		case 38:
 		{
-			GValue *value1;
-			long param1;
 			/* The format looks like: ^[[38;5;COLORNUMBERm,
 			   so look for COLORNUMBER here. */
 			if ((i + 2) < params->n_values){
-				value1 = g_value_array_get_nth(params, i + 2);
-				if (!G_VALUE_HOLDS_LONG(value1)) {
+				GValue *value1, *value2;
+				long param1, param2;
+				value1 = g_value_array_get_nth(params, i + 1);
+				value2 = g_value_array_get_nth(params, i + 2);
+				if (G_UNLIKELY (!(G_VALUE_HOLDS_LONG(value1) && G_VALUE_HOLDS_LONG(value2))))
 					break;
-				}
 				param1 = g_value_get_long(value1);
-				terminal->pvt->screen->defaults.attr.fore = param1;
+				param2 = g_value_get_long(value2);
+				if (G_LIKELY (param1 == 5 && param2 >= 0 && param2 < 256))
+					terminal->pvt->screen->defaults.attr.fore = param2;
 				i += 2;
 			}
 			break;
 		}
 		case 39:
-			/* default foreground, no underscore */
+			/* default foreground */
 			terminal->pvt->screen->defaults.attr.fore = VTE_DEF_FG;
-			/* By ECMA 48, this underline off has no business
-			   being here, but the Linux console specifies it. */
-			terminal->pvt->screen->defaults.attr.underline = 0;
 			break;
 		case 40:
 		case 41:
@@ -2360,17 +2371,19 @@ vte_sequence_handler_character_attributes (VteTerminal *terminal, GValueArray *p
 			break;
 		case 48:
 		{
-			GValue *value1;
-			long param1;
 			/* The format looks like: ^[[48;5;COLORNUMBERm,
 			   so look for COLORNUMBER here. */
 			if ((i + 2) < params->n_values){
-				value1 = g_value_array_get_nth(params, i + 2);
-				if (!G_VALUE_HOLDS_LONG(value1)) {
+				GValue *value1, *value2;
+				long param1, param2;
+				value1 = g_value_array_get_nth(params, i + 1);
+				value2 = g_value_array_get_nth(params, i + 2);
+				if (G_UNLIKELY (!(G_VALUE_HOLDS_LONG(value1) && G_VALUE_HOLDS_LONG(value2))))
 					break;
-				}
 				param1 = g_value_get_long(value1);
-				terminal->pvt->screen->defaults.attr.back = param1;
+				param2 = g_value_get_long(value2);
+				if (G_LIKELY (param1 == 5 && param2 >= 0 && param2 < 256))
+					terminal->pvt->screen->defaults.attr.back = param2;
 				i += 2;
 			}
 			break;
@@ -2520,6 +2533,32 @@ vte_sequence_handler_set_icon_and_window_title (VteTerminal *terminal, GValueArr
 static void
 vte_sequence_handler_set_scrolling_region (VteTerminal *terminal, GValueArray *params)
 {
+	vte_sequence_handler_offset(terminal, params, -1, vte_sequence_handler_cs);
+}
+
+static void
+vte_sequence_handler_set_scrolling_region_from_start (VteTerminal *terminal, GValueArray *params)
+{
+	GValue value = {0};
+
+	g_value_init (&value, G_TYPE_LONG);
+	g_value_set_long (&value, 0); /* Out of range means start/end */
+
+	g_value_array_insert (params, 0, &value);
+
+	vte_sequence_handler_offset(terminal, params, -1, vte_sequence_handler_cs);
+}
+
+static void
+vte_sequence_handler_set_scrolling_region_to_end (VteTerminal *terminal, GValueArray *params)
+{
+	GValue value = {0};
+
+	g_value_init (&value, G_TYPE_LONG);
+	g_value_set_long (&value, 0); /* Out of range means start/end */
+
+	g_value_array_insert (params, 1, &value);
+
 	vte_sequence_handler_offset(terminal, params, -1, vte_sequence_handler_cs);
 }
 
@@ -3011,6 +3050,7 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 	long param, arg1, arg2;
 	gint width, height;
 	guint i;
+	GtkAllocation allocation;
 
 	widget = &terminal->widget;
 	screen = terminal->pvt->screen;
@@ -3122,16 +3162,16 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 			/* If we're unmapped, then we're iconified. */
 			g_snprintf(buf, sizeof(buf),
 				   _VTE_CAP_CSI "%dt",
-				   1 + !GTK_WIDGET_MAPPED(widget));
+				   1 + !gtk_widget_get_mapped(widget));
 			_vte_debug_print(VTE_DEBUG_PARSE,
 					"Reporting window state %s.\n",
-					GTK_WIDGET_MAPPED(widget) ?
+					gtk_widget_get_mapped(widget) ?
 					"non-iconified" : "iconified");
 			vte_terminal_feed_child(terminal, buf, -1);
 			break;
 		case 13:
 			/* Send window location, in pixels. */
-			gdk_window_get_origin(widget->window,
+			gdk_window_get_origin(gtk_widget_get_window(widget),
 					      &width, &height);
 			g_snprintf(buf, sizeof(buf),
 				   _VTE_CAP_CSI "3;%d;%dt",
@@ -3145,12 +3185,13 @@ vte_sequence_handler_window_manipulation (VteTerminal *terminal, GValueArray *pa
 			break;
 		case 14:
 			/* Send window size, in pixels. */
+			gtk_widget_get_allocation(widget, &allocation);
 			g_snprintf(buf, sizeof(buf),
 				   _VTE_CAP_CSI "4;%d;%dt",
-				   widget->allocation.height -
+				   allocation.height -
                                        (terminal->pvt->inner_border.top +
                                         terminal->pvt->inner_border.bottom),
-				   widget->allocation.width -
+				   allocation.width -
                                        (terminal->pvt->inner_border.left +
                                         terminal->pvt->inner_border.right));
 			_vte_debug_print(VTE_DEBUG_PARSE,

@@ -2,21 +2,22 @@
 # Estonian translation of vte.
 #
 # Copyright (C) 2003, 2005, 2006 Free Software Foundation, Inc
-# Copyright (C) 2007 The GNOME Project
+# Copyright (C) 2007, 2010 The GNOME Project
 # This file is distributed under the same license as the vte package.
 #
 # Allan Sims <allsi@eau.ee>, 2003.
-# Ivar Smolin <okul@linux.ee>, 2005-2007.
+# Ivar Smolin <okul@linux.ee>, 2005-2007, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vte 0.24\n"
+"Project-Id-Version: vte MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=vte&component=general\n"
-"POT-Creation-Date: 2010-03-17 23:26+0000\n"
-"PO-Revision-Date: 2007-02-25 22:29+0200\n"
+"POT-Creation-Date: 2010-12-04 12:48+0000\n"
+"PO-Revision-Date: 2010-05-27 08:15+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
+"Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,13 +38,6 @@ msgstr "Tundmatu tuvastatud kodeerimissüsteem."
 #, c-format
 msgid "Attempt to set invalid wide NRC map '%c'."
 msgstr "Üritatakse seada vigast laia NRC kaarti '%c'."
-
-#. Give the user some clue as to why session logging is not
-#. * going to work (assuming we can open a pty using some other
-#. * method).
-#, c-format
-msgid "can not run %s"
-msgstr "%s pole võimalik käivitada"
 
 #, c-format
 msgid "Duplicate (%s/%s)!"
@@ -75,8 +69,8 @@ msgid "Error (%s) converting data for child, dropping."
 msgstr "Viga (%s) lapsprotsessile andmete teisendamisel, peatumine."
 
 #, c-format
-msgid "Error reading PTY size, using defaults: %s."
-msgstr "Viga PTY suuruse lugemisel, kasutatakse vaikeväärtust: %s."
+msgid "Error reading PTY size, using defaults: %s\n"
+msgstr "Viga PTY suuruse lugemisel, kasutatakse vaikeväärtust: %s\n"
 
 #. Aaargh.  We're screwed.
 msgid "_vte_conv_open() failed setting word characters"

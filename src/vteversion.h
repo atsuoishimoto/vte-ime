@@ -50,7 +50,7 @@
  *
  * Since: 0.16.15
  */
-#define VTE_MINOR_VERSION (24)
+#define VTE_MINOR_VERSION (28)
 
 /**
  * VTE_MICRO_VERSION:
@@ -60,7 +60,7 @@
  *
  * Since: 0.16.15
  */
-#define VTE_MICRO_VERSION (3)
+#define VTE_MICRO_VERSION (1)
 
 /**
  * VTE_CHECK_VERSION:
