@@ -1,5 +1,5 @@
 /* ANSI-C code produced by gperf version 3.0.3 */
-/* Command-line: gperf -m 100 --no-strlen vteseq-2.gperf  */
+/* Command-line: gperf -m 100 --no-strlen ../../../src/vteseq-2.gperf  */
 /* Computed positions: -k'1-2' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -29,7 +29,7 @@
 #error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
 #endif
 
-#line 14 "vteseq-2.gperf"
+#line 14 "../../../src/vteseq-2.gperf"
 struct vteseq_2_struct {
 	char seq[3];
 	VteTerminalSequenceHandler handler;
@@ -101,154 +101,154 @@ vteseq_2_lookup (register const char *str, register unsigned int len)
 
   static const struct vteseq_2_struct wordlist[] =
     {
-#line 247 "vteseq-2.gperf"
+#line 247 "../../../src/vteseq-2.gperf"
       {"mh", VTE_SEQUENCE_HANDLER(vte_sequence_handler_mh)},
-#line 166 "vteseq-2.gperf"
+#line 166 "../../../src/vteseq-2.gperf"
       {"ch", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ch)},
-#line 251 "vteseq-2.gperf"
+#line 251 "../../../src/vteseq-2.gperf"
       {"mp", VTE_SEQUENCE_HANDLER(vte_sequence_handler_mp)},
-#line 172 "vteseq-2.gperf"
+#line 172 "../../../src/vteseq-2.gperf"
       {"cv", VTE_SEQUENCE_HANDLER(vte_sequence_handler_cv)},
-#line 285 "vteseq-2.gperf"
+#line 285 "../../../src/vteseq-2.gperf"
       {"up", VTE_SEQUENCE_HANDLER(vte_sequence_handler_up)},
-#line 246 "vteseq-2.gperf"
+#line 246 "../../../src/vteseq-2.gperf"
       {"me", VTE_SEQUENCE_HANDLER(vte_sequence_handler_me)},
-#line 165 "vteseq-2.gperf"
+#line 165 "../../../src/vteseq-2.gperf"
       {"ce", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ce)},
-#line 284 "vteseq-2.gperf"
+#line 284 "../../../src/vteseq-2.gperf"
       {"ue", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ue)},
-#line 163 "vteseq-2.gperf"
+#line 163 "../../../src/vteseq-2.gperf"
       {"cc", VTE_SEQUENCE_HANDLER(vte_sequence_handler_noop)},
-#line 283 "vteseq-2.gperf"
+#line 283 "../../../src/vteseq-2.gperf"
       {"uc", VTE_SEQUENCE_HANDLER(vte_sequence_handler_uc)},
-#line 170 "vteseq-2.gperf"
+#line 170 "../../../src/vteseq-2.gperf"
       {"cs", VTE_SEQUENCE_HANDLER(vte_sequence_handler_cs)},
-#line 286 "vteseq-2.gperf"
+#line 286 "../../../src/vteseq-2.gperf"
       {"us", VTE_SEQUENCE_HANDLER(vte_sequence_handler_us)},
-#line 248 "vteseq-2.gperf"
+#line 248 "../../../src/vteseq-2.gperf"
       {"mk", VTE_SEQUENCE_HANDLER(vte_sequence_handler_mk)},
-#line 280 "vteseq-2.gperf"
+#line 280 "../../../src/vteseq-2.gperf"
       {"te", VTE_SEQUENCE_HANDLER(vte_sequence_handler_noop)},
-#line 167 "vteseq-2.gperf"
+#line 167 "../../../src/vteseq-2.gperf"
       {"cl", VTE_SEQUENCE_HANDLER(vte_sequence_handler_cl)},
-#line 185 "vteseq-2.gperf"
+#line 185 "../../../src/vteseq-2.gperf"
       {"ho", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ho)},
-#line 274 "vteseq-2.gperf"
+#line 274 "../../../src/vteseq-2.gperf"
       {"se", VTE_SEQUENCE_HANDLER(vte_sequence_handler_se)},
-#line 282 "vteseq-2.gperf"
+#line 282 "../../../src/vteseq-2.gperf"
       {"ts", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ts)},
-#line 273 "vteseq-2.gperf"
+#line 273 "../../../src/vteseq-2.gperf"
       {"sc", VTE_SEQUENCE_HANDLER(vte_sequence_handler_sc)},
-#line 276 "vteseq-2.gperf"
+#line 276 "../../../src/vteseq-2.gperf"
       {"so", VTE_SEQUENCE_HANDLER(vte_sequence_handler_so)},
-#line 224 "vteseq-2.gperf"
+#line 224 "../../../src/vteseq-2.gperf"
       {"ke", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ke)},
-#line 245 "vteseq-2.gperf"
+#line 245 "../../../src/vteseq-2.gperf"
       {"md", VTE_SEQUENCE_HANDLER(vte_sequence_handler_md)},
-#line 164 "vteseq-2.gperf"
+#line 164 "../../../src/vteseq-2.gperf"
       {"cd", VTE_SEQUENCE_HANDLER(vte_sequence_handler_cd)},
-#line 288 "vteseq-2.gperf"
+#line 288 "../../../src/vteseq-2.gperf"
       {"ve", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ve)},
-#line 228 "vteseq-2.gperf"
+#line 228 "../../../src/vteseq-2.gperf"
       {"ks", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ks)},
-#line 168 "vteseq-2.gperf"
+#line 168 "../../../src/vteseq-2.gperf"
       {"cm", VTE_SEQUENCE_HANDLER(vte_sequence_handler_cm)},
-#line 275 "vteseq-2.gperf"
+#line 275 "../../../src/vteseq-2.gperf"
       {"sf", VTE_SEQUENCE_HANDLER(vte_sequence_handler_sf)},
-#line 290 "vteseq-2.gperf"
+#line 290 "../../../src/vteseq-2.gperf"
       {"vs", VTE_SEQUENCE_HANDLER(vte_sequence_handler_vs)},
-#line 190 "vteseq-2.gperf"
+#line 190 "../../../src/vteseq-2.gperf"
       {"ic", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ic)},
-#line 244 "vteseq-2.gperf"
+#line 244 "../../../src/vteseq-2.gperf"
       {"mb", VTE_SEQUENCE_HANDLER(vte_sequence_handler_mb)},
-#line 162 "vteseq-2.gperf"
+#line 162 "../../../src/vteseq-2.gperf"
       {"cb", VTE_SEQUENCE_HANDLER(vte_sequence_handler_cb)},
-#line 268 "vteseq-2.gperf"
+#line 268 "../../../src/vteseq-2.gperf"
       {"rc", VTE_SEQUENCE_HANDLER(vte_sequence_handler_rc)},
-#line 171 "vteseq-2.gperf"
+#line 171 "../../../src/vteseq-2.gperf"
       {"ct", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ct)},
-#line 281 "vteseq-2.gperf"
+#line 281 "../../../src/vteseq-2.gperf"
       {"ti", VTE_SEQUENCE_HANDLER(vte_sequence_handler_noop)},
-#line 173 "vteseq-2.gperf"
+#line 173 "../../../src/vteseq-2.gperf"
       {"dc", VTE_SEQUENCE_HANDLER(vte_sequence_handler_dc)},
-#line 176 "vteseq-2.gperf"
+#line 176 "../../../src/vteseq-2.gperf"
       {"do", VTE_SEQUENCE_HANDLER(vte_sequence_handler_do)},
-#line 254 "vteseq-2.gperf"
+#line 254 "../../../src/vteseq-2.gperf"
       {"nw", VTE_SEQUENCE_HANDLER(vte_sequence_handler_nw)},
-#line 252 "vteseq-2.gperf"
+#line 252 "../../../src/vteseq-2.gperf"
       {"mr", VTE_SEQUENCE_HANDLER(vte_sequence_handler_mr)},
-#line 169 "vteseq-2.gperf"
+#line 169 "../../../src/vteseq-2.gperf"
       {"cr", VTE_SEQUENCE_HANDLER(vte_sequence_handler_cr)},
-#line 179 "vteseq-2.gperf"
+#line 179 "../../../src/vteseq-2.gperf"
       {"ec", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ec)},
-#line 174 "vteseq-2.gperf"
+#line 174 "../../../src/vteseq-2.gperf"
       {"dl", VTE_SEQUENCE_HANDLER(vte_sequence_handler_dl)},
-#line 161 "vteseq-2.gperf"
+#line 161 "../../../src/vteseq-2.gperf"
       {"cS", VTE_SEQUENCE_HANDLER(vte_sequence_handler_cS)},
-#line 278 "vteseq-2.gperf"
+#line 278 "../../../src/vteseq-2.gperf"
       {"st", VTE_SEQUENCE_HANDLER(vte_sequence_handler_st)},
-#line 289 "vteseq-2.gperf"
+#line 289 "../../../src/vteseq-2.gperf"
       {"vi", VTE_SEQUENCE_HANDLER(vte_sequence_handler_vi)},
-#line 222 "vteseq-2.gperf"
+#line 222 "../../../src/vteseq-2.gperf"
       {"kb", VTE_SEQUENCE_HANDLER(vte_sequence_handler_kb)},
-#line 192 "vteseq-2.gperf"
+#line 192 "../../../src/vteseq-2.gperf"
       {"im", VTE_SEQUENCE_HANDLER(vte_sequence_handler_im)},
-#line 253 "vteseq-2.gperf"
+#line 253 "../../../src/vteseq-2.gperf"
       {"nd", VTE_SEQUENCE_HANDLER(vte_sequence_handler_nd)},
-#line 287 "vteseq-2.gperf"
+#line 287 "../../../src/vteseq-2.gperf"
       {"vb", VTE_SEQUENCE_HANDLER(vte_sequence_handler_vb)},
-#line 277 "vteseq-2.gperf"
+#line 277 "../../../src/vteseq-2.gperf"
       {"sr", VTE_SEQUENCE_HANDLER(vte_sequence_handler_sr)},
-#line 279 "vteseq-2.gperf"
+#line 279 "../../../src/vteseq-2.gperf"
       {"ta", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ta)},
-#line 183 "vteseq-2.gperf"
+#line 183 "../../../src/vteseq-2.gperf"
       {"fs", VTE_SEQUENCE_HANDLER(vte_sequence_handler_fs)},
-#line 175 "vteseq-2.gperf"
+#line 175 "../../../src/vteseq-2.gperf"
       {"dm", VTE_SEQUENCE_HANDLER(vte_sequence_handler_noop)},
-#line 158 "vteseq-2.gperf"
+#line 158 "../../../src/vteseq-2.gperf"
       {"bc", VTE_SEQUENCE_HANDLER(vte_sequence_handler_le)},
-#line 180 "vteseq-2.gperf"
+#line 180 "../../../src/vteseq-2.gperf"
       {"ed", VTE_SEQUENCE_HANDLER(vte_sequence_handler_noop)},
-#line 242 "vteseq-2.gperf"
+#line 242 "../../../src/vteseq-2.gperf"
       {"le", VTE_SEQUENCE_HANDLER(vte_sequence_handler_le)},
-#line 155 "vteseq-2.gperf"
+#line 155 "../../../src/vteseq-2.gperf"
       {"ae", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ae)},
-#line 182 "vteseq-2.gperf"
+#line 182 "../../../src/vteseq-2.gperf"
       {"ff", VTE_SEQUENCE_HANDLER(vte_sequence_handler_noop)},
-#line 181 "vteseq-2.gperf"
+#line 181 "../../../src/vteseq-2.gperf"
       {"ei", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ei)},
-#line 159 "vteseq-2.gperf"
+#line 159 "../../../src/vteseq-2.gperf"
       {"bl", VTE_SEQUENCE_HANDLER(vte_sequence_handler_bl)},
-#line 157 "vteseq-2.gperf"
+#line 157 "../../../src/vteseq-2.gperf"
       {"as", VTE_SEQUENCE_HANDLER(vte_sequence_handler_as)},
-#line 153 "vteseq-2.gperf"
+#line 153 "../../../src/vteseq-2.gperf"
       {"UP", VTE_SEQUENCE_HANDLER(vte_sequence_handler_UP)},
-#line 151 "vteseq-2.gperf"
+#line 151 "../../../src/vteseq-2.gperf"
       {"SR", VTE_SEQUENCE_HANDLER(vte_sequence_handler_SR)},
-#line 243 "vteseq-2.gperf"
+#line 243 "../../../src/vteseq-2.gperf"
       {"ll", VTE_SEQUENCE_HANDLER(vte_sequence_handler_ll)},
-#line 156 "vteseq-2.gperf"
+#line 156 "../../../src/vteseq-2.gperf"
       {"al", VTE_SEQUENCE_HANDLER(vte_sequence_handler_al)},
-#line 79 "vteseq-2.gperf"
+#line 79 "../../../src/vteseq-2.gperf"
       {"DO", VTE_SEQUENCE_HANDLER(vte_sequence_handler_DO)},
-#line 78 "vteseq-2.gperf"
+#line 78 "../../../src/vteseq-2.gperf"
       {"DL", VTE_SEQUENCE_HANDLER(vte_sequence_handler_DL)},
-#line 147 "vteseq-2.gperf"
+#line 147 "../../../src/vteseq-2.gperf"
       {"RI", VTE_SEQUENCE_HANDLER(vte_sequence_handler_RI)},
-#line 150 "vteseq-2.gperf"
+#line 150 "../../../src/vteseq-2.gperf"
       {"SF", VTE_SEQUENCE_HANDLER(vte_sequence_handler_SF)},
-#line 139 "vteseq-2.gperf"
+#line 139 "../../../src/vteseq-2.gperf"
       {"LE", VTE_SEQUENCE_HANDLER(vte_sequence_handler_LE)},
-#line 77 "vteseq-2.gperf"
+#line 77 "../../../src/vteseq-2.gperf"
       {"DC", VTE_SEQUENCE_HANDLER(vte_sequence_handler_DC)},
-#line 133 "vteseq-2.gperf"
+#line 133 "../../../src/vteseq-2.gperf"
       {"IC", VTE_SEQUENCE_HANDLER(vte_sequence_handler_IC)},
-#line 178 "vteseq-2.gperf"
+#line 178 "../../../src/vteseq-2.gperf"
       {"eA", VTE_SEQUENCE_HANDLER(vte_sequence_handler_eA)},
-#line 76 "vteseq-2.gperf"
+#line 76 "../../../src/vteseq-2.gperf"
       {"AL", VTE_SEQUENCE_HANDLER(vte_sequence_handler_AL)},
       {""}, {""}, {""},
-#line 160 "vteseq-2.gperf"
+#line 160 "../../../src/vteseq-2.gperf"
       {"bt", VTE_SEQUENCE_HANDLER(vte_sequence_handler_bt)}
     };
 

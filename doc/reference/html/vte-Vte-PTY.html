@@ -47,9 +47,11 @@ manipulating pseudo-terminals</p>
 <a name="VtePty"></a><pre class="synopsis">enum                <a class="link" href="vte-Vte-PTY.html#VtePtyFlags" title="enum VtePtyFlags">VtePtyFlags</a>;
 enum                <a class="link" href="vte-Vte-PTY.html#VtePtyError" title="enum VtePtyError">VtePtyError</a>;
                     <a class="link" href="vte-Vte-PTY.html#VtePty-struct" title="VtePty">VtePty</a>;
-<a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            <a class="link" href="vte-Vte-PTY.html#vte-pty-new" title="vte_pty_new ()">vte_pty_new</a>                         (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePtyFlags" title="enum VtePtyFlags"><span class="type">VtePtyFlags</span></a> flags</code></em>,
+<a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            <a class="link" href="vte-Vte-PTY.html#vte-pty-new-sync" title="vte_pty_new_sync ()">vte_pty_new_sync</a>                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePtyFlags" title="enum VtePtyFlags"><span class="type">VtePtyFlags</span></a> flags</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            <a class="link" href="vte-Vte-PTY.html#vte-pty-new-foreign" title="vte_pty_new_foreign ()">vte_pty_new_foreign</a>                 (<em class="parameter"><code><span class="type">int</span> fd</code></em>,
+<a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            <a class="link" href="vte-Vte-PTY.html#vte-pty-new-foreign-sync" title="vte_pty_new_foreign_sync ()">vte_pty_new_foreign_sync</a>            (<em class="parameter"><code><span class="type">int</span> fd</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="vte-Vte-PTY.html#vte-pty-close" title="vte_pty_close ()">vte_pty_close</a>                       (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()">vte_pty_child_setup</a>                 (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> *pty</code></em>);
@@ -182,14 +184,15 @@ pseudo-terminals and to resize pseudo-terminals.
 </div>
 <hr>
 <div class="refsect2">
-<a name="vte-pty-new"></a><h3>vte_pty_new ()</h3>
-<pre class="programlisting"><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            vte_pty_new                         (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePtyFlags" title="enum VtePtyFlags"><span class="type">VtePtyFlags</span></a> flags</code></em>,
+<a name="vte-pty-new-sync"></a><h3>vte_pty_new_sync ()</h3>
+<pre class="programlisting"><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            vte_pty_new_sync                    (<em class="parameter"><code><a class="link" href="vte-Vte-PTY.html#VtePtyFlags" title="enum VtePtyFlags"><span class="type">VtePtyFlags</span></a> flags</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 Allocates a new pseudo-terminal.
 </p>
 <p>
-You can later use <code class="function">fork()</code> or the <a href="http://library.gnome.org/devel/glib/unstable/glib-Spawning-Processes.html#g-spawn-async"><code class="function">g_spawn_async()</code></a> familty of functions
+You can later use <code class="function">fork()</code> or the <a href="http://library.gnome.org/devel/glib/unstable/glib-Spawning-Processes.html#g-spawn-async"><code class="function">g_spawn_async()</code></a> family of functions
 to start a process on the PTY.
 </p>
 <p>
@@ -199,20 +202,15 @@ If using <code class="function">fork()</code>, you MUST call <a class="link" hre
 If using <a href="http://library.gnome.org/devel/glib/unstable/glib-Spawning-Processes.html#g-spawn-async"><code class="function">g_spawn_async()</code></a> and friends, you MUST either use
 <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()"><code class="function">vte_pty_child_setup()</code></a> directly as the child setup function, or call
 <a class="link" href="vte-Vte-PTY.html#vte-pty-child-setup" title="vte_pty_child_setup ()"><code class="function">vte_pty_child_setup()</code></a> from your own child setup function supplied.
-</p>
-<p>
 Also, you MUST pass the <a href="http://library.gnome.org/devel/glib/unstable/glib-Spawning-Processes.html#G-SPAWN-DO-NOT-REAP-CHILD:CAPS"><code class="literal">G_SPAWN_DO_NOT_REAP_CHILD</code></a> flag.
 </p>
 <p>
-When using the GNOME PTY Helper,
+If GNOME PTY Helper is available and
 unless some of the <a class="link" href="vte-Vte-PTY.html#VTE-PTY-NO-LASTLOG:CAPS"><code class="literal">VTE_PTY_NO_LASTLOG</code></a>, <a class="link" href="vte-Vte-PTY.html#VTE-PTY-NO-UTMP:CAPS"><code class="literal">VTE_PTY_NO_UTMP</code></a> or
 <a class="link" href="vte-Vte-PTY.html#VTE-PTY-NO-WTMP:CAPS"><code class="literal">VTE_PTY_NO_WTMP</code></a> flags are passed in <em class="parameter"><code>flags</code></em>, the
 session is logged in the corresponding lastlog, utmp or wtmp
-system files.
-</p>
-<p>
-When passing <a class="link" href="vte-Vte-PTY.html#VTE-PTY-NO-HELPER:CAPS"><code class="literal">VTE_PTY_NO_HELPER</code></a> in <em class="parameter"><code>flags</code></em>, the
-GNOME PTY Helper bypassed entirely.
+system files.  When passing <a class="link" href="vte-Vte-PTY.html#VTE-PTY-NO-HELPER:CAPS"><code class="literal">VTE_PTY_NO_HELPER</code></a> in <em class="parameter"><code>flags</code></em>, the
+GNOME PTY Helper is bypassed entirely.
 </p>
 <p>
 When passing <a class="link" href="vte-Vte-PTY.html#VTE-PTY-NO-FALLBACK:CAPS"><code class="literal">VTE_PTY_NO_FALLBACK</code></a> in <em class="parameter"><code>flags</code></em>,
@@ -225,6 +223,11 @@ be no fallback to allocate a PTY using Unix98 PTY functions.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>flags</code></em> :</span></p></td>
 <td>flags from <a class="link" href="vte-Vte-PTY.html#VtePtyFlags" title="enum VtePtyFlags"><span class="type">VtePtyFlags</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td> a <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
 </td>
 </tr>
 <tr>
@@ -243,8 +246,9 @@ be no fallback to allocate a PTY using Unix98 PTY functions.
 </div>
 <hr>
 <div class="refsect2">
-<a name="vte-pty-new-foreign"></a><h3>vte_pty_new_foreign ()</h3>
-<pre class="programlisting"><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            vte_pty_new_foreign                 (<em class="parameter"><code><span class="type">int</span> fd</code></em>,
+<a name="vte-pty-new-foreign-sync"></a><h3>vte_pty_new_foreign_sync ()</h3>
+<pre class="programlisting"><a class="link" href="vte-Vte-PTY.html#VtePty"><span class="returnvalue">VtePty</span></a> *            vte_pty_new_foreign_sync            (<em class="parameter"><code><span class="type">int</span> fd</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 Creates a new <a class="link" href="vte-Vte-PTY.html#VtePty"><span class="type">VtePty</span></a> for the PTY master <em class="parameter"><code>fd</code></em>.
@@ -262,6 +266,11 @@ and close it on finalize.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>fd</code></em> :</span></p></td>
 <td> a file descriptor to the PTY. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cancellable</code></em> :</span></p></td>
+<td> a <a href="http://library.gnome.org/devel/gio/unstable/GCancellable.html"><span class="type">GCancellable</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
 </td>
 </tr>
 <tr>

@@ -1,3 +1,41 @@
+commit 88d748a106e137baeef660c354bd54ed82efff86
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Jun 14 23:38:20 2011 +0200
+
+    Version 0.28.1
+
+ NEWS |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+commit ac71d26f067be3a21bff315c3cabf24c94360dd6
+Author: Christian Persch <chpe@gnome.org>
+Date:   Fri Jun 10 17:31:58 2011 +0200
+
+    [CVE-2011-2198] Limit insert-blank-characters
+    
+    Bug #652124.
+
+ src/vteseq.c |   27 ++++++++++++++++++++++-----
+ 1 files changed, 22 insertions(+), 5 deletions(-)
+
+commit 07a03020cabab719d824c525d58cd735a70856e9
+Author: Carles Ferrando <carles.ferrando@gmail.com>
+Date:   Sun May 29 19:12:39 2011 +0200
+
+    [l10n]Updated Catalan (Valencian) translation
+
+ po/ca@valencia.po |   18 +++++++++---------
+ 1 files changed, 9 insertions(+), 9 deletions(-)
+
+commit 98f05a28ae9a6429cc9b77b98a6c174d2c2233f3
+Author: Christian Persch <chpe@gnome.org>
+Date:   Mon Apr 4 14:08:56 2011 +0200
+
+    Post release version bump
+
+ configure.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 commit 56def42f554720a8d91da1aee32c66cbeef406e2
 Author: Christian Persch <chpe@gnome.org>
 Date:   Sun Apr 3 23:06:23 2011 +0200
@@ -311,10 +349,9 @@ Date:   Wed Feb 2 17:49:06 2011 +0100
     
     Renaming breaks automatic reconfiguring from make during git bisect.
 
- autogen.sh   |    2 +-
- configure.ac |  625 ----------------------------------------------------------
- configure.in |  625 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 626 insertions(+), 626 deletions(-)
+ autogen.sh                   |    2 +-
+ configure.ac => configure.in |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 commit 2cce4ae4d5599b131b5f53340f636630bf1cf6d9
 Author: Javier Jardón <javier.jardon@codethink.co.uk>
@@ -335,10 +372,9 @@ Date:   Wed Feb 2 13:23:19 2011 +0000
 
     Use the recommended configure.ac instead configure.in
 
- autogen.sh   |    2 +-
- configure.ac |  622 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- configure.in |  622 ----------------------------------------------------------
- 3 files changed, 623 insertions(+), 623 deletions(-)
+ autogen.sh                   |    2 +-
+ configure.in => configure.ac |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 commit 45c73fc2a9aaf166056c7f29aec7bdf8cd8d165f
 Author: Javier Jardón <javier.jardon@codethink.co.uk>
@@ -4425,12 +4461,12 @@ Date:   Sat Sep 12 18:22:16 2009 -0400
 
     [stream] Add file stream
 
- src/Makefile.am      |    2 +
- src/vtestream-base.h |   51 ++++++++++++
- src/vtestream-file.h |  215 ++++++++++++++++++++++++++++++++++++++++++++++++++
- src/vtestream.c      |   31 +------
- src/vtestream.h      |    6 +-
- 5 files changed, 278 insertions(+), 27 deletions(-)
+ src/Makefile.am                       |    2 +
+ src/{vtestream.c => vtestream-base.h} |   18 +--
+ src/vtestream-file.h                  |  215 +++++++++++++++++++++++++++++++++
+ src/vtestream.c                       |   31 +----
+ src/vtestream.h                       |    6 +-
+ 5 files changed, 234 insertions(+), 38 deletions(-)
 
 commit 9de9d2de44d4723935176c71f8f09a90f15e678a
 Author: Behdad Esfahbod <behdad@behdad.org>
@@ -4460,13 +4496,13 @@ Date:   Thu Sep 10 15:59:50 2009 -0400
 
     [ring] Move VteRowData into its own file
 
- src/Makefile.am  |    2 +
- src/ring.c       |  141 +---------------------------------------------
- src/ring.h       |  138 +--------------------------------------------
- src/vterowdata.c |  164 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- src/vterowdata.h |  167 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- src/vteunistr.c  |    3 +-
- 6 files changed, 337 insertions(+), 278 deletions(-)
+ src/Makefile.am              |    2 +
+ src/ring.c                   |  141 +-----------------------------------
+ src/ring.h                   |  138 +-----------------------------------
+ src/vterowdata.c             |  164 ++++++++++++++++++++++++++++++++++++++++++
+ src/{ring.h => vterowdata.h} |   72 ++-----------------
+ src/vteunistr.c              |    3 +-
+ 6 files changed, 177 insertions(+), 343 deletions(-)
 
 commit 4e02748b395e2086a4a3f897868bc789875e770d
 Author: Carles Ferrando <carles.ferrando@gmail.com>
@@ -5511,10 +5547,9 @@ Date:   Mon Aug 24 23:18:53 2009 +0200
 
     Rename nds*.po to nds.po
 
- po/LINGUAS    |    2 +-
- po/nds.po     |   94 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- po/nds_NFE.po |   94 ---------------------------------------------------------
- 3 files changed, 95 insertions(+), 95 deletions(-)
+ po/LINGUAS                |    2 +-
+ po/{nds_NFE.po => nds.po} |    0
+ 2 files changed, 1 insertions(+), 1 deletions(-)
 
 commit 0b78dea524ee01e581327d09324193f2c1cce435
 Author: Nils-Christoph Fiedler <linux@medienkompanie.de>
@@ -6108,13 +6143,12 @@ Date:   Fri Apr 17 18:58:36 2009 +0200
 
     Remove ChangeLog, and auto-generate changelog on make dist
 
- .gitignore                 |    2 +
- ChangeLog                  |12065 --------------------------------------------
- ChangeLog.pre-git          |12065 ++++++++++++++++++++++++++++++++++++++++++++
- Makefile.am                |   18 +-
- gnome-pty-helper/ChangeLog |    1 -
- po/ChangeLog               | 1353 -----
- 6 files changed, 12084 insertions(+), 13420 deletions(-)
+ .gitignore                     |    2 +
+ ChangeLog => ChangeLog.pre-git |    0
+ Makefile.am                    |   18 +-
+ gnome-pty-helper/ChangeLog     |    1 -
+ po/ChangeLog                   | 1353 ----------------------------------------
+ 5 files changed, 19 insertions(+), 1355 deletions(-)
 
 commit fd3ab8dd61ed18f460cecc153de24eb1377a1a34
 Author: Christian Persch <chpe@gnome.org>
@@ -11775,11 +11809,10 @@ Date:   Mon Aug 25 14:57:20 2008 +0000
     
     svn path=/trunk/; revision=2089
 
- po/ChangeLog   |    5 ++
- po/LINGUAS     |    2 +-
- po/sr@Latn.po  |  158 --------------------------------------------------------
- po/sr@latin.po |  158 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 164 insertions(+), 159 deletions(-)
+ po/ChangeLog                   |    5 +++++
+ po/LINGUAS                     |    2 +-
+ po/{sr@Latn.po => sr@latin.po} |    0
+ 3 files changed, 6 insertions(+), 1 deletions(-)
 
 commit 0e0aab333668dd11959b5ef0e8695dc1236c40bb
 Author: Christian Persch <chpe@src.gnome.org>
@@ -27876,18 +27909,17 @@ Date:   Sat Feb 11 04:45:33 2006 +0000
             * Makefile.am, src/Makefile.am, doc/reference/Makefile.am: Updated.
 
  .cvsignore                  |    5 +
- ChangeLog                   |   10 +
+ ChangeLog                   |   10 ++
  Makefile.am                 |    2 +
- autogen.sh                  |  121 +--------
- configure.in                |   70 +-----
- doc/reference/Makefile.am   |  231 ++++-------------
+ autogen.sh                  |  121 +++--------------------
+ configure.in                |   70 ++-----------
+ doc/reference/Makefile.am   |  231 ++++++++++---------------------------------
  gnome-pty-helper/.cvsignore |    2 +
- po/fa.po                    |   25 +-
+ po/fa.po                    |   25 ++---
  python/vte-demo.py          |    2 +-
  src/Makefile.am             |    1 +
- vte.spec                    |  596 -------------------------------------------
- vte.spec.in                 |  596 +++++++++++++++++++++++++++++++++++++++++++
- 12 files changed, 703 insertions(+), 958 deletions(-)
+ vte.spec => vte.spec.in     |    2 +-
+ 11 files changed, 108 insertions(+), 363 deletions(-)
 
 commit 2f710f0f5ff8efe8f2dc2d4601da5c4eaa6716a6
 Author: Behdad Esfahbod <behdad@gnome.org>
@@ -29918,14 +29950,14 @@ Date:   Sun May 30 09:51:39 2004 +0000
 
     add ignore files
 
- .cvsignore                  |    1 +
- doc/.cvsignore              |    2 ++
- doc/openi18n/.cvsignore     |    3 +++
- doc/reference/.cvsignore    |   20 ++++++++++++++++++++
- gnome-pty-helper/.cvsignore |   12 ++++++++++++
- python/.cvsignore           |    3 +++
- termcaps/.cvsignore         |    2 ++
- 7 files changed, 43 insertions(+), 0 deletions(-)
+ .cvsignore                                |    1 +
+ doc/.cvsignore                            |    2 ++
+ doc/openi18n/.cvsignore                   |    3 +++
+ doc/reference/.cvsignore                  |   20 ++++++++++++++++++++
+ .cvsignore => gnome-pty-helper/.cvsignore |   17 +++--------------
+ python/.cvsignore                         |    3 +++
+ termcaps/.cvsignore                       |    2 ++
+ 7 files changed, 34 insertions(+), 14 deletions(-)
 
 commit c90b8d3668b4f3d56b026852a96c9ef5deffbf9d
 Author: Thomas Vander Stichele <thomasvs@src.gnome.org>
@@ -32863,17 +32895,15 @@ Date:   Mon May 19 20:18:45 2003 +0000
 
     - rename termcap.c/termcap.h to avoid conflicts with system <termcap.h>
 
- ChangeLog       |    5 +
- src/Makefile.am |   27 +-
- src/interpret.c |    2 +-
- src/keymap.c    |    2 +-
- src/keymap.h    |    2 +-
- src/termcap.c   |  742 -------------------------------------------------------
- src/termcap.h   |   63 -----
- src/vte.c       |    2 +-
- src/vtetc.c     |  742 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- src/vtetc.h     |   63 +++++
- 10 files changed, 827 insertions(+), 823 deletions(-)
+ ChangeLog                  |    5 +++++
+ src/Makefile.am            |   27 +++++++++++++--------------
+ src/interpret.c            |    2 +-
+ src/keymap.c               |    2 +-
+ src/keymap.h               |    2 +-
+ src/vte.c                  |    2 +-
+ src/{termcap.c => vtetc.c} |    2 +-
+ src/{termcap.h => vtetc.h} |    0
+ 8 files changed, 23 insertions(+), 19 deletions(-)
 
 commit 4cf3893d9b59b32a879302c6433894ddb906e40a
 Author: Ole Laursen <olau@hardworking.dk>
@@ -34626,30 +34656,30 @@ Date:   Wed Apr 9 20:01:50 2003 +0000
     * src/vteapp.c: add -- option to stop parsing options with getopt.
     * src/vtefc.c: fix incorrect DPI read due to type mismatch (#109513).
 
- ChangeLog       |   19 ++
- configure.in    |   68 +++++-
- src/Makefile.am |   44 ++--
- src/vte.c       |   23 +-
- src/vteapp.c    |   10 +-
- src/vtedraw.c   |   44 +++-
- src/vtedraw.h   |   12 +-
- src/vtefc.c     |   13 +-
- src/vteft2.c    |  338 ++++++++++++++++++++++++++
- src/vteft2.h    |   35 +++
- src/vtegl.c     |  414 +++++++++++++++++++++++++++++++
- src/vtegl.h     |   35 +++
- src/vteglyph.c  |  728 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- src/vteglyph.h  |   86 +++++++
- src/vtepango.c  |   42 ++--
- src/vtepangox.c |  466 +++++++++++++++++++++++++++++++++++
- src/vtepangox.h |   35 +++
- src/vtergb.c    |  260 ++++++++++++++++++++
- src/vtergb.h    |   52 ++++
- src/vteskel.c   |   35 ++--
- src/vtexft.c    |   39 ++--
- vte.pc.in       |    2 +-
- vte.spec        |    6 +-
- 23 files changed, 2681 insertions(+), 125 deletions(-)
+ ChangeLog                       |   19 +
+ configure.in                    |   68 +++-
+ src/Makefile.am                 |   44 ++-
+ src/vte.c                       |   23 +-
+ src/vteapp.c                    |   10 +-
+ src/vtedraw.c                   |   44 ++-
+ src/vtedraw.h                   |   12 +-
+ src/vtefc.c                     |   13 +-
+ src/vteft2.c                    |  338 ++++++++++++++++++
+ src/vteft2.h                    |   35 ++
+ src/vtegl.c                     |  414 ++++++++++++++++++++++
+ src/vtegl.h                     |   35 ++
+ src/vteglyph.c                  |  728 +++++++++++++++++++++++++++++++++++++++
+ src/vteglyph.h                  |   86 +++++
+ src/vtepango.c                  |   42 +--
+ src/{vtepango.c => vtepangox.c} |  227 ++++++++-----
+ src/vtepangox.h                 |   35 ++
+ src/vtergb.c                    |  260 ++++++++++++++
+ src/vtergb.h                    |   52 +++
+ src/vteskel.c                   |   35 +-
+ src/vtexft.c                    |   39 ++-
+ vte.pc.in                       |    2 +-
+ vte.spec                        |    6 +-
+ 23 files changed, 2350 insertions(+), 217 deletions(-)
 
 commit f947682ae7c91de10542d69217496828122bd976
 Author: Laurent Dhima <laurenti@src.gnome.org>
@@ -37224,23 +37254,23 @@ Date:   Tue Dec 3 03:49:59 2002 +0000
     	terminal's encoding if stdout isn't connected to a terminal.
     * src/nativeecho.c: add, for printing random bytes.
 
- ChangeLog        |    7 +++++++
- configure.in     |    2 +-
- po/cs.po         |   48 +++++++++++++++++++++++-------------------------
- po/da.po         |   48 +++++++++++++++++++++++-------------------------
- po/de.po         |   48 +++++++++++++++++++++++-------------------------
- po/fr.po         |   48 +++++++++++++++++++++++-------------------------
- po/ms.po         |   48 +++++++++++++++++++++++-------------------------
- po/nl.po         |   48 +++++++++++++++++++++++-------------------------
- po/no.po         |   48 +++++++++++++++++++++++-------------------------
- po/pt_BR.po      |   48 +++++++++++++++++++++++-------------------------
- po/sv.po         |   48 +++++++++++++++++++++++-------------------------
- po/vi.po         |   48 +++++++++++++++++++++++-------------------------
- src/Makefile.am  |    7 ++++++-
- src/nativeecho.c |   54 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- src/utf8echo.c   |   13 +++++++++----
- src/vte.c        |    2 +-
- 16 files changed, 308 insertions(+), 257 deletions(-)
+ ChangeLog                        |    7 +++++
+ configure.in                     |    2 +-
+ po/cs.po                         |   48 ++++++++++++++++++-------------------
+ po/da.po                         |   48 ++++++++++++++++++-------------------
+ po/de.po                         |   48 ++++++++++++++++++-------------------
+ po/fr.po                         |   48 ++++++++++++++++++-------------------
+ po/ms.po                         |   48 ++++++++++++++++++-------------------
+ po/nl.po                         |   48 ++++++++++++++++++-------------------
+ po/no.po                         |   48 ++++++++++++++++++-------------------
+ po/pt_BR.po                      |   48 ++++++++++++++++++-------------------
+ po/sv.po                         |   48 ++++++++++++++++++-------------------
+ po/vi.po                         |   48 ++++++++++++++++++-------------------
+ src/Makefile.am                  |    7 ++++-
+ src/{utf8echo.c => nativeecho.c} |   39 ++++++++-----------------------
+ src/utf8echo.c                   |   13 +++++++---
+ src/vte.c                        |    2 +-
+ 16 files changed, 264 insertions(+), 286 deletions(-)
 
 commit 672bca9bfb1cf9aee9a077a93711022a3a8bfe9c
 Author: Nalin Dahyabhai <nalin@src.gnome.org>
@@ -37443,19 +37473,19 @@ Date:   Mon Nov 25 20:39:20 2002 +0000
     * termcaps/xterm: remove key definitions -- xterm's way more complicated than
     	the capability strings suggest.
 
- ChangeLog               |   13 ++
- configure.in            |    6 +-
- src/Makefile.am         |    3 +
- src/debug.c             |    3 +
- src/debug.h             |    3 +-
- src/dumpkeys.c          |   46 ++++--
- src/keymap.c            |  453 ++++++++++++++++++++++++++++++++++++++---------
- src/keymap.h            |   19 ++-
- src/vte.c               |  166 +++++++++++++-----
- termcaps/Makefile.am    |    2 +-
- termcaps/xterm          |   22 ++-
- termcaps/xterm.baseline |   35 ++++
- 12 files changed, 603 insertions(+), 168 deletions(-)
+ ChangeLog                          |   13 +
+ configure.in                       |    6 +-
+ src/Makefile.am                    |    3 +
+ src/debug.c                        |    3 +
+ src/debug.h                        |    3 +-
+ src/dumpkeys.c                     |   46 +++--
+ src/keymap.c                       |  453 +++++++++++++++++++++++++++++-------
+ src/keymap.h                       |   19 +-
+ src/vte.c                          |  166 ++++++++++----
+ termcaps/Makefile.am               |    2 +-
+ termcaps/xterm                     |   22 +-
+ termcaps/{xterm => xterm.baseline} |   20 +-
+ 12 files changed, 580 insertions(+), 176 deletions(-)
 
 commit 91a1515e9c6de2e767aa39f8f5e868e9af623fb8
 Author: Nalin Dahyabhai <nalin@src.gnome.org>
@@ -38767,6 +38797,7 @@ Date:   Wed Sep 11 06:10:47 2002 +0000
  gnome-pty-helper/AUTHORS               |    4 +
  gnome-pty-helper/COPYING               |  481 ++++++++++++++++++++
  gnome-pty-helper/Makefile.am           |   13 +
+ NEWS => gnome-pty-helper/NEWS          |    0
  gnome-pty-helper/README                |    4 +
  gnome-pty-helper/acinclude.m4          |  243 ++++++++++
  gnome-pty-helper/autogen.sh            |   71 +++
@@ -38805,7 +38836,7 @@ Date:   Wed Sep 11 06:10:47 2002 +0000
  src/vteapp.c                           |    9 +
  vte.pc.in                              |    2 +-
  vte.spec                               |   15 +-
- 51 files changed, 3706 insertions(+), 1046 deletions(-)
+ 52 files changed, 3706 insertions(+), 1046 deletions(-)
 
 commit 8b212c6c4399fb2cf07cd6bb95eac17a6b790297
 Author: Jacob Berkman <jacob@ximian.com>
@@ -39805,9 +39836,8 @@ Date:   Mon Aug 19 16:41:50 2002 +0000
     do odd things if you run the script from the build directory (when it's also
     the source directory).
 
- python/vte-demo.py |   43 +++++++++++++++++++++++++++++++++++++++++++
- python/vte.py      |   43 -------------------------------------------
- 2 files changed, 43 insertions(+), 43 deletions(-)
+ python/{vte.py => vte-demo.py} |    0
+ 1 files changed, 0 insertions(+), 0 deletions(-)
 
 commit ee05b8f8a7bbb426af0101c37489c7246243570e
 Author: Nalin Dahyabhai <nalin@src.gnome.org>
@@ -41393,11 +41423,10 @@ Date:   Tue Jun 11 09:08:24 2002 +0000
     	* .cvsignore: Added.
     	* sv.po: Added Swedish translation.
 
- po/.cvsignore |   11 +++++
- po/ChangeLog  |    7 +++
- po/sv.po      |  125 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- po/vte.pot    |  117 -----------------------------------------------------
- 4 files changed, 143 insertions(+), 117 deletions(-)
+ po/.cvsignore         |   11 ++++++++
+ po/ChangeLog          |    7 +++++
+ po/{vte.pot => sv.po} |   64 +++++++++++++++++++++++++++---------------------
+ 3 files changed, 54 insertions(+), 28 deletions(-)
 
 commit 6690915804fd0b597beb63e7b28fa6120299c7d9
 Author: Nalin Dahyabhai <nalin@src.gnome.org>
@@ -43492,10 +43521,9 @@ Date:   Mon Feb 25 17:37:31 2002 +0000
 
     rename configure.ac to configure.in, remove 2.5isms
 
- configure.ac    |   32 ---
- configure.in    |   31 +++
- src/Makefile.in |  614 +++++++++++++++++++++++++------------------------------
- 3 files changed, 306 insertions(+), 371 deletions(-)
+ configure.ac => configure.in |    1 -
+ src/Makefile.in              |  614 +++++++++++++++++++-----------------------
+ 2 files changed, 275 insertions(+), 340 deletions(-)
 
 commit 5d753e874d0c821df033b4e94e2a39cbb24d2616
 Author: Nalin Dahyabhai <nalin@src.gnome.org>

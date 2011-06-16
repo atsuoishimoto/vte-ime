@@ -1,5 +1,5 @@
 /* ANSI-C code produced by gperf version 3.0.3 */
-/* Command-line: gperf -m 100 vteseq-n.gperf  */
+/* Command-line: gperf -m 100 ../../../src/vteseq-n.gperf  */
 /* Computed positions: -k'1,4,$' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -29,7 +29,7 @@
 #error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
 #endif
 
-#line 16 "vteseq-n.gperf"
+#line 16 "../../../src/vteseq-n.gperf"
 struct vteseq_n_struct {
 	int seq;
 	VteTerminalSequenceHandler handler;
@@ -242,137 +242,137 @@ vteseq_n_lookup (register const char *str, register unsigned int len)
   static const struct vteseq_n_struct wordlist[] =
     {
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-#line 27 "vteseq-n.gperf"
+#line 27 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str7, VTE_SEQUENCE_HANDLER(vte_sequence_handler_st)},
-#line 25 "vteseq-n.gperf"
+#line 25 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str8, VTE_SEQUENCE_HANDLER(vte_sequence_handler_decset)},
       {-1},
-#line 29 "vteseq-n.gperf"
+#line 29 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str10, VTE_SEQUENCE_HANDLER(vte_sequence_handler_set_mode)},
-#line 33 "vteseq-n.gperf"
+#line 33 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str11, VTE_SEQUENCE_HANDLER(vte_sequence_handler_save_mode)},
-#line 39 "vteseq-n.gperf"
+#line 39 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str12, VTE_SEQUENCE_HANDLER(vte_sequence_handler_soft_reset)},
       {-1},
-#line 45 "vteseq-n.gperf"
+#line 45 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str14, VTE_SEQUENCE_HANDLER(vte_sequence_handler_delete_lines)},
-#line 51 "vteseq-n.gperf"
+#line 51 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str15, VTE_SEQUENCE_HANDLER(vte_sequence_handler_erase_in_line)},
-#line 61 "vteseq-n.gperf"
+#line 61 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str16, VTE_SEQUENCE_HANDLER(vte_sequence_handler_set_icon_title)},
-#line 32 "vteseq-n.gperf"
+#line 32 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str17, VTE_SEQUENCE_HANDLER(vte_sequence_handler_next_line)},
-#line 71 "vteseq-n.gperf"
+#line 71 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str18, VTE_SEQUENCE_HANDLER(vte_sequence_handler_set_window_title)},
-#line 73 "vteseq-n.gperf"
+#line 73 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str19, VTE_SEQUENCE_HANDLER(vte_sequence_handler_DC)},
-#line 69 "vteseq-n.gperf"
+#line 69 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str20, VTE_SEQUENCE_HANDLER(vte_sequence_handler_erase_characters)},
-#line 78 "vteseq-n.gperf"
+#line 78 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str21, VTE_SEQUENCE_HANDLER(vte_sequence_handler_utf_8_charset)},
-#line 95 "vteseq-n.gperf"
+#line 95 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str22, VTE_SEQUENCE_HANDLER(vte_sequence_handler_line_position_absolute)},
-#line 90 "vteseq-n.gperf"
+#line 90 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str23, VTE_SEQUENCE_HANDLER(vte_sequence_handler_screen_alignment_test)},
-#line 109 "vteseq-n.gperf"
+#line 109 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str24, VTE_SEQUENCE_HANDLER(vte_sequence_handler_dec_device_status_report)},
-#line 53 "vteseq-n.gperf"
+#line 53 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str25, VTE_SEQUENCE_HANDLER(vte_sequence_handler_normal_keypad)},
-#line 70 "vteseq-n.gperf"
+#line 70 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str26, VTE_SEQUENCE_HANDLER(vte_sequence_handler_erase_in_display)},
-#line 115 "vteseq-n.gperf"
+#line 115 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str27, VTE_SEQUENCE_HANDLER(vte_sequence_handler_set_icon_and_window_title)},
-#line 36 "vteseq-n.gperf"
+#line 36 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str28, VTE_SEQUENCE_HANDLER(vte_sequence_handler_full_reset)},
-#line 85 "vteseq-n.gperf"
+#line 85 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str29, VTE_SEQUENCE_HANDLER(vte_sequence_handler_set_scrolling_region_to_end)},
-#line 83 "vteseq-n.gperf"
+#line 83 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str30, VTE_SEQUENCE_HANDLER(vte_sequence_handler_set_scrolling_region)},
-#line 31 "vteseq-n.gperf"
+#line 31 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str31, VTE_SEQUENCE_HANDLER(vte_sequence_handler_form_feed)},
-#line 79 "vteseq-n.gperf"
+#line 79 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str32, VTE_SEQUENCE_HANDLER(vte_sequence_handler_window_manipulation)},
-#line 84 "vteseq-n.gperf"
+#line 84 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str33, VTE_SEQUENCE_HANDLER(vte_sequence_handler_set_scrolling_region_from_start)},
-#line 126 "vteseq-n.gperf"
+#line 126 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str34, VTE_SEQUENCE_HANDLER(vte_sequence_handler_send_primary_device_attributes)},
-#line 127 "vteseq-n.gperf"
+#line 127 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str35, VTE_SEQUENCE_HANDLER(vte_sequence_handler_noop)},
-#line 129 "vteseq-n.gperf"
+#line 129 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str36, VTE_SEQUENCE_HANDLER(vte_sequence_handler_send_secondary_device_attributes)},
-#line 28 "vteseq-n.gperf"
+#line 28 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str37, VTE_SEQUENCE_HANDLER(vte_sequence_handler_decreset)},
-#line 35 "vteseq-n.gperf"
+#line 35 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str38, VTE_SEQUENCE_HANDLER(vte_sequence_handler_tab_clear)},
-#line 38 "vteseq-n.gperf"
+#line 38 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str39, VTE_SEQUENCE_HANDLER(vte_sequence_handler_reset_mode)},
-#line 30 "vteseq-n.gperf"
+#line 30 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str40, VTE_SEQUENCE_HANDLER(vte_sequence_handler_UP)},
-#line 48 "vteseq-n.gperf"
+#line 48 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str41, VTE_SEQUENCE_HANDLER(vte_sequence_handler_restore_mode)},
-#line 42 "vteseq-n.gperf"
+#line 42 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str42, VTE_SEQUENCE_HANDLER(vte_sequence_handler_sc)},
-#line 58 "vteseq-n.gperf"
+#line 58 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str43, VTE_SEQUENCE_HANDLER(vte_sequence_handler_RI)},
-#line 63 "vteseq-n.gperf"
+#line 63 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str44, VTE_SEQUENCE_HANDLER(vte_sequence_handler_LE)},
-#line 68 "vteseq-n.gperf"
+#line 68 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str45, VTE_SEQUENCE_HANDLER(vte_sequence_handler_cursor_next_line)},
-#line 72 "vteseq-n.gperf"
+#line 72 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str46, VTE_SEQUENCE_HANDLER(vte_sequence_handler_cursor_lower_left)},
-#line 47 "vteseq-n.gperf"
+#line 47 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str47, VTE_SEQUENCE_HANDLER(vte_sequence_handler_insert_lines)},
-#line 40 "vteseq-n.gperf"
+#line 40 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str48, VTE_SEQUENCE_HANDLER(vte_sequence_handler_DO)},
-#line 76 "vteseq-n.gperf"
+#line 76 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str49, VTE_SEQUENCE_HANDLER(vte_sequence_handler_return_terminal_id)},
-#line 88 "vteseq-n.gperf"
+#line 88 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str50, VTE_SEQUENCE_HANDLER(vte_sequence_handler_cursor_preceding_line)},
-#line 62 "vteseq-n.gperf"
+#line 62 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str51, VTE_SEQUENCE_HANDLER(vte_sequence_handler_bt)},
-#line 64 "vteseq-n.gperf"
+#line 64 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str52, VTE_SEQUENCE_HANDLER(vte_sequence_handler_cursor_position)},
-#line 82 "vteseq-n.gperf"
+#line 82 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str53, VTE_SEQUENCE_HANDLER(vte_sequence_handler_device_status_report)},
-#line 112 "vteseq-n.gperf"
+#line 112 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str54, VTE_SEQUENCE_HANDLER(vte_sequence_handler_cursor_character_absolute)},
-#line 96 "vteseq-n.gperf"
+#line 96 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str55, VTE_SEQUENCE_HANDLER(vte_sequence_handler_return_terminal_status)},
-#line 34 "vteseq-n.gperf"
+#line 34 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str56, VTE_SEQUENCE_HANDLER(vte_sequence_handler_scroll_up)},
-#line 80 "vteseq-n.gperf"
+#line 80 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str57, VTE_SEQUENCE_HANDLER(vte_sequence_handler_change_cursor_color)},
-#line 99 "vteseq-n.gperf"
+#line 99 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str58, VTE_SEQUENCE_HANDLER(vte_sequence_handler_insert_blank_characters)},
-#line 24 "vteseq-n.gperf"
+#line 24 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str59, VTE_SEQUENCE_HANDLER(vte_sequence_handler_index)},
-#line 118 "vteseq-n.gperf"
+#line 118 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str60, VTE_SEQUENCE_HANDLER(vte_sequence_handler_request_terminal_parameters)},
-#line 50 "vteseq-n.gperf"
+#line 50 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str61, VTE_SEQUENCE_HANDLER(vte_sequence_handler_vertical_tab)},
-#line 113 "vteseq-n.gperf"
+#line 113 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str62, VTE_SEQUENCE_HANDLER(vte_sequence_handler_ta)},
-#line 54 "vteseq-n.gperf"
+#line 54 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str63, VTE_SEQUENCE_HANDLER(vte_sequence_handler_reverse_index)},
-#line 43 "vteseq-n.gperf"
+#line 43 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str64, VTE_SEQUENCE_HANDLER(vte_sequence_handler_scroll_down)},
-#line 74 "vteseq-n.gperf"
+#line 74 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str65, VTE_SEQUENCE_HANDLER(vte_sequence_handler_application_keypad)},
-#line 102 "vteseq-n.gperf"
+#line 102 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str66, VTE_SEQUENCE_HANDLER(vte_sequence_handler_local_charset)},
       {-1}, {-1}, {-1}, {-1}, {-1},
-#line 60 "vteseq-n.gperf"
+#line 60 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str72, VTE_SEQUENCE_HANDLER(vte_sequence_handler_rc)},
-#line 128 "vteseq-n.gperf"
+#line 128 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str73, VTE_SEQUENCE_HANDLER(vte_sequence_handler_horizontal_and_vertical_position)},
       {-1}, {-1},
-#line 44 "vteseq-n.gperf"
+#line 44 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str76, VTE_SEQUENCE_HANDLER(vte_sequence_handler_change_color)},
       {-1},
-#line 81 "vteseq-n.gperf"
+#line 81 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str78, VTE_SEQUENCE_HANDLER(vte_sequence_handler_character_attributes)},
       {-1}, {-1}, {-1}, {-1},
-#line 117 "vteseq-n.gperf"
+#line 117 "../../../src/vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str83, VTE_SEQUENCE_HANDLER(vte_sequence_handler_character_position_absolute)}
     };
 
