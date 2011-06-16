@@ -49,7 +49,7 @@ check_PROGRAMS = dumpkeys$(EXEEXT) iso2022$(EXEEXT) reaper$(EXEEXT) \
 TESTS = table$(EXEEXT) trie$(EXEEXT) $(TEST_SH)
 subdir = src
 DIST_COMMON = $(header_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/vteversion.h.in
+	$(srcdir)/Makefile.in $(srcdir)/vteversion.h.in TODO
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.in

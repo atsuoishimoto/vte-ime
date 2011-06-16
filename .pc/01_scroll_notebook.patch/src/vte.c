@@ -11361,13 +11361,6 @@ vte_terminal_scroll(GtkWidget *widget, GdkEventScroll *event)
 
 	vte_terminal_read_modifiers (terminal, (GdkEvent*) event);
 
-#if GTK_CHECK_VERSION (2, 90, 8)
-	/* Do not intercept Alt+scroll, let the GtkNotebook handle it to switch tabs.
-	   Requires a fixed GTK+, see https://bugzilla.gnome.org/show_bug.cgi?id=145244 */
-	if (event->state & GDK_MOD1_MASK)
-		return FALSE;
-#endif
-
 	_VTE_DEBUG_IF(VTE_DEBUG_EVENTS)
 		switch (event->direction) {
 		case GDK_SCROLL_UP:
@@ -11416,9 +11409,8 @@ vte_terminal_scroll(GtkWidget *widget, GdkEventScroll *event)
 		return FALSE;
 	}
 
-	if (terminal->pvt->alternate_screen_scroll &&
-		(terminal->pvt->screen == &terminal->pvt->alternate_screen ||
-		terminal->pvt->normal_screen.scrolling_restricted)) {
+	if (terminal->pvt->screen == &terminal->pvt->alternate_screen ||
+		terminal->pvt->normal_screen.scrolling_restricted) {
 		char *normal;
 		gssize normal_length;
 		const gchar *special;
@@ -13069,22 +13061,6 @@ vte_terminal_set_scroll_on_keystroke(VteTerminal *terminal, gboolean scroll)
 	pvt->scroll_on_keystroke = scroll;
 
         g_object_notify (G_OBJECT (terminal), "scroll-on-keystroke");
-}
-
-/**
- * vte_terminal_set_alternate_screen_scroll:
- * @terminal: a #VteTerminal
- * @scroll: %TRUE if the terminal should send keystrokes for scrolling when using alternate screen
- *
- * Controls whether or not the terminal will send keystrokes for scrolling
- * when using alternate screen or scrolling is restricted.
- *
- */
-void
-vte_terminal_set_alternate_screen_scroll(VteTerminal *terminal, gboolean scroll)
-{
-	g_return_if_fail(VTE_IS_TERMINAL(terminal));
-	terminal->pvt->alternate_screen_scroll = scroll;
 }
 
 static void

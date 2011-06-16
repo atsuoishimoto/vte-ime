@@ -8,7 +8,7 @@ Section: libs
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Guilherme de S. Pastore <gpastore@debian.org>
-Uploaders: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>, Emilio Pozuelo Monfort <pochu@debian.org>, Jordi Mallach <jordi@debian.org>, Josselin Mouette <joss@debian.org>, Sebastian Dröge <slomo@debian.org>
+Uploaders: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>, Emilio Pozuelo Monfort <pochu@debian.org>, Jordi Mallach <jordi@debian.org>, Josselin Mouette <joss@debian.org>
 Standards-Version: 3.8.4
 XS-Python-Version: >= 2.3
 Build-Depends: cdbs (>= 0.4.90),
@@ -40,12 +40,15 @@ Package: libvte9
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libvte-common (>= ${source:Version})
+         libvte-common (= ${source:Version})
 Description: Terminal emulator widget for GTK+ 2.0 - runtime files
- The VTE library inserts terminal capability strings into a trie, and then
- uses it to determine if data received from a pseudo-terminal is a control
- sequence or just random data. The sample program "interpret" illustrates
- more or less what the widget sees after it filters incoming data.
+ The VTE library provides a terminal emulator widget VteTerminal for
+ applications using the GTK+ toolkit. It also provides the VtePTY object 
+ containing functions for starting a new process on a new 
+ pseudo-terminal and for manipulating pseudo-terminals.
+ .
+ This package contains the runtime library, needed by programs using the 
+ VTE widget with GTK+ 2.0.
 
 Package: libvte9-udeb
 XC-Package-Type: udeb
@@ -55,22 +58,19 @@ Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Description: Terminal emulator widget for GTK+ 2.0 - minimal runtime
- This is a udeb, or a microdeb, for the debian-installer.
+ The VTE library provides a terminal emulator widget VteTerminal for
+ applications using the GTK+ toolkit. It also provides the VtePTY object 
+ containing functions for starting a new process on a new 
+ pseudo-terminal and for manipulating pseudo-terminals.
  .
- The VTE library inserts terminal capability strings into a trie, and then
- uses it to determine if data received from a pseudo-terminal is a control
- sequence or just random data. The sample program "interpret" illustrates
- more or less what the widget sees after it filters incoming data.
- .
- This package contains the minimal runtime library needed by the Debian
- installer.
+ This package contains the minimal runtime library for GTK+ 2.0 needed 
+ by the Debian installer.
 
 Package: libvte-dev
 Architecture: any
 Section: libdevel
 Depends: ${misc:Depends},
          libvte9 (= ${binary:Version}),
-         python-vte (= ${binary:Version}),
          libcairo2-dev,
          libx11-dev,
          libgtk2.0-dev (>= 2.20.0),
@@ -80,24 +80,28 @@ Depends: ${misc:Depends},
 Recommends: libvte-doc
 Provides: python-vte-dev
 Description: Terminal emulator widget for GTK+ 2.0 - development files
- The VTE library inserts terminal capability strings into a trie, and then
- uses it to determine if data received from a pseudo-terminal is a control
- sequence or just random data. The sample program "interpret" illustrates
- more or less what the widget sees after it filters incoming data.
+ The VTE library provides a terminal emulator widget VteTerminal for
+ applications using the GTK+ toolkit. It also provides the VtePTY object 
+ containing functions for starting a new process on a new 
+ pseudo-terminal and for manipulating pseudo-terminals.
  .
  This package contains development files for the VTE library and its 
- Python bindings.
+ Python bindings. It is needed to develop and build programs using the 
+ VTE widget with GTK+ 2.0.
 
 Package: libvte-2.90-9
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libvte-common (>= ${source:Version})
+         libvte-common (= ${source:Version})
 Description: Terminal emulator widget for GTK+ 3.0 - runtime files
- The VTE library inserts terminal capability strings into a trie, and then
- uses it to determine if data received from a pseudo-terminal is a control
- sequence or just random data. The sample program "interpret" illustrates
- more or less what the widget sees after it filters incoming data.
+ The VTE library provides a terminal emulator widget VteTerminal for
+ applications using the GTK+ toolkit. It also provides the VtePTY object 
+ containing functions for starting a new process on a new 
+ pseudo-terminal and for manipulating pseudo-terminals.
+ .
+ This package contains the runtime library, needed by programs using the 
+ VTE widget with GTK+ 3.0.
 
 Package: gir1.2-vte-2.90
 Architecture: any
@@ -107,8 +111,8 @@ Description: GObject introspection data for the VTE library
  This package contains introspection data for VTE, a terminal emulator
  widget for GTK+.
  .
- It can be used by packages using the GIRepository format to generate
- dynamic bindings.
+ It can be used by interpreters understanding the GIRepository format to 
+ write programs using the VTE widget for GTK+ 3.0.
 
 Package: libvte-2.90-dev
 Architecture: any
@@ -124,25 +128,28 @@ Depends: ${misc:Depends},
          libvte-common
 Recommends: libvte-doc
 Description: Terminal emulator widget for GTK+ 3.0 - development files
- The VTE library inserts terminal capability strings into a trie, and then
- uses it to determine if data received from a pseudo-terminal is a control
- sequence or just random data. The sample program "interpret" illustrates
- more or less what the widget sees after it filters incoming data.
+ The VTE library provides a terminal emulator widget VteTerminal for
+ applications using the GTK+ toolkit. It also provides the VtePTY object 
+ containing functions for starting a new process on a new 
+ pseudo-terminal and for manipulating pseudo-terminals.
  .
  This package contains development files for the VTE library and its 
- Python bindings.
+ Python bindings. It is needed to develop and build programs using the 
+ VTE widget with GTK+ 3.0.
 
 Package: libvte-common
 Architecture: all
 Depends: ${misc:Depends}
 Replaces: libvte2 (<= 0.5.1-2)
+Breaks: libvte9 (<< 1:0.28)
 Description: Terminal emulator widget for GTK+ - common files
- The VTE library inserts terminal capability strings into a trie, and then
- uses it to determine if data received from a pseudo-terminal is a control
- sequence or just random data. The sample program "interpret" illustrates
- more or less what the widget sees after it filters incoming data.
+ The VTE library provides a terminal emulator widget VteTerminal for
+ applications using the GTK+ toolkit. It also provides the VtePTY object 
+ containing functions for starting a new process on a new 
+ pseudo-terminal and for manipulating pseudo-terminals.
  .
- This package contains internationalization files for the VTE library.
+ This package contains internationalization files for the VTE library 
+ and common files for the GTK+ 2.x and 3.x versions.
 
 Package: python-vte
 Architecture: any
@@ -151,29 +158,31 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
          ${python:Depends},
          python-gtk2,
-         libvte-common
+         libvte-common (= ${source:Version})
 XB-Python-Version: ${python:Versions}
 Conflicts: python2.3-vte,
            python2.4-vte
 Replaces: python2.3-vte,
           python2.4-vte
-Breaks: gdebi (<< 0.6.1)
+Breaks: gdebi (<< 0.6.1),
+        python-apt (<< 0.8.0~exp2)
 Description: Python bindings for the VTE widget set
- The VTE library inserts terminal capability strings into a trie, and then
- uses it to determine if data received from a pseudo-terminal is a control
- sequence or just random data. The sample program "interpret" illustrates
- more or less what the widget sees after it filters incoming data.
+ The VTE library provides a terminal emulator widget VteTerminal for
+ applications using the GTK+ toolkit. It also provides the VtePTY object 
+ containing functions for starting a new process on a new 
+ pseudo-terminal and for manipulating pseudo-terminals.
  .
- This package contains the Python bindings for the VTE library.
- 
+ This package contains the Python bindings to the VTE library for GTK+ 
+ 2.x.
+
 Package: libvte-doc
 Architecture: all
 Section: doc
 Depends: ${misc:Depends}
 Description: Terminal emulator widget for GTK+ - documentation
- The VTE library inserts terminal capability strings into a trie, and then
- uses it to determine if data received from a pseudo-terminal is a control
- sequence or just random data. The sample program "interpret" illustrates
- more or less what the widget sees after it filters incoming data.
+ The VTE library provides a terminal emulator widget VteTerminal for
+ applications using the GTK+ toolkit. It also provides the VtePTY object 
+ containing functions for starting a new process on a new 
+ pseudo-terminal and for manipulating pseudo-terminals.
  .
  This package contains documentation files for the VTE library.

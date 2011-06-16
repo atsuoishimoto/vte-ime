@@ -1,3 +1,38 @@
+vte (1:0.28.1-1ubuntu1) oneiric; urgency=low
+
+  * Merge from debian unstable.  Remaining changes:
+    - Add 93_add_alt_screen_scroll_toggle.patch: Handle scrolling differently
+      when using alternate screen or scrolling is restricted.
+    - Add lp246701_scroll_region_updates.patch: Bug fix. (LP #246701)
+    - 91_keep_fds.patch:
+      vte-2.90 does not yet support G_SPAWN_LEAVE_DESCRIPTORS_OPEN
+      when calling vte_terminal_fork_command_full() until that is
+      fixed we need to keep this patch
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Thu, 16 Jun 2011 17:59:49 +0200
+
+vte (1:0.28.1-1) unstable; urgency=low
+
+  * Tighten dependencies on libvte-common.
+  * New upstream release.
+    + CVE-2011-2198: fix memory exhaustion by using special character 
+      sequences. Closes: #629688.
+  * Drop check-dist include.
+
+ -- Josselin Mouette <joss@debian.org>  Wed, 15 Jun 2011 21:47:56 +0200
+
+vte (1:0.28.0-2) experimental; urgency=low
+
+  * Fix long description, thanks Teemu Ikonen. Closes: #623219.
+  * Drop useless libvte-dev dependency on python-vte. Closes: #549015.
+  * libvte-common Breaks libvte9 < 1:0.28. Closes: #616394, #611826.
+  * python-vte Breaks python-apt << 0.8.0~exp2. Closes: #621483.
+  * Fix udeb sourcedir, thanks Colin Watson. Closes: #627555.
+  * 01_scroll_notebook.patch: new patch. Allow to switch tabs with 
+    Alt+wheel with the latest gtk+3.0.
+
+ -- Josselin Mouette <joss@debian.org>  Sun, 05 Jun 2011 02:06:40 +0200
+
 vte (1:0.28.0-1ubuntu3) oneiric; urgency=low
 
   * readd 91_keep_fds.patch for now. gdebi-gtk needs it until

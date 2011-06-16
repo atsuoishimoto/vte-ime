@@ -1,3 +1,4 @@
+01_scroll_notebook.patch
 25_optional-ncurses.patch
 60_termcap-home-end.patch
 91_keep_fds.patch
