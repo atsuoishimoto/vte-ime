@@ -1,3 +1,9 @@
+vte (1:0.28.1-1ubuntu2) oneiric; urgency=low
+
+  * Switch to dh_python2. (LP: #788514)
+
+ -- Barry Warsaw <barry@ubuntu.com>  Thu, 11 Aug 2011 14:18:14 -0400
+
 vte (1:0.28.1-1ubuntu1) oneiric; urgency=low
 
   * Merge from debian unstable.  Remaining changes:

@@ -50,4 +50,4 @@ DEB_DH_INSTALL_ARGS_$(udeb) += --sourcedir=debian/tmp/udeb
 CFLAGS += $(if $(findstring udeb,$(cdbs_make_curflavor)),-Os)
 
 binary-install/python-vte::
-	dh_pysupport -ppython-vte
+	dh_python2 -ppython-vte
