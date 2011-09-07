@@ -1,3 +1,32 @@
+commit f8e59be9a8d27d0c172638bb63ee871ef5f952d1
+Author: Behdad Esfahbod <behdad@behdad.org>
+Date:   Mon Jul 4 10:16:31 2011 -0400
+
+    Revert "gitignore: Add generated *.pot files in po/ subdirectory"
+    
+    This reverts commit 62736f9eccd7eed23bee6c73c862ea1075b47c99.
+
+ .gitignore |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+commit 62736f9eccd7eed23bee6c73c862ea1075b47c99
+Author: Tommi Vainikainen <thv@iki.fi>
+Date:   Mon Jul 4 14:12:00 2011 +0300
+
+    gitignore: Add generated *.pot files in po/ subdirectory
+
+ .gitignore |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 5879114f81ec4eabfd42b3841f560283a0814cb3
+Author: Tommi Vainikainen <thv@iki.fi>
+Date:   Mon Jul 4 14:11:29 2011 +0300
+
+    Updated Finnish translation
+
+ po/fi.po |   88 +++++++++++++++++++++----------------------------------------
+ 1 files changed, 30 insertions(+), 58 deletions(-)
+
 commit 88d748a106e137baeef660c354bd54ed82efff86
 Author: Christian Persch <chpe@gnome.org>
 Date:   Tue Jun 14 23:38:20 2011 +0200
