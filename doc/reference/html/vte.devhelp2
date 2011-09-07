@@ -12,14 +12,12 @@
       <sub name="" link="ch03.html">
         <sub name="Version Information" link="vte-Version-Information.html"/>
       </sub>
-    </sub>
-    <sub name="Migrating to VTE 0.30" link="migration-0-30.html">
-      <sub name="Build system" link="migration-0-30.html#id3057293"/>
-      <sub name="Include headers" link="ch04s02.html"/>
-      <sub name="Public struct members" link="ch04s03.html"/>
-      <sub name="Deprecated, removed and renamed functions and objects" link="ch04s04.html"/>
-      <sub name="Signal changes" link="ch04s05.html"/>
-      <sub name="Style properties" link="ch04s06.html"/>
+      <sub name="Interna" link="internal-objects.html">
+        <sub name="VteTerminalAccessible" link="VteTerminalAccessible.html"/>
+      </sub>
+      <sub name="Deprecated" link="deprecated-objects.html">
+        <sub name="VteReaper" link="VteReaper.html"/>
+      </sub>
     </sub>
     <sub name="Object Hierarchy" link="object-hierarchy.html"/>
     <sub name="Index" link="api-index-full.html"/>
@@ -28,15 +26,14 @@
     <sub name="Index of new symbols in 0.24" link="api-index-0-24.html"/>
     <sub name="Index of new symbols in 0.26" link="api-index-0-26.html"/>
     <sub name="Index of new symbols in 0.28" link="api-index-0-28.html"/>
-    <sub name="Index of new symbols in 0.30" link="api-index-0-30.html"/>
     <sub name="Annotation Glossary" link="annotation-glossary.html"/>
     <sub name="Licence" link="licence.html"/>
   </chapters>
   <functions>
     <keyword type="struct" name="VteTerminal" link="VteTerminal.html#VteTerminal-struct"/>
+    <keyword type="enum" name="enum VteTerminalAntiAlias" link="VteTerminal.html#VteTerminalAntiAlias" deprecated=""/>
     <keyword type="enum" name="enum VteTerminalCursorBlinkMode" link="VteTerminal.html#VteTerminalCursorBlinkMode"/>
     <keyword type="enum" name="enum VteTerminalCursorShape" link="VteTerminal.html#VteTerminalCursorShape"/>
-    <keyword type="enum" name="enum VteTerminalEffect" link="VteTerminal.html#VteTerminalEffect" since="0.30"/>
     <keyword type="enum" name="enum VteTerminalEraseBinding" link="VteTerminal.html#VteTerminalEraseBinding"/>
     <keyword type="enum" name="enum VteTerminalWriteFlags" link="VteTerminal.html#VteTerminalWriteFlags"/>
     <keyword type="function" name="VteSelectionFunc ()" link="VteTerminal.html#VteSelectionFunc"/>
@@ -45,6 +42,7 @@
     <keyword type="function" name="vte_terminal_feed ()" link="VteTerminal.html#vte-terminal-feed"/>
     <keyword type="function" name="vte_terminal_feed_child ()" link="VteTerminal.html#vte-terminal-feed-child"/>
     <keyword type="function" name="vte_terminal_feed_child_binary ()" link="VteTerminal.html#vte-terminal-feed-child-binary" since="0.12.1"/>
+    <keyword type="function" name="vte_terminal_get_child_exit_status ()" link="VteTerminal.html#vte-terminal-get-child-exit-status" since="0.20"/>
     <keyword type="function" name="vte_terminal_select_all ()" link="VteTerminal.html#vte-terminal-select-all" since="0.16"/>
     <keyword type="function" name="vte_terminal_select_none ()" link="VteTerminal.html#vte-terminal-select-none" since="0.16"/>
     <keyword type="function" name="vte_terminal_copy_clipboard ()" link="VteTerminal.html#vte-terminal-copy-clipboard"/>
@@ -52,15 +50,48 @@
     <keyword type="function" name="vte_terminal_copy_primary ()" link="VteTerminal.html#vte-terminal-copy-primary"/>
     <keyword type="function" name="vte_terminal_paste_primary ()" link="VteTerminal.html#vte-terminal-paste-primary"/>
     <keyword type="function" name="vte_terminal_set_size ()" link="VteTerminal.html#vte-terminal-set-size"/>
-    <keyword type="function" name="vte_terminal_set_font_scale ()" link="VteTerminal.html#vte-terminal-set-font-scale" since="0.30"/>
-    <keyword type="function" name="vte_terminal_get_font_scale ()" link="VteTerminal.html#vte-terminal-get-font-scale" since="0.30"/>
     <keyword type="function" name="vte_terminal_set_audible_bell ()" link="VteTerminal.html#vte-terminal-set-audible-bell"/>
     <keyword type="function" name="vte_terminal_get_audible_bell ()" link="VteTerminal.html#vte-terminal-get-audible-bell"/>
     <keyword type="function" name="vte_terminal_set_visible_bell ()" link="VteTerminal.html#vte-terminal-set-visible-bell"/>
     <keyword type="function" name="vte_terminal_get_visible_bell ()" link="VteTerminal.html#vte-terminal-get-visible-bell"/>
+    <keyword type="function" name="vte_terminal_set_allow_bold ()" link="VteTerminal.html#vte-terminal-set-allow-bold"/>
+    <keyword type="function" name="vte_terminal_get_allow_bold ()" link="VteTerminal.html#vte-terminal-get-allow-bold"/>
     <keyword type="function" name="vte_terminal_set_scroll_on_output ()" link="VteTerminal.html#vte-terminal-set-scroll-on-output"/>
     <keyword type="function" name="vte_terminal_set_scroll_on_keystroke ()" link="VteTerminal.html#vte-terminal-set-scroll-on-keystroke"/>
+    <keyword type="function" name="vte_terminal_set_color_bold ()" link="VteTerminal.html#vte-terminal-set-color-bold"/>
+    <keyword type="function" name="vte_terminal_set_color_bold_rgba ()" link="VteTerminal.html#vte-terminal-set-color-bold-rgba"/>
+    <keyword type="function" name="vte_terminal_set_color_foreground ()" link="VteTerminal.html#vte-terminal-set-color-foreground"/>
+    <keyword type="function" name="vte_terminal_set_color_foreground_rgba ()" link="VteTerminal.html#vte-terminal-set-color-foreground-rgba" since="0.28"/>
+    <keyword type="function" name="vte_terminal_set_color_background ()" link="VteTerminal.html#vte-terminal-set-color-background"/>
+    <keyword type="function" name="vte_terminal_set_color_background_rgba ()" link="VteTerminal.html#vte-terminal-set-color-background-rgba" since="0.28"/>
+    <keyword type="function" name="vte_terminal_set_color_dim ()" link="VteTerminal.html#vte-terminal-set-color-dim"/>
+    <keyword type="function" name="vte_terminal_set_color_dim_rgba ()" link="VteTerminal.html#vte-terminal-set-color-dim-rgba" since="0.28"/>
+    <keyword type="function" name="vte_terminal_set_color_cursor ()" link="VteTerminal.html#vte-terminal-set-color-cursor" since="0.11.11"/>
+    <keyword type="function" name="vte_terminal_set_color_cursor_rgba ()" link="VteTerminal.html#vte-terminal-set-color-cursor-rgba" since="0.28"/>
+    <keyword type="function" name="vte_terminal_set_color_highlight ()" link="VteTerminal.html#vte-terminal-set-color-highlight" since="0.11.11"/>
+    <keyword type="function" name="vte_terminal_set_color_highlight_rgba ()" link="VteTerminal.html#vte-terminal-set-color-highlight-rgba" since="0.28"/>
+    <keyword type="function" name="vte_terminal_set_colors ()" link="VteTerminal.html#vte-terminal-set-colors"/>
+    <keyword type="function" name="vte_terminal_set_colors_rgba ()" link="VteTerminal.html#vte-terminal-set-colors-rgba" since="0.28"/>
+    <keyword type="function" name="vte_terminal_set_default_colors ()" link="VteTerminal.html#vte-terminal-set-default-colors"/>
+    <keyword type="function" name="vte_terminal_set_opacity ()" link="VteTerminal.html#vte-terminal-set-opacity"/>
+    <keyword type="function" name="vte_terminal_set_background_image ()" link="VteTerminal.html#vte-terminal-set-background-image"/>
+    <keyword type="function" name="vte_terminal_set_background_image_file ()" link="VteTerminal.html#vte-terminal-set-background-image-file"/>
+    <keyword type="function" name="vte_terminal_set_background_saturation ()" link="VteTerminal.html#vte-terminal-set-background-saturation"/>
+    <keyword type="function" name="vte_terminal_set_background_transparent ()" link="VteTerminal.html#vte-terminal-set-background-transparent"/>
+    <keyword type="function" name="vte_terminal_set_background_tint_color ()" link="VteTerminal.html#vte-terminal-set-background-tint-color" since="0.11"/>
+    <keyword type="function" name="vte_terminal_set_scroll_background ()" link="VteTerminal.html#vte-terminal-set-scroll-background" since="0.11"/>
+    <keyword type="function" name="vte_terminal_set_cursor_shape ()" link="VteTerminal.html#vte-terminal-set-cursor-shape" since="0.20"/>
+    <keyword type="function" name="vte_terminal_get_cursor_shape ()" link="VteTerminal.html#vte-terminal-get-cursor-shape" since="0.17.6"/>
+    <keyword type="function" name="vte_terminal_set_cursor_blinks ()" link="VteTerminal.html#vte-terminal-set-cursor-blinks" deprecated="0.17.1 Use vte_terminal_set_cursor_blink_mode() instead."/>
+    <keyword type="function" name="vte_terminal_get_cursor_blink_mode ()" link="VteTerminal.html#vte-terminal-get-cursor-blink-mode" since="0.17.1"/>
+    <keyword type="function" name="vte_terminal_set_cursor_blink_mode ()" link="VteTerminal.html#vte-terminal-set-cursor-blink-mode" since="0.17.1"/>
     <keyword type="function" name="vte_terminal_set_scrollback_lines ()" link="VteTerminal.html#vte-terminal-set-scrollback-lines"/>
+    <keyword type="function" name="vte_terminal_set_font ()" link="VteTerminal.html#vte-terminal-set-font"/>
+    <keyword type="function" name="vte_terminal_set_font_from_string ()" link="VteTerminal.html#vte-terminal-set-font-from-string"/>
+    <keyword type="function" name="vte_terminal_set_font_from_string_full ()" link="VteTerminal.html#vte-terminal-set-font-from-string-full" deprecated="0.20: Use vte_terminal_set_font()" since="0.11.11"/>
+    <keyword type="function" name="vte_terminal_set_font_full ()" link="VteTerminal.html#vte-terminal-set-font-full" deprecated="0.20: Use vte_terminal_set_font()" since="0.11.11"/>
+    <keyword type="function" name="vte_terminal_get_font ()" link="VteTerminal.html#vte-terminal-get-font"/>
+    <keyword type="function" name="vte_terminal_get_using_xft ()" link="VteTerminal.html#vte-terminal-get-using-xft" deprecated="0.20"/>
     <keyword type="function" name="vte_terminal_get_has_selection ()" link="VteTerminal.html#vte-terminal-get-has-selection"/>
     <keyword type="function" name="vte_terminal_set_word_chars ()" link="VteTerminal.html#vte-terminal-set-word-chars"/>
     <keyword type="function" name="vte_terminal_is_word_char ()" link="VteTerminal.html#vte-terminal-is-word-char"/>
@@ -74,6 +105,7 @@
     <keyword type="function" name="vte_terminal_get_text_range ()" link="VteTerminal.html#vte-terminal-get-text-range"/>
     <keyword type="function" name="vte_terminal_get_cursor_position ()" link="VteTerminal.html#vte-terminal-get-cursor-position"/>
     <keyword type="function" name="vte_terminal_match_clear_all ()" link="VteTerminal.html#vte-terminal-match-clear-all"/>
+    <keyword type="function" name="vte_terminal_match_add ()" link="VteTerminal.html#vte-terminal-match-add" deprecated="0.17.1: Use vte_terminal_match_add_gregex() instead"/>
     <keyword type="function" name="vte_terminal_match_add_gregex ()" link="VteTerminal.html#vte-terminal-match-add-gregex" since="0.17.1"/>
     <keyword type="function" name="vte_terminal_match_remove ()" link="VteTerminal.html#vte-terminal-match-remove"/>
     <keyword type="function" name="vte_terminal_match_check ()" link="VteTerminal.html#vte-terminal-match-check"/>
@@ -82,9 +114,11 @@
     <keyword type="function" name="vte_terminal_match_set_cursor_name ()" link="VteTerminal.html#vte-terminal-match-set-cursor-name" since="0.17.1"/>
     <keyword type="function" name="vte_terminal_set_emulation ()" link="VteTerminal.html#vte-terminal-set-emulation"/>
     <keyword type="function" name="vte_terminal_get_emulation ()" link="VteTerminal.html#vte-terminal-get-emulation"/>
+    <keyword type="function" name="vte_terminal_get_default_emulation ()" link="VteTerminal.html#vte-terminal-get-default-emulation" since="0.11.11"/>
     <keyword type="function" name="vte_terminal_set_encoding ()" link="VteTerminal.html#vte-terminal-set-encoding"/>
     <keyword type="function" name="vte_terminal_get_encoding ()" link="VteTerminal.html#vte-terminal-get-encoding"/>
     <keyword type="function" name="vte_terminal_get_status_line ()" link="VteTerminal.html#vte-terminal-get-status-line"/>
+    <keyword type="function" name="vte_terminal_get_padding ()" link="VteTerminal.html#vte-terminal-get-padding" deprecated="0.26: Get the #VteTerminal:inner-border style property instead"/>
     <keyword type="function" name="vte_terminal_write_contents ()" link="VteTerminal.html#vte-terminal-write-contents" since="0.24"/>
     <keyword type="function" name="vte_terminal_search_find_next ()" link="VteTerminal.html#vte-terminal-search-find-next" since="0.26"/>
     <keyword type="function" name="vte_terminal_search_find_previous ()" link="VteTerminal.html#vte-terminal-search-find-previous" since="0.26"/>
@@ -92,307 +126,52 @@
     <keyword type="function" name="vte_terminal_search_get_wrap_around ()" link="VteTerminal.html#vte-terminal-search-get-wrap-around" since="0.26"/>
     <keyword type="function" name="vte_terminal_search_set_gregex ()" link="VteTerminal.html#vte-terminal-search-set-gregex" since="0.26"/>
     <keyword type="function" name="vte_terminal_search_set_wrap_around ()" link="VteTerminal.html#vte-terminal-search-set-wrap-around" since="0.26"/>
-    <keyword type="macro" name="VTE_STYLE_CLASS_TERMINAL" link="VteTerminal.html#VTE-STYLE-CLASS-TERMINAL:CAPS" since="0.30"/>
-    <keyword type="function" name="vte_get_default_emulation ()" link="VteTerminal.html#vte-get-default-emulation" since="0.30"/>
     <keyword type="function" name="vte_get_user_shell ()" link="VteTerminal.html#vte-get-user-shell" since="0.28"/>
-    <keyword type="function" name="vte_terminal_spawn_sync ()" link="VteTerminal.html#vte-terminal-spawn-sync" since="0.30"/>
-    <keyword type="function" name="vte_terminal_get_pty ()" link="VteTerminal.html#vte-terminal-get-pty" since="0.30"/>
-    <keyword type="function" name="vte_terminal_set_pty ()" link="VteTerminal.html#vte-terminal-set-pty" since="0.30"/>
-    <keyword type="function" name="vte_terminal_pty_new_sync ()" link="VteTerminal.html#vte-terminal-pty-new-sync" since="0.30"/>
+    <keyword type="function" name="vte_terminal_fork_command ()" link="VteTerminal.html#vte-terminal-fork-command" deprecated="0.26: Use vte_terminal_fork_command_full()"/>
+    <keyword type="function" name="vte_terminal_fork_command_full ()" link="VteTerminal.html#vte-terminal-fork-command-full" since="0.26"/>
+    <keyword type="function" name="vte_terminal_forkpty ()" link="VteTerminal.html#vte-terminal-forkpty" deprecated="0.26: Use #VtePty and fork() instead" since="0.11.11"/>
+    <keyword type="function" name="vte_terminal_get_pty ()" link="VteTerminal.html#vte-terminal-get-pty" deprecated="0.26: Use vte_terminal_get_pty_object() and vte_pty_get_fd()" since="0.20"/>
+    <keyword type="function" name="vte_terminal_get_pty_object ()" link="VteTerminal.html#vte-terminal-get-pty-object" since="0.26"/>
+    <keyword type="function" name="vte_terminal_pty_new ()" link="VteTerminal.html#vte-terminal-pty-new" since="0.26"/>
+    <keyword type="function" name="vte_terminal_set_pty ()" link="VteTerminal.html#vte-terminal-set-pty" deprecated="0.26: Use vte_pty_new_foreign() and vte_terminal_set_pty_object()" since="0.12.1"/>
+    <keyword type="function" name="vte_terminal_set_pty_object ()" link="VteTerminal.html#vte-terminal-set-pty-object" since="0.26."/>
     <keyword type="function" name="vte_terminal_watch_child ()" link="VteTerminal.html#vte-terminal-watch-child" since="0.26"/>
+    <keyword type="function" name="vte_terminal_get_adjustment ()" link="VteTerminal.html#vte-terminal-get-adjustment" deprecated="0.28: Use gtk_scrollable_get_vadjustment() instead"/>
+    <keyword type="function" name="vte_terminal_get_char_ascent ()" link="VteTerminal.html#vte-terminal-get-char-ascent" deprecated="0.20"/>
+    <keyword type="function" name="vte_terminal_get_char_descent ()" link="VteTerminal.html#vte-terminal-get-char-descent" deprecated="0.20"/>
     <keyword type="function" name="vte_terminal_get_char_height ()" link="VteTerminal.html#vte-terminal-get-char-height"/>
     <keyword type="function" name="vte_terminal_get_char_width ()" link="VteTerminal.html#vte-terminal-get-char-width"/>
     <keyword type="function" name="vte_terminal_get_column_count ()" link="VteTerminal.html#vte-terminal-get-column-count"/>
     <keyword type="function" name="vte_terminal_get_icon_title ()" link="VteTerminal.html#vte-terminal-get-icon-title"/>
     <keyword type="function" name="vte_terminal_get_row_count ()" link="VteTerminal.html#vte-terminal-get-row-count"/>
     <keyword type="function" name="vte_terminal_get_window_title ()" link="VteTerminal.html#vte-terminal-get-window-title"/>
+    <keyword type="property" name="The &quot;allow-bold&quot; property" link="VteTerminal.html#VteTerminal--allow-bold"/>
     <keyword type="property" name="The &quot;audible-bell&quot; property" link="VteTerminal.html#VteTerminal--audible-bell"/>
+    <keyword type="property" name="The &quot;background-image-file&quot; property" link="VteTerminal.html#VteTerminal--background-image-file"/>
+    <keyword type="property" name="The &quot;background-image-pixbuf&quot; property" link="VteTerminal.html#VteTerminal--background-image-pixbuf"/>
+    <keyword type="property" name="The &quot;background-opacity&quot; property" link="VteTerminal.html#VteTerminal--background-opacity"/>
+    <keyword type="property" name="The &quot;background-saturation&quot; property" link="VteTerminal.html#VteTerminal--background-saturation"/>
+    <keyword type="property" name="The &quot;background-tint-color&quot; property" link="VteTerminal.html#VteTerminal--background-tint-color"/>
+    <keyword type="property" name="The &quot;background-transparent&quot; property" link="VteTerminal.html#VteTerminal--background-transparent"/>
     <keyword type="property" name="The &quot;backspace-binding&quot; property" link="VteTerminal.html#VteTerminal--backspace-binding"/>
+    <keyword type="property" name="The &quot;cursor-blink-mode&quot; property" link="VteTerminal.html#VteTerminal--cursor-blink-mode"/>
+    <keyword type="property" name="The &quot;cursor-shape&quot; property" link="VteTerminal.html#VteTerminal--cursor-shape"/>
     <keyword type="property" name="The &quot;delete-binding&quot; property" link="VteTerminal.html#VteTerminal--delete-binding"/>
     <keyword type="property" name="The &quot;emulation&quot; property" link="VteTerminal.html#VteTerminal--emulation"/>
     <keyword type="property" name="The &quot;encoding&quot; property" link="VteTerminal.html#VteTerminal--encoding"/>
-    <keyword type="property" name="The &quot;font-scale&quot; property" link="VteTerminal.html#VteTerminal--font-scale"/>
+    <keyword type="property" name="The &quot;font-desc&quot; property" link="VteTerminal.html#VteTerminal--font-desc"/>
     <keyword type="property" name="The &quot;icon-title&quot; property" link="VteTerminal.html#VteTerminal--icon-title"/>
     <keyword type="property" name="The &quot;pointer-autohide&quot; property" link="VteTerminal.html#VteTerminal--pointer-autohide"/>
+    <keyword type="property" name="The &quot;pty&quot; property" link="VteTerminal.html#VteTerminal--pty"/>
     <keyword type="property" name="The &quot;pty-object&quot; property" link="VteTerminal.html#VteTerminal--pty-object"/>
+    <keyword type="property" name="The &quot;scroll-background&quot; property" link="VteTerminal.html#VteTerminal--scroll-background"/>
     <keyword type="property" name="The &quot;scroll-on-keystroke&quot; property" link="VteTerminal.html#VteTerminal--scroll-on-keystroke"/>
     <keyword type="property" name="The &quot;scroll-on-output&quot; property" link="VteTerminal.html#VteTerminal--scroll-on-output"/>
     <keyword type="property" name="The &quot;scrollback-lines&quot; property" link="VteTerminal.html#VteTerminal--scrollback-lines"/>
     <keyword type="property" name="The &quot;visible-bell&quot; property" link="VteTerminal.html#VteTerminal--visible-bell"/>
     <keyword type="property" name="The &quot;window-title&quot; property" link="VteTerminal.html#VteTerminal--window-title"/>
     <keyword type="property" name="The &quot;word-chars&quot; property" link="VteTerminal.html#VteTerminal--word-chars"/>
-    <keyword type="property" name="The &quot;allow-bold&quot; style property" link="VteTerminal.html#VteTerminal--s-allow-bold"/>
-    <keyword type="property" name="The &quot;background-color&quot; style property" link="VteTerminal.html#VteTerminal--s-background-color"/>
-    <keyword type="property" name="The &quot;black-color&quot; style property" link="VteTerminal.html#VteTerminal--s-black-color"/>
-    <keyword type="property" name="The &quot;blue-color&quot; style property" link="VteTerminal.html#VteTerminal--s-blue-color"/>
-    <keyword type="property" name="The &quot;bold-foreground-color&quot; style property" link="VteTerminal.html#VteTerminal--s-bold-foreground-color"/>
-    <keyword type="property" name="The &quot;bright-black-color&quot; style property" link="VteTerminal.html#VteTerminal--s-bright-black-color"/>
-    <keyword type="property" name="The &quot;bright-blue-color&quot; style property" link="VteTerminal.html#VteTerminal--s-bright-blue-color"/>
-    <keyword type="property" name="The &quot;bright-cyan-color&quot; style property" link="VteTerminal.html#VteTerminal--s-bright-cyan-color"/>
-    <keyword type="property" name="The &quot;bright-green-color&quot; style property" link="VteTerminal.html#VteTerminal--s-bright-green-color"/>
-    <keyword type="property" name="The &quot;bright-magenta-color&quot; style property" link="VteTerminal.html#VteTerminal--s-bright-magenta-color"/>
-    <keyword type="property" name="The &quot;bright-red-color&quot; style property" link="VteTerminal.html#VteTerminal--s-bright-red-color"/>
-    <keyword type="property" name="The &quot;bright-white-color&quot; style property" link="VteTerminal.html#VteTerminal--s-bright-white-color"/>
-    <keyword type="property" name="The &quot;bright-yellow-color&quot; style property" link="VteTerminal.html#VteTerminal--s-bright-yellow-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-1-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-1-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-1-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-1-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-1-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-1-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-1-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-1-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-1-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-1-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-1-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-1-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-2-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-2-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-2-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-2-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-2-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-2-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-2-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-2-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-2-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-2-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-2-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-2-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-3-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-3-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-3-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-3-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-3-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-3-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-3-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-3-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-3-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-3-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-3-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-3-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-4-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-4-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-4-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-4-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-4-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-4-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-4-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-4-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-4-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-4-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-4-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-4-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-5-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-5-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-5-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-5-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-5-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-5-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-5-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-5-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-5-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-5-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-5-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-5-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-6-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-6-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-6-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-6-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-6-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-6-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-6-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-6-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-6-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-6-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-1-6-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-1-6-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-1-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-1-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-1-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-1-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-1-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-1-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-1-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-1-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-1-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-1-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-1-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-1-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-2-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-2-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-2-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-2-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-2-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-2-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-2-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-2-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-2-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-2-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-2-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-2-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-3-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-3-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-3-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-3-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-3-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-3-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-3-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-3-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-3-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-3-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-3-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-3-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-4-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-4-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-4-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-4-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-4-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-4-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-4-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-4-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-4-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-4-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-4-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-4-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-5-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-5-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-5-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-5-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-5-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-5-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-5-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-5-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-5-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-5-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-5-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-5-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-6-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-6-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-6-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-6-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-6-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-6-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-6-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-6-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-6-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-6-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-2-6-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-2-6-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-1-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-1-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-1-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-1-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-1-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-1-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-1-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-1-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-1-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-1-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-1-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-1-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-2-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-2-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-2-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-2-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-2-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-2-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-2-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-2-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-2-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-2-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-2-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-2-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-3-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-3-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-3-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-3-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-3-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-3-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-3-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-3-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-3-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-3-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-3-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-3-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-4-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-4-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-4-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-4-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-4-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-4-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-4-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-4-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-4-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-4-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-4-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-4-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-5-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-5-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-5-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-5-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-5-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-5-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-5-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-5-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-5-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-5-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-5-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-5-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-6-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-6-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-6-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-6-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-6-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-6-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-6-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-6-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-6-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-6-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-3-6-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-3-6-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-1-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-1-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-1-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-1-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-1-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-1-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-1-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-1-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-1-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-1-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-1-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-1-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-2-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-2-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-2-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-2-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-2-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-2-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-2-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-2-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-2-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-2-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-2-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-2-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-3-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-3-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-3-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-3-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-3-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-3-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-3-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-3-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-3-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-3-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-3-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-3-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-4-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-4-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-4-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-4-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-4-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-4-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-4-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-4-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-4-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-4-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-4-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-4-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-5-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-5-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-5-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-5-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-5-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-5-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-5-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-5-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-5-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-5-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-5-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-5-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-6-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-6-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-6-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-6-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-6-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-6-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-6-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-6-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-6-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-6-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-4-6-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-4-6-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-1-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-1-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-1-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-1-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-1-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-1-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-1-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-1-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-1-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-1-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-1-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-1-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-2-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-2-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-2-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-2-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-2-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-2-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-2-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-2-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-2-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-2-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-2-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-2-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-3-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-3-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-3-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-3-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-3-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-3-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-3-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-3-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-3-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-3-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-3-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-3-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-4-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-4-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-4-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-4-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-4-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-4-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-4-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-4-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-4-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-4-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-4-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-4-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-5-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-5-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-5-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-5-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-5-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-5-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-5-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-5-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-5-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-5-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-5-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-5-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-6-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-6-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-6-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-6-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-6-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-6-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-6-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-6-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-6-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-6-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-5-6-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-5-6-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-1-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-1-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-1-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-1-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-1-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-1-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-1-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-1-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-1-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-1-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-1-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-1-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-2-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-2-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-2-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-2-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-2-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-2-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-2-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-2-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-2-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-2-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-2-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-2-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-3-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-3-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-3-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-3-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-3-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-3-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-3-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-3-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-3-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-3-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-3-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-3-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-4-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-4-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-4-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-4-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-4-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-4-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-4-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-4-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-4-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-4-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-4-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-4-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-5-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-5-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-5-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-5-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-5-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-5-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-5-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-5-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-5-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-5-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-5-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-5-6-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-6-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-6-1-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-6-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-6-2-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-6-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-6-3-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-6-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-6-4-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-6-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-6-5-color"/>
-    <keyword type="property" name="The &quot;color-6-cube-6-6-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-color-6-cube-6-6-6-color"/>
-    <keyword type="property" name="The &quot;cursor-background-color&quot; style property" link="VteTerminal.html#VteTerminal--s-cursor-background-color"/>
-    <keyword type="property" name="The &quot;cursor-blink-mode&quot; style property" link="VteTerminal.html#VteTerminal--s-cursor-blink-mode"/>
-    <keyword type="property" name="The &quot;cursor-effect&quot; style property" link="VteTerminal.html#VteTerminal--s-cursor-effect"/>
-    <keyword type="property" name="The &quot;cursor-shape&quot; style property" link="VteTerminal.html#VteTerminal--s-cursor-shape"/>
-    <keyword type="property" name="The &quot;cyan-color&quot; style property" link="VteTerminal.html#VteTerminal--s-cyan-color"/>
-    <keyword type="property" name="The &quot;dim-foreground-color&quot; style property" link="VteTerminal.html#VteTerminal--s-dim-foreground-color"/>
-    <keyword type="property" name="The &quot;font&quot; style property" link="VteTerminal.html#VteTerminal--s-font"/>
-    <keyword type="property" name="The &quot;foreground-color&quot; style property" link="VteTerminal.html#VteTerminal--s-foreground-color"/>
-    <keyword type="property" name="The &quot;green-color&quot; style property" link="VteTerminal.html#VteTerminal--s-green-color"/>
-    <keyword type="property" name="The &quot;magenta-color&quot; style property" link="VteTerminal.html#VteTerminal--s-magenta-color"/>
-    <keyword type="property" name="The &quot;red-color&quot; style property" link="VteTerminal.html#VteTerminal--s-red-color"/>
-    <keyword type="property" name="The &quot;reverse&quot; style property" link="VteTerminal.html#VteTerminal--s-reverse"/>
-    <keyword type="property" name="The &quot;reverse-background-color&quot; style property" link="VteTerminal.html#VteTerminal--s-reverse-background-color"/>
-    <keyword type="property" name="The &quot;reverse-effect&quot; style property" link="VteTerminal.html#VteTerminal--s-reverse-effect"/>
-    <keyword type="property" name="The &quot;scroll-background&quot; style property" link="VteTerminal.html#VteTerminal--s-scroll-background"/>
-    <keyword type="property" name="The &quot;selection-background-color&quot; style property" link="VteTerminal.html#VteTerminal--s-selection-background-color"/>
-    <keyword type="property" name="The &quot;selection-effect&quot; style property" link="VteTerminal.html#VteTerminal--s-selection-effect"/>
-    <keyword type="property" name="The &quot;shade-24-shades-1-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-1-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-10-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-10-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-11-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-11-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-12-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-12-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-13-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-13-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-14-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-14-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-15-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-15-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-16-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-16-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-17-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-17-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-18-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-18-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-19-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-19-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-2-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-2-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-20-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-20-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-21-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-21-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-22-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-22-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-23-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-23-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-24-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-24-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-3-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-3-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-4-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-4-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-5-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-5-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-6-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-6-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-7-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-7-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-8-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-8-color"/>
-    <keyword type="property" name="The &quot;shade-24-shades-9-color&quot; style property" link="VteTerminal.html#VteTerminal--s-shade-24-shades-9-color"/>
-    <keyword type="property" name="The &quot;white-color&quot; style property" link="VteTerminal.html#VteTerminal--s-white-color"/>
-    <keyword type="property" name="The &quot;yellow-color&quot; style property" link="VteTerminal.html#VteTerminal--s-yellow-color"/>
+    <keyword type="property" name="The &quot;inner-border&quot; style property" link="VteTerminal.html#VteTerminal--s-inner-border"/>
     <keyword type="signal" name="The &quot;beep&quot; signal" link="VteTerminal.html#VteTerminal-beep"/>
     <keyword type="signal" name="The &quot;char-size-changed&quot; signal" link="VteTerminal.html#VteTerminal-char-size-changed"/>
     <keyword type="signal" name="The &quot;child-exited&quot; signal" link="VteTerminal.html#VteTerminal-child-exited"/>
@@ -417,6 +196,7 @@
     <keyword type="signal" name="The &quot;resize-window&quot; signal" link="VteTerminal.html#VteTerminal-resize-window"/>
     <keyword type="signal" name="The &quot;restore-window&quot; signal" link="VteTerminal.html#VteTerminal-restore-window"/>
     <keyword type="signal" name="The &quot;selection-changed&quot; signal" link="VteTerminal.html#VteTerminal-selection-changed"/>
+    <keyword type="signal" name="The &quot;set-scroll-adjustments&quot; signal" link="VteTerminal.html#VteTerminal-set-scroll-adjustments"/>
     <keyword type="signal" name="The &quot;status-line-changed&quot; signal" link="VteTerminal.html#VteTerminal-status-line-changed"/>
     <keyword type="signal" name="The &quot;text-deleted&quot; signal" link="VteTerminal.html#VteTerminal-text-deleted"/>
     <keyword type="signal" name="The &quot;text-inserted&quot; signal" link="VteTerminal.html#VteTerminal-text-inserted"/>
@@ -426,8 +206,8 @@
     <keyword type="enum" name="enum VtePtyFlags" link="vte-Vte-PTY.html#VtePtyFlags" since="0.26"/>
     <keyword type="enum" name="enum VtePtyError" link="vte-Vte-PTY.html#VtePtyError" since="0.26"/>
     <keyword type="struct" name="VtePty" link="vte-Vte-PTY.html#VtePty-struct"/>
-    <keyword type="function" name="vte_pty_new_sync ()" link="vte-Vte-PTY.html#vte-pty-new-sync" since="0.26"/>
-    <keyword type="function" name="vte_pty_new_foreign_sync ()" link="vte-Vte-PTY.html#vte-pty-new-foreign-sync" since="0.26"/>
+    <keyword type="function" name="vte_pty_new ()" link="vte-Vte-PTY.html#vte-pty-new" since="0.26"/>
+    <keyword type="function" name="vte_pty_new_foreign ()" link="vte-Vte-PTY.html#vte-pty-new-foreign" since="0.26"/>
     <keyword type="function" name="vte_pty_close ()" link="vte-Vte-PTY.html#vte-pty-close" since="0.26"/>
     <keyword type="function" name="vte_pty_child_setup ()" link="vte-Vte-PTY.html#vte-pty-child-setup" since="0.26"/>
     <keyword type="function" name="vte_pty_get_fd ()" link="vte-Vte-PTY.html#vte-pty-get-fd"/>
@@ -438,14 +218,25 @@
     <keyword type="property" name="The &quot;fd&quot; property" link="vte-Vte-PTY.html#VtePty--fd"/>
     <keyword type="property" name="The &quot;flags&quot; property" link="vte-Vte-PTY.html#VtePty--flags"/>
     <keyword type="property" name="The &quot;term&quot; property" link="vte-Vte-PTY.html#VtePty--term"/>
+    <keyword type="macro" name="VTE_MAJOR_VERSION" link="vte-Version-Information.html#VTE-MAJOR-VERSION:CAPS" since="0.16.15"/>
+    <keyword type="macro" name="VTE_MINOR_VERSION" link="vte-Version-Information.html#VTE-MINOR-VERSION:CAPS" since="0.16.15"/>
+    <keyword type="macro" name="VTE_MICRO_VERSION" link="vte-Version-Information.html#VTE-MICRO-VERSION:CAPS" since="0.16.15"/>
+    <keyword type="macro" name="VTE_CHECK_VERSION()" link="vte-Version-Information.html#VTE-CHECK-VERSION:CAPS" since="0.16.15"/>
+    <keyword type="struct" name="VteTerminalAccessible" link="VteTerminalAccessible.html#VteTerminalAccessible-struct"/>
+    <keyword type="function" name="vte_terminal_accessible_new ()" link="VteTerminalAccessible.html#vte-terminal-accessible-new"/>
+    <keyword type="struct" name="VteReaper" link="VteReaper.html#VteReaper-struct"/>
+    <keyword type="function" name="vte_reaper_add_child ()" link="VteReaper.html#vte-reaper-add-child" deprecated=""/>
+    <keyword type="function" name="vte_reaper_get ()" link="VteReaper.html#vte-reaper-get" deprecated=""/>
+    <keyword type="signal" name="The &quot;child-exited&quot; signal" link="VteReaper.html#VteReaper-child-exited"/>
+    <keyword type="constant" name="VTE_ANTI_ALIAS_USE_DEFAULT" link="VteTerminal.html#VTE-ANTI-ALIAS-USE-DEFAULT:CAPS"/>
+    <keyword type="constant" name="VTE_ANTI_ALIAS_FORCE_ENABLE" link="VteTerminal.html#VTE-ANTI-ALIAS-FORCE-ENABLE:CAPS"/>
+    <keyword type="constant" name="VTE_ANTI_ALIAS_FORCE_DISABLE" link="VteTerminal.html#VTE-ANTI-ALIAS-FORCE-DISABLE:CAPS"/>
     <keyword type="constant" name="VTE_CURSOR_BLINK_SYSTEM" link="VteTerminal.html#VTE-CURSOR-BLINK-SYSTEM:CAPS"/>
     <keyword type="constant" name="VTE_CURSOR_BLINK_ON" link="VteTerminal.html#VTE-CURSOR-BLINK-ON:CAPS"/>
     <keyword type="constant" name="VTE_CURSOR_BLINK_OFF" link="VteTerminal.html#VTE-CURSOR-BLINK-OFF:CAPS"/>
     <keyword type="constant" name="VTE_CURSOR_SHAPE_BLOCK" link="VteTerminal.html#VTE-CURSOR-SHAPE-BLOCK:CAPS"/>
     <keyword type="constant" name="VTE_CURSOR_SHAPE_IBEAM" link="VteTerminal.html#VTE-CURSOR-SHAPE-IBEAM:CAPS"/>
     <keyword type="constant" name="VTE_CURSOR_SHAPE_UNDERLINE" link="VteTerminal.html#VTE-CURSOR-SHAPE-UNDERLINE:CAPS"/>
-    <keyword type="constant" name="VTE_TERMINAL_EFFECT_REVERSE" link="VteTerminal.html#VTE-TERMINAL-EFFECT-REVERSE:CAPS"/>
-    <keyword type="constant" name="VTE_TERMINAL_EFFECT_COLOR" link="VteTerminal.html#VTE-TERMINAL-EFFECT-COLOR:CAPS"/>
     <keyword type="constant" name="VTE_ERASE_AUTO" link="VteTerminal.html#VTE-ERASE-AUTO:CAPS"/>
     <keyword type="constant" name="VTE_ERASE_ASCII_BACKSPACE" link="VteTerminal.html#VTE-ERASE-ASCII-BACKSPACE:CAPS"/>
     <keyword type="constant" name="VTE_ERASE_ASCII_DELETE" link="VteTerminal.html#VTE-ERASE-ASCII-DELETE:CAPS"/>

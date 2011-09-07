@@ -1,3 +1,10 @@
+vte (1:0.28.2-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release. Do not upgrade to 0.29 yet, as this drops GTK2
+    support, and we still have a ton of rdepends of libvte9.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 07 Sep 2011 10:06:44 +0200
+
 vte (1:0.28.1-1ubuntu2) oneiric; urgency=low
 
   * Switch to dh_python2. (LP: #788514)
