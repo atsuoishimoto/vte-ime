@@ -11475,19 +11475,6 @@ vte_terminal_scroll(GtkWidget *widget, GdkEventScroll *event)
 	return TRUE;
 }
 
-static gboolean
-gtk_includes_a11y_refactor (void)
-{
-#if GTK_CHECK_VERSION (3, 0, 0)
-	return ((gtk_get_major_version() > 3) ||
-		(gtk_get_major_version() == 3 && gtk_get_minor_version() > 1) ||
-	(gtk_get_major_version() == 3 && gtk_get_minor_version() == 1
-			&& gtk_get_micro_version() >= 9));
-#else
-	return FALSE;
-#endif
-}
-
 /* Create a new accessible object associated with ourselves, and return
  * it to the caller. */
 static AtkObject *
@@ -11495,7 +11482,6 @@ vte_terminal_get_accessible(GtkWidget *widget)
 {
 	VteTerminal *terminal;
 	static gboolean first_time = TRUE;
-	static GQuark quark_accessible_object;
 
 	terminal = VTE_TERMINAL(widget);
 
@@ -11517,33 +11503,15 @@ vte_terminal_get_accessible(GtkWidget *widget)
 						    derived_type);
 
 		derived_atk_type = atk_object_factory_get_accessible_type (factory);
-		if (g_type_is_a (derived_atk_type, GTK_TYPE_ACCESSIBLE) ||
-			gtk_includes_a11y_refactor ()) {
+		if (g_type_is_a (derived_atk_type, GTK_TYPE_ACCESSIBLE)) {
 			atk_registry_set_factory_type (registry,
 						       VTE_TYPE_TERMINAL,
 						       vte_terminal_accessible_factory_get_type ());
 		}
-	quark_accessible_object = g_quark_from_static_string ("gtk-accessible-object");
 		first_time = FALSE;
 	}
 
-	if (gtk_includes_a11y_refactor ()) {
-		AtkRegistry *default_registry = atk_get_default_registry ();
-		AtkObjectFactory *factory;
-		AtkObject *accessible;
-		accessible = g_object_get_qdata (G_OBJECT (widget),
-						 quark_accessible_object);
-		if (accessible)
-			return accessible;
-		factory = atk_registry_get_factory (default_registry,
-			G_TYPE_FROM_INSTANCE (widget));
-		accessible = atk_object_factory_create_accessible (factory,
-			G_OBJECT (widget));
-		g_object_set_qdata (G_OBJECT (widget), quark_accessible_object,
-			accessible);
-		return accessible;
-	} else
-		return GTK_WIDGET_CLASS (vte_terminal_parent_class)->get_accessible (widget);
+	return GTK_WIDGET_CLASS (vte_terminal_parent_class)->get_accessible (widget);
 }
 
 static void

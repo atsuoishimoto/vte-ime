@@ -4,3 +4,4 @@
 91_keep_fds.patch
 93_add_alt_screen_scroll_toggle.patch
 lp246701_scroll_region_updates.patch
+fix_gtk3_accessibility.patch

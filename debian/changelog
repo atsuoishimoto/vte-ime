@@ -1,3 +1,13 @@
+vte (1:0.28.2-0ubuntu2) oneiric; urgency=low
+
+  * debian/patches/fix_gtk3_accessibility.patch: Slightly backported and
+    tweaked patch from upstream bug #654630 to fix GTK3 accessibility post
+    GTK/gail refactor, the original patch plus some suggested tweaks in the
+    bug was used to preserve GTK2 support, can be dropped once we move to
+    vte 0.29
+
+ -- Luke Yelavich <themuso@ubuntu.com>  Fri, 09 Sep 2011 10:31:22 +1000
+
 vte (1:0.28.2-0ubuntu1) oneiric; urgency=low
 
   * New upstream release. Do not upgrade to 0.29 yet, as this drops GTK2
