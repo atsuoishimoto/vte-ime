@@ -54,13 +54,13 @@ vteseq_n_hash (register const char *str, register unsigned int len)
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
       84, 84, 84, 84, 84,  0, 84, 84, 84, 84,
-      84, 84, 84, 84, 84, 84, 10, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 11, 84, 84, 84,
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
       84, 84, 84, 84, 84, 84, 84, 47,  7, 27,
        0,  0, 18, 84,  0, 33, 84, 84,  0,  4,
-       8, 43,  2, 84, 29,  2,  0,  2, 42,  5,
+       8, 43,  2, 84, 29,  2,  0,  2, 47,  5,
       21,  8, 84, 84, 84, 84, 84, 84, 84, 84,
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
@@ -133,12 +133,13 @@ struct vteseq_n_pool_t
     char vteseq_n_pool_str58[sizeof("insert-blank-characters")];
     char vteseq_n_pool_str59[sizeof("index")];
     char vteseq_n_pool_str60[sizeof("request-terminal-parameters")];
-    char vteseq_n_pool_str61[sizeof("vertical-tab")];
+    char vteseq_n_pool_str61[sizeof("manage-ime")];
     char vteseq_n_pool_str62[sizeof("cursor-forward-tabulation")];
     char vteseq_n_pool_str63[sizeof("reverse-index")];
     char vteseq_n_pool_str64[sizeof("scroll-down")];
     char vteseq_n_pool_str65[sizeof("application-keypad")];
-    char vteseq_n_pool_str66[sizeof("iso8859-1-character-set")];
+    char vteseq_n_pool_str66[sizeof("vertical-tab")];
+    char vteseq_n_pool_str67[sizeof("iso8859-1-character-set")];
     char vteseq_n_pool_str72[sizeof("restore-cursor")];
     char vteseq_n_pool_str73[sizeof("horizontal-and-vertical-position")];
     char vteseq_n_pool_str76[sizeof("change-color")];
@@ -199,11 +200,12 @@ static const struct vteseq_n_pool_t vteseq_n_pool_contents =
     "insert-blank-characters",
     "index",
     "request-terminal-parameters",
-    "vertical-tab",
+    "manage-ime",
     "cursor-forward-tabulation",
     "reverse-index",
     "scroll-down",
     "application-keypad",
+    "vertical-tab",
     "iso8859-1-character-set",
     "restore-cursor",
     "horizontal-and-vertical-position",
@@ -223,7 +225,7 @@ vteseq_n_lookup (register const char *str, register unsigned int len)
 {
   enum
     {
-      TOTAL_KEYWORDS = 63,
+      TOTAL_KEYWORDS = 64,
       MIN_WORD_LENGTH = 5,
       MAX_WORD_LENGTH = 32,
       MIN_HASH_VALUE = 7,
@@ -236,7 +238,7 @@ vteseq_n_lookup (register const char *str, register unsigned int len)
       12, 13, 14,  9, 16, 17, 16, 19, 22, 21, 24, 13, 16, 25,
       10, 27, 20,  9, 19, 31, 30, 31, 32,  8,  9, 10,  9, 12,
       11, 14, 15, 16, 17, 12, 11, 18, 21, 15, 15, 20, 25, 22,
-       9, 20, 23,  5, 27, 12, 25, 13, 11, 18, 23,  0,  0,  0,
+       9, 20, 23,  5, 27, 10, 25, 13, 11, 18, 12, 23,  0,  0,
        0,  0, 14, 32,  0,  0, 12,  0, 20,  0,  0,  0,  0, 27
     };
   static const struct vteseq_n_struct wordlist[] =
@@ -348,8 +350,8 @@ vteseq_n_lookup (register const char *str, register unsigned int len)
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str59, VTE_SEQUENCE_HANDLER(vte_sequence_handler_index)},
 #line 118 "vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str60, VTE_SEQUENCE_HANDLER(vte_sequence_handler_request_terminal_parameters)},
-#line 50 "vteseq-n.gperf"
-      {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str61, VTE_SEQUENCE_HANDLER(vte_sequence_handler_vertical_tab)},
+#line 132 "vteseq-n.gperf"
+      {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str61, VTE_SEQUENCE_HANDLER(vte_sequence_handler_manage_ime)},
 #line 113 "vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str62, VTE_SEQUENCE_HANDLER(vte_sequence_handler_ta)},
 #line 54 "vteseq-n.gperf"
@@ -358,9 +360,11 @@ vteseq_n_lookup (register const char *str, register unsigned int len)
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str64, VTE_SEQUENCE_HANDLER(vte_sequence_handler_scroll_down)},
 #line 74 "vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str65, VTE_SEQUENCE_HANDLER(vte_sequence_handler_application_keypad)},
+#line 50 "vteseq-n.gperf"
+      {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str66, VTE_SEQUENCE_HANDLER(vte_sequence_handler_vertical_tab)},
 #line 102 "vteseq-n.gperf"
-      {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str66, VTE_SEQUENCE_HANDLER(vte_sequence_handler_local_charset)},
-      {-1}, {-1}, {-1}, {-1}, {-1},
+      {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str67, VTE_SEQUENCE_HANDLER(vte_sequence_handler_local_charset)},
+      {-1}, {-1}, {-1}, {-1},
 #line 60 "vteseq-n.gperf"
       {(int)(long)&((struct vteseq_n_pool_t *)0)->vteseq_n_pool_str72, VTE_SEQUENCE_HANDLER(vte_sequence_handler_rc)},
 #line 128 "vteseq-n.gperf"
