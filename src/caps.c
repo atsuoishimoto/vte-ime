@@ -511,6 +511,7 @@ struct _vte_capability_string _vte_xterm_capability_strings[] = {
 
 	{CSI "%mt", "window-manipulation", 0},
 
+	{CSI "%dv", "manage-ime", 0},
 	{CSI "%d;%d;%d;%dw", "enable-filter-rectangle", 0},
 	{CSI "%dx", "request-terminal-parameters", 0},
 	{CSI "%d;%d'z", "enable-locator-reporting", 0},

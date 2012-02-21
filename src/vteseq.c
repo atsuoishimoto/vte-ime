@@ -3362,3 +3362,10 @@ _vte_terminal_handle_sequence(VteTerminal *terminal,
 				  match_s);
 	}
 }
+
+/* Manage IME status. */
+static void
+vte_sequence_handler_manage_ime (VteTerminal *terminal, GValueArray *params)
+{
+}
+
