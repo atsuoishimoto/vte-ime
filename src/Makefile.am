@@ -204,7 +204,7 @@ EXTRA_DIST += $(TEST_SH)
 check_PROGRAMS = dumpkeys iso2022 reaper reflect-text-view reflect-vte mev ssfe table trie xticker vteconv vtetc
 TESTS = table trie $(TEST_SH)
 
-AM_CFLAGS = $(GLIB_CFLAGS)
+AM_CFLAGS = $(GLIB_CFLAGS) $(IBUS_CFLAGS)
 LDADD = $(GLIB_LIBS)
 
 reflect_text_view_CPPFLAGS = -DUSE_TEXT_VIEW
